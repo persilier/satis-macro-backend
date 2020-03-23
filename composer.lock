@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6558f74828bca9ebecac73d90cea4b1a",
+    "content-hash": "c680f8be46900be20393242dc7332b6d",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -739,16 +739,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v7.2.0",
+            "version": "v7.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "77110b6434e65b10b655ab92e645e830b1a79caf"
+                "reference": "de01e2926a7560c43fb763d86de134a52b46928b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/77110b6434e65b10b655ab92e645e830b1a79caf",
-                "reference": "77110b6434e65b10b655ab92e645e830b1a79caf",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/de01e2926a7560c43fb763d86de134a52b46928b",
+                "reference": "de01e2926a7560c43fb763d86de134a52b46928b",
                 "shasum": ""
             },
             "require": {
@@ -886,7 +886,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2020-03-17T14:08:55+00:00"
+            "time": "2020-03-20T18:11:43+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -1451,20 +1451,20 @@
         },
         {
             "name": "phpoption/phpoption",
-            "version": "1.7.2",
+            "version": "1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-option.git",
-                "reference": "77f7c4d2e65413aff5b5a8cc8b3caf7a28d81959"
+                "reference": "4acfd6a4b33a509d8c88f50e5222f734b6aeebae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/77f7c4d2e65413aff5b5a8cc8b3caf7a28d81959",
-                "reference": "77f7c4d2e65413aff5b5a8cc8b3caf7a28d81959",
+                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/4acfd6a4b33a509d8c88f50e5222f734b6aeebae",
+                "reference": "4acfd6a4b33a509d8c88f50e5222f734b6aeebae",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5.9 || ^7.0"
+                "php": "^5.5.9 || ^7.0 || ^8.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.3",
@@ -1502,7 +1502,7 @@
                 "php",
                 "type"
             ],
-            "time": "2019-12-15T19:35:24+00:00"
+            "time": "2020-03-21T18:07:53+00:00"
         },
         {
             "name": "psr/container",
@@ -1746,16 +1746,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.10.0",
+            "version": "v0.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "e361c8b7e5114534078e0ce04ddc442b39018a3c"
+                "reference": "573c2362c3cdebe846b4adae4b630eecb350afd8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/e361c8b7e5114534078e0ce04ddc442b39018a3c",
-                "reference": "e361c8b7e5114534078e0ce04ddc442b39018a3c",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/573c2362c3cdebe846b4adae4b630eecb350afd8",
+                "reference": "573c2362c3cdebe846b4adae4b630eecb350afd8",
                 "shasum": ""
             },
             "require": {
@@ -1815,7 +1815,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2020-03-15T22:52:37+00:00"
+            "time": "2020-03-21T06:55:27+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -1943,6 +1943,129 @@
                 "uuid"
             ],
             "time": "2020-02-21T04:36:14+00:00"
+        },
+        {
+            "name": "satis2020/external-dependencies-package",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./modules/external-dependencies-package",
+                "reference": "f3c36fbffbedc52a561bf2291803477fd1443212"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Satis2020\\ExternalDependency\\Providers\\ExternalDependencyPackageServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Satis2020\\ExternalDependency\\": "src/"
+                }
+            },
+            "license": [
+                "DMD"
+            ],
+            "authors": [
+                {
+                    "name": "Christian AWASSI",
+                    "email": "christian@dmdconsult.com"
+                },
+                {
+                    "name": "Nelson AZONHOU",
+                    "email": "ulrich@dmdconsult.com"
+                }
+            ],
+            "description": "satis2020/external-dependencies-package est un package dans lequel nous allons installer toutes les dépendances externes de nos modules",
+            "transport-options": {
+                "symlink": true
+            }
+        },
+        {
+            "name": "satis2020/models-package",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./modules/models-package",
+                "reference": "b794b9022ec469f8a205b9b67d84eaa8d89c7823"
+            },
+            "require": {
+                "satis2020/services-package": "1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Satis2020\\ModelPackage\\Providers\\ModelPackageServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Satis2020\\ModelPackage\\": "src/"
+                }
+            },
+            "license": [
+                "DMD"
+            ],
+            "authors": [
+                {
+                    "name": "Christian AWASSI",
+                    "email": "christian@dmdconsult.com"
+                },
+                {
+                    "name": "Nelson AZONHOU",
+                    "email": "ulrich@dmdconsult.com"
+                }
+            ],
+            "description": "satis2020/models-package est un package dans lequel nous allons gérer les models pour le formbuilder",
+            "transport-options": {
+                "symlink": true
+            }
+        },
+        {
+            "name": "satis2020/services-package",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./modules/services-package",
+                "reference": "435ec9b0e784bcadf351f4df98cd66dcd3821ac3"
+            },
+            "require": {
+                "satis2020/external-dependencies-package": "1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Satis2020\\ServicePackage\\Providers\\ServicePackageServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Satis2020\\ServicePackage\\": "src/"
+                }
+            },
+            "license": [
+                "DMD"
+            ],
+            "authors": [
+                {
+                    "name": "Christian AWASSI",
+                    "email": "christian@dmdconsult.com"
+                },
+                {
+                    "name": "Nelson AZONHOU",
+                    "email": "ulrich@dmdconsult.com"
+                }
+            ],
+            "description": "satis2020/services-package est un package qui va contenir tous les services communs aux modules metier",
+            "transport-options": {
+                "symlink": true
+            }
         },
         {
             "name": "swiftmailer/swiftmailer",

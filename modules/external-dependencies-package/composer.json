@@ -1,0 +1,32 @@
+{
+    "name": "satis2020/external-dependencies-package",
+    "description": "satis2020/external-dependencies-package est un package dans lequel nous allons installer toutes les dépendances externes de nos modules",
+    "license": "DMD",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Christian AWASSI",
+            "email": "christian@dmdconsult.com"
+        },
+        {
+            "name": "Nelson AZONHOU",
+            "email": "ulrich@dmdconsult.com"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Satis2020\\ExternalDependency\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Satis2020\\ExternalDependency\\Providers\\ExternalDependencyPackageServiceProvider"
+            ]
+        }
+    }
+}
