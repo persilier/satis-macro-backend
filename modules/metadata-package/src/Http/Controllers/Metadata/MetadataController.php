@@ -31,8 +31,9 @@ class MetadataController extends ApiController
     public function index(Metadata $metadata)
     {
         $data = json_decode($metadata->data);
+        $type = $metadata->name;
         if(empty($data))
-            return $this->errorResponse('Aucune valeur métadata modèle n\'existe.',422);
+            return $this->errorResponse('Aucune valeur métadata '.$type.' trouvée.',422);
         return $this->showAll(collect($data));
     }
 
@@ -46,23 +47,27 @@ class MetadataController extends ApiController
 
     public function store(Metadata $metadata, Request $request){
         $data = json_decode($metadata->data); 
-        if($metadata->name == 'models'){
-            $rules = Config::get('metadata.models.rules');
-            $this->validate($request, $rules);
-
-            if(!empty($data)){
-                $names = Arr::pluck($data,Config::get('metadata.models.isValid'));
-                if(in_array($request->name, $names))
-                    return $this->errorResponse('Veuillez spécifier une valeur métadata modèle name qui n\'existe pas',422);
-            }
-
-            $data[] = array(
-                'name'=> $request->name,
-                'description'=> $request->description,
-                'fonction'=> $request->fonction
-            );
+        $types = Config::get('metadata.type');
+        if(empty($types))
+            return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
+        foreach ($types as $value) {
+            if($metadata->name == $value)
+                $type = $value;
         }
-    
+
+        $rules = Config::get('metadata.'.$type.'.rules');
+        if(empty($rules))
+            return $this->errorResponse('Variables de configuration (Validation) de métadata '.$metadata->name.' non définies.',422);
+        $this->validate($request, $rules);
+
+        if(!empty($data)){
+            $names = Arr::pluck($data,Config::get('metadata.'.$type.'.isValid'));
+            if(in_array($request->name, $names))
+                return $this->errorResponse('Veuillez spécifier une valeur métadata .'.$type.'. name qui n\'existe pas',422);
+        }
+
+        $data[] = $request->all();
+
         $metadata->data = json_encode($data);
         $metadata->save();
         $data = json_decode($metadata->data);
