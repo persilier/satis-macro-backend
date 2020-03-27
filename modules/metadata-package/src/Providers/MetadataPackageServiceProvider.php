@@ -1,9 +1,14 @@
 <?php
-namespace Satis2020\ModelPackage\Providers;
+namespace Satis2020\MetadataPackage\Providers;
+
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-class ModelPackageServiceProvider extends ServiceProvider
+use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Traits\ApiResponser;
+
+class MetadataPackageServiceProvider extends ServiceProvider
 {
+    use ApiResponser;
     /**
      * Register any application services.
      *
@@ -11,7 +16,7 @@ class ModelPackageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->registerResources();
     }
 
     /**
@@ -21,7 +26,10 @@ class ModelPackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerResources();
+        Route::bind('metadata', function($value){
+            return Metadata::where('name',$value)->get()->first() ?? abort(404);
+        });
+        
     }
 
     /**
@@ -30,6 +38,7 @@ class ModelPackageServiceProvider extends ServiceProvider
     protected function registerResources()
     {
         $this->registerRoutes();
+        $this->registerConfig();
     }
 
     /**
@@ -42,13 +51,21 @@ class ModelPackageServiceProvider extends ServiceProvider
         });
     }
 
+
+    protected function registerConfig(){
+        
+        //if (! $this->app->configurationIsCached()) {
+            $this->mergeConfigFrom(__DIR__.'/../../config/metadata.php','metadata');
+        //}
+    }
+
     /**
      * Routes configurations
      */
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ModelPackage\Http\Controllers',
+            'namespace' => 'Satis2020\MetadataPackage\Http\Controllers',
             'middleware' => ['api']
         ];
     }

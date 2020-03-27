@@ -1,6 +1,6 @@
 {
-    "name": "satis2020/models-package",
-    "description": "satis2020/models-package est un package dans lequel nous allons gérer les models pour le formbuilder",
+    "name": "satis2020/metadata-package",
+    "description": "satis2020/metadata-package est un package dans lequel nous allons gérer les métadata",
     "license": "DMD",
     "version" : "1.0.0",
     "authors": [
@@ -20,13 +20,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Satis2020\\ModelPackage\\": "src/"
+            "Satis2020\\MetadataPackage\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Satis2020\\ModelPackage\\Providers\\ModelPackageServiceProvider"
+                "Satis2020\\MetadataPackage\\Providers\\MetadataPackageServiceProvider"
             ]
         }
     }

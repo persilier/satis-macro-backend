@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Models\Metadata;
 
 /*
 |--------------------------------------------------------------------------
-| Model Factories
+| Metadata Factories
 |--------------------------------------------------------------------------
 |
 | This directory should contain each of the model factory definitions for

@@ -1,12 +1,17 @@
 <?php
 
 namespace App\Exceptions;
-
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Satis2020\ServicePackage\Facades\Handler as Satis2020ExceptionHandler;
+use Satis2020\ServicePackage\Traits\ApiResponser;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponser;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -50,6 +55,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+        $response = Satis2020ExceptionHandler::render($request, $exception);
+
+        if($response){
+            return $response;
+        }
+
+        if (config('app.debug')) {
+            return parent::render($request, $exception);
+        }
+
+        return $this->errorResponse(
+            'Unexpected exception. Try later',
+            500
+        );
     }
 }
