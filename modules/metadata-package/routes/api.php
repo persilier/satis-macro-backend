@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
 /*
  * Models
  */
-Route::resource('model', 'Model\ModelController', ['except' => ['create','edit']]);
+Route::resource('metadata.data', 'Metadata\MetadataController', ['except' => ['create','edit','update']]);

@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Metadata extends Model
 {
     use UuidAsId, SoftDeletes, SecureDelete;
-
+    protected $casts = [
+        
+    ];
     /**
      * The attributes that should be mutated to dates.
      *
