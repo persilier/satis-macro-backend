@@ -7,12 +7,15 @@ return [
     ],
 
     'models' => [
-            'isValid' => 'name',
-            'rules'   => [
-                    'name' => 'required|string',
-                    'description' => 'required|string',
-                    'fonction' => 'required|string',
-                ]
+        'isValid' => 'name',
+        'rules'   => [
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'fonction' => 'required|string',
+        ],
+        'fillable' => [
+            'name', 'description', 'fonction'
+        ]
     ],
 
     'forms' => [
@@ -22,6 +25,9 @@ return [
             'description' => 'required|string',
             'content' => 'required|string',
 
+        ],
+        'fillable' => [
+            'name', 'description', 'content'
         ]
     ]
         
