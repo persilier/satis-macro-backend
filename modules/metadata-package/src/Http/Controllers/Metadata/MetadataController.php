@@ -85,19 +85,23 @@ class MetadataController extends ApiController
     public function show(Metadata $metadata, $data){
         $models = json_decode($metadata->data);
         $model = array();
-        if($metadata->name=='models'){
-            if(is_null($models))
-                return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422); 
-            $collection = collect($models);
-            $filtered = $collection->firstWhere(Config::get('metadata.models.isValid'), $data);
-            if(is_null($filtered))
-                return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422);
-            $model = collect([
-                "name" => $filtered->name,
-                "description" => $filtered->name,
-                "fonction" => $filtered->fonction
-            ]);
-        }
+        $types = Config::get('metadata.type');
+        if(empty($types))
+            return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
+        $type = $types[array_search($metadata->name, $types)];
+        if(is_null($models))
+            return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422); 
+        
+        $collection = collect($models);
+        $filtered = $collection->firstWhere(Config::get('metadata.models.isValid'), $data);
+        if(is_null($filtered))
+            return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422);
+        
+        $fillables = Config::get('metadata.'.$type.'.fillable');
+        if(empty($fillables))
+            return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata '.$metadata->name.' non définies.',422);
+        
+        $model = collect($filtered)->only($fillables);
         return  $this->showAll($model);   
     }
 
