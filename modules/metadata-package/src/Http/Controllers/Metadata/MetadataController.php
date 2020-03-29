@@ -48,9 +48,13 @@ class MetadataController extends ApiController
     public function store(Metadata $metadata, Request $request){
         $data = json_decode($metadata->data); 
         $types = Config::get('metadata.type');
+
         if(empty($types))
             return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
-        $type = $types[array_search($metadata->name, $types)];
+        $index=array_search($metadata->name, $types);
+        if(false==$index)
+            return $this->errorResponse('Variables de configuration de métadata type '.$metadata->name.' non définies.',422);
+        $type = $types[$index];
         $rules = Config::get('metadata.'.$type.'.rules');
         if(empty($rules))
             return $this->errorResponse('Variables de configuration (Validation) de métadata '.$metadata->name.' non définies.',422);
