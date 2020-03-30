@@ -46,7 +46,7 @@ class MetadataController extends ApiController
      */
 
     public function store(Metadata $metadata, Request $request){
-        $data = json_decode($metadata->data); 
+        $data = json_decode($metadata->data);
         $types = Config::get('metadata.type');
 
         if(empty($types))
@@ -94,19 +94,19 @@ class MetadataController extends ApiController
             return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
         $type = $types[array_search($metadata->name, $types)];
         if(is_null($models))
-            return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422); 
-        
+            return $this->errorResponse('Aucune métadata '.$type.' n\'est disponible.',422);
+
         $collection = collect($models);
-        $filtered = $collection->firstWhere(Config::get('metadata.models.isValid'), $data);
+        $filtered = $collection->firstWhere(Config::get('metadata.'.$type.'.isValid'), $data);
         if(is_null($filtered))
-            return $this->errorResponse('La valeur name du métadata modèle n\'exsite pas.',422);
-        
+            return $this->errorResponse('La valeur name du métadata '.$type.' n\'exsite pas.',422);
+
         $fillables = Config::get('metadata.'.$type.'.fillable');
         if(empty($fillables))
             return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata '.$metadata->name.' non définies.',422);
-        
+
         $model = collect($filtered)->only($fillables);
-        return  $this->showAll($model);   
+        return  $this->showAll($model);
     }
 
 
@@ -137,14 +137,13 @@ class MetadataController extends ApiController
 
         foreach ($models as $key => $value){
             if($value->name != $filtered->name){
-        
+
                 $model[] = collect($value)->only($fillables);
             }
         }
         $metadata->data = json_encode($model);
         $metadata->save();
         return $this->showAll(collect($filtered));
-
     }
 
 }

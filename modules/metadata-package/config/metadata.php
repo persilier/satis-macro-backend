@@ -23,11 +23,9 @@ return [
         'rules'   => [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
-            'content' => 'required|string',
-
         ],
         'fillable' => [
-            'name', 'description', 'content'
+            'name', 'description',
         ]
     ],
 
@@ -37,11 +35,10 @@ return [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
             'endpoint' => 'required|string',
-
         ],
         'fillable' => [
             'name', 'description', 'endpoint'
         ]
     ]
-        
+
 ];
