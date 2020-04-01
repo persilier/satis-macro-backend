@@ -129,16 +129,19 @@ class MetadataController extends ApiController
         $collection = collect($models);
         $filtered = $collection->firstWhere(Config::get('metadata.'.$type.'.isValid'), $data);
         if(is_null($filtered))
-            return $this->errorResponse('La valeur name du métadata '.$type.' n\'exsite pas',422);
+            return $this->errorResponse('La valeur name du métadata '.$type.' n\'exsite pas.',422);
+        if(Config::get('metadata.'.$type.'.isNotDelete')){
+            if(Arr::exists(collect($filtered), Config::get('metadata.'.$type.'.isNotDelete')))
+                return $this->errorResponse('Impossible de supprimer ce métadata '.$type.' car son contenu est déjà configuré. .',422);
 
+        }
         $fillables = Config::get('metadata.'.$type.'.fillable');
         if(empty($fillables))
             return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata '.$metadata->name.' non définies.',422);
 
-        foreach ($models as $key => $value){
+        foreach ($models as $value){
             if($value->name != $filtered->name){
-
-                $model[] = collect($value)->only($fillables);
+                $model[] = $value;
             }
         }
         $metadata->data = json_encode($model);

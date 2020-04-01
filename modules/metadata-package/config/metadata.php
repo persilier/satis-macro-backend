@@ -23,10 +23,12 @@ return [
         'rules'   => [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
+            'content_default' => 'required|array',
         ],
         'fillable' => [
-            'name', 'description',
-        ]
+            'name', 'description','content_default'
+        ],
+        'isNotDelete' => 'content'
     ],
 
     'action-forms' => [

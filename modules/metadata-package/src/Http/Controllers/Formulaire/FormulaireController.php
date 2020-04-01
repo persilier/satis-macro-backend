@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\ContentFormValidation;
 use Satis2020\ServicePackage\Models\Metadata;
 
 class FormulaireController extends ApiController
@@ -40,20 +41,22 @@ class FormulaireController extends ApiController
      */
     public function create($name){
         $metadata = Metadata::where('name', 'forms')->where('data','!=', '')->firstOrFail();
+        $models = Metadata::where('name','models')->where('data','!=', '')->firstOrFail();
+        $actions_forms = Metadata::where('name','action-forms')->where('data','!=', '')->firstOrFail();
+        $actions = json_decode($actions_forms->data);
+        $models = json_decode($models->data);
         $formulaires = json_decode($metadata->data);
+
         $collection = collect($formulaires);
         $formulaire = $collection->firstWhere('name', $name);
         if(is_null($formulaire))
             return $this->errorResponse('Ce formulaire n\'exsite pas.',422);
         if(Arr::exists(collect($formulaire), 'content'))
             return $this->errorResponse('Ce formulaire a été créé déjà.',422);
-        $models = Metadata::where('name','models')->where('data','!=', '')->firstOrFail();
-        $actions_forms = Metadata::where('name','action-forms')->where('data','!=', '')->firstOrFail();
-        $actions = json_decode($actions_forms->data);
-        $models = json_decode($models->data);
         $form_create = [
             'name' => $formulaire->name,
             'description' => $formulaire->description,
+            'content_default' => $formulaire->content_default,
             'models' => $models,
             'actions' => $actions,
         ];
@@ -67,10 +70,49 @@ class FormulaireController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param Metadata $metadata
      * @param Request $request
      * @return Response
      * @throws ValidationException
      */
+
+    public function store(Request $request){
+
+        $rules = [
+            'name' => 'required|string|max:50',
+            'content' => ['required','array', new ContentFormValidation],
+        ];
+        $this->validate($request,$rules);
+
+        $metadata = Metadata::where('name', 'forms')->where('data','!=', '')->firstOrFail();
+        $formulaires = json_decode($metadata->data);
+
+        $collection = collect($formulaires);
+        $filtered = $collection->firstWhere('name', $request->name);
+        if(is_null($filtered))
+            return $this->errorResponse('La description de ce formulaire n\'exsite pas.',422);
+
+        if(!is_null($filtered->content))
+            return $this->errorResponse('Ce formulaire est créé déjà, vous pouvez le modifier.',422);
+
+        foreach ($formulaires as $key => $value){
+            if($value->name==$request->name){
+                $model[] = array( 
+                            'name' => $value->name,
+                            'description'=> $value->description,
+                            'content_default' => $value->content_default,
+                            'content' => $request->content
+                        );
+            }else{
+                 $model[] = array( 
+                            'name' => $value->name,
+                            'description'=> $value->description,
+                            'content_default' => $value->content_default
+                        );
+            }
+        }
+        $metadata->data = json_encode($model);
+        $metadata->save();
+        return $this->showAll(collect($request));
+    }
 
 }
