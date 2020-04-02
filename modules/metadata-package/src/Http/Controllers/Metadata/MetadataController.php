@@ -32,6 +32,7 @@ class MetadataController extends ApiController
     {
         $data = json_decode($metadata->data);
         $type = $metadata->name;
+
         if(empty($data))
             return $this->errorResponse('Aucune valeur métadata '.$type.' trouvée.',422);
         return $this->showAll(collect($data));
@@ -46,20 +47,26 @@ class MetadataController extends ApiController
      */
 
     public function store(Metadata $metadata, Request $request){
+        
         $data = json_decode($metadata->data);
         $types = Config::get('metadata.type');
 
         if(empty($types))
             return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
-        $index=array_search($metadata->name, $types);
-        if(false==$index)
+        $index = array_search($metadata->name, $types);
+        
+        
+        if(false===$index)
             return $this->errorResponse('Variables de configuration de métadata type '.$metadata->name.' non définies.',422);
+        
         $type = $types[$index];
         $rules = Config::get('metadata.'.$type.'.rules');
+        
         if(empty($rules))
             return $this->errorResponse('Variables de configuration (Validation) de métadata '.$metadata->name.' non définies.',422);
+        
         $this->validate($request, $rules);
-
+        
         if(!empty($data)){
             $names = Arr::pluck($data,Config::get('metadata.'.$type.'.isValid'));
             if(in_array($request->name, $names))
@@ -93,6 +100,7 @@ class MetadataController extends ApiController
         if(empty($types))
             return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
         $type = $types[array_search($metadata->name, $types)];
+        
         if(is_null($models))
             return $this->errorResponse('Aucune métadata '.$type.' n\'est disponible.',422);
 
@@ -102,6 +110,7 @@ class MetadataController extends ApiController
             return $this->errorResponse('La valeur name du métadata '.$type.' n\'exsite pas.',422);
 
         $fillables = Config::get('metadata.'.$type.'.fillable');
+        
         if(empty($fillables))
             return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata '.$metadata->name.' non définies.',422);
 
@@ -130,6 +139,7 @@ class MetadataController extends ApiController
         $filtered = $collection->firstWhere(Config::get('metadata.'.$type.'.isValid'), $data);
         if(is_null($filtered))
             return $this->errorResponse('La valeur name du métadata '.$type.' n\'exsite pas.',422);
+        
         if(Config::get('metadata.'.$type.'.isNotDelete')){
             if(Arr::exists(collect($filtered), Config::get('metadata.'.$type.'.isNotDelete')))
                 return $this->errorResponse('Impossible de supprimer ce métadata '.$type.' car son contenu est déjà configuré. .',422);

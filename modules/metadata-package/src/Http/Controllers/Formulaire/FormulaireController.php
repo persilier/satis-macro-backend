@@ -51,8 +51,10 @@ class FormulaireController extends ApiController
         $formulaire = $collection->firstWhere('name', $name);
         if(is_null($formulaire))
             return $this->errorResponse('Ce formulaire n\'exsite pas.',422);
-        if(Arr::exists(collect($formulaire), 'content'))
-            return $this->errorResponse('Ce formulaire a été créé déjà.',422);
+        
+        /*if(Arr::exists(collect($formulaire), 'content'))
+            return $this->errorResponse('Ce formulaire a été créé déjà.',422);*/
+        
         $form_create = [
             'name' => $formulaire->name,
             'description' => $formulaire->description,
@@ -63,7 +65,20 @@ class FormulaireController extends ApiController
         return $this->showAll(collect($form_create));
     }
 
-    public function show(){
+    public function show($name){
+
+        $metadata = Metadata::where('name', 'forms')->where('data','!=', '')->firstOrFail();
+        $formulaires = json_decode($metadata->data);
+        $collection = collect($formulaires);
+        $formulaire = $collection->firstWhere('name', $name);
+        if(is_null($formulaire))
+            return $this->errorResponse('Ce formulaire n\'exsite pas.',422);
+
+        if(!(Arr::exists(collect($formulaire), 'content')))
+            return $this->errorResponse('Ce formulaire n\'est pas encore configuré.',422);
+
+        $model = collect($formulaire);
+        return  $this->showAll($model);
 
     }
 
@@ -91,9 +106,6 @@ class FormulaireController extends ApiController
         if(is_null($filtered))
             return $this->errorResponse('La description de ce formulaire n\'exsite pas.',422);
 
-        if(!is_null($filtered->content))
-            return $this->errorResponse('Ce formulaire est créé déjà, vous pouvez le modifier.',422);
-
         foreach ($formulaires as $key => $value){
             if($value->name==$request->name){
                 $model[] = array( 
@@ -103,11 +115,21 @@ class FormulaireController extends ApiController
                             'content' => $request->content
                         );
             }else{
-                 $model[] = array( 
+
+                if(!empty($value->content)){
+                    $model[] = array( 
                             'name' => $value->name,
                             'description'=> $value->description,
-                            'content_default' => $value->content_default
+                            'content_default' => $value->content_default,
+                            'content' => $value->content,
                         );
+                }else{
+                    $model[] = array( 
+                            'name' => $value->name,
+                            'description'=> $value->description,
+                            'content_default' => $value->content_default,
+                        );
+                }   
             }
         }
         $metadata->data = json_encode($model);

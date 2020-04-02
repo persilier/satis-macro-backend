@@ -6,11 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Metadata extends Model
 {
-    use UuidAsId, SoftDeletes, SecureDelete;
-    protected $casts = [];
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    /**
+     * The attributes that are translatable
+     *
+     * @var array
+     */
+    public $translatable = ['data'];
+
+    protected $casts = [
+        'data' => 'json',
+    ];
     /**
      * The attributes that should be mutated to dates.
      *

@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 use Satis2020\ServicePackage\Traits\InputsValidationRules;
 
+
 class ContentFormValidation implements Rule
 {
     use InputsValidationRules;
@@ -116,54 +117,6 @@ class ContentFormValidation implements Rule
                         $this->message = "Le contenu du panel ".$num." est requis.";
                         return false;
                     }
-
-
-                    // validation
-                    $names = [];
-                    /*foreach ($value['panel-'.$num]['content'] as $param) {
-                        // Required validation
-                        foreach ($this->required_list as $required) {
-                            if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                                $this->message = "{$required} is required but not found for an element of :attribute";
-                                return false;
-                            }
-                        }
-
-                        // type validation
-                        if (!$this->typeValidation($param)) {
-                            $this->message = "invalid type value detected for : {$param['name']}";
-                            return false;
-                        }
-
-                        // name validation
-                        if (in_array($param['name'], $names)) {
-                            $this->message = "duplicate name value given : {$param['name']}";
-                            return false;
-                        }
-                        $names[] = $param['name'];
-
-                        // visible validation
-                        if (!$this->visibleValidation($param)) {
-                            $this->message = "invalid visible value detected for : {$param['name']}";
-                            return false;
-                        }
-
-                        // required validation
-                        if (!$this->requiredValidation($param)) {
-                            $this->message = "invalid required value detected for : {$param['name']}";
-                            return false;
-                        }
-
-                        // multiple values validation
-                        if (in_array($param['type'], ['select'])) {
-                            $validation = $this->multipleValuesValidation($param);
-
-                            if (!$validation['validation']) {
-                                $this->message = $validation['message'];
-                                return false;
-                            }
-                        }
-                    }*/
                 }
             }
 
@@ -184,6 +137,8 @@ class ContentFormValidation implements Rule
             $this->message = "L'url de l'action est requis.";
             return false;
         }
+
+
 
 
         return true;

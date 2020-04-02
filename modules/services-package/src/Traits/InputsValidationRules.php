@@ -62,7 +62,7 @@ trait InputsValidationRules
         }
 
         // model & method validation
-        if (Arr::exists($param, 'model') && Arr::exists($param, 'method')) {
+        /*if (Arr::exists($param, 'model') && Arr::exists($param, 'method')) {
 
             // model validation
             if (!class_exists($param['model'])) {
@@ -84,12 +84,12 @@ trait InputsValidationRules
                 return ['validation' => false, 'message' => "cannot determine values for {$param['name']}. values provided is not an expected array"];
             }
 
-        }
+        }*/
 
         return ['validation' => true, 'message' => ""];
     }
 
-    protected function confirmValues($values)
+    /*protected function confirmValues($values)
     {
         if (!is_array($values)) {
             return false;
@@ -101,7 +101,7 @@ trait InputsValidationRules
             $keys = array_keys($value);
             return count($keys) == 2 && in_array('label', $keys) && in_array('value', $keys);
         });
-    }
+    }*/
 
 
 }
