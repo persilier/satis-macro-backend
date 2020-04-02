@@ -1,6 +1,6 @@
 <?php
 
-namespace satis2020\ServicePackage\Rules;
+namespace Satis2020\ServicePackage\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Traits\ApiResponser;

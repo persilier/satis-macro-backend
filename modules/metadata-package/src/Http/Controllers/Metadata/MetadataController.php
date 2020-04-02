@@ -52,30 +52,30 @@ class MetadataController extends ApiController
         $types = Config::get('metadata.type');
 
         if(empty($types))
-            return $this->errorResponse('Variables de configuration de métadata '.$metadata->name.' non définies.',422);
+            return $this->errorResponse('Variables de configuration de métadata "'.$metadata->name.'" non définies.',422);
         $index = array_search($metadata->name, $types);
         
         
         if(false===$index)
-            return $this->errorResponse('Variables de configuration de métadata type '.$metadata->name.' non définies.',422);
+            return $this->errorResponse('Variables de configuration de métadata type "'.$metadata->name.'" non définies.',422);
         
         $type = $types[$index];
         $rules = Config::get('metadata.'.$type.'.rules');
         
         if(empty($rules))
-            return $this->errorResponse('Variables de configuration (Validation) de métadata '.$metadata->name.' non définies.',422);
+            return $this->errorResponse('Variables de configuration (Validation) de métadata "'.$metadata->name.'" non définies.',422);
         
         $this->validate($request, $rules);
-        
+
         if(!empty($data)){
             $names = Arr::pluck($data,Config::get('metadata.'.$type.'.isValid'));
             if(in_array($request->name, $names))
-                return $this->errorResponse('Veuillez spécifier une valeur métadata .'.$type.'. name qui n\'existe pas',422);
+                return $this->errorResponse('Veuillez spécifier une valeur métadata "'.$type.'" name qui n\'existe pas.',422);
         }
 
         $fillables = Config::get('metadata.'.$type.'.fillable');
         if(empty($fillables))
-            return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata '.$metadata->name.' non définies.',422);
+            return $this->errorResponse('Variables de configuration (Champs d\'ajout) de métadata "'.$metadata->name.'" non définies.',422);
 
         $data[] = $request->only($fillables);
 
