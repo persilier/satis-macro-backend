@@ -50,7 +50,7 @@ trait InputsValidationRules
     protected function multipleValuesValidation($param)
     {
 
-        if (!(Arr::exists($param, 'values') || (Arr::exists($param, 'model') && Arr::exists($param, 'method')))) {
+        if (!(Arr::exists($param, 'values'))) {
             return ['validation' => false, 'message' => "cannot determine values for {$param['name']}. values or model & method not found"];
         }
 
@@ -89,7 +89,7 @@ trait InputsValidationRules
         return ['validation' => true, 'message' => ""];
     }
 
-    /*protected function confirmValues($values)
+    protected function confirmValues($values)
     {
         if (!is_array($values)) {
             return false;
@@ -101,7 +101,7 @@ trait InputsValidationRules
             $keys = array_keys($value);
             return count($keys) == 2 && in_array('label', $keys) && in_array('value', $keys);
         });
-    }*/
+    }
 
 
 }

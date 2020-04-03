@@ -51,10 +51,10 @@ class FormulaireController extends ApiController
         $formulaire = $collection->firstWhere('name', $name);
         if(is_null($formulaire))
             return $this->errorResponse('Ce formulaire n\'exsite pas.',422);
-        
-        /*if(Arr::exists(collect($formulaire), 'content'))
-            return $this->errorResponse('Ce formulaire a été créé déjà.',422);*/
-        
+
+        if(Arr::exists(collect($formulaire), 'content'))
+            return $this->errorResponse('Ce formulaire a été créé déjà.',422);
+
         $form_create = [
             'name' => $formulaire->name,
             'description' => $formulaire->description,
@@ -91,45 +91,58 @@ class FormulaireController extends ApiController
      */
 
     public function store(Request $request){
-
         $rules = [
             'name' => 'required|string|max:50',
-            'content' => ['required','array', new ContentFormValidation],
+            'content_current' => ['required','array', new ContentFormValidation],
         ];
         $this->validate($request,$rules);
-
         $metadata = Metadata::where('name', 'forms')->where('data','!=', '')->firstOrFail();
+        $actions = Metadata::where('name', 'action-forms')->where('data','!=', '')->firstOrFail();
         $formulaires = json_decode($metadata->data);
+        $action = json_decode($actions->data);
 
         $collection = collect($formulaires);
         $filtered = $collection->firstWhere('name', $request->name);
         if(is_null($filtered))
             return $this->errorResponse('La description de ce formulaire n\'exsite pas.',422);
+        if(Arr::exists(collect($filtered), 'content'))
+            return $this->errorResponse('Ce formulaire est déjà enregistré.',422);
+
+        $action_name = $request->content_current['action']['name'];
+        $endpoint = $request->content_current['action']['endpoint'];
+
+        $action_collect = collect($action);
+        $action_filtered = $action_collect->firstWhere('name',$action_name);
+        if(is_null($action_filtered))
+            return $this->errorResponse('Cette action formulaire n\'est pas valide.',422);
+
+        if($action_filtered->endpoint!=$endpoint)
+            return $this->errorResponse('Cet endpoint n\'existe pas.',422);
 
         foreach ($formulaires as $key => $value){
             if($value->name==$request->name){
-                $model[] = array( 
+                $model[] = array(
                             'name' => $value->name,
                             'description'=> $value->description,
                             'content_default' => $value->content_default,
-                            'content' => $request->content
+                            'content' => $request->content_current
                         );
             }else{
 
                 if(!empty($value->content)){
-                    $model[] = array( 
+                    $model[] = array(
                             'name' => $value->name,
                             'description'=> $value->description,
                             'content_default' => $value->content_default,
                             'content' => $value->content,
                         );
                 }else{
-                    $model[] = array( 
+                    $model[] = array(
                             'name' => $value->name,
                             'description'=> $value->description,
                             'content_default' => $value->content_default,
                         );
-                }   
+                }
             }
         }
         $metadata->data = json_encode($model);

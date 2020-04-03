@@ -43,4 +43,9 @@ class Metadata extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public static function getRoles() {
+        // ... you business logic.
+    }
+
 }

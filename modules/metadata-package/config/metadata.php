@@ -1,7 +1,5 @@
 <?php
 
-//use Satis2020\ServicePackage\Rules\ModelsFunctionValidation;
-
 return [
     'type' => [
         'models', 'forms','action-forms'
@@ -12,7 +10,7 @@ return [
         'rules'   => [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
-            'fonction' => ['required','string',/* new ModelsFunctionValidation*/],
+            'fonction' => 'required|string',
         ],
         'fillable' => [
             'name', 'description', 'fonction'

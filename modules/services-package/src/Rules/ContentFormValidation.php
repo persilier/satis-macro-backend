@@ -34,7 +34,7 @@ class ContentFormValidation implements Rule
         }
 
         if($value['layout']=='layout-3'){
-            
+
             if(!is_array($value['content'])){
                 $this->message = "Le format de l'attribut contenu dans le layout est invalide.";
                 return false;
@@ -133,14 +133,15 @@ class ContentFormValidation implements Rule
             return false;
         }
 
+        if(empty($value['action']['name'])){
+            $this->message = "Le nom de l'action est requis.";
+            return false;
+        }
+
         if(empty($value['action']['endpoint'])){
             $this->message = "L'url de l'action est requis.";
             return false;
         }
-
-
-
-
         return true;
     }
 
