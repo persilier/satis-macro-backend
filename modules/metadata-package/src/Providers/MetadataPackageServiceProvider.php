@@ -1,6 +1,7 @@
 <?php
 namespace Satis2020\MetadataPackage\Providers;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -29,7 +30,6 @@ class MetadataPackageServiceProvider extends ServiceProvider
         Route::bind('metadata', function($value){
             return Metadata::where('name',$value)->get()->first() ?? abort(404);
         });
-        
     }
 
     /**
@@ -53,7 +53,7 @@ class MetadataPackageServiceProvider extends ServiceProvider
 
 
     protected function registerConfig(){
-        
+
         //if (! $this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__.'/../../config/metadata.php','metadata');
         //}
