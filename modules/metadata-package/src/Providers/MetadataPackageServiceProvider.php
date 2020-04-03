@@ -55,7 +55,7 @@ class MetadataPackageServiceProvider extends ServiceProvider
     protected function registerConfig(){
 
         //if (! $this->app->configurationIsCached()) {
-            $this->mergeConfigFrom(__DIR__.'/../../config/metadata.php','metadata');
+        $this->mergeConfigFrom(__DIR__.'/../../config/metadata.php','metadata');
         //}
     }
 
