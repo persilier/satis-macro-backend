@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
  * Models
  */
 Route::resource('metadata.data', 'Metadata\MetadataController', ['except' => ['create','edit','update']]);
+Route::resource('formulaire', 'Formulaire\FormulaireController', ['except' => ['create','edit','update']]);
+Route::name('formulaire.create')->get('formulaire/{formulaire}/create', 'Formulaire\FormulaireController@create');
