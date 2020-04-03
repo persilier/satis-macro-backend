@@ -3,6 +3,7 @@ namespace Satis2020\ServicePackage\Providers;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ServicePackageServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        JsonResource::withoutWrapping();
         $this->registerResources();
     }
 
@@ -116,7 +118,9 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerMiddlewares()
     {
-        $this->app['router']->aliasMiddleware('transform.input', \Satis2020\ServicePackage\Http\Middleware\TransformInput::class);
+        $router = $this->app['router'];
+        $router->aliasMiddleware('transform.input', \Satis2020\ServicePackage\Http\Middleware\TransformInput::class);
+        $router->aliasMiddleware('set.language', \Satis2020\ServicePackage\Http\Middleware\SetLanguage::class);
     }
 
     /**
