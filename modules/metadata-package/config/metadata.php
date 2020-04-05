@@ -14,6 +14,9 @@ return [
         ],
         'fillable' => [
             'name', 'description', 'fonction'
+        ],
+        'update' => [
+            'name', 'description'
         ]
     ],
 
@@ -27,7 +30,10 @@ return [
         'fillable' => [
             'name', 'description','content_default'
         ],
-        'isNotDelete' => 'content'
+        'isNotDelete' => 'content',
+        'update' => [
+            'name', 'description'
+        ]
     ],
 
     'action-forms' => [
@@ -39,6 +45,9 @@ return [
         ],
         'fillable' => [
             'name', 'description', 'endpoint'
+        ],
+        'update' => [
+            'name', 'description'
         ]
     ]
 

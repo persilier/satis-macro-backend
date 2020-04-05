@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Rules\ContentFormValidation;
+use Satis2020\ServicePackage\Rules\LayoutValidationRules;
 use Satis2020\ServicePackage\Models\Metadata;
 
 class FormulaireController extends ApiController
@@ -93,7 +93,7 @@ class FormulaireController extends ApiController
     public function store(Request $request){
         $rules = [
             'name' => 'required|string|max:50',
-            'content_current' => ['required','array', new ContentFormValidation],
+            'content_current' => ['required','array', new LayoutValidationRules],
         ];
         $this->validate($request,$rules);
         $metadata = Metadata::where('name', 'forms')->where('data','!=', '')->firstOrFail();
