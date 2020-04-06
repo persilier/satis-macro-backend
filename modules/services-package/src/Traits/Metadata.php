@@ -46,6 +46,27 @@ trait Metadata
                 'description' => 'required|string|max:255',
                 'endpoint' => 'required|string',
             ];
+
+        if($type == 'formulaire')
+            return [
+                'name' => 'required|string|max:50',
+                'content_default.layout' => [
+                    'required', Rule::in(['layout-1', 'layout-2', 'layout-3', 'layout-4']),
+                ],
+                'content_default.action' => 'required|array',
+                'content_default.action.name' => 'required|string|max:50',
+                'content_default.action.endpoint' => 'required',
+                'content_default' => [
+                    'required','array', new LayoutValidationRules,
+                ],
+            ];
+
+        if($type == 'headers')
+            return [
+                'name' => 'required|string|max:50',
+                'description' => 'required|string|max:255',
+                'content_default' => 'required|string',
+            ];
         return false;
     }
 
@@ -67,6 +88,19 @@ trait Metadata
                 'name' => $request->name,
                 'description' => $request->description,
                 'endpoint' => $request->endpoint,
+            ];
+        if($type == 'formulaire')
+            return [
+                'name' => $request->name,
+                'description' => $request->description,
+                'content_default' => $request->content_default,
+            ];
+
+        if($type == 'headers')
+            return [
+                'name' => $request->name,
+                'description' => $request->description,
+                'content_default' => $request->content_default,
             ];
         return false;
     }
@@ -124,8 +158,102 @@ trait Metadata
                     return 'Veuillez renseigner un endpoint qui existe déjà et qui corresponds avec votre action formualire choisie.';
             }else
                 return 'Le nom de l\'action formualaire est invalide';
+            return false;
         }
         return false;
+    }
+
+    protected function getDeleteData($datas,$key){
+        $data_update = [];
+        foreach ($datas as $key_1 => $value){
+            if($key != $key_1)
+                $data_update[] = $value;
+        }
+        return $data_update;
+    }
+
+
+    protected function getDeleteDataFroms($datas,$key){
+        $data_update = [];
+        foreach ($datas as $key_1 => $value){
+            if($key != $key_1)
+                $data_update[] = $value;
+        }
+        if(empty($data_update))
+            return false;
+        return $data_update;
+    }
+
+    protected function getCreateDataForm($datas_forms,$key,$request){
+        $data_update = [];
+        foreach ($datas_forms as $key_1 => $value){
+            if($key == $key_1)
+                $data_update[] = array(
+                    "name" => $value->name,
+                    "description" => $value->description,
+                    "content_default" => $value->content_default,
+                    "content" => $request->content_default
+                );
+
+            else
+                $data_update[] = $value;
+        }
+        if(empty($data_update))
+            return false;
+        return $data_update;
+    }
+
+
+    /* Get All metadata   */
+
+    protected  function getAllData($datas){
+        foreach ($datas as $key => $value){
+            if(!empty($value->content))
+                $response_data[] = array(
+                    'name' => $value->name,
+                    'description' => $value->description,
+                    'content' => $value->content
+                );
+        }
+        if(empty($response_data))
+            return false;
+        return $response_data;
+    }
+
+    protected  function getAllDataMeta($datas, $type){
+
+        if($type =='models'){
+            foreach ($datas as $key => $value){
+                $response_data[] = array(
+                    'name' => $value->name,
+                    'description' => $value->description,
+                    'fonction' => $value->fonction
+                );
+            }
+        }
+
+        if($type == 'forms'){
+            foreach ($datas as $key => $value){
+                $response_data[] = array(
+                    'name' => $value->name,
+                    'description' => $value->description,
+                    'content_default' => $value->content_default
+                );
+            }
+        }
+
+        if($type == 'action-forms'){
+            foreach ($datas as $key => $value){
+                $response_data[] = array(
+                    'name' => $value->name,
+                    'description' => $value->description,
+                    'endpoint' => $value->endpoint
+                );
+            }
+        }
+        if(empty($response_data))
+            return false;
+        return $response_data;
     }
 
     /*public function getData(Request $request, $datas){

@@ -4,11 +4,6 @@ namespace Satis2020\MetadataPackage\Http\Controllers\Metadata;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Arr;
-use ReflectionClass;
-use ReflectionException;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -38,7 +33,9 @@ class MetadataController extends ApiController
         $type = $metadata->name;
         if(empty($data))
             return $this->errorResponse('Aucune valeur métadata '.$type.' trouvée.',422);
-        return (new MetadataResource(collect($data), $type))->all();
+        $datas = $this->getAllDataMeta($data, $type);
+        //dd($datas);
+        return (new MetadataResource(collect($datas), $type))->all();
     }
 
     /**
@@ -86,7 +83,7 @@ class MetadataController extends ApiController
         $data = $this->getOneData($datas, $name);
         if(false==$data)
             return $this->errorResponse('Aucune données métadata "'.$type.'" n\'est disponible.',422);
-        return new MetadataResource($data['value'],$type);
+        return new MetadataResource($data['value'], $type);
     }
 
 
@@ -106,7 +103,7 @@ class MetadataController extends ApiController
         $datas = json_decode($metadata->data);
         $data = $this->getOneData($datas, $name);
         if(false==$data)
-            return $this->errorResponse('Aucune données métadata "'.$type.'" n\'est disponible.',422);
+            return $this->errorResponse('Cette valeur de métadata "'.$type.'" n\'existe pas.',422);
         $key = $data['key'];
         $data['value']->description = $request->description;
         $datas[$key]->description = $request->description;
@@ -127,10 +124,15 @@ class MetadataController extends ApiController
         $datas = json_decode($metadata->data);
         $data = $this->getOneData($datas, $name);
         if(false==$data)
-            return $this->errorResponse('Aucune données métadata "'.$type.'" n\'est disponible.',422);
-        unset($datas[$data['key']]);
-        $data_update = json_encode($datas);
-        $metadata->update(['data'=> $data_update]);
+            return $this->errorResponse('Cette valeur métadata "'.$type.'" n\'est disponible.',422);
+        $key = $data['key'];
+        if(!empty($data['value']->content) && $type=='forms')
+            return $this->errorResponse('Impossible de supprimer ce métadata "'.$type.'" car son content n\'est pas vide.',422);
+
+        $data_update = $this->getDeleteData($datas,$key);
+        $update = json_encode($data_update);
+        $metadata->data = $update;
+        $metadata->save();
         return new MetadataResource($data['value'], $type);
     }
 

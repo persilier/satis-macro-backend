@@ -13,5 +13,6 @@ class ApiController extends Controller
     {
     	//$this->middleware('auth:api');
         $this->middleware('set.language');
+        $this->middleware('handle.cors');
     }
 }
