@@ -6,6 +6,7 @@ use ReflectionClass;
 use ReflectionException;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Metadata as MetadataModel;
+use Satis2020\ServicePackage\Rules\HeaderValidationRules;
 use Satis2020\ServicePackage\Rules\LayoutValidationRules;
 
 trait Metadata
@@ -65,7 +66,7 @@ trait Metadata
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
-                'content_default' => 'required|string',
+                'content_default' => ['required', 'array', new HeaderValidationRules],
             ];
         return false;
     }
@@ -248,6 +249,16 @@ trait Metadata
                     'name' => $value->name,
                     'description' => $value->description,
                     'endpoint' => $value->endpoint
+                );
+            }
+        }
+
+        if($type == 'headers'){
+            foreach ($datas as $key => $value){
+                $response_data[] = array(
+                    'name' => $value->name,
+                    'description' => $value->description,
+                    'content_default' => $value->content_default
                 );
             }
         }

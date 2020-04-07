@@ -12,6 +12,7 @@ trait InputsValidationRules
     protected $layout_list = ['layout-1', 'layout-2', 'layout-3', 'layout-4'];
     protected $count_panel = 3;
     protected $required_list = ['id','type','name','label', 'required'];
+    protected $required_list_hearder = ['name','label','description','print'];
     protected $available_type = ['text', 'select', 'password', 'email', 'textarea'];
     protected $available_visible = [true, false];
     protected $available_required = [true, false];

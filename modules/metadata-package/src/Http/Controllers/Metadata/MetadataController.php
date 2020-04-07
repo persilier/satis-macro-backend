@@ -126,7 +126,7 @@ class MetadataController extends ApiController
         if(false==$data)
             return $this->errorResponse('Cette valeur métadata "'.$type.'" n\'est disponible.',422);
         $key = $data['key'];
-        if(!empty($data['value']->content) && $type=='forms')
+        if(!empty($data['value']->content) && ($type=='forms' || $type=='headers'))
             return $this->errorResponse('Impossible de supprimer ce métadata "'.$type.'" car son content n\'est pas vide.',422);
 
         $data_update = $this->getDeleteData($datas,$key);

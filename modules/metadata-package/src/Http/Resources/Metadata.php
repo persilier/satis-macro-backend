@@ -18,8 +18,6 @@ class Metadata extends JsonResource
      *
      * @param mixed $resource
      * @param null $type
-     * @param string $data
-     * @param null $content
      */
     public function __construct($resource, $type = null)
     {
