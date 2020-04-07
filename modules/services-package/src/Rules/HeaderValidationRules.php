@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ServicePackage\Rules;
+use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Traits\ApiResponser;
@@ -28,7 +29,12 @@ class HeaderValidationRules implements Rule
     public function passes($attribute, $value)
     {
         $names = [];
-        foreach ($value as $param) {
+        foreach ($value as $key => $param) {
+            if(!is_array($param)){
+                $this->message = "Le format de l'élément ".$key." est invalide";
+                return false;
+            }
+
             foreach ($this->required_list_hearder as $required) {
                 if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
                     $this->message = "{$required} is required but not found for an element of :attribute";
@@ -36,12 +42,11 @@ class HeaderValidationRules implements Rule
                 }
             }
             // name validation
-
-            // name validation
-            if (in_array($param['name'], $names)) {
+            if(in_array($param['name'], $names)) {
                 $this->message = "duplicate name value given : {$param['name']}";
                 return false;
             }
+
             $names[] = $param['name'];
             // visible validation
             if (!$this->visibleValidation($param)) {
@@ -55,7 +60,6 @@ class HeaderValidationRules implements Rule
                 return false;
             }
         }
-
         return true;
     }
 

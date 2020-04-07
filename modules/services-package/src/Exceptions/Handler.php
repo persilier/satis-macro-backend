@@ -77,9 +77,6 @@ class Handler
             }
         }
 
-
-
-
         if($exception instanceof TokenMismatchException){
             return redirect()->back()->withInput($request->input());
         }

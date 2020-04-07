@@ -68,6 +68,12 @@ trait Metadata
                 'description' => 'required|string|max:255',
                 'content_default' => ['required', 'array', new HeaderValidationRules],
             ];
+
+        if($type == 'headers-update')
+            return [
+                'name' => 'required|string|max:50',
+                'content_content' => ['required', 'array', new HeaderValidationRules],
+            ];
         return false;
     }
 
