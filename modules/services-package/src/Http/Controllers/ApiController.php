@@ -12,6 +12,5 @@ class ApiController extends Controller
     public function __construct()
     {
         $this->middleware('set.language');
-        $this->middleware('Cors');
     }
 }

@@ -121,7 +121,6 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router = $this->app['router'];
         $router->aliasMiddleware('transform.input', \Satis2020\ServicePackage\Http\Middleware\TransformInput::class);
         $router->aliasMiddleware('set.language', \Satis2020\ServicePackage\Http\Middleware\SetLanguage::class);
-        $router->aliasMiddleware('Cors', \Satis2020\ServicePackage\Http\Middleware\Cors::class);
     }
 
     /**
