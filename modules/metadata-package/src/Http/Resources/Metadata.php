@@ -45,7 +45,7 @@ class Metadata extends JsonResource
         if($this->type=='forms')
             return $this->loadForms($this->type);
         if($this->type=='headers')
-            return $this->loadForms($this->type);
+            return $this->loadHeaders($this->type);
     }
 
     protected function loadModels($type){
@@ -75,8 +75,7 @@ class Metadata extends JsonResource
     protected function loadHeaders($type){
         return [
             'name' => $this->name,
-            'description' => $this->description,
-            'content' => $this->content
+            'description' => $this->description
         ];
     }
 

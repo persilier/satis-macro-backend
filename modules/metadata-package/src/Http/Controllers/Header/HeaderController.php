@@ -61,7 +61,7 @@ class HeaderController extends ApiController
         $header_create = [
             'name' => $data['value']->name,
             'description' => $data['value']->description,
-            'content_default' => $data['value']->content_default,
+            'content' => $data['value']->content_default,
         ];
         return new MetadataResource((object) $header_create, $type);
         //return new HeaderResource($header_create);
@@ -136,7 +136,7 @@ class HeaderController extends ApiController
         $key = $data['key'];
         if(!empty($data['value']->content))
             return $this->errorResponse('Impossible de créer ce métadata "'.$type.'" car son content n\'est pas vide.',422);
-        $data_update = $this->getCreateDataForm($header, $key,$request);
+        $data_update = $this->getCreateDataHeader($header, $key,$request);
         $update = json_encode($data_update);
         $headers->update(['data'=> $update]);
         $data_response = $this->getOneData(json_decode($update), $request->name);

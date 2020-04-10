@@ -68,13 +68,12 @@ trait Metadata
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
-                'content_default' => ['required', 'array', new HeaderValidationRules],
             ];
 
         if($type == 'headers-update')
             return [
                 'name' => 'required|string|max:50',
-                'content_content' => ['required', 'array', new HeaderValidationRules],
+                'content' => ['required', 'array', new HeaderValidationRules],
             ];
         return false;
     }
@@ -109,7 +108,6 @@ trait Metadata
             return [
                 'name' => $request->name,
                 'description' => $request->description,
-                'content_default' => $request->content_default,
             ];
         return false;
     }
@@ -212,6 +210,24 @@ trait Metadata
         return $data_update;
     }
 
+    protected function getCreateDataHeader($datas_forms,$key,$request){
+        $data_update = [];
+        foreach ($datas_forms as $key_1 => $value){
+            if($key == $key_1)
+                $data_update[] = array(
+                    "name" => $value->name,
+                    "description" => $value->description,
+                    "content" => $request->content_default
+                );
+
+            else
+                $data_update[] = $value;
+        }
+        if(empty($data_update))
+            return false;
+        return $data_update;
+    }
+
 
     /* Get All metadata   */
 
@@ -266,7 +282,6 @@ trait Metadata
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
-                    'content_default' => $value->content_default
                 );
             }
         }
