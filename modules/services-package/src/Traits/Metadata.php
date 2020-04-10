@@ -36,6 +36,7 @@ trait Metadata
                 ],
                 'content_default.action' => 'required|array',
                 'content_default.action.name' => 'required|string|max:50',
+                'content_default.action.title' => 'required|string|max:50',
                 'content_default.action.endpoint' => 'required',
                 'content_default' => [
                     'required','array', new LayoutValidationRules,
@@ -56,6 +57,7 @@ trait Metadata
                 ],
                 'content_default.action' => 'required|array',
                 'content_default.action.name' => 'required|string|max:50',
+                'content_default.action.title' => 'required|string|max:50',
                 'content_default.action.endpoint' => 'required',
                 'content_default' => [
                     'required','array', new LayoutValidationRules,

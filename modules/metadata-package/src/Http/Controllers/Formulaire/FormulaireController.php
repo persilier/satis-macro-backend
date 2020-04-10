@@ -185,7 +185,8 @@ class FormulaireController extends ApiController
         $data_update = $this->getCreateDataForm($formulaire, $key,$request);
         $update = json_encode($data_update);
         $formulaires->update(['data'=> $update]);
-        $data_response = $this->getOneData($formulaire, $request->name);
+        $formulaire_update = json_decode($formulaires->data);
+        $data_response = $this->getOneData($formulaire_update, $request->name);
         return new FormulaireResource($data_response['value']);
     }
 
