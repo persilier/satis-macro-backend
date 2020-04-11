@@ -38,8 +38,8 @@ class LayoutValidationRules implements Rule
         }
 
         if($value['layout']=='layout-1'){
-            for($i =0 ; $i < 2; $i++ ){
-                $num = $i+1;
+            for($i = 1 ; $i <= 2; $i++ ){
+                $num = $i;
                 if(empty($value['panel-'.$num])){
                     $this->message = "Le contenu du panel ".$num." est requis.";
                     return false;
@@ -110,8 +110,8 @@ class LayoutValidationRules implements Rule
         }
 
         if($value['layout']=='layout-2'){
-            for($i =0 ; $i < 1; $i++ ){
-                $num = $i+1;
+            for($i =1 ; $i <= 1; $i++ ){
+                $num = $i;
                 if(empty($value['panel-'.$num])){
                     $this->message = "Le contenu du panel ".$num." est requis.";
                     return false;
@@ -235,8 +235,8 @@ class LayoutValidationRules implements Rule
         }
 
         if($value['layout']=='layout-4'){
-            for($i =0 ; $i < 3; $i++ ){
-                $num = $i+1;
+            for($i =1 ; $i <= 3; $i++ ){
+                $num = $i;
                 if(empty($value['panel-'.$num])){
                     $this->message = "Le contenu du panel ".$num." est requis.";
                     return false;
