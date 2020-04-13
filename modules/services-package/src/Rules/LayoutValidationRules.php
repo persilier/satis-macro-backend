@@ -39,11 +39,11 @@ class LayoutValidationRules implements Rule
 
         if($value['layout']=='layout-1'){
             $n = 3;
-            while ($value['panel-'.$n]){
+            while (isset($value['panel-'.$n])){
                 $this->message = "Le panel ".$n." ne doit pas exister dans le layout 1.";
                 return false;
             }
-            for($i = 1 ; $i <= 2; $i++ ){
+            for($i = 1 ; $i <= 2; $i++){
                 $num = $i;
                 if(empty($value['panel-'.$num])){
                     $this->message = "Le contenu du panel ".$num." est requis.";
@@ -116,7 +116,7 @@ class LayoutValidationRules implements Rule
 
         if($value['layout']=='layout-2'){
             $n = 2;
-            while ($value['panel-'.$n]){
+            while (isset($value['panel-'.$n])){
                 $this->message = "Le panel ".$n." ne doit pas exister dans le layout 2.";
                 return false;
             }
@@ -247,7 +247,7 @@ class LayoutValidationRules implements Rule
 
         if($value['layout']=='layout-4'){
             $n = 4;
-            while ($value['panel-'.$n]){
+            while (isset($value['panel-'.$n])){
                 $this->message = "Le panel ".$n." ne doit pas exister dans le layout 4.";
                 return false;
             }
