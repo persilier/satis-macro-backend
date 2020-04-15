@@ -53,18 +53,18 @@ trait InputsValidationRules
             return ['validation' => false, 'message' => "Veuillez associer un modèle au champ ayant un type."];
         $models = Metadata::where('name', 'models')->where('data','!=', '')->firstOrFail();
         $datas = json_decode($models->getTranslation('data',App::getLocale()));
-        $model = $this->verifiedExistModel($datas, $param['model']);
+        $model = $this->verifiedExistModel($datas, $param);
         if(false == $model)
             return ['validation' => false, 'message' => "Le modèle lié au champ select n'existe pas."];
-        return true;
+        return ['validation' => true, 'message' => ""];
     }
 
-    protected function verifiedExistModel($datas, $name){
+    protected function verifiedExistModel($datas, $param){
 
         if(is_null($datas))
             return false;
         foreach ($datas as $key => $value){
-            if($value->name == $name)
+            if($value->name == $param['model'])
                 return ['key' => $key,'value'=> $value];
         }
         return false;
