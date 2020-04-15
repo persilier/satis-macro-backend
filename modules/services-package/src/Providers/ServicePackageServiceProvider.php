@@ -41,6 +41,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->registerFacades();
         $this->registerMigrations();
         $this->registerViews();
+        $this->registerTranslations();
         $this->registerMiddlewares();
         $this->registerRoutes();
 
@@ -111,6 +112,14 @@ class ServicePackageServiceProvider extends ServiceProvider
     protected function registerViews()
     {
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'ServicePackage');
+    }
+
+    /**
+     * Register the Views
+     */
+    protected function registerTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'ServicePackage');
     }
 
     /**

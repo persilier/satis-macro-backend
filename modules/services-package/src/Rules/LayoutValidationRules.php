@@ -28,12 +28,9 @@ class LayoutValidationRules implements Rule
 
     public function passes($attribute, $value)
     {
-        if(empty($value['layout'])){
-            $this->message = "Le type de layout est requis avec les valeurs possible layout-1, layout-2, layout-3 ou layout-4.";
-            return false;
-        }
-        if(!in_array($value['layout'], $this->layout_list)){
-            $this->message = "Le type de layout '{$value['layout']}' est invalide.";
+
+        if(!in_array(isset($value['layout']), $this->layout_list)){
+            $this->message = "Le champ layout de l'object json content_default est requis, avec les valeurs possible layout-1, layout-2, layout-3 ou layout-4.";
             return false;
         }
 
@@ -66,7 +63,7 @@ class LayoutValidationRules implements Rule
                 }
 
                 if(!is_array($value['panel-'.$num]['content'])){
-                    $this->message = "Le format de l'attribut du contenu dans le panel ".$num." est invalide.";
+                    $this->message = "Le format de l'attribut du contenu dans le panel ".$num." est invalide. Veuiller renseigner un format d'object json.";
                     return false;
                 }
 
@@ -74,35 +71,35 @@ class LayoutValidationRules implements Rule
                 foreach ($value['panel-'.$num]['content'] as $param) {
                     foreach ($this->required_list as $required) {
                         if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                            $this->message = "{$required} is required but not found for an element of :attribute";
+                            $this->message = "{$required} est requis mais introuvable pour un élément de :attribute";
                             return false;
                         }
                     }
                     // type validation
                     if (!$this->typeValidation($param)) {
-                        $this->message = "invalid type value detected for : {$param['name']}";
+                        $this->message = "valeur de type non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // name validation
                     if (in_array($param['name'], $names)) {
-                        $this->message = "duplicate name value given : {$param['name']}";
+                        $this->message = "valeur de nom en double donnée : {$param['name']}";
                         return false;
                     }
                     $names[] = $param['name'];
                     // visible validation
                     if (!$this->visibleValidation($param)) {
-                        $this->message = "invalid visible value detected for : {$param['name']}";
+                        $this->message = "valeur visible non valide détectée pour : {$param['name']}";
                         return false;
                     }
 
                     // required validation
                     if (!$this->requiredValidation($param)) {
-                        $this->message = "invalid required value detected for : {$param['name']}";
+                        $this->message = "valeur requise non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // multiple values validation
                     if (in_array($param['type'], ['select'])) {
-                        $validation = $this->multipleValuesValidation($param);
+                        $validation = $this->modelSelectValidation($param);
 
                         if (!$validation['validation']) {
                             $this->message = $validation['message'];
@@ -152,35 +149,35 @@ class LayoutValidationRules implements Rule
                 foreach ($value['panel-'.$num]['content'] as $param) {
                     foreach ($this->required_list as $required) {
                         if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                            $this->message = "{$required} is required but not found for an element of :attribute";
+                            $this->message = "{$required} est requis mais introuvable pour un élément de :attribute";
                             return false;
                         }
                     }
                     // type validation
                     if (!$this->typeValidation($param)) {
-                        $this->message = "invalid type value detected for : {$param['name']}";
+                        $this->message = "valeur de type non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // name validation
                     if (in_array($param['name'], $names)) {
-                        $this->message = "duplicate name value given : {$param['name']}";
+                        $this->message = "valeur de nom en double donnée : {$param['name']}";
                         return false;
                     }
                     $names[] = $param['name'];
                     // visible validation
                     if (!$this->visibleValidation($param)) {
-                        $this->message = "invalid visible value detected for : {$param['name']}";
+                        $this->message = "valeur visible non valide détectée pour : {$param['name']}";
                         return false;
                     }
 
                     // required validation
                     if (!$this->requiredValidation($param)) {
-                        $this->message = "invalid required value detected for : {$param['name']}";
+                        $this->message = "valeur requise non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // multiple values validation
                     if (in_array($param['type'], ['select'])) {
-                        $validation = $this->multipleValuesValidation($param);
+                        $validation = $this->modelSelectValidation($param);
 
                         if (!$validation['validation']) {
                             $this->message = $validation['message'];
@@ -207,35 +204,35 @@ class LayoutValidationRules implements Rule
             foreach ($value['content'] as $param) {
                 foreach ($this->required_list as $required) {
                     if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                        $this->message = "{$required} is required but not found for an element of :attribute";
+                        $this->message = "{$required} est requis mais introuvable pour un élément de :attribute";
                         return false;
                     }
                 }
                 // type validation
                 if (!$this->typeValidation($param)) {
-                    $this->message = "invalid type value detected for : {$param['name']}";
+                    $this->message = "valeur de type non valide détectée pour : {$param['name']}";
                     return false;
                 }
                 // name validation
                 if (in_array($param['name'], $names)) {
-                    $this->message = "duplicate name value given : {$param['name']}";
+                    $this->message = "valeur de nom en double donnée : {$param['name']}";
                     return false;
                 }
                 $names[] = $param['name'];
                 // visible validation
                 if (!$this->visibleValidation($param)) {
-                    $this->message = "invalid visible value detected for : {$param['name']}";
+                    $this->message = "valeur visible non valide détectée pour : {$param['name']}";
                     return false;
                 }
 
                 // required validation
                 if (!$this->requiredValidation($param)) {
-                    $this->message = "invalid required value detected for : {$param['name']}";
+                    $this->message = "valeur requise non valide détectée pour : {$param['name']}";
                     return false;
                 }
                 // multiple values validation
                 if (in_array($param['type'], ['select'])) {
-                    $validation = $this->multipleValuesValidation($param);
+                    $validation = $this->modelSelectValidation($param);
 
                     if (!$validation['validation']) {
                         $this->message = $validation['message'];
@@ -282,36 +279,35 @@ class LayoutValidationRules implements Rule
                 foreach ($value['panel-'.$num]['content'] as $param) {
                     foreach ($this->required_list as $required) {
                         if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                            $this->message = "{$required} is required but not found for an element of :attribute";
+                            $this->message = "{$required} est requis mais introuvable pour un élément de :attribute";
                             return false;
                         }
                     }
                     // type validation
                     if (!$this->typeValidation($param)) {
-                        $this->message = "invalid type value detected for : {$param['name']}";
+                        $this->message = "valeur de type non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // name validation
                     if (in_array($param['name'], $names)) {
-                        $this->message = "duplicate name value given : {$param['name']}";
+                        $this->message = "valeur de nom en double donnée : {$param['name']}";
                         return false;
                     }
                     $names[] = $param['name'];
                     // visible validation
                     if (!$this->visibleValidation($param)) {
-                        $this->message = "invalid visible value detected for : {$param['name']}";
+                        $this->message = "valeur visible non valide détectée pour : {$param['name']}";
                         return false;
                     }
 
                     // required validation
                     if (!$this->requiredValidation($param)) {
-                        $this->message = "invalid required value detected for : {$param['name']}";
+                        $this->message = "valeur requise non valide détectée pour : {$param['name']}";
                         return false;
                     }
                     // multiple values validation
                     if (in_array($param['type'], ['select'])) {
-                        $validation = $this->multipleValuesValidation($param);
-
+                        $validation = $this->modelSelectValidation($param);
                         if (!$validation['validation']) {
                             $this->message = $validation['message'];
                             return false;
@@ -321,6 +317,31 @@ class LayoutValidationRules implements Rule
 
             }
         }
+
+        if(!isset($value['action'])){
+            $this->message = "Le champ action est requis et doit être un objet json.";
+            return false;
+        }
+
+        if(!is_array($value['action'])){
+            $this->message = "Le champ action doit être un objet json.";
+            return false;
+        }
+
+        if(!isset($value['action']['name'])){
+            $this->message = "Le champ name de l'objet json action est requis.";
+            return false;
+        }
+
+        if(!isset($value['action']['title'])){
+            $this->message = "Le champ titre de l'objet json action est requis.";
+            return false;
+        }
+
+        if(!isset($value['action']['endpoint'])){
+            $this->message = "Le champ endpoint de l'objet json action est requis.";
+            return false;
+        }
         return true;
     }
 
@@ -329,35 +350,35 @@ class LayoutValidationRules implements Rule
         foreach ($value as $param) {
             foreach ($this->required_list as $required) {
                 if (!(Arr::exists($param, $required) && !is_null($param[$required]))) {
-                    $this->message = "{$required} is required but not found for an element of :attribute";
+                    $this->message = "{$required} est requis mais introuvable pour un élément de :attribute";
                     return false;
                 }
             }
             // type validation
             if (!$this->typeValidation($param)) {
-                $this->message = "invalid type value detected for : {$param['name']}";
+                $this->message = "valeur de type non valide détectée pour : {$param['name']}";
                 return false;
             }
             // name validation
             if (in_array($param['name'], $names)) {
-                $this->message = "duplicate name value given : {$param['name']}";
+                $this->message = "valeur de nom en double donnée : {$param['name']}";
                 return false;
             }
             $names[] = $param['name'];
             // visible validation
             if (!$this->visibleValidation($param)) {
-                $this->message = "invalid visible value detected for : {$param['name']}";
+                $this->message = "valeur visible non valide détectée pour : {$param['name']}";
                 return false;
             }
 
             // required validation
             if (!$this->requiredValidation($param)) {
-                $this->message = "invalid required value detected for : {$param['name']}";
+                $this->message = "valeur requise non valide détectée pour : {$param['name']}";
                 return false;
             }
             // multiple values validation
             if (in_array($param['type'], ['select'])) {
-                $validation = $this->multipleValuesValidation($param);
+                $validation = $this->modelSelectValidation($param);
 
                 if (!$validation['validation']) {
                     $this->message = $validation['message'];

@@ -2,11 +2,11 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
-
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Arr;
 use ReflectionClass;
 use ReflectionException;
-
+use Satis2020\ServicePackage\Models\Metadata;
 trait InputsValidationRules
 {
     protected $layout_list = ['layout-1', 'layout-2', 'layout-3', 'layout-4'];
@@ -48,17 +48,39 @@ trait InputsValidationRules
         return true;
     }
 
+    public function modelSelectValidation($param){
+        if(!isset($param['model']))
+            return ['validation' => false, 'message' => "Veuillez associer un modèle au champ ayant un type."];
+        $models = Metadata::where('name', 'models')->where('data','!=', '')->firstOrFail();
+        $datas = json_decode($models->getTranslation('data',App::getLocale()));
+        $model = $this->verifiedExistModel($datas, $param['model']);
+        if(false == $model)
+            return ['validation' => false, 'message' => "Le modèle lié au champ select n'existe pas."];
+        return true;
+    }
+
+    protected function verifiedExistModel($datas, $name){
+
+        if(is_null($datas))
+            return false;
+        foreach ($datas as $key => $value){
+            if($value->name == $name)
+                return ['key' => $key,'value'=> $value];
+        }
+        return false;
+    }
+
     protected function multipleValuesValidation($param)
     {
 
         if (!(Arr::exists($param, 'values'))) {
-            return ['validation' => false, 'message' => "cannot determine values for {$param['name']}. values or model & method not found"];
+            return ['validation' => false, 'message' => "ne peut pas déterminer les valeurs de {$param['name']}. valeurs ou modèle et méthode non trouvés"];
         }
 
         // values validation
         if (Arr::exists($param, 'values')) {
             if (!$this->confirmValues($param['values'])) {
-                return ['validation' => false, 'message' => "cannot determine values for {$param['name']}. values provided is not an expected array"];
+                return ['validation' => false, 'message' => "ne peut pas déterminer les valeurs de {$param['name']}. les valeurs fournies ne sont pas un tableau attendu"];
             }
         }
 

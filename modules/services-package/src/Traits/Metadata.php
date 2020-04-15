@@ -31,13 +31,6 @@ trait Metadata
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
-                'content_default.layout' => [
-                    'required', Rule::in(['layout-1', 'layout-2', 'layout-3', 'layout-4']),
-                ],
-                'content_default.action' => 'required|array',
-                'content_default.action.name' => 'required|string|max:50',
-                'content_default.action.title' => 'required|string|max:50',
-                'content_default.action.endpoint' => 'required',
                 'content_default' => [
                     'required','array', new LayoutValidationRules,
                 ],
@@ -52,13 +45,6 @@ trait Metadata
         if($type == 'formulaire')
             return [
                 'name' => 'required|string|max:50',
-                'content_default.layout' => [
-                    'required', Rule::in(['layout-1', 'layout-2', 'layout-3', 'layout-4']),
-                ],
-                'content_default.action' => 'required|array',
-                'content_default.action.name' => 'required|string|max:50',
-                'content_default.action.title' => 'required|string|max:50',
-                'content_default.action.endpoint' => 'required',
                 'content_default' => [
                     'required','array', new LayoutValidationRules,
                 ],
@@ -73,7 +59,7 @@ trait Metadata
         if($type == 'headers-update')
             return [
                 'name' => 'required|string|max:50',
-                'content' => ['required', 'array', new HeaderValidationRules],
+                'content_default' => ['required', 'array', new HeaderValidationRules],
             ];
         return false;
     }

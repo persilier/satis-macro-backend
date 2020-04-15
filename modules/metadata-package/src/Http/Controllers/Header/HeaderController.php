@@ -61,7 +61,6 @@ class HeaderController extends ApiController
         $header_create = [
             'name' => $data['value']->name,
             'description' => $data['value']->description,
-            'content' => $data['value']->content_default,
         ];
         return new MetadataResource((object) $header_create, $type);
         //return new HeaderResource($header_create);
@@ -99,16 +98,17 @@ class HeaderController extends ApiController
         $data = $this->getOneData($header, $name);
 
         if(false==$data)
-            return $this->errorResponse('Aucune données métadata "'.$type.'" n\'est disponible.',422);
+            return $this->errorResponse('Aucune donnée header n\'est disponible.',422);
         if(empty($data['value']->content))
-            return $this->errorResponse('Impossible d\'éditer ce métadata "'.$type.'" car son content n\'est pas encore créé.',422);
+            return $this->errorResponse('Impossible d\'accéder à ce header car son content n\'est pas encore créé.',422);
 
         $header_create = [
             'name' => $data['value']->name,
             'description' => $data['value']->description,
             'content' => $data['value']->content,
         ];
-        return new HeaderResource($header_create);
+        //dd((object) $header_create);
+        return new HeaderResource((object) $header_create);
     }
 
     /**
@@ -123,7 +123,7 @@ class HeaderController extends ApiController
         $headers = Metadata::where('name', 'headers')->where('data','!=', '')->firstOrFail();
         $header = json_decode($headers->data);
         $type = $headers->name;
-        $rules = $this->rulesStoreDescription('headers');
+        $rules = $this->rulesStoreDescription('headers-update');
         $this->validate($request, $rules);
 
         $validOther = $this->validateOthersMeta($request, $type);
@@ -135,13 +135,13 @@ class HeaderController extends ApiController
             return $this->errorResponse('La description de ce header n\'existe pas.',422);
         $key = $data['key'];
         if(!empty($data['value']->content))
-            return $this->errorResponse('Impossible de créer ce métadata "'.$type.'" car son content n\'est pas vide.',422);
+            return $this->errorResponse('Impossible de créer ce header "'.$type.'" car son content n\'est pas vide.',422);
         $data_update = $this->getCreateDataHeader($header, $key,$request);
         $update = json_encode($data_update);
         $headers->update(['data'=> $update]);
         $data_response = $this->getOneData(json_decode($update), $request->name);
         if(false==$data_response)
-            return $this->errorResponse('Aucune valeur métadata header trouvée.',422);
+            return $this->errorResponse('Aucune valeur de header trouvée.',422);
         return new HeaderResource($data_response['value']);
     }
 
@@ -157,16 +157,16 @@ class HeaderController extends ApiController
         $headers = Metadata::where('name', 'headers')->where('data','!=', '')->firstOrFail();
         $type = $headers->name;
         $header = json_decode($headers->data);
-        $rules = $this->rulesStoreDescription($type);
+        $rules = $this->rulesStoreDescription('headers-update');
         $this->validate($request, $rules);
         $data = $this->getOneData($header, $name);
         if(false==$data)
-            return $this->errorResponse('Aucune données métadata "'.$type.'" n\'est disponible.',422);
+            return $this->errorResponse('Aucune données header n\'est disponible.',422);
         $key = $data['key'];
         if(empty($data['value']->content))
-            return $this->errorResponse('Impossible de modifier ce métadata "'.$type.'" car son content est vide.',422);
+            return $this->errorResponse('Impossible de modifier ce header car son content est vide.',422);
 
-        $data_update = $this->getCreateDataForm($header, $key,$request);
+        $data_update = $this->getCreateDataHeader($header, $key,$request);
         $update = json_encode($data_update);
         $headers->update(['data'=> $update]);
         $data_response = $this->getOneData($header, $request->name);
