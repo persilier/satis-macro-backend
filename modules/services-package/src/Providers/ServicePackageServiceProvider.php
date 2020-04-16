@@ -53,9 +53,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function publishesSeeders()
     {
-        $this->publishes([
-            __DIR__ . '/../../database/seeds/Publishes/' => database_path('seeds')
-        ], 'satis2020-seeds');
+
     }
 
     /**
