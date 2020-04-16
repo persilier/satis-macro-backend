@@ -1,5 +1,7 @@
 <?php
+
 namespace Satis2020\ServicePackage\Traits;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use ReflectionClass;
@@ -12,22 +14,25 @@ use Satis2020\ServicePackage\Rules\LayoutValidationRules;
 trait Metadata
 {
     protected $layout = ['layout-1', 'layout-2', 'layout-3', 'layout-4'];
+
     // validation de la description
-    protected  function rulesUpdateDescription(){
+    protected function rulesUpdateDescription()
+    {
         return [
             'description' => 'required|string|max:255',
         ];
     }
 
     // validation de l'ajout de metadata
-    protected  function rulesStoreDescription($type){
-        if($type == 'models')
+    protected function rulesStoreDescription($type)
+    {
+        if ($type == 'models')
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
                 'fonction' => 'required|string',
             ];
-        if($type == 'forms')
+        if ($type == 'forms')
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
@@ -38,17 +43,17 @@ trait Metadata
                 'content_default.action.name' => 'required|string|max:50',
                 'content_default.action.endpoint' => 'required',
                 'content_default' => [
-                    'required','array', new LayoutValidationRules,
+                    'required', 'array', new LayoutValidationRules,
                 ],
             ];
-        if($type == 'action-forms')
+        if ($type == 'action-forms')
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
                 'endpoint' => 'required|string',
             ];
 
-        if($type == 'formulaire')
+        if ($type == 'formulaire')
             return [
                 'name' => 'required|string|max:50',
                 'content_default.layout' => [
@@ -58,79 +63,114 @@ trait Metadata
                 'content_default.action.name' => 'required|string|max:50',
                 'content_default.action.endpoint' => 'required',
                 'content_default' => [
-                    'required','array', new LayoutValidationRules,
+                    'required', 'array', new LayoutValidationRules,
                 ],
             ];
 
-        if($type == 'headers')
+        if ($type == 'headers')
             return [
                 'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
                 'content_default' => ['required', 'array', new HeaderValidationRules],
             ];
 
-        if($type == 'headers-update')
+        if ($type == 'headers-update')
             return [
                 'name' => 'required|string|max:50',
                 'content_content' => ['required', 'array', new HeaderValidationRules],
             ];
+
+        if ($type == 'installation-steps') {
+            $number_steps = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->count();
+            return [
+                'name' => 'required|integer|size:' . ($number_steps + 1),
+                'family' => ['required', Rule::in(["nature", "register-form", "register-header"])],
+                'title' => 'required|string',
+                'content' => 'required',
+            ];
+        }
+
+        if ($type == 'app-nature') {
+            return [
+                'nature' => ['required', Rule::in(collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-types')->first()->data))->pluck('libelle')->all())]
+            ];
+        }
+
         return false;
     }
 
-    protected function fillable_meta($type, $request){
-        if($type == 'models')
+    protected function fillable_meta($type, $request)
+    {
+        if ($type == 'models')
             return [
                 'name' => $request->name,
                 'description' => $request->description,
                 'fonction' => $request->fonction,
             ];
-        if($type == 'forms')
+        if ($type == 'forms')
             return [
                 'name' => $request->name,
                 'description' => $request->description,
                 'content_default' => $request->content_default,
             ];
-        if($type == 'action-forms')
+        if ($type == 'action-forms')
             return [
                 'name' => $request->name,
                 'description' => $request->description,
                 'endpoint' => $request->endpoint,
             ];
-        if($type == 'formulaire')
+        if ($type == 'formulaire')
             return [
                 'name' => $request->name,
                 'description' => $request->description,
                 'content_default' => $request->content_default,
             ];
 
-        if($type == 'headers')
+        if ($type == 'headers')
             return [
                 'name' => $request->name,
                 'description' => $request->description,
                 'content_default' => $request->content_default,
             ];
+
+        if ($type == 'installation-steps')
+            return [
+                'name' => $request->name,
+                'family' => $request->family,
+                'title' => $request->title,
+                'content' => $request->content
+            ];
+
+        if ($type == 'app-nature') {
+            return [
+                'nature' => $request->nature
+            ];
+        }
+
         return false;
     }
 
-    protected function getOneData($datas, $name){
-        if(is_null($datas))
+    protected function getOneData($datas, $name)
+    {
+        if (is_null($datas))
             return false;
 
-        foreach ($datas as $key => $value){
-            if($value->name == $name)
-                return ['key' => $key,'value'=> $value];
+        foreach ($datas as $key => $value) {
+            if ($value->name == $name)
+                return ['key' => $key, 'value' => $value];
         }
         return false;
     }
 
 
-    protected  function validateOthersMeta($request, $type){
-        if($type == 'models'){
-            if(!is_string($request->fonction)){
+    protected function validateOthersMeta($request, $type)
+    {
+        if ($type == 'models') {
+            if (!is_string($request->fonction)) {
                 return 'La valeur de l\'attribut n\'est une chaine de caractère.';
             }
-            $tab = explode('::',$request->fonction,2);
-            if(count($tab)!=2){
+            $tab = explode('::', $request->fonction, 2);
+            if (count($tab) != 2) {
                 return 'Le format de la valeur de l\'attribut fonction est invalide.';
             }
             // model & method validation
@@ -153,48 +193,75 @@ trait Metadata
             return false;
         }
 
-        if($type=='forms'){
-            $actions = MetadataModel::where('name','action-forms')->get()->first() ?? abort(404);
+        if ($type == 'forms') {
+            $actions = MetadataModel::where('name', 'action-forms')->get()->first() ?? abort(404);
             $actions_forms = json_decode($actions->data);
             $name = $request->content_default['action']['name'];
-            $this->getOneData($actions_forms,$name);
-            $action = $this->getOneData($actions_forms,$name);
-            if(false!=$action){
+            $this->getOneData($actions_forms, $name);
+            $action = $this->getOneData($actions_forms, $name);
+            if (false != $action) {
                 $endpoint = $action['value']->endpoint;
-                if($endpoint!= $request->content_default['action']['endpoint'])
+                if ($endpoint != $request->content_default['action']['endpoint'])
                     return 'Veuillez renseigner un endpoint qui existe déjà et qui corresponds avec votre action formualire choisie.';
-            }else
-                return 'Le nom de l\'action formualaire est invalide';
+            } else
+                return 'Le nom de l\'action formulaire est invalide';
             return false;
         }
+
+        if ($type == 'installation-steps') {
+            $message = "la valeur de content est en inadéquation avec la famille choisi";
+
+            if ($request->family === "nature" && $request->content !== collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-types')->first()->data))->pluck('libelle')->all()) {
+                return $message;
+            }
+            if ($request->family === "register-form") {
+                $forms_name = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'forms')->first()->data))->pluck('name')->all();
+                $forms_registered_in_installation_names = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-form')->pluck('content.name')->all();
+                if (!isset($request->content["name"]) || !in_array($request->content["name"], $forms_name) || in_array($request->content["name"], $forms_registered_in_installation_names)) {
+                    return $message;
+                }
+            }
+            if ($request->family === "register-header") {
+                $headers_name = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'headers')->first()->data))->pluck('name')->all();
+                $headers_registered_in_installation_names = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-header')->pluck('content.name')->all();
+                if (!isset($request->content["name"]) || !in_array($request->content["name"], $headers_name) || in_array($request->content["name"], $headers_registered_in_installation_names)) {
+                    return $message;
+                }
+            }
+            return false;
+        }
+
         return false;
     }
 
-    protected function getDeleteData($datas,$key){
+    protected function getDeleteData($datas, $key)
+    {
         $data_update = [];
-        foreach ($datas as $key_1 => $value){
-            if($key != $key_1)
+        foreach ($datas as $key_1 => $value) {
+            if ($key != $key_1)
                 $data_update[] = $value;
         }
         return $data_update;
     }
 
 
-    protected function getDeleteDataFroms($datas,$key){
+    protected function getDeleteDataFroms($datas, $key)
+    {
         $data_update = [];
-        foreach ($datas as $key_1 => $value){
-            if($key != $key_1)
+        foreach ($datas as $key_1 => $value) {
+            if ($key != $key_1)
                 $data_update[] = $value;
         }
-        if(empty($data_update))
+        if (empty($data_update))
             return false;
         return $data_update;
     }
 
-    protected function getCreateDataForm($datas_forms,$key,$request){
+    protected function getCreateDataForm($datas_forms, $key, $request)
+    {
         $data_update = [];
-        foreach ($datas_forms as $key_1 => $value){
-            if($key == $key_1)
+        foreach ($datas_forms as $key_1 => $value) {
+            if ($key == $key_1)
                 $data_update[] = array(
                     "name" => $value->name,
                     "description" => $value->description,
@@ -205,7 +272,7 @@ trait Metadata
             else
                 $data_update[] = $value;
         }
-        if(empty($data_update))
+        if (empty($data_update))
             return false;
         return $data_update;
     }
@@ -213,24 +280,26 @@ trait Metadata
 
     /* Get All metadata   */
 
-    protected  function getAllData($datas){
-        foreach ($datas as $key => $value){
-            if(!empty($value->content))
+    protected function getAllData($datas)
+    {
+        foreach ($datas as $key => $value) {
+            if (!empty($value->content))
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
                     'content' => $value->content
                 );
         }
-        if(empty($response_data))
+        if (empty($response_data))
             return false;
         return $response_data;
     }
 
-    protected  function getAllDataMeta($datas, $type){
+    protected function getAllDataMeta($datas, $type)
+    {
 
-        if($type =='models'){
-            foreach ($datas as $key => $value){
+        if ($type == 'models') {
+            foreach ($datas as $key => $value) {
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
@@ -239,8 +308,8 @@ trait Metadata
             }
         }
 
-        if($type == 'forms'){
-            foreach ($datas as $key => $value){
+        if ($type == 'forms') {
+            foreach ($datas as $key => $value) {
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
@@ -249,8 +318,8 @@ trait Metadata
             }
         }
 
-        if($type == 'action-forms'){
-            foreach ($datas as $key => $value){
+        if ($type == 'action-forms') {
+            foreach ($datas as $key => $value) {
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
@@ -259,8 +328,8 @@ trait Metadata
             }
         }
 
-        if($type == 'headers'){
-            foreach ($datas as $key => $value){
+        if ($type == 'headers') {
+            foreach ($datas as $key => $value) {
                 $response_data[] = array(
                     'name' => $value->name,
                     'description' => $value->description,
@@ -268,7 +337,19 @@ trait Metadata
                 );
             }
         }
-        if(empty($response_data))
+
+        if ($type == 'installation-steps') {
+            foreach ($datas as $key => $value) {
+                $response_data[] = array(
+                    'family' => $value->family,
+                    'title' => $value->title,
+                    'content' => $value->content,
+                    'name' => $value->name
+                );
+            }
+        }
+
+        if (empty($response_data))
             return false;
         return $response_data;
     }
@@ -288,4 +369,12 @@ trait Metadata
 
         return $actions;
     }*/
+
+    /**
+     *
+     */
+    public function insertFormulaire()
+    {
+
+    }
 }

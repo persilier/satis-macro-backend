@@ -46,6 +46,10 @@ class Metadata extends JsonResource
             return $this->loadForms($this->type);
         if($this->type=='headers')
             return $this->loadForms($this->type);
+        if($this->type=='installation-steps')
+            return $this->loadInstallationSteps($this->type);
+        if($this->type=='app-nature')
+            return $this->loadAppNature($this->type);
     }
 
     protected function loadModels($type){
@@ -77,6 +81,21 @@ class Metadata extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'content' => $this->content
+        ];
+    }
+
+    protected function loadInstallationSteps($type){
+        return [
+            'family' => $this->family,
+            'title' => $this->title,
+            'content' => $this->content,
+            'number' => $this->name
+        ];
+    }
+
+    protected function loadAppNature($type){
+        return [
+            'nature' => $this->nature
         ];
     }
 
