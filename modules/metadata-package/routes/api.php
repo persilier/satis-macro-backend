@@ -21,3 +21,4 @@ Route::resource('formulaire', 'Formulaire\FormulaireController', ['except' => ['
 Route::name('formulaire.create')->get('formulaire/{formulaire}/create', 'Formulaire\FormulaireController@create');
 Route::resource('header', 'Header\HeaderController', ['except' => ['create']]);
 Route::name('header.create')->get('header/{header}/create', 'Header\HeaderController@create');
+Route::post('/installation/next', 'Installation\InstallationController@next')->name('installation.next');
