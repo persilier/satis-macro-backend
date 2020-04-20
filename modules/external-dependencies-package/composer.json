@@ -16,7 +16,8 @@
     "require": {
         "spatie/laravel-translatable" : "^4.3",
         "spatie/laravel-permission": "^3.11",
-        "laravel/passport": "^8.4"
+        "laravel/passport": "^8.4",
+        "cviebrock/eloquent-sluggable": "^7.0"
     },
     "require-dev": {
     },
