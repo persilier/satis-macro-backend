@@ -41,6 +41,7 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
     {
         $this->app->register(\Spatie\Permission\PermissionServiceProvider::class);
         $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
+        $this->app->register(\Cviebrock\EloquentSluggable\ServiceProvider::class);
 
     }
 
