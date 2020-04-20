@@ -39,6 +39,8 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
      */
     protected function registerDependencyPackageServiceProviders()
     {
+        $this->app->register(\Spatie\Permission\PermissionServiceProvider::class);
+        $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
 
     }
 

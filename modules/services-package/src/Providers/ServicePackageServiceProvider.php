@@ -2,11 +2,23 @@
 namespace Satis2020\ServicePackage\Providers;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
-
 class ServicePackageServiceProvider extends ServiceProvider
 {
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        User::class => UserPolicy::class,
+    ];
+
     /**
      * Register any application services.
      *
@@ -40,10 +52,13 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->registerDependencyServiceProviders();
         $this->registerFacades();
         $this->registerMigrations();
+        $this->registerObservers();
         $this->registerViews();
         $this->registerTranslations();
         $this->registerMiddlewares();
         $this->registerRoutes();
+        $this->registerLaravelPassportIssues();
+        $this->registerPolicies();
 
     }
 
@@ -83,7 +98,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerDependencyServiceProviders()
     {
-
+        //$this->app->register(\Laravel\Passport\PassportServiceProvider::class);
     }
 
     /**
@@ -94,6 +109,14 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->app->singleton('Handler', function ($app){
             return new \Satis2020\ServicePackage\Exceptions\Handler();
         });
+    }
+
+    /**
+     * Register the Observers for the Models
+     */
+    protected function registerObservers()
+    {
+
     }
 
 
@@ -130,6 +153,55 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router = $this->app['router'];
         $router->aliasMiddleware('transform.input', \Satis2020\ServicePackage\Http\Middleware\TransformInput::class);
         $router->aliasMiddleware('set.language', \Satis2020\ServicePackage\Http\Middleware\SetLanguage::class);
+        $router->aliasMiddleware('client.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
+        $router->aliasMiddleware('auth', \Satis2020\ServicePackage\Http\Middleware\Authenticate::class);
+        $router->aliasMiddleware('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
+        $router->aliasMiddleware('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
+        $router->aliasMiddleware('permission', \Satis2020\ServicePackage\Http\Middleware\Permission::class);
+        $router->aliasMiddleware('verification', \Satis2020\ServicePackage\Http\Middleware\Verification::class);
+    }
+
+    /**
+     * Register the Laravel Passport Issues
+     */
+    protected function registerLaravelPassportIssues()
+    {
+        Passport::routes();
+        Passport::tokensExpireIn(Carbon::now()->addDays(1));
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+        Passport::enableImplicitGrant();
+        Passport::tokensCan($this->getScopes());
+    }
+
+    /**
+     * get the list of scopes of the application
+     * @return array
+     */
+    protected function getScopes()
+    {
+        return [];
+    }
+
+    /**
+     * Register the application's policies.
+     *
+     * @return void
+     */
+    public function registerPolicies()
+    {
+        foreach ($this->policies() as $key => $value) {
+            Gate::policy($key, $value);
+        }
+    }
+
+    /**
+     * Get the policies defined on the provider.
+     *
+     * @return array
+     */
+    public function policies()
+    {
+        return $this->policies;
     }
 
     /**

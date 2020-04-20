@@ -65,13 +65,6 @@
     "repositories": [
         {
             "type": "path",
-            "url": "modules/users-package/",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
             "url": "modules/metadata-package/",
             "options": {
                 "symlink": true
@@ -87,6 +80,13 @@
         {
             "type": "path",
             "url": "./modules/external-dependencies-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/users-package/",
             "options": {
                 "symlink": true
             }

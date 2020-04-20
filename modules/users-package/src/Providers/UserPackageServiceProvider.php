@@ -1,6 +1,7 @@
 <?php
 namespace Satis2020\UserPackage\Providers;
-
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Traits\ApiResponser;
@@ -25,7 +26,6 @@ class UserPackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 
     /**
@@ -49,6 +49,7 @@ class UserPackageServiceProvider extends ServiceProvider
 
 
     protected function registerConfig(){
+
     }
 
     /**
