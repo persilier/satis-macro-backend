@@ -46,6 +46,24 @@ class MetadataTableSeeder extends Seeder
             ]
         ];
 
+        $sms_parameters = [
+            'senderID' => 'default',
+            'username' => "default",
+            'password' => 'default',
+            'indicatif' => '00229',
+            'api' => 'default'
+        ];
+
+        $mail_parameters = [
+            'senderID' => 'default',
+            'username' => "default",
+            'password' => 'default',
+            'from' => '00229',
+            'server' => 'default',
+            'port' => 'default',
+            'security' => 'ssl'
+        ];
+
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Metadata::flushEventListeners();
 
@@ -67,10 +85,23 @@ class MetadataTableSeeder extends Seeder
 //            'data' => json_encode(0)
 //        ]);
 
+//        Metadata::create([
+//            'id' => (string)Str::uuid(),
+//            'name' => 'app-nature',
+//            'data' => json_encode("")
+//        ]);
+
         Metadata::create([
             'id' => (string)Str::uuid(),
-            'name' => 'app-nature',
-            'data' => json_encode("")
+            'name' => 'sms-parameters',
+            'data' => json_encode($sms_parameters)
         ]);
+
+        Metadata::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'mail-parameters',
+            'data' => json_encode($mail_parameters)
+        ]);
+
     }
 }

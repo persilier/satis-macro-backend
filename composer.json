@@ -15,6 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "satis2020/faq-package": "^1.0",
+        "satis2020/configurations-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
@@ -88,6 +89,13 @@
         {
             "type": "path",
             "url": "modules/users-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/configurations-package/",
             "options": {
                 "symlink": true
             }

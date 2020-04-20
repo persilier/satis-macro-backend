@@ -5,6 +5,7 @@ namespace Satis2020\MetadataPackage\Http\Controllers\Installation;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\MetadataPackage\Http\Controllers\Formulaire\FormulaireController;
+use Satis2020\MetadataPackage\Http\Controllers\Header\HeaderController;
 use Satis2020\MetadataPackage\Http\Controllers\Metadata\MetadataController;
 use Satis2020\MetadataPackage\POST_Caller\POST_Caller;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -83,7 +84,7 @@ class InstallationController extends ApiController
         }
 
         if ($next_step->family === "register-header"){
-            return response()->json($next_step, 200);
+            return app(HeaderController::class)->create($next_step->content->name);
         }
 
     }
