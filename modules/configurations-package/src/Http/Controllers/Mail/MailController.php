@@ -1,12 +1,13 @@
 <?php
 
-namespace Satis2020\ConfigurationsPackage\Http\Controllers\Sms;
+namespace Satis2020\ConfigurationsPackage\Http\Controllers\Mail;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
 
-class SmsController extends ApiController
+class MailController extends ApiController
 {
 
     /**
@@ -16,7 +17,7 @@ class SmsController extends ApiController
      */
     public function show()
     {
-        $parameters = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'sms-parameters')->first()->data))->except(['password']);
+        $parameters = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'mail-parameters')->first()->data))->except(['password']);
         return response()->json($parameters, 200);
     }
 
@@ -30,14 +31,16 @@ class SmsController extends ApiController
     public function update(Request $request)
     {
 
-        $parameters = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'sms-parameters')->first()->data);
+        $parameters = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'mail-parameters')->first()->data);
 
         $rules = [
             'senderID' => 'required',
             'username' => 'required',
             'password' => 'min:2',
-            'indicatif' => 'required',
-            'api' => 'required'
+            'from' => 'required',
+            'server' => 'required',
+            'port' => 'integer|required',
+            'security' => ['required', Rule::in(['ssl', 'tls'])]
         ];
 
         $this->validate($request, $rules);
@@ -46,9 +49,9 @@ class SmsController extends ApiController
             $this->errorResponse('password is required.', 204);
         }
 
-        $new_parameters = $request->only(['senderID', 'username', 'password', 'indicatif', 'api']);
+        $new_parameters = $request->only(['senderID', 'username', 'password', 'from', 'server', 'port', 'security']);
         
-        Metadata::where('name', 'sms-parameters')->first()->update(['data'=> json_encode($new_parameters)]);
+        Metadata::where('name', 'mail-parameters')->first()->update(['data'=> json_encode($new_parameters)]);
 
         return response()->json($new_parameters, 200);
     }
