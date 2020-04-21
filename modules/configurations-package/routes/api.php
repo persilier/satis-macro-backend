@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get("/configurations/sms", "Sms\SmsController@show")->name("configurations.sms.show");
 Route::put("/configurations/sms", "Sms\SmsController@update")->name("configurations.sms.update");
+
+/**
+ * Update mail parameters
+ */
+Route::get("/configurations/mail", "Mail\MailController@show")->name("configurations.mail.show");
+Route::put("/configurations/mail", "Mail\MailController@update")->name("configurations.mail.update");
