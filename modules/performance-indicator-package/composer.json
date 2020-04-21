@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/configurations-package",
-  "description": "satis2020/configurations-package est un module qui va permettre de configurer le système",
+  "name": "satis2020/performance-indicator-package",
+  "description": "satis2020/performance-indicator-package est un module qui va permettre de gérer les indicateurs de performances",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -20,14 +20,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\ConfigurationsPackage\\": "src/",
-      "Satis2020\\ConfigurationsPackage\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\PerformanceIndicatorPackage\\": "src/",
+      "Satis2020\\PerformanceIndicatorPackage\\Database\\Seeds\\": "database/seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\ConfigurationsPackage\\Providers\\ConfigurationsPackageServiceProvider"
+        "Satis2020\\PerformanceIndicatorPackage\\Providers\\PerformanceIndicatorPackageServiceProvider"
       ]
     }
   }

@@ -59,6 +59,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerLaravelPassportIssues();
         $this->registerPolicies();
+        $this->registerFactories();
 
     }
 
@@ -190,6 +191,14 @@ class ServicePackageServiceProvider extends ServiceProvider
         foreach ($this->policies() as $key => $value) {
             Gate::policy($key, $value);
         }
+    }
+
+    /**
+     * Register all the routes of the package.
+     */
+    protected function registerFactories()
+    {
+        $this->loadFactoriesFrom(__DIR__.'/../../database/factories');
     }
 
     /**
