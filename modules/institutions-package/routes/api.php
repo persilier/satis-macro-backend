@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * faq
+ * Institutions
  */
-Route::apiResource('faq-categories', 'FaqCategory\FaqCategoryController');
-//Route::apiResource('faqs', 'Faq\FaqController');
+Route::apiResource('institutions', 'Institutions\InstitutionController');
+
