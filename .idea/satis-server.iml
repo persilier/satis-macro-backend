@@ -6,7 +6,9 @@
       <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" packagePrefix="App\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/asm89/stack-cors" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cocur/slugify" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cviebrock/eloquent-sluggable" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/defuse/php-encryption" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dnoegel/php-xdg-base-dir" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/inflector" />
@@ -70,11 +72,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie/getallheaders" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/collection" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/configurations-package" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/external-dependencies-package" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/metadata-package" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/services-package" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/users-package" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
