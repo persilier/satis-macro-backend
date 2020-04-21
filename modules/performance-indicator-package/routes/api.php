@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 /**
  * Performance Indicators
  */
-Route::apiResource('performanceIndicators', 'PerformanceIndicator\PerformanceIndicatorController');
+Route::resource('performance-indicators', 'PerformanceIndicator\PerformanceIndicatorController', ['except' => ['create', 'edit']]);

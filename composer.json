@@ -18,6 +18,7 @@
         "satis2020/faq-package": "^1.0",
         "satis2020/institutions-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
+        "satis2020/performance-indicator-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
     "require-dev": {
