@@ -87,7 +87,7 @@ class FaqController extends ApiController
         $this->validate($request, $rules);
 
         $faq = Faq::where('slug->'.App::getLocale(), $slug)
-                                ->orWhere('id',$slug)->firstOrFail();
+            ->orWhere('id',$slug)->firstOrFail();
         if($check = Faq::where('question->'.App::getLocale(), $request->question)->where('faq_category_id','!=',$faq->faq_category_id)->first())
             return $this->errorResponse('Veuillez renseigner une autre question, car celle ci existe déjà dans cette catégorie.', 400);
 

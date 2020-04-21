@@ -81,7 +81,7 @@ class FaqCategoryController extends ApiController
         $this->validate($request, $rules);
 
         $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)
-                                    ->orWhere('id',$faq_category)->firstOrFail();
+            ->orWhere('id',$faq_category)->firstOrFail();
 
         if($check = FaqCategory::where('name->'.App::getLocale(), $request->name)->first())
             return $this->errorResponse('Cette catégorie de faq existe déjà dans la base.', 400);
