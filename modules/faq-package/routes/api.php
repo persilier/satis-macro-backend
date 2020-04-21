@@ -16,7 +16,11 @@ use Illuminate\Support\Facades\Route;
  * faq
  */
 Route::apiResource('faq-categories', 'FaqCategory\FaqCategoryController');
+<<<<<<< HEAD
 Route::resource('faq-categories.faqs', 'FaqCategory\FaqCategoryFaqController', ['only' => ['index']]);
 Route::apiResource('faqs', 'Faq\FaqController');
 
 
+=======
+//Route::apiResource('faqs', 'Faq\FaqController');
+>>>>>>> Resolve conflit Faq
