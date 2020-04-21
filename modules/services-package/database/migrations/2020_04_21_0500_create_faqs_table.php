@@ -19,7 +19,7 @@ class CreateFaqsTable extends Migration
             $table->json('slug');
             $table->json('question');
             $table->json('answer');
-            $table->uuid('faq_category_id')->unsigned();
+            $table->uuid('faq_category_id');
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('faq_category_id')->references('id')->on('faq_categories');
