@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
  * faq
  */
 Route::apiResource('faq-categories', 'FaqCategory\FaqCategoryController');
-//Route::apiResource('faqs', 'Faq\FaqController');
+
