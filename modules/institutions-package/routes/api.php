@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
  * Institutions
  */
 Route::apiResource('institutions', 'Institutions\InstitutionController');
+Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
 

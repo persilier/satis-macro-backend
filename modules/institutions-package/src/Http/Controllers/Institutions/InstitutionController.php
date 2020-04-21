@@ -127,6 +127,31 @@ class InstitutionController extends ApiController
         return new InstitutionResource($institution);
     }
 
+
+    /**
+     * update the logo institution.
+     *
+     * @param $slug
+     * @return InstitutionResource
+     * @throws \Exception
+     */
+    public function updateLogo(Request $request, $slug){
+        $rules = [
+            'logo' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
+        $this->validate($request, $rules);
+        $institution = Institution::where('slug', $slug)
+                            ->orWhere('id',$slug)->firstOrFail();
+        $image = $request->file('logo');
+        $name = Str::slug($institution->name).'_'.time();
+        $folder = '/assets/images/institutions/';
+        $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+        $this->uploadOne($image, $folder, 'public', $name);
+        $institution->logo = $filePath;
+        $institution->save();
+        return $this->showMessage('Mise à jour du logo effectuée avec succès.');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
