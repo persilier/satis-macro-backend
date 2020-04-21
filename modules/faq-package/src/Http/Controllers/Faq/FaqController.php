@@ -1,10 +1,12 @@
 <?php
 
-namespace Satis2020\FaqPackage\Http\Controllers\Category;
+namespace Satis2020\FaqPackage\Http\Controllers\Faq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Faq;
-
+use Satis2020\FaqPackage\Http\Resources\Faq as FaqResource;
+use Satis2020\FaqPackage\Http\Resources\FaqCollection;
 class FaqController extends ApiController
 {
 
@@ -21,44 +23,49 @@ class FaqController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return PermissionCollection
+     * @return FaqCollection
+     */
+    /**
+     * Display a listing of the resource.
+     *
+     * @return FaqCollection
      */
     public function index()
     {
-        $faq_categories = FaqCategory::all();
-        dd($faq_categories);
+        return new FaqCollection(Faq::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return FaqCategoryResource
+     * @return FaqResource
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|unique:faq_categories',
-            'contenu'=>'required|'
+            'question' => 'required|string',
+            'answer' => 'required|string',
+            'faq_category_id' => 'required|exists:faq_categories,id'
         ];
         $this->validate($request, $rules);
-        $faq_category = FaqCategory::create(['name' => $request->name,'slug'=> $request->name, 'content' => $request->contenu]);
-        dd($faq_category);
-        //return new FaqCategoryResource($faq_category);
+        if($faq = Faq::where('question->'.App::getLocale(), $request->question)->where('faq_category_id',$request->faq_category_id)->first())
+            return $this->errorResponse('Cette question de faq existe déjà pour cette catégorie.', 400);
+        $faq = Faq::create(['question' => $request->question, 'answer'=>$request->answer, 'faq_category_id'=>$request->faq_category_id]);
+        return new FaqResource($faq);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  string  $name
-     * @return FaqCategoryResource
+     * @param  string  $slug
+     * @return FaqResource
      */
-    public function show($name)
+    public function show($slug)
     {
-        return new FaqCategoryResource(
-            FaqCategory::where('name', $name)->firstOrFail()
-        );
+        $faq = Faq::where('slug->'.App::getLocale(), $slug)->orWhere('id',$slug)->firstOrFail();
+        return new FaqResource($faq);
     }
 
 
@@ -66,36 +73,40 @@ class FaqController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string $permission
-     * @return FaqCategoryResource
+     * @param string $slug
+     * @return FaqResource
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, $name)
+    public function update(Request $request, $slug)
     {
         $rules = [
-            'name' => 'required|exists:'.config('permission.table_names.permissions'),
+            'question' => 'required|string',
+            'answer' => 'required|string',
+            'faq_category_id' => 'required|exists:faq_categories,id'
         ];
         $this->validate($request, $rules);
-        $faq_category = FaqCategory::where('name', $name)->firstOrFail();
-        $faq_category->name = $request->name;
-        $faq_category->content = $request->contenu;
-        if(!$permission->isDirty()){
-            return $this->errorResponse('Vous devez spécifier une valeur différente à mettre à jour', 422);
-        }
-        $faq_category->save();
-        return new FaqCategoryResource($faq_category);
+
+        $faq = Faq::where('slug->'.App::getLocale(), $slug)
+            ->orWhere('id',$slug)->firstOrFail();
+        if($check = Faq::where('question->'.App::getLocale(), $request->question)->where('faq_category_id','!=',$faq->faq_category_id)->first())
+            return $this->errorResponse('Veuillez renseigner une autre question, car celle ci existe déjà dans cette catégorie.', 400);
+
+        $faq->slug = null;
+        $faq->update(['question'=> $request->question, 'answer'=> $request->answer, 'faq_category_id'=> $request->faq_category_id]);
+        return new FaqResource($faq);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  string  $permission
-     * @return PermissionResource
+     * @param  string  $slug
+     * @return FaqResource
      */
-    public function destroy($name)
+    public function destroy($slug)
     {
-        $name = FaqCategory::where('name', $name)->firstOrFail();
-        $name->delete();
-        return new FaqCategoryResource($name);
+        $faq = Faq::where('slug->'.App::getLocale(), $slug)
+            ->orWhere('id',$slug)->firstOrFail();
+        $faq->delete();
+        return new FaqResource($faq);
     }
 }

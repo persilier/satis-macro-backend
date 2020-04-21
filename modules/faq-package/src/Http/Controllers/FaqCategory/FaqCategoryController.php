@@ -69,7 +69,7 @@ class FaqCategoryController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string $permission
+     * @param string $faq_category
      * @return FaqCategoryResource
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -81,9 +81,11 @@ class FaqCategoryController extends ApiController
         $this->validate($request, $rules);
 
         $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)
-                                    ->orWhere('id',$faq_category)->firstOrFail();
-        if($category->name == $request->name)
-            return $this->errorResponse('Veuillez renseigner une autre catégorie, car celle ci existe déjà.', 400);
+            ->orWhere('id',$faq_category)->firstOrFail();
+
+        if($check = FaqCategory::where('name->'.App::getLocale(), $request->name)->first())
+            return $this->errorResponse('Cette catégorie de faq existe déjà dans la base.', 400);
+        $category->slug = null;
         $category->name = $request->name;
         $category->save();
         return new FaqCategoryResource($category);
@@ -100,7 +102,7 @@ class FaqCategoryController extends ApiController
     {
         $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)
             ->orWhere('id',$faq_category)->firstOrFail();
-        $category->delete();
+        $category->secureDelete('faqs');
         return new FaqCategoryResource($category);
     }
 }
