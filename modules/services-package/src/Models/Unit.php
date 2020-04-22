@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class UnitType extends Model
+class Unit extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
@@ -38,16 +38,25 @@ class UnitType extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'others'
+        'name', 'description', 'unit_type_id', 'institution_id', 'others'
     ];
 
     /**
-     * Get the units associated with the unitType
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get the unitType associated with the unit
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function units()
+    public function unitType()
     {
-        return $this->hasMany(Unit::class);
+        return $this->belongsTo(UnitType::class);
+    }
+
+    /**
+     * Get the institution associated with the unit
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
     }
 
 }

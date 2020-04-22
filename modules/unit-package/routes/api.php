@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
  * Unit Types
  */
 Route::resource('unit-types', 'UnitType\UnitTypeController', ['except' => ['create', 'edit']]);
+
+/**
+ * Units
+ */
+Route::resource('units', 'Unit\UnitController');

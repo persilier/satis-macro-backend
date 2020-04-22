@@ -2,11 +2,13 @@
 
 
 namespace Satis2020\ServicePackage\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Cviebrock\EloquentSluggable\Sluggable;
+
 class Institution extends Model
 {
     use Sluggable, UuidAsId, SoftDeletes, SecureDelete;
@@ -30,7 +32,7 @@ class Institution extends Model
      * @var array
      */
     protected $fillable = [
-        'slug', 'name','acronyme','iso_code','logo','orther_attributes'
+        'slug', 'name', 'acronyme', 'iso_code', 'logo', 'orther_attributes'
     ];
 
     /**
@@ -45,6 +47,15 @@ class Institution extends Model
                 'source' => 'name'
             ]
         ];
+    }
+
+    /**
+     * Get the units associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function units()
+    {
+        return $this->hasMany(Unit::class);
     }
 
 }
