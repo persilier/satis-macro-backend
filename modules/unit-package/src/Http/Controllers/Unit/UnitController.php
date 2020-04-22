@@ -28,7 +28,7 @@ class UnitController extends ApiController
     public function create()
     {
         return response()->json([
-            'units' => UnitType::all(),
+            'unitTypes' => UnitType::all(),
             'institutions' => Institution::all()
         ], 200);
     }
@@ -77,7 +77,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unit' => $unit,
-            'units' => UnitType::all(),
+            'unitTypes' => UnitType::all(),
             'institutions' => Institution::all()
         ], 200);
     }
