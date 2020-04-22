@@ -58,4 +58,13 @@ class Institution extends Model
         return $this->hasMany(Unit::class);
     }
 
+    /**
+     * Get the positions associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class);
+    }
+
 }
