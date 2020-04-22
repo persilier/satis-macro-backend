@@ -1,23 +1,29 @@
 <?php
 
-
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\Translatable\HasTranslations;
 
-class Institution extends Model
+class UnitType extends Model
 {
-    use Sluggable, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+
+    /**
+     * The attributes that are translatable
+     *
+     * @var array
+     */
+    public $translatable = ['name', 'description', 'others'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['orther_attributes' => 'json'];
+    protected $casts = ['name' => 'json', 'description'=> 'json', 'others'=> 'json'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -32,25 +38,11 @@ class Institution extends Model
      * @var array
      */
     protected $fillable = [
-        'slug', 'name', 'acronyme', 'iso_code', 'logo', 'orther_attributes'
+        'name', 'description', 'others'
     ];
 
     /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'name'
-            ]
-        ];
-    }
-
-    /**
-     * Get the units associated with the institution
+     * Get the units associated with the unitType
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function units()

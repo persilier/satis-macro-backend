@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
@@ -20,6 +21,7 @@
         "satis2020/institutions-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
+        "satis2020/unit-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
     "require-dev": {
@@ -127,6 +129,13 @@
         {
             "type": "path",
             "url": "modules/clients-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/unit-package/",
             "options": {
                 "symlink": true
             }
