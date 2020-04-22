@@ -17,7 +17,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unit', 'institution'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution'])->get(), 200);
     }
 
     /**
