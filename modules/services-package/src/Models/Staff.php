@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class Unit extends Model
+class Staff extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
@@ -17,13 +17,13 @@ class Unit extends Model
      *
      * @var array
      */
-    public $translatable = ['name', 'description', 'others'];
+    public $translatable = ['others'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['name' => 'json', 'description' => 'json', 'others' => 'json'];
+    protected $casts = ['others'=> 'json'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -38,43 +38,44 @@ class Unit extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'unit_type_id', 'institution_id', 'others', 'lead_id'
+        'identite_id', 'position_id', 'unit_id', 'others'
     ];
 
     /**
-     * Get the unitType associated with the unit
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the lead flag for the staff.
+     *
+     * @return bool
      */
-    public function unitType()
+    public function getIsLeadAttribute()
     {
-        return $this->belongsTo(UnitType::class);
+        return $this->unit->lead_id === $this->attributes['id'];
     }
 
     /**
-     * Get the institution associated with the unit
+     * Get the identite associated with the staff
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function institution()
+    public function identite()
     {
-        return $this->belongsTo(Institution::class);
+        return $this->belongsTo(Identite::class);
     }
 
     /**
-     * Get the lead associated with the unit
+     * Get the position associated with the staff
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function lead()
+    public function position()
     {
-        return $this->belongsTo(Staff::class, 'lead_id');
+        return $this->belongsTo(Position::class);
     }
 
     /**
-     * Get the staffs associated with the unit
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get the unit associated with the staff
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function staffs()
+    public function unit()
     {
-        return $this->hasMany(Staff::class);
+        return $this->belongsTo(Unit::class);
     }
 
 }
