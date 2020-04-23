@@ -17,7 +17,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unit', 'institution'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution'])->get(), 200);
     }
 
     /**
@@ -28,7 +28,7 @@ class UnitController extends ApiController
     public function create()
     {
         return response()->json([
-            'units' => UnitType::all(),
+            'unitTypes' => UnitType::all(),
             'institutions' => Institution::all()
         ], 200);
     }
@@ -77,7 +77,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unit' => $unit,
-            'units' => UnitType::all(),
+            'unitTypes' => UnitType::all(),
             'institutions' => Institution::all()
         ], 200);
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUnitsTable extends Migration
+class CreateInstitutionPositionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,14 @@ class CreateUnitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('units', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->uuid('unitType_id');
+        Schema::create('institution_position', function (Blueprint $table) {
             $table->uuid('institution_id');
-            $table->json('others')->nullable();
+            $table->uuid('position_id');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('unitType_id')->references('id')->on('unit_types');
             $table->foreign('institution_id')->references('id')->on('institutions');
+            $table->foreign('position_id')->references('id')->on('positions');
         });
     }
 
@@ -35,6 +31,6 @@ class CreateUnitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('units');
+        Schema::dropIfExists('institution_position');
     }
 }

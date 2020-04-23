@@ -21,6 +21,7 @@
         "satis2020/institutions-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
+        "satis2020/position-package": "^1.0",
         "satis2020/unit-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
@@ -136,6 +137,13 @@
         {
             "type": "path",
             "url": "modules/unit-package",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/position-package/",
             "options": {
                 "symlink": true
             }
