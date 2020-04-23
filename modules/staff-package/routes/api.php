@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 
-/*
- * Institutions
+/**
+ * Staff
  */
-Route::apiResource('institutions', 'Institutions\InstitutionController');
-Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
-Route::get('institutions/{institution}/positions-units', 'Institutions\InstitutionPositionUnitController@index')->name('institutions.filter.positions-units');
-
+Route::resource('staff', 'Staff\StaffController');

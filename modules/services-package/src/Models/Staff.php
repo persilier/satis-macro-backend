@@ -23,7 +23,7 @@ class Staff extends Model
      *
      * @var array
      */
-    protected $casts = ['others'=> 'json'];
+    protected $casts = ['others' => 'json'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -50,6 +50,13 @@ class Staff extends Model
     {
         return $this->unit->lead_id === $this->attributes['id'];
     }
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['is_lead'];
 
     /**
      * Get the identite associated with the staff

@@ -20,7 +20,8 @@ class UnitLeadSeeder extends Seeder
         Unit::flushEventListeners();
         $units = Unit::has('staffs')->get();
         foreach ($units as $unit){
-            $unit->lead()->associate(Arr::random($units->staffs));
+            $unit->lead()->associate(Arr::random($unit->staffs->all()));
+            $unit->save();
         }
     }
 }

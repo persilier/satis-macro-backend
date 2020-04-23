@@ -29,7 +29,7 @@ $factory->define(\Satis2020\ServicePackage\Models\Staff::class, function (Faker 
         'identite_id' => \Satis2020\ServicePackage\Models\Identite::with('staff')->get()->filter(function ($value, $key) {
             return is_null($value->staff);
         })->random()->id,
-        'position_id' => Arr::random($institution->positions)->id,
-        'unit_id' => Arr::random($institution->units)->id,
+        'position_id' => Arr::random($institution->positions->all())->id,
+        'unit_id' => Arr::random($institution->units->all())->id,
     ];
 });

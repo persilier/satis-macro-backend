@@ -79,6 +79,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/position-package" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/unit-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
