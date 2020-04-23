@@ -19,3 +19,8 @@ Route::apiResource('institutions', 'Institutions\InstitutionController');
 Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
 Route::get('institutions/{institution}/positions-units', 'Institutions\InstitutionPositionUnitController@index')->name('institutions.filter.positions-units');
 
+/*
+ *  Type Clients, Category Clients
+ */
+Route::resource('institutions.type-clients', 'Institutions\InstitutionTypeClientController', ['only' => ['index']]);
+Route::resource('institutions.category-clients', 'Institutions\InstitutionCategoryClientController', ['only' => ['index']]);

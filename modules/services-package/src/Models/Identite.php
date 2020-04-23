@@ -16,7 +16,7 @@ class Identite extends Model
      *
      * @var array
      */
-    protected $casts = ['other_attributes' => 'json'];
+    protected $casts = ['other_attributes' => 'json', 'email'=>'array', 'telephone'=> 'array'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -31,7 +31,7 @@ class Identite extends Model
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'sexe', 'telephone', 'email', 'other_attributes'
+        'firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes'
     ];
 
     /**
@@ -54,5 +54,11 @@ class Identite extends Model
     {
         return $this->hasOne(Staff::class);
     }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class, 'identites_id');
+    }
+
 
 }

@@ -59,6 +59,24 @@ class Institution extends Model
     }
 
     /**
+     * Get the type_clients associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function type_clients()
+    {
+        return $this->hasMany(TypeClient::class, 'institutions_id');
+    }
+
+    /**
+     * Get the category_clients associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function category_clients()
+    {
+        return $this->hasMany(CategoryClient::class, 'institutions_id');
+    }
+
+    /**
      * Get the positions associated with the institution
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
