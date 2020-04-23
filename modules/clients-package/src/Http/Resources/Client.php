@@ -3,7 +3,9 @@
 
 namespace Satis2020\ClientPackage\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use Satis2020\InstitutionPackage\Http\Resources\Institution;
+use Satis2020\UnitPackage\Http\Resources\Unit;
+use Satis2020\UserPackage\Http\Resources\Identite;
 class Client extends JsonResource
 {
     /** Transform the resource into an array.
@@ -15,20 +17,15 @@ class Client extends JsonResource
     {
         return [
             'id'                    => $this->id,
-            'lastname'              => $this->lastname,
-            'firstname'             => $this->firstname,
-            'gender'                => $this->gender,
-            'phone'                 => $this->phone,
-            'email'                 => $this->email,
-            'ville'                 => $this->ville,
             'id_card'               => $this->id_card,
             'is_client'             => $this->is_client,
             'account_number'        => $this->account_number,
-            'type_clients_id'       => $this->type_clients_id,
-            'category_clients_id'   => $this->category_clients_id,
-            'units_id'              => $this->units_id,
-            'institutions_id'       => $this->institutions_id,
             'others'                => $this->others,
+            'identite'              => New Identite($this->identite),
+            'unit'                  => New Unit($this->unit),
+            'institution'           => New Institution($this->institution),
+            'type_client'           => New TypeClient($this->type_client),
+            'category_client'       => New CategoryClient($this->category_client),
         ];
     }
 

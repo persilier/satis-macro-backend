@@ -19,4 +19,5 @@ use Illuminate\Support\Facades\Route;
  */
 Route::apiResource('type-clients', 'TypeClients\TypeClientController');
 Route::apiResource('category-clients', 'CategoryClients\CategoryClientController');
-Route::apiResource('clients', 'Clients\ClientController');
+Route::apiResource('clients', 'Clients\ClientIdentiteController');
+Route::resource('clients.create', 'Clients\ClientController', ['only' => ['store']]);

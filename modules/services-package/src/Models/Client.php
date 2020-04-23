@@ -31,8 +31,7 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-        'lastname', 'firstname', 'gender', 'phone', 'email','ville', 'id_card','is_client','account_number',
-        'type_clients_id', 'category_clients_id', 'units_id', 'institutions_id', 'others'
+         'id_card', 'account_number', 'type_clients_id', 'category_clients_id', 'units_id', 'identites_id', 'institutions_id', 'others'
     ];
 
     /**
@@ -59,7 +58,7 @@ class Client extends Model
      */
     public function category_client()
     {
-        return $this->belongsTo(CategoryClient::class, 'type_clients_id');
+        return $this->belongsTo(CategoryClient::class, 'category_clients_id');
     }
 
     /**
@@ -69,6 +68,11 @@ class Client extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'units_id');
+    }
+
+    public function identite()
+    {
+        return $this->belongsTo(Identite::class, 'identites_id');
     }
 
 
