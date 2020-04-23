@@ -135,7 +135,7 @@
         },
         {
             "type": "path",
-            "url": "modules/unit-package/",
+            "url": "modules/unit-package",
             "options": {
                 "symlink": true
             }

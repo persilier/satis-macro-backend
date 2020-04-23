@@ -11,7 +11,6 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends ApiController
 {
-    use DatatableHeader;
 
     public function __construct()
     {

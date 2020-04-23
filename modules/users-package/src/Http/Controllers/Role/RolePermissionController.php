@@ -74,7 +74,7 @@ class RolePermissionController extends ApiController
      * Attribute all permissions to a Role (for development purposes)
      *
      * @param Request $request
-     * @return Response
+     * @return PermissionCollection
      * @throws ValidationException
      */
     public function give_all(Request $request)
