@@ -14,10 +14,6 @@ class ChangeColumnEmailTelephoneIdentitesTable extends Migration
     public function up()
     {
         Schema::table('identites', function (Blueprint $table) {
-            $table->dropUnique('identites_email_unique');
-            $table->dropUnique('identites_telephone_unique');
-        });
-        Schema::table('identites', function (Blueprint $table) {
             $table->json('email')->nullable()->change();
             $table->json('telephone')->nullable()->change();
         });
