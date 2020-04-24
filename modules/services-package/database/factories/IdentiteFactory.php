@@ -25,7 +25,7 @@ $factory->define(\Satis2020\ServicePackage\Models\Identite::class, function (Fak
         'firstname' => $faker->firstName($sexe),
         'lastname' => $faker->lastName,
         'sexe' => strtoupper(substr($sexe, 0, 1)),
-        'telephone' => $faker->phoneNumber,
-        'email' => $faker->safeEmail
+        'telephone' => [$faker->phoneNumber],
+        'email' => [$faker->safeEmail]
     ];
 });
