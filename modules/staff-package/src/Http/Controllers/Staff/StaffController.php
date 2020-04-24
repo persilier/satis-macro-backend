@@ -3,6 +3,7 @@
 namespace Satis2020\StaffPackage\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Staff;
@@ -39,9 +40,13 @@ class StaffController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
-            'institutions' => 'required|array'
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
+            'telephone' => 'required|array',
+            'email' => 'required|array',
+            'position_id' => Arr::random($institution->positions->all())->id,
+            'unit_id' => Arr::random($institution->units->all())->id,
         ];
 
         $this->validate($request, $rules);
