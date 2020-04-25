@@ -50,4 +50,13 @@ class Position extends Model
         return $this->belongsToMany(Institution::class);
     }
 
+    /**
+     * Get the staffs associated with the position
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function staffs()
+    {
+        return $this->hasMany(Staff::class);
+    }
+
 }

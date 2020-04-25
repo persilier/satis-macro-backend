@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::apiResource('institutions', 'Institutions\InstitutionController');
 Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
+Route::get('institutions/{institution}/positions-units', 'Institutions\InstitutionPositionUnitController@index')->name('institutions.filter.positions-units');
 
 /*
  *  Type Clients, Category Clients
