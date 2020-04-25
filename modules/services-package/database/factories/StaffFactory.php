@@ -6,6 +6,7 @@ use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Satis2020\ServicePackage\Models\Identite;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +25,18 @@ $factory->define(\Satis2020\ServicePackage\Models\Staff::class, function (Faker 
         return count($value->units) !== 0 && count($value->positions) !== 0;
     })->random();
 
+    $sexe = $faker->randomElement(['male', 'female']);
+    $identite = Identite::create([
+        'firstname' => $faker->firstName($sexe),
+        'lastname' => $faker->lastName,
+        'sexe' => strtoupper(substr($sexe, 0, 1)),
+        'telephone' => [$faker->phoneNumber],
+        'email' => [$faker->safeEmail]
+    ]);
+
     return [
         'id' => (string)Str::uuid(),
-        'identite_id' => \Satis2020\ServicePackage\Models\Identite::with('staff')->get()->filter(function ($value, $key) {
-            return is_null($value->staff);
-        })->random()->id,
+        'identite_id' => $identite->id,
         'position_id' => Arr::random($institution->positions->all())->id,
         'unit_id' => Arr::random($institution->units->all())->id,
     ];

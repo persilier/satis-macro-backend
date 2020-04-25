@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ class StaffTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Identite::truncate();
         Staff::truncate();
         Staff::flushEventListeners();
         factory(\Satis2020\ServicePackage\Models\Staff::class, 20)->create();
