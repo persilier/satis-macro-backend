@@ -74,23 +74,36 @@ class ClaimCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
+     * @param \Illuminate\Http\Request $request
+     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, ClaimCategory $claimCategory)
     {
-        //
+        $rules = [
+            'name' => 'required',
+            'description' => 'required'
+        ];
+
+        $this->validate($request, $rules);
+
+        $claimCategory->update($request->only(['name', 'description', 'others']));
+
+        return response()->json($claimCategory, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
+     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
     public function destroy(ClaimCategory $claimCategory)
     {
-        //
+        $claimCategory->secureDelete('claimObjects');
+
+        return response()->json($claimCategory, 200);
     }
 }
