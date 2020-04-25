@@ -102,7 +102,7 @@ class UnitTypeController extends ApiController
      */
     public function destroy(UnitType $unitType)
     {
-        $unitType->delete();
+        $unitType->secureDelete('units');
 
         return response()->json($unitType, 200);
     }
