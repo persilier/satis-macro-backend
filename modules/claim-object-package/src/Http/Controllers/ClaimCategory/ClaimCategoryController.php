@@ -57,7 +57,7 @@ class ClaimCategoryController extends Controller
      */
     public function show(ClaimCategory $claimCategory)
     {
-        //
+        return response()->json($claimCategory, 200);
     }
 
     /**
