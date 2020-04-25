@@ -75,6 +75,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie/getallheaders" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/collection" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/clients-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
