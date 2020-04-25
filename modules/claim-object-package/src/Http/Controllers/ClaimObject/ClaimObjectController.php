@@ -1,12 +1,12 @@
 <?php
 
-namespace Satis2020\ClaimObjectPackage\Http\Controllers\ClaimCategory;
+namespace Satis2020\ClaimObjectPackage\Http\Controllers\ClaimObject;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\ClaimCategory;
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Http\Request;
 
-class ClaimCategoryController extends ApiController
+class ClaimObjectController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class ClaimCategoryController extends ApiController
      */
     public function index()
     {
-        return response()->json(ClaimCategory::all(), 200);
+        return response()->json(ClaimObject::with('claimCategory')->get(), 200);
     }
 
     /**
@@ -39,34 +39,35 @@ class ClaimCategoryController extends ApiController
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'claim_category_id' => 'required|exists:claim_categories,id'
         ];
 
         $this->validate($request, $rules);
 
-        $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'others']));
+        $claimObject = ClaimObject::create($request->only(['name', 'description', 'claim_category_id', 'others']));
 
-        return response()->json($claimCategory, 201);
+        return response()->json($claimObject, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
+     * @param  \Satis2020\ServicePackage\Models\ClaimObject  $claimObject
      * @return \Illuminate\Http\Response
      */
-    public function show(ClaimCategory $claimCategory)
+    public function show(ClaimObject $claimObject)
     {
-        return response()->json($claimCategory, 200);
+        return response()->json($claimObject->load('claimCategory'), 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
+     * @param  \Satis2020\ServicePackage\Models\ClaimObject  $claimObject
      * @return \Illuminate\Http\Response
      */
-    public function edit(ClaimCategory $claimCategory)
+    public function edit(ClaimObject $claimObject)
     {
         //
     }
@@ -75,35 +76,36 @@ class ClaimCategoryController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
+     * @param \Satis2020\ServicePackage\Models\ClaimObject $claimObject
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, ClaimCategory $claimCategory)
+    public function update(Request $request, ClaimObject $claimObject)
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'claim_category_id' => 'required|exists:claim_categories,id'
         ];
 
         $this->validate($request, $rules);
 
-        $claimCategory->update($request->only(['name', 'description', 'others']));
+        $claimObject->update($request->only(['name', 'description', 'claim_category_id', 'others']));
 
-        return response()->json($claimCategory, 201);
+        return response()->json($claimObject, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
+     * @param \Satis2020\ServicePackage\Models\ClaimObject $claimObject
      * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
+     * @throws \Exception
      */
-    public function destroy(ClaimCategory $claimCategory)
+    public function destroy(ClaimObject $claimObject)
     {
-        $claimCategory->secureDelete('claimObjects');
+        $claimObject->delete();
 
-        return response()->json($claimCategory, 200);
+        return response()->json($claimObject, 200);
     }
 }
