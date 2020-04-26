@@ -16,7 +16,7 @@ class Client extends Model
      *
      * @var array
      */
-    protected $casts = ['others' => 'json'];
+    protected $casts = ['others' => 'json', 'account_number' => 'array'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -31,7 +31,7 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-         'id_card', 'account_number', 'type_clients_id', 'category_clients_id', 'units_id', 'identites_id', 'institutions_id', 'others'
+         'account_number', 'type_clients_id', 'category_clients_id', 'units_id', 'identites_id', 'institutions_id', 'others'
     ];
 
     /**

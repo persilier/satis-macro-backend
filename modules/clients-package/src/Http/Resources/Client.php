@@ -17,8 +17,6 @@ class Client extends JsonResource
     {
         return [
             'id'                    => $this->id,
-            'id_card'               => $this->id_card,
-            'is_client'             => $this->is_client,
             'account_number'        => $this->account_number,
             'others'                => $this->others,
             'identite'              => New Identite($this->identite),

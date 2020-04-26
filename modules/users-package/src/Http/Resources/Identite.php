@@ -15,13 +15,14 @@ class Identite extends JsonResource
     {
 
         return [
-            'id' => $this->id,
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'sexe' => $this->sexe,
-            'telephone' => $this->telephone,
-            'email' => $this->email,
-            'ville' => $this->ville,
+            'id'            => $this->id,
+            'firstname'     => $this->firstname,
+            'lastname'      => $this->lastname,
+            'sexe'          => $this->sexe,
+            'telephone'     => $this->telephone,
+            'email'         => $this->email,
+            'id_card'       => $this->is_card,
+            'ville'         => $this->ville,
             'other_attributes' => $this->other_attributes
         ];
     }

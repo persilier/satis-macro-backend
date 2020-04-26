@@ -16,7 +16,7 @@ class Identite extends Model
      *
      * @var array
      */
-    protected $casts = ['other_attributes' => 'json', 'email'=>'array', 'telephone'=> 'array'];
+    protected $casts = ['email' => 'array', 'telephone' => 'array', 'id_card' => 'array', 'other_attributes' => 'json', ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -51,6 +51,5 @@ class Identite extends Model
     {
         return $this->hasOne(Client::class, 'identites_id');
     }
-
 
 }
