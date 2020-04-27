@@ -15,7 +15,7 @@ class AddLeadIdColumnToUnitsTable extends Migration
     {
         Schema::table('units', function (Blueprint $table) {
             $table->uuid('lead_id')->nullable()->after('institution_id');
-            $table->foreign('lead_id')->references('id')->on('staffs');
+            $table->foreign('lead_id')->references('id')->on('staff');
         });
     }
 
