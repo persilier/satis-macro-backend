@@ -28,6 +28,7 @@ trait IdentiteVerifiedTrait
     }
 
 
+
     public function IsValidClientIdentite($type_clients_id, $category_clients_id, $units_id, $institutions_id){
         if(!$type_client = TypeClient::whereId($type_clients_id)->whereInstitutions_id($institutions_id)->first())
             return ['valide'=>false, 'message'=>'Le type de client n\'existe pas dans l\'institution sélectionnée.'];
@@ -40,6 +41,8 @@ trait IdentiteVerifiedTrait
 
         return ['valide'=> true, 'message'=>''];
     }
+
+    
 
     public function IsValidClient($account_number, $institutions_id, $identites_id, $posts){
         $clients = Client::All();
