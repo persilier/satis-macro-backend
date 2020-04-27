@@ -11,6 +11,16 @@ use Satis2020\ServicePackage\Models\Unit;
 
 trait VerifyUnicity
 {
+    /**
+     * Verify the unicity of values in a column of a table in database
+     *
+     * @param $values
+     * @param $table
+     * @param $column
+     * @param null $idColumn
+     * @param null $idValue
+     * @return array
+     */
     protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null)
     {
         foreach ($values as $value) {
