@@ -8,6 +8,25 @@ use Satis2020\UnitPackage\Http\Resources\Unit;
 use Satis2020\UserPackage\Http\Resources\Identite;
 class Client extends JsonResource
 {
+    /**
+     * The additional meta data that should be added to the resource response.
+     *
+     * Added during response construction by the developer.
+     *
+     * @var array
+     */
+    public $additional = [];
+
+    /**
+     * Create a new resource instance.
+     *
+     * @param  mixed  $resource
+     * @return void
+     */
+    public function __construct($resource)
+    {
+        $this->resource = $resource;
+    }
     /** Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -17,8 +36,6 @@ class Client extends JsonResource
     {
         return [
             'id'                    => $this->id,
-            'id_card'               => $this->id_card,
-            'is_client'             => $this->is_client,
             'account_number'        => $this->account_number,
             'others'                => $this->others,
             'identite'              => New Identite($this->identite),
@@ -27,6 +44,18 @@ class Client extends JsonResource
             'type_client'           => New TypeClient($this->type_client),
             'category_client'       => New CategoryClient($this->category_client),
         ];
+    }
+
+    /**
+     * Add additional meta data to the resource response.
+     *
+     * @param  array  $data
+     * @return $this
+     */
+    public function additional(array $data)
+    {
+        $this->additional = $data;
+        return $this;
     }
 
 }

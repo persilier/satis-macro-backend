@@ -2,6 +2,7 @@
 
 namespace Satis2020\ClientPackage\Http\Controllers\CategoryClients;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ClientPackage\Http\Resources\CategoryClient as CategoryClientResource;
@@ -45,7 +46,7 @@ class CategoryClientController extends ApiController
             'institutions_id' => 'required|exists:institutions,id'
         ];
         $this->validate($request, $rules);
-        if($category_exist = CategoryClient::where('name',$request->name)->where('institutions_id',$request->institutions_id)->first())
+        if($category_exist = CategoryClient::where('name->'.App::getLocale(),$request->name)->where('institutions_id',$request->institutions_id)->first())
             return $this->errorResponse('Cette catégorie client existe déjà dans votre institution', 421);
         $category_client = CategoryClient::create(['name' => $request->name, 'description'=>$request->description, 'institutions_id'=>$request->institutions_id]);
         return new CategoryClientResource($category_client);
@@ -79,7 +80,7 @@ class CategoryClientController extends ApiController
             'institutions_id' => 'required|exists:institutions,id'
         ];
         $this->validate($request, $rules);
-        if($category_exist = CategoryClient::where('name',$request->name)->where('institutions_id',$request->institutions_id)->first())
+        if($category_exist = CategoryClient::where('name->'.App::getLocale(),$request->name)->where('institutions_id',$request->institutions_id)->first())
             return $this->errorResponse('Veuillez renseigner un autre nom de catégorie. Celle-ci existe déjà dans votre institution.', 421);
 
         $category_client->update(['name'=> $request->name, 'description'=> $request->description, 'institutions_id'=>$request->institutions_id]);

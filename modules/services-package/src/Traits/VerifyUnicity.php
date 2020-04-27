@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
@@ -67,6 +68,30 @@ trait VerifyUnicity
     protected function handleSameInstitutionVerification($position_id, $unit_id)
     {
         return in_array(Unit::find($unit_id)->institution->id, Position::find($position_id)->institutions->pluck('id')->all());
+    }
+
+
+    protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
+    {
+        $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
+        if (!$verify['status']) {
+            $client = Client::with('identite')->where('identites_id', '=', $verify['entity']->id)->first();
+            if (!is_null($client)) {
+                return [
+                    'status' => false,
+                    'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
+                    'client' => $client,
+                    'verify' => $verify
+                ];
+            }
+            return [
+                'status' => false,
+                'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Client',
+                'identite' => $verify['entity'],
+                'verify' => $verify
+            ];
+        }
+        return ['status' => true];
     }
 
 }
