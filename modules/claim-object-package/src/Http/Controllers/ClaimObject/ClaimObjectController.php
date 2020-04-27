@@ -3,6 +3,7 @@
 namespace Satis2020\ClaimObjectPackage\Http\Controllers\ClaimObject;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Http\Request;
 
@@ -69,7 +70,10 @@ class ClaimObjectController extends ApiController
      */
     public function edit(ClaimObject $claimObject)
     {
-        //
+        return response()->json([
+            'claimObject' => $claimObject->load('claimCategory'),
+            'claimCategories' => ClaimCategory::all()
+        ], 200);
     }
 
     /**
