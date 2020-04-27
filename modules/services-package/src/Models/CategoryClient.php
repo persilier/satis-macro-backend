@@ -5,10 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
+
 class CategoryClient extends Model
 {
 
-    use UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
     /**
      * The attributes that are mass assignable.
@@ -29,11 +31,17 @@ class CategoryClient extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * The attributes that should be casted to native types.
+     * The attributes that are translatable
      *
      * @var array
      */
-    protected $casts = [];
+    public $translatable = ['name', 'description'];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['name' => 'json', 'description'=> 'json'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
