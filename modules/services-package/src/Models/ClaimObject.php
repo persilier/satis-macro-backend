@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class Position extends Model
+class ClaimObject extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
@@ -38,25 +38,15 @@ class Position extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'others'
+        'name', 'description', 'claim_category_id', 'others'
     ];
 
     /**
-     * Get the institutions associated with the position
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Get the claimCategory associated with the claimObject
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function institutions()
+    public function claimCategory()
     {
-        return $this->belongsToMany(Institution::class);
+        return $this->belongsTo(ClaimCategory::class);
     }
-
-    /**
-     * Get the staffs associated with the position
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function staffs()
-    {
-        return $this->hasMany(Staff::class);
-    }
-
 }

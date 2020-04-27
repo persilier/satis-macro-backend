@@ -1,12 +1,12 @@
 <?php
 
-namespace Satis2020\UnitPackage\Http\Controllers\UnitType;
+namespace Satis2020\ClaimObjectPackage\Http\Controllers\ClaimCategory;
 
-use Satis2020\ServicePackage\Models\UnitType;
-use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\ClaimCategory;
+use Illuminate\Http\Request;
 
-class UnitTypeController extends ApiController
+class ClaimCategoryController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class UnitTypeController extends ApiController
      */
     public function index()
     {
-        return response()->json(UnitType::all(), 200);
+        return response()->json(ClaimCategory::all(), 200);
     }
 
     /**
@@ -44,29 +44,29 @@ class UnitTypeController extends ApiController
 
         $this->validate($request, $rules);
 
-        $unitType = UnitType::create($request->only(['name', 'description', 'others']));
+        $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'others']));
 
-        return response()->json($unitType, 201);
+        return response()->json($claimCategory, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\UnitType  $unitType
+     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(UnitType $unitType)
+    public function show(ClaimCategory $claimCategory)
     {
-        return response()->json($unitType, 200);
+        return response()->json($claimCategory, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\UnitType  $unitType
+     * @param  \Satis2020\ServicePackage\Models\ClaimCategory  $claimCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(UnitType $unitType)
+    public function edit(ClaimCategory $claimCategory)
     {
         //
     }
@@ -75,11 +75,11 @@ class UnitTypeController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\UnitType $unitType
+     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, UnitType $unitType)
+    public function update(Request $request, ClaimCategory $claimCategory)
     {
         $rules = [
             'name' => 'required',
@@ -88,22 +88,22 @@ class UnitTypeController extends ApiController
 
         $this->validate($request, $rules);
 
-        $unitType->update($request->only(['name', 'description', 'others']));
+        $claimCategory->update($request->only(['name', 'description', 'others']));
 
-        return response()->json($unitType, 201);
+        return response()->json($claimCategory, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\UnitType $unitType
+     * @param \Satis2020\ServicePackage\Models\ClaimCategory $claimCategory
      * @return \Illuminate\Http\Response
-     * @throws \Exception
+     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
-    public function destroy(UnitType $unitType)
+    public function destroy(ClaimCategory $claimCategory)
     {
-        $unitType->secureDelete('units');
+        $claimCategory->secureDelete('claimObjects');
 
-        return response()->json($unitType, 200);
+        return response()->json($claimCategory, 200);
     }
 }

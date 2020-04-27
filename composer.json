@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
+        "satis2020/claim-object-package": "^1.0",
         "satis2020/clients-package": "^1.0",
         "satis2020/configurations-package": "^1.0",
         "satis2020/faq-package": "^1.0",
@@ -22,6 +23,7 @@
         "satis2020/metadata-package": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position-package": "^1.0",
+        "satis2020/staff-package": "^1.0",
         "satis2020/unit-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
@@ -144,6 +146,20 @@
         {
             "type": "path",
             "url": "modules/position-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/staff-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/claim-object-package/",
             "options": {
                 "symlink": true
             }

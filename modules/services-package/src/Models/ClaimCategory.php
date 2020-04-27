@@ -2,13 +2,14 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class Position extends Model
+class ClaimCategory extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
@@ -42,21 +43,11 @@ class Position extends Model
     ];
 
     /**
-     * Get the institutions associated with the position
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function institutions()
-    {
-        return $this->belongsToMany(Institution::class);
-    }
-
-    /**
-     * Get the staffs associated with the position
+     * Get the claimObjects associated with the claimCategory
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function staffs()
+    public function claimObjects()
     {
-        return $this->hasMany(Staff::class);
+        return $this->hasMany(ClaimObject::class);
     }
-
 }

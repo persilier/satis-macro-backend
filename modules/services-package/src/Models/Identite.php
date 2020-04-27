@@ -46,6 +46,14 @@ class Identite extends Model
         return $this->hasOne(User::class, 'identite_id');
     }
 
+    /**
+     * Get the staff associated with the identite
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
 
     public function client()
     {
