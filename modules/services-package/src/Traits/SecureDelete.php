@@ -14,7 +14,7 @@ trait SecureDelete
     {
         $hasRelation = false;
         foreach ($relations as $relation) {
-            if ($this->$relation()->withTrashed()->count()) {
+            if ($this->$relation()->count()) {
                 $hasRelation = true;
                 break;
             }
