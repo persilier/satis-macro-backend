@@ -20,12 +20,12 @@ Route::resource('roles.permissions', 'Role\RolePermissionController', ['only' =>
 Route::name('give.all.permissions')->post('give-all-permissions', 'Role\RolePermissionController@give_all');
 
 /*
- * Permissions, Identites
+ * Permissions, Identites, Staffs, Clients
  */
 Route::apiResource('permissions', 'Permission\PermissionController');
 Route::apiResource('identites', 'Identite\IdentiteController');
 Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
-
+Route::resource('identites.client', 'Identite\IdentiteClientController', ['only' => ['store']]);
 /**
  * Users
  */
