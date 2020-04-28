@@ -9,6 +9,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class StaffController extends ApiController
@@ -49,7 +50,7 @@ class StaffController extends ApiController
             'lastname' => 'required',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
             'telephone' => 'required|array',
-            'email' => 'required|array',
+            'email' => ['required', 'array', new EmailArray],
             'position_id' => 'required|exists:positions,id',
             'unit_id' => 'required|exists:units,id',
         ];
@@ -131,7 +132,7 @@ class StaffController extends ApiController
             'lastname' => 'required',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
             'telephone' => 'required|array',
-            'email' => 'required|array',
+            'email' => ['required', 'array', new EmailArray],
             'position_id' => 'required|exists:positions,id',
             'unit_id' => 'required|exists:units,id',
         ];
