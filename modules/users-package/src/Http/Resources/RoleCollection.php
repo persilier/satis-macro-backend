@@ -15,8 +15,8 @@ class RoleCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'roles' => $this->collection,
-            'header' => $this->getHeader('rfscrefezf')
+            'data' => $this->collection,
+            'header' => $this->getHeader('rfscrefezfn')
         ];
     }
 }

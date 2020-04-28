@@ -16,7 +16,7 @@ class Client extends Model
      *
      * @var array
      */
-    protected $casts = ['others' => 'json', 'account_number' => 'array'];
+    protected $casts = ['others' => 'array', 'account_number' => 'array'];
 
     /**
      * The attributes that should be mutated to dates.

@@ -1,11 +1,10 @@
 <?php
 namespace Satis2020\UserPackage\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Satis2020\ServicePackage\Traits\MetaWithResources;
-
+use Satis2020\UserPackage\Http\Resources\Identite as IdentiteResource;
+use Satis2020\UserPackage\Http\Resources\Role as RoleResource;
 class User extends JsonResource
 {
-    use MetaWithResources;
 
     /** Transform the resource into an array.
      *
@@ -16,23 +15,13 @@ class User extends JsonResource
     {
 
         return [
-            'id' => $this->id,
+            'id'    => $this->id,
             'username' => $this->username,
-            'guard_name' => $this->guard_name
+            'verified' => $this->verified,
+            'identite' => new IdentiteResource($this->identite),
+            'role'     => new RoleResource($this->roles->first()),
         ];
     }
 
-    /**
-     * Get additional data that should be returned with the resource array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function with($request)
-    {
-        return [
-            'header' => $this->getHeader('rfscrefezf')
-        ];
-    }
 }
 

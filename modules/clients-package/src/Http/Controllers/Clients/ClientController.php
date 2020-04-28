@@ -14,6 +14,7 @@ use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\TypeClient;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\UnitType;
+use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
@@ -70,7 +71,9 @@ class ClientController extends ApiController
             'lastname' => 'required|string',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
             'telephone' => 'required|array',
-            'email' => 'required|array',
+            'email' => [
+                'required', 'array', new EmailValidationRules,
+            ],
             'ville' => 'required|string',
             'id_card' => 'required|array',
             'account_number' => 'required|array',
@@ -165,7 +168,9 @@ class ClientController extends ApiController
             'lastname' => 'required|string',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
             'telephone' => 'required|array',
-            'email' => 'required|array',
+            'email' => [
+                'required', 'array', new EmailValidationRules,
+            ],
             'ville' => 'required|string',
             'id_card' => 'required|array',
             'account_number' => 'required|array',

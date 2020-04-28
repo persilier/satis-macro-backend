@@ -5,13 +5,13 @@ namespace Satis2020\ServicePackage\Models;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticate;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticate
 {
     use Notifiable, HasApiTokens, UuidAsId, SoftDeletes, SecureDelete, HasRoles;
 
@@ -38,7 +38,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'verified', 'verification_token', 'identite_id'
+        'username', 'password', 'email', 'verified', 'verification_token', 'identite_id'
     ];
 
     /**

@@ -29,11 +29,12 @@ Route::resource('identites.client', 'Identite\IdentiteClientController', ['only'
 /**
  * Users
  */
-Route::resource('users', 'User\UserIdentiteController', ['except' => ['create', 'edit']]);
+
+Route::resource('users', 'User\UserController', ['except' => ['edit', 'update']]);
 Route::resource('users.roles', 'User\UserRoleController', ['only' => ['index', 'store']]);
 Route::resource('users.permissions', 'User\UserPermissionController', ['only' => ['index']]);
-Route::name('verify')->get('users/verify/{token}', 'User\UserIdentiteController@verify');
-Route::name('resend')->get('users/{user}/resend', 'User\UserIdentiteController@resend');
+Route::name('verify')->get('users/verify/{token}', 'User\UserController@verify');
+Route::name('resend')->get('users/{user}/resend', 'User\UserController@resend');
 
 /**
  * Authentication

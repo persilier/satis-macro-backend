@@ -4,6 +4,7 @@ namespace Satis2020\UserPackage\Http\Controllers\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\UserPackage\Http\Resources\User as UserResource;
 class AuthController extends ApiController
 {
 
@@ -15,20 +16,15 @@ class AuthController extends ApiController
     /**
      * Log the user into the application
      *
-     * @return Response
+     * @return UserResource
      */
     public function login()
     {
         $user = Auth::user();
-        return $this->showAll(
-            collect([
-                "user" => collect($user),
-                "identite" => collect($user->load('identite'))->only(['identite'])['identite'],
-                "role" => collect($user->roles->first())->except(['pivot']),
-                "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
-                //"menu" => $this->getMenus()
-            ])
-        );
+        return (new UserResource($user))->additional([
+            "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
+            //"menu" => $this->getMenus()
+        ]);
     }
 
     /**

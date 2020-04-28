@@ -30,13 +30,7 @@ class RoleController extends ApiController
     public function index()
     {
         return new RoleCollection(Role::where('guard_name', 'api')->get());
-        /*$header_with_list = $this->getListWithHeaderByHeaderName('role-list');
-        return $this->showAll(
-            collect([
-                'list' => $header_with_list['list'],
-                'header' => $header_with_list['header'],
-            ])
-        );*/
+
     }
 
     /**

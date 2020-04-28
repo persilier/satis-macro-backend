@@ -22,7 +22,6 @@ trait IdentiteVerifiedTrait
         return ['valide'=> true, 'message'=>''];
     }
 
-    
 
     public function IsValidClient($account_number, $institutions_id, $identites_id, $posts){
         $clients = Client::All();

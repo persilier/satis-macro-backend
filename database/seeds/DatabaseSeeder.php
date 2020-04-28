@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\UnitLeadSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ClaimCategoryTableSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ClaimObjectTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\UsersTableSeeder::class);
     }
 }

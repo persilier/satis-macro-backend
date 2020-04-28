@@ -2,7 +2,8 @@
 namespace Satis2020\UserPackage\Http\Resources;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Satis2020\ServicePackage\Traits\MetaWithResources;
-class IdentiteCollection extends ResourceCollection
+
+class UserCollection extends ResourceCollection
 {
     use MetaWithResources;
     /**
@@ -15,7 +16,7 @@ class IdentiteCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'header' => $this->getHeader('rfscrefjezf')
+            'header' => $this->getHeader('rfscrefezfk')
         ];
     }
 }

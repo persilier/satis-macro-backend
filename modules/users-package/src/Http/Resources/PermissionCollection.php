@@ -16,7 +16,7 @@ class PermissionCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'header' => $this->getHeader('rfscrefezf')
+            'header' => $this->getHeader('rfscrefkezf')
         ];
     }
 }
