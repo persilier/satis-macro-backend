@@ -76,6 +76,13 @@ trait VerifyUnicity
         return ['status' => true];
     }
 
+    /**
+     * Verify the consistency between the unit and the position of a Staff 
+     *
+     * @param $position_id
+     * @param $unit_id
+     * @return bool
+     */
     protected function handleSameInstitutionVerification($position_id, $unit_id)
     {
         return in_array(Unit::find($unit_id)->institution->id, Position::find($position_id)->institutions->pluck('id')->all());
