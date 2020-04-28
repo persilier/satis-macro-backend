@@ -77,7 +77,7 @@ trait VerifyUnicity
     }
 
     /**
-     * Verify the consistency between the unit and the position of a Staff 
+     * Verify the consistency between the unit and the position of a Staff
      *
      * @param $position_id
      * @param $unit_id
