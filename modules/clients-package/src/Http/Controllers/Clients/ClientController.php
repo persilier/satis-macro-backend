@@ -4,6 +4,7 @@ namespace Satis2020\ClientPackage\Http\Controllers\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Mockery\Matcher\Type;
 use Satis2020\ClientPackage\Http\Resources\ClientCollection;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
@@ -43,16 +44,17 @@ class ClientController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create(){
-        $data = [
-            'institutions' => Institution::all(),
-            'type_clients'=> TypeClient::all(),
-            'category_clients'=> CategoryClient::all(),
-            'type_units'=> UnitType::all(),
-            'units'=> Unit::all()
-        ];
+    public function create(Request $request){
+        $params = [];
+        if($request->institution)
+            $params['institution'] = $request->institution;
+
+        if($request->type_unit)
+            $params['type_unit'] = $request->type_unit;
+        $data = $this->getDataForCreateEditClient($params);
         return response()->json($data,200);
     }
 
@@ -138,18 +140,20 @@ class ClientController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request $request
      * @param \Satis2020\ServicePackage\Models\Client $client
      * @return ClientResource
      */
-    public function edit(Client $client)
+    public function edit(Request $request, Client $client)
     {
-        return (new ClientResource($client))->additional([
-            'institutions' => Institution::all(),
-            'type_clients'=> TypeClient::all(),
-            'category_clients'=> CategoryClient::all(),
-            'type_units'=> UnitType::all(),
-            'units'=> Unit::all()
-        ]);
+        $params = [];
+        if($request->institution)
+            $params['institution'] = $request->institution;
+
+        if($request->type_unit)
+            $params['type_unit'] = $request->type_unit;
+        $data = $this->getDataForCreateEditClient($params);
+        return (new ClientResource($client))->additional($data);
     }
 
 
@@ -234,6 +238,33 @@ class ClientController extends ApiController
     {
         $client->delete();
         return new ClientResource($client);
+    }
+
+
+    private function getDataForCreateEditClient($params){
+        $institutions = Institution::all();
+        $type_clients = New TypeClient;
+        $category_clients = New CategoryClient;
+        $type_units = New UnitType;
+        $units = New Unit;
+
+        if(isset($params['institution'])){
+            $type_clients = $type_clients->where('institutions_id',$params['institution']);
+            $category_clients = $category_clients->where('institutions_id',$params['institution']);
+            $units = $units->where('institution_id',$params['institution']);
+        }
+
+        if(isset($params['type_unit'])){
+            $units = $units->where('unit_type_id',$params['type_unit']);
+        }
+
+        return $data = [
+            'institutions' => $institutions,
+            'type_clients'=> $type_clients->get(),
+            'category_clients'=> $category_clients->get(),
+            'type_units'=> $type_units->get(),
+            'units' => $units->get()
+        ];
     }
     
 }

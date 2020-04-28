@@ -1,7 +1,13 @@
 <?php
 namespace Satis2020\ServicePackage\Traits;
+use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\MetadataPackage\Http\Resources\Header;
+use Satis2020\ServicePackage\Models\TypeClient;
+use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\UnitType;
+
 trait MetaWithResources
 {
     public function getHeader($name){
@@ -17,4 +23,6 @@ trait MetaWithResources
         }
         return null;
     }
+
+
 }
