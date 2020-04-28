@@ -12,6 +12,16 @@ use Satis2020\ServicePackage\Models\Unit;
 
 trait VerifyUnicity
 {
+    /**
+     * Verify if an attribute is uniq in a table
+     *
+     * @param $values
+     * @param $table
+     * @param $column
+     * @param null $idColumn
+     * @param null $idValue
+     * @return array
+     */
     protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null)
     {
         foreach ($values as $value) {
@@ -32,6 +42,17 @@ trait VerifyUnicity
         return ['status' => true];
     }
 
+    /**
+     * Verify if a staff already exist using an email address or a phone number
+     *
+     * @param $values
+     * @param $table
+     * @param $column
+     * @param $attribute
+     * @param null $idColumn
+     * @param null $idValue
+     * @return array
+     */
     protected function handleStaffIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
@@ -55,6 +76,13 @@ trait VerifyUnicity
         return ['status' => true];
     }
 
+    /**
+     * Verify the consistency between the unit and the position of a Staff
+     *
+     * @param $position_id
+     * @param $unit_id
+     * @return bool
+     */
     protected function handleSameInstitutionVerification($position_id, $unit_id)
     {
         return in_array(Unit::find($unit_id)->institution->id, Position::find($position_id)->institutions->pluck('id')->all());
