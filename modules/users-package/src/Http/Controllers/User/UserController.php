@@ -4,6 +4,7 @@ namespace Satis2020\UserPackage\Http\Controllers\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -77,15 +78,13 @@ class UserController extends ApiController
 
 
     public function create(){
-        $users = Identite::has('user')->pluck('id')->toArray();
         $identites = Identite::has('staff')->get();
-
-        $search_identites = $identites->filter(function ($item,$key) use ($users) {
-            return is_null($users) || !in_array($item->id, $users);
-        });
+        $users = collect($identites)->filter(function ($item, $key){
+            return null == $item->user;
+        })->flatten()->all();
 
         $data = [
-            'identites' => $search_identites->all()
+            'identites' => $users
         ];
         return response()->json($data,200);
     }
