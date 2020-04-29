@@ -209,7 +209,7 @@ class ClientController extends ApiController
         // Client Account Number Unicity Verification
         $verifyAccountNumber = $this->handleClientIdentityVerification($request->account_number, 'clients', 'account_number', 'account_number' , $client->identite->id);
         if (!$verifyAccountNumber['status']) {
-            $verifyEmail['message'] = "We can't perform your request. The account number ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
+            $verifyAccountNumber['message'] = "We can't perform your request. The account number ".$verifyAccountNumber['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyAccountNumber, 409);
         }
 
