@@ -21,7 +21,7 @@ class Identite extends JsonResource
             'sexe'          => $this->sexe,
             'telephone'     => $this->telephone,
             'email'         => $this->email,
-            'id_card'       => $this->is_card,
+            'id_card'       => $this->id_card,
             'ville'         => $this->ville,
             'other_attributes' => $this->other_attributes
         ];
