@@ -5,6 +5,7 @@ namespace Satis2020\ClaimObjectPackage\Http\Controllers\ClaimCategory;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\SeverityLevel;
 
 class ClaimCategoryController extends ApiController
 {
@@ -15,7 +16,7 @@ class ClaimCategoryController extends ApiController
      */
     public function index()
     {
-        return response()->json(ClaimCategory::all(), 200);
+        return response()->json(ClaimCategory::with('severityLevel')->get(), 200);
     }
 
     /**
@@ -39,12 +40,14 @@ class ClaimCategoryController extends ApiController
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'severity_levels_id' => 'exists:severity_levels,id',
+            'time_limit' => 'integer'
         ];
 
         $this->validate($request, $rules);
 
-        $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'others']));
+        $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'severity_levels_id', 'time_limit', 'others']));
 
         return response()->json($claimCategory, 201);
     }
@@ -57,7 +60,7 @@ class ClaimCategoryController extends ApiController
      */
     public function show(ClaimCategory $claimCategory)
     {
-        return response()->json($claimCategory, 200);
+        return response()->json($claimCategory->load('severityLevel'), 200);
     }
 
     /**
@@ -68,7 +71,10 @@ class ClaimCategoryController extends ApiController
      */
     public function edit(ClaimCategory $claimCategory)
     {
-        //
+        return response()->json([
+            'claimCategory' => $claimCategory->load('severityLevel'),
+            'severityLevels' => SeverityLevel::all()
+        ], 200);
     }
 
     /**
@@ -83,12 +89,14 @@ class ClaimCategoryController extends ApiController
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'severity_levels_id' => 'exists:severity_levels,id',
+            'time_limit' => 'integer'
         ];
 
         $this->validate($request, $rules);
 
-        $claimCategory->update($request->only(['name', 'description', 'others']));
+        $claimCategory->update($request->only(['name', 'severity_levels_id', 'time_limit', 'description', 'others']));
 
         return response()->json($claimCategory, 201);
     }

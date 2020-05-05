@@ -6,6 +6,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\SeverityLevel;
 
 class ClaimObjectController extends ApiController
 {
@@ -16,7 +17,7 @@ class ClaimObjectController extends ApiController
      */
     public function index()
     {
-        return response()->json(ClaimObject::with('claimCategory')->get(), 200);
+        return response()->json(ClaimObject::with('claimCategory', 'severityLevel')->get(), 200);
     }
 
     /**
@@ -41,12 +42,14 @@ class ClaimObjectController extends ApiController
         $rules = [
             'name' => 'required',
             'description' => 'required',
-            'claim_category_id' => 'required|exists:claim_categories,id'
+            'claim_category_id' => 'required|exists:claim_categories,id',
+            'severity_levels_id' => 'exists:severity_levels,id',
+            'time_limit' => 'integer'
         ];
 
         $this->validate($request, $rules);
 
-        $claimObject = ClaimObject::create($request->only(['name', 'description', 'claim_category_id', 'others']));
+        $claimObject = ClaimObject::create($request->only(['name', 'description', 'claim_category_id', 'severity_levels_id', 'time_limit', 'others']));
 
         return response()->json($claimObject, 201);
     }
@@ -59,7 +62,7 @@ class ClaimObjectController extends ApiController
      */
     public function show(ClaimObject $claimObject)
     {
-        return response()->json($claimObject->load('claimCategory'), 200);
+        return response()->json($claimObject->load('claimCategory', 'severityLevel'), 200);
     }
 
     /**
@@ -71,8 +74,9 @@ class ClaimObjectController extends ApiController
     public function edit(ClaimObject $claimObject)
     {
         return response()->json([
-            'claimObject' => $claimObject->load('claimCategory'),
-            'claimCategories' => ClaimCategory::all()
+            'claimObject' => $claimObject->load('claimCategory', 'severityLevel'),
+            'claimCategories' => ClaimCategory::all(),
+            'severityLevels' => SeverityLevel::all()
         ], 200);
     }
 
@@ -89,12 +93,14 @@ class ClaimObjectController extends ApiController
         $rules = [
             'name' => 'required',
             'description' => 'required',
-            'claim_category_id' => 'required|exists:claim_categories,id'
+            'claim_category_id' => 'required|exists:claim_categories,id',
+            'severity_levels_id' => 'exists:severity_levels,id',
+            'time_limit' => 'integer'
         ];
 
         $this->validate($request, $rules);
 
-        $claimObject->update($request->only(['name', 'description', 'claim_category_id', 'others']));
+        $claimObject->update($request->only(['name', 'description', 'severity_levels_id', 'time_limit', 'claim_category_id', 'others']));
 
         return response()->json($claimObject, 201);
     }

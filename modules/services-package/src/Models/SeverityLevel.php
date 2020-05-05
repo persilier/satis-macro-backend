@@ -2,14 +2,13 @@
 
 namespace Satis2020\ServicePackage\Models;
 
-use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class ClaimCategory extends Model
+class SeverityLevel extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
@@ -39,24 +38,25 @@ class ClaimCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'time_limit', 'severity_levels_id', 'others'
+        'name', 'description', 'time_limit' , 'others'
     ];
 
     /**
-     * Get the claimObjects associated with the claimCategory
+     * Get the claimObject associated with the claimObject
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function claimObjects()
     {
-        return $this->hasMany(ClaimObject::class);
+        return $this->hasMany(ClaimObject::class, 'severity_levels_id', 'id');
     }
 
     /**
-     * Get the severityLevel associated with the severityLevel
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the claimCategory associated with the claimCategory
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function severityLevel()
+    public function claimCategories()
     {
-        return $this->belongsTo(SeverityLevel::class, 'severity_levels_id', 'id');
+        return $this->hasMany(ClaimCategory::class, 'severity_levels_id', 'id');
     }
+
 }

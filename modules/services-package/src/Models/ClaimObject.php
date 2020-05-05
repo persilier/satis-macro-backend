@@ -38,7 +38,7 @@ class ClaimObject extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'claim_category_id', 'others'
+        'name', 'description', 'time_limit', 'severity_levels_id', 'claim_category_id', 'others'
     ];
 
     /**
@@ -48,5 +48,14 @@ class ClaimObject extends Model
     public function claimCategory()
     {
         return $this->belongsTo(ClaimCategory::class);
+    }
+
+    /**
+     * Get the severityLevel associated with the severityLevel
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function severityLevel()
+    {
+        return $this->belongsTo(SeverityLevel::class, 'severity_levels_id', 'id');
     }
 }

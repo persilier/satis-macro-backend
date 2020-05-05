@@ -13,11 +13,12 @@ class CreateSeverityLevelTable extends Migration
      */
     public function up()
     {
-        Schema::create('severity_level', function(Blueprint $table) {
+        Schema::create('severity_levels', function(Blueprint $table) {
             $table->uuid('id')->primary();
             $table->json('name');
             $table->tinyInteger('time_limit')->nullable();
             $table->json('description');
+            $table->json('others')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

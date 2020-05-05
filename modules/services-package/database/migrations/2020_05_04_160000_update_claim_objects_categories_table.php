@@ -14,15 +14,15 @@ class UpdateClaimObjectsCategoriesTable extends Migration
     public function up()
     {
         Schema::table('claim_categories', function (Blueprint $table) {
-            $table->tinyInteger('time_limit')->nullable();
-            $table->uuid('severity_level_id')->nullable();
-            $table->foreign('severity_level_id')->references('id')->on('severity_level');
+            $table->tinyInteger('time_limit')->nullable()->after('name');
+            $table->uuid('severity_levels_id')->nullable()->after('time_limit');
+            $table->foreign('severity_levels_id')->references('id')->on('severity_levels');
         });
 
         Schema::table('claim_objects', function (Blueprint $table) {
-            $table->tinyInteger('time_limit')->nullable();
-            $table->uuid('severity_level_id')->nullable();
-            $table->foreign('severity_level_id')->references('id')->on('severity_level');
+            $table->tinyInteger('time_limit')->nullable()->after('name');
+            $table->uuid('severity_levels_id')->nullable()->after('time_limit');
+            $table->foreign('severity_levels_id')->references('id')->on('severity_levels');
         });
     }
 

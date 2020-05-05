@@ -23,6 +23,7 @@
         "satis2020/metadata-package": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position-package": "^1.0",
+        "satis2020/severity-level-package": "^1.0",
         "satis2020/staff-package": "^1.0",
         "satis2020/unit-package": "^1.0",
         "satis2020/users-package": "^1.0"
@@ -160,6 +161,13 @@
         {
             "type": "path",
             "url": "modules/claim-object-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/severity-level-package/",
             "options": {
                 "symlink": true
             }
