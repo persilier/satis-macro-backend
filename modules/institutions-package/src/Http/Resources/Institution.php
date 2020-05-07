@@ -1,6 +1,8 @@
 <?php
 namespace Satis2020\InstitutionPackage\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+
 class Institution extends JsonResource
 {
 
@@ -18,7 +20,7 @@ class Institution extends JsonResource
             'name' => $this->name,
             'acronyme' => $this->acronyme,
             'iso_code' => $this->iso_code,
-            'logo' => storage_path('app/public/' . $this->logo),
+            'logo' => empty($this->logo) ? null : asset('storage' . $this->logo) ,
             'orther_attributes' => $this->orther_attributes
         ];
     }
