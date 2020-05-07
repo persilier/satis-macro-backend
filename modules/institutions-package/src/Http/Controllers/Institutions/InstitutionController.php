@@ -47,7 +47,7 @@ class InstitutionController extends ApiController
             'name' => 'required|string|max:100|unique:institutions,name',
             'acronyme' => 'required|string|max:255',
             'iso_code' => 'required|string|max:50',
-            'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orther_attributes' => 'array',
         ];
 
@@ -103,7 +103,7 @@ class InstitutionController extends ApiController
             'name' => 'required|string|max:100|unique:institutions,name,'.$institution->id,
             'acronyme' => 'required|string|max:255',
             'iso_code' => 'required|string|max:50',
-            'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orther_attributes' => 'array',
         ];
         $this->validate($request, $rules);
@@ -166,4 +166,5 @@ class InstitutionController extends ApiController
         $institution->delete();
         return new InstitutionResource($institution);
     }
+
 }

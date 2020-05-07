@@ -18,7 +18,7 @@ class Institution extends JsonResource
             'name' => $this->name,
             'acronyme' => $this->acronyme,
             'iso_code' => $this->iso_code,
-            'logo' => $this->logo,
+            'logo' => storage_path('app/public/' . $this->logo),
             'orther_attributes' => $this->orther_attributes
         ];
     }
