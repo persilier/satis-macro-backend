@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Claim Categories
  */
-Route::resource('claim-categories', 'ClaimCategory\ClaimCategoryController', ['except' => ['create', 'edit']]);
+Route::resource('claim-categories', 'ClaimCategory\ClaimCategoryController', ['except' => ['create']]);
 
 /**
  * Claim Objects
