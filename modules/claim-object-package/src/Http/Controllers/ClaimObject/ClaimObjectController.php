@@ -7,17 +7,18 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\SeverityLevel;
-
+use Satis2020\ClaimObjectPackage\Http\Resources\ClaimObject as ClaimObjectResource;
+use Satis2020\ClaimObjectPackage\Http\Resources\ClaimObjectCollection;
 class ClaimObjectController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectCollection
      */
     public function index()
     {
-        return response()->json(ClaimObject::with('claimCategory', 'severityLevel')->get(), 200);
+        return new ClaimObjectCollection(ClaimObject::all());
     }
 
     /**
@@ -27,14 +28,18 @@ class ClaimObjectController extends ApiController
      */
     public function create()
     {
-        //
+        $data = [
+            'claim_categories' => ClaimCategory::all(),
+            'severity_levels' => SeverityLevel::all()
+        ];
+        return response()->json($data);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectResource
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
@@ -44,54 +49,47 @@ class ClaimObjectController extends ApiController
             'description' => 'required',
             'claim_category_id' => 'required|exists:claim_categories,id',
             'severity_levels_id' => 'exists:severity_levels,id',
-            'time_limit' => 'integer'
+            'time_limit' => 'integer',
+            'others' => 'array'
         ];
 
         $this->validate($request, $rules);
+        if (!$request->has('severity_levels_id')) {
+            $claimCategory = ClaimCategory::find($request->claim_category_id);
+            if(empty($claimCategory->severityLevel))
+                return $this->errorResponse('Aucun niveau de gravité n\'est renseigné pour l\'objet ainsi pour la catégorie séléctionnée aussi.', 400);
 
-        $claimCategory = ClaimCategory::find($request->claim_category_id);
-        if(null != $claimCategory->severityLevel){
-            $severity  = $claimCategory->severityLevel->id;
-        }else{
-            $severity  = $request->severity_levels_id;
         }
 
-        $claimObject = ClaimObject::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'claim_category_id' => $request->claim_category_id,
-            'severity_levels_id'  => $severity,
-            'time_limit' => $request->time_limit,
-            'others' => $request->others
-        ]);
-
-        return response()->json($claimObject, 201);
+        $claimObject = ClaimObject::create($request->all());
+        return new ClaimObjectResource($claimObject);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \Satis2020\ServicePackage\Models\ClaimObject  $claimObject
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectResource
      */
     public function show(ClaimObject $claimObject)
     {
-        return response()->json($claimObject->load('claimCategory', 'severityLevel'), 200);
+        return new ClaimObjectResource($claimObject);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \Satis2020\ServicePackage\Models\ClaimObject  $claimObject
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectResource
      */
     public function edit(ClaimObject $claimObject)
     {
-        return response()->json([
-            'claimObject' => $claimObject->load('claimCategory', 'severityLevel'),
-            'claimCategories' => ClaimCategory::all(),
-            'severityLevels' => SeverityLevel::all()
-        ], 200);
+        $data = [
+            'claim_object' => $claimObject,
+            'claim_categories' => ClaimCategory::all(),
+            'severity_levels' => SeverityLevel::all()
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -99,7 +97,7 @@ class ClaimObjectController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param \Satis2020\ServicePackage\Models\ClaimObject $claimObject
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectResource
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, ClaimObject $claimObject)
@@ -109,30 +107,33 @@ class ClaimObjectController extends ApiController
             'description' => 'required',
             'claim_category_id' => 'required|exists:claim_categories,id',
             'severity_levels_id' => 'exists:severity_levels,id',
-            'time_limit' => 'integer'
+            'time_limit' => 'integer',
+            'others' => 'array'
         ];
 
         $this->validate($request, $rules);
-        if($claimObject->severityLevel){
+        if (!$request->has('severity_levels_id')) {
+            $claimCategory = ClaimCategory::find($request->claim_category_id);
+            if(empty($claimCategory->severityLevel))
+                return $this->errorResponse('Aucun niveau de gravité n\'est renseigné pour l\'objet ainsi pour la catégorie séléctionnée aussi.', 400);
 
         }
 
         $claimObject->update($request->only(['name', 'description', 'severity_levels_id', 'time_limit', 'claim_category_id', 'others']));
 
-        return response()->json($claimObject, 201);
+        return new ClaimObjectResource($claimObject);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param \Satis2020\ServicePackage\Models\ClaimObject $claimObject
-     * @return \Illuminate\Http\Response
+     * @return ClaimObjectResource
      * @throws \Exception
      */
     public function destroy(ClaimObject $claimObject)
     {
         $claimObject->delete();
-
-        return response()->json($claimObject, 200);
+        return new ClaimObjectResource($claimObject);
     }
 }

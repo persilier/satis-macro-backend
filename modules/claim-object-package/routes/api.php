@@ -20,5 +20,5 @@ Route::resource('claim-categories', 'ClaimCategory\ClaimCategoryController', ['e
 /**
  * Claim Objects
  */
-Route::resource('claim-objects', 'ClaimObject\ClaimObjectController', ['except' => ['create']]);
+Route::resource('claim-objects', 'ClaimObject\ClaimObjectController');
 
