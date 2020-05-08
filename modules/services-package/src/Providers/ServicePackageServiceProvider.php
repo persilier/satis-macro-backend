@@ -39,7 +39,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
+        /*Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
             $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
             dd($path);
             if(!File::exists($path)) abort(404);
@@ -48,7 +48,7 @@ class ServicePackageServiceProvider extends ServiceProvider
             $response = Response::make($file, 200);
             $response->header("Content-Type", $type);
             return $response;
-        });
+        });*/
         JsonResource::withoutWrapping();
         $this->registerResources();
     }
