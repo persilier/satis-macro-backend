@@ -1,6 +1,8 @@
 <?php
 namespace Satis2020\ServicePackage\Providers;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
