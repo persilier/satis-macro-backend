@@ -41,12 +41,10 @@ class ServicePackageServiceProvider extends ServiceProvider
     {
         Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
             $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
-
+            dd($path);
             if(!File::exists($path)) abort(404);
-
             $file = File::get($path);
             $type = File::mimeType($path);
-
             $response = Response::make($file, 200);
             $response->header("Content-Type", $type);
             return $response;
