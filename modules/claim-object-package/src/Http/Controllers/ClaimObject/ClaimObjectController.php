@@ -49,7 +49,21 @@ class ClaimObjectController extends ApiController
 
         $this->validate($request, $rules);
 
-        $claimObject = ClaimObject::create($request->only(['name', 'description', 'claim_category_id', 'severity_levels_id', 'time_limit', 'others']));
+        $claimCategory = ClaimCategory::find($request->claim_category_id);
+        if(null != $claimCategory->severityLevel){
+            $severity  = $claimCategory->severityLevel->id;
+        }else{
+            $severity  = $request->severity_levels_id;
+        }
+
+        $claimObject = ClaimObject::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'claim_category_id' => $request->claim_category_id,
+            'severity_levels_id'  => $severity,
+            'time_limit' => $request->time_limit,
+            'others' => $request->others
+        ]);
 
         return response()->json($claimObject, 201);
     }
@@ -99,6 +113,9 @@ class ClaimObjectController extends ApiController
         ];
 
         $this->validate($request, $rules);
+        if($claimObject->severityLevel){
+
+        }
 
         $claimObject->update($request->only(['name', 'description', 'severity_levels_id', 'time_limit', 'claim_category_id', 'others']));
 

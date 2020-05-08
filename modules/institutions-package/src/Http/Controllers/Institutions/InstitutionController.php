@@ -153,6 +153,16 @@ class InstitutionController extends ApiController
     }
 
     /**
+     * update the logo institution.
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getLogo(Request $request){
+
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param $slug

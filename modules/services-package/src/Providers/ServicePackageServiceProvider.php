@@ -1,6 +1,7 @@
 <?php
 namespace Satis2020\ServicePackage\Providers;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
@@ -36,6 +37,18 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
+            $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
+
+            if(!File::exists($path)) abort(404);
+
+            $file = File::get($path);
+            $type = File::mimeType($path);
+
+            $response = Response::make($file, 200);
+            $response->header("Content-Type", $type);
+            return $response;
+        });
         JsonResource::withoutWrapping();
         $this->registerResources();
     }
