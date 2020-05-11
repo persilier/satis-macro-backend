@@ -85,7 +85,7 @@ class ClaimObjectController extends ApiController
     public function edit(ClaimObject $claimObject)
     {
         $data = [
-            'claim_object' => $claimObject,
+            'claim_object' => $claimObject->load('claimCategory', 'severityLevel'),
             'claim_categories' => ClaimCategory::all(),
             'severity_levels' => SeverityLevel::all()
         ];
