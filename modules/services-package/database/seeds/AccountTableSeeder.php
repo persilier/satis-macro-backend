@@ -2,12 +2,12 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Satis2020\ServicePackage\Models\User;
-use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\AccountType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class UsersTableSeeder extends Seeder
+class AccountTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,8 +17,8 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        User::truncate();
-        User::flushEventListeners();
-        factory(\Satis2020\ServicePackage\Models\User::class, 2)->create();
+        Account::truncate();
+        Account::flushEventListeners();
+        factory(\Satis2020\ServicePackage\Models\Account::class, 15)->create();
     }
 }

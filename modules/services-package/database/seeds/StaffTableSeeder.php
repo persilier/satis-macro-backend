@@ -17,9 +17,8 @@ class StaffTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Identite::truncate();
         Staff::truncate();
         Staff::flushEventListeners();
-        factory(\Satis2020\ServicePackage\Models\Staff::class, 20)->create();
+        factory(\Satis2020\ServicePackage\Models\Staff::class, 15)->create();
     }
 }

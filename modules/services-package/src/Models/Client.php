@@ -16,7 +16,7 @@ class Client extends Model
      *
      * @var array
      */
-    protected $casts = ['others' => 'array', 'account_number' => 'array'];
+    protected $casts = ['others' => 'array'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -31,17 +31,8 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-         'account_number', 'type_clients_id', 'category_clients_id', 'units_id', 'identites_id', 'institutions_id', 'others'
+         'type_clients_id', 'category_clients_id', 'identites_id', 'others'
     ];
-
-    /**
-     * Get the type_clients associated with the institution
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function institution()
-    {
-        return $this->belongsTo(Institution::class, 'institutions_id');
-    }
 
     /**
      * Get the type_client associated with the type client
@@ -61,18 +52,18 @@ class Client extends Model
         return $this->belongsTo(CategoryClient::class, 'category_clients_id');
     }
 
-    /**
-     * Get the unit associated with the unit
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'units_id');
-    }
-
     public function identite()
     {
         return $this->belongsTo(Identite::class, 'identites_id');
+    }
+
+    /**
+     * Get the accounts associated with the client
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
     }
 
 

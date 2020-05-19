@@ -38,7 +38,7 @@ class Staff extends Model
      * @var array
      */
     protected $fillable = [
-        'identite_id', 'position_id', 'unit_id', 'others'
+        'identite_id', 'position_id', 'unit_id', 'others', 'institution_id'
     ];
 
     /**
@@ -83,6 +83,15 @@ class Staff extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    /**
+     * Get the institution associated with the staff
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
     }
 
 }

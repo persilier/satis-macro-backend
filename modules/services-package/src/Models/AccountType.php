@@ -1,15 +1,15 @@
 <?php
+
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 
-class CategoryClient extends Model
+class AccountType extends Model
 {
-
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
     /**
@@ -41,5 +41,14 @@ class CategoryClient extends Model
      * @var array
      */
     protected $casts = ['name' => 'json', 'description'=> 'json'];
+
+    /**
+     * Get the accounts associated with the qccountType
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
 
 }

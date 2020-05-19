@@ -38,7 +38,7 @@ class SeverityLevel extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'time_limit' , 'others'
+        'name', 'description', 'color' , 'others'
     ];
 
     /**
@@ -48,15 +48,6 @@ class SeverityLevel extends Model
     public function claimObjects()
     {
         return $this->hasMany(ClaimObject::class, 'severity_levels_id', 'id');
-    }
-
-    /**
-     * Get the claimCategory associated with the claimCategory
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function claimCategories()
-    {
-        return $this->hasMany(ClaimCategory::class, 'severity_levels_id', 'id');
     }
 
 }

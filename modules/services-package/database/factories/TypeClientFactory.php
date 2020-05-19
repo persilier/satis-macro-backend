@@ -1,7 +1,6 @@
 <?php
 
 /** @var Factory $factory */
-
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;
@@ -17,18 +16,11 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(\Satis2020\ServicePackage\Models\UnitType::class, function (Faker $faker) {
-
-    $unitTypes = \Satis2020\ServicePackage\Models\UnitType::all();
-
-    $parent_id = $unitTypes->count() > 0 && $faker->randomElement([true, false])
-        ? $unitTypes->random()->id
-        : null;
+$factory->define(\Satis2020\ServicePackage\Models\TypeClient::class, function (Faker $faker) {
 
     return [
-        'id' => (string)Str::uuid(),
+        'id' => (string) Str::uuid(),
         'name' => $faker->word,
         'description' => $faker->text,
-        'parent_id' => $parent_id
     ];
 });

@@ -24,7 +24,9 @@ class PositionTableSeeder extends Seeder
 
                 $collection = collect([]);
 
-                \Satis2020\ServicePackage\Models\Institution::all()->random(mt_rand(1, 4))->map(function ($item, $key) use ($collection) {
+                $institutions = \Satis2020\ServicePackage\Models\Institution::all();
+
+                $institutions->random(mt_rand(1, $institutions->count()))->map(function ($item, $key) use ($collection) {
                     $collection->push($item->id);
                     return $item;
                 });

@@ -1,7 +1,6 @@
 <?php
 
 /** @var Factory $factory */
-
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;
@@ -17,18 +16,15 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(\Satis2020\ServicePackage\Models\UnitType::class, function (Faker $faker) {
+$factory->define(\Satis2020\ServicePackage\Models\Account::class, function (Faker $faker) {
 
-    $unitTypes = \Satis2020\ServicePackage\Models\UnitType::all();
-
-    $parent_id = $unitTypes->count() > 0 && $faker->randomElement([true, false])
-        ? $unitTypes->random()->id
-        : null;
+    $clients = \Satis2020\ServicePackage\Models\Client::doesntHave('accounts')->get();
 
     return [
-        'id' => (string)Str::uuid(),
-        'name' => $faker->word,
-        'description' => $faker->text,
-        'parent_id' => $parent_id
+        'id' => (string) Str::uuid(),
+        'client_id' => $clients->random()->id,
+        'institution_id' => \Satis2020\ServicePackage\Models\Institution::all()->random()->id,
+        'account_type_id' => \Satis2020\ServicePackage\Models\AccountType::all()->random()->id,
+        'number' => $faker->bankAccountNumber,
     ];
 });

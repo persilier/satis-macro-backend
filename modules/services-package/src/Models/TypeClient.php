@@ -19,8 +19,7 @@ class TypeClient extends Model
      */
     public $fillable = [
         'name',
-        'description',
-        'institutions_id'
+        'description'
     ];
 
     /**
@@ -42,14 +41,6 @@ class TypeClient extends Model
      * @var array
      */
     protected $casts = ['name' => 'json', 'description'=> 'json'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function institution()
-    {
-        return $this->belongsTo(Institution::class, 'institutions_id', 'id');
-    }
 
 
 }

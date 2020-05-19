@@ -2,15 +2,15 @@
 
 namespace Satis2020\ServicePackage\Models;
 
-use Satis2020\ServicePackage\Models\ClaimObject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class ClaimCategory extends Model
+class InstitutionType extends Model
 {
+
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
     /**
@@ -18,13 +18,13 @@ class ClaimCategory extends Model
      *
      * @var array
      */
-    public $translatable = ['name', 'description', 'others'];
+    public $translatable = ['description'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['name' => 'json', 'description'=> 'json', 'others'=> 'json'];
+    protected $casts = ['description'=> 'json'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -39,15 +39,16 @@ class ClaimCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'others'
+        'name', 'description', 'application_type', 'maximum_number_of_institutions'
     ];
 
     /**
-     * Get the claimObjects associated with the claimCategory
+     * Get the institutions associated with the institution_type
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function claimObjects()
+    public function institutions()
     {
-        return $this->hasMany(ClaimObject::class);
+        return $this->hasMany(Institution::class);
     }
+
 }

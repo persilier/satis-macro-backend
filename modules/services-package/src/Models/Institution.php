@@ -32,7 +32,7 @@ class Institution extends Model
      * @var array
      */
     protected $fillable = [
-        'slug', 'name', 'acronyme', 'iso_code', 'logo', 'orther_attributes'
+        'slug', 'name', 'acronyme', 'iso_code', 'logo', 'institution_type_id', 'orther_attributes'
     ];
 
     /**
@@ -59,24 +59,6 @@ class Institution extends Model
     }
 
     /**
-     * Get the type_clients associated with the institution
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function type_clients()
-    {
-        return $this->hasMany(TypeClient::class, 'institutions_id');
-    }
-
-    /**
-     * Get the category_clients associated with the institution
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function category_clients()
-    {
-        return $this->hasMany(CategoryClient::class, 'institutions_id');
-    }
-
-    /**
      * Get the category_clients associated with the institution
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -92,6 +74,33 @@ class Institution extends Model
     public function positions()
     {
         return $this->belongsToMany(Position::class);
+    }
+
+    /**
+     * Get the institutionType associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function institutionType()
+    {
+        return $this->belongsTo(InstitutionType::class);
+    }
+
+    /**
+     * Get the staff associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function staff()
+    {
+        return $this->hasMany(Staff::class);
+    }
+
+    /**
+     * Get the accounts associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
     }
 
 }

@@ -38,7 +38,7 @@ class UnitType extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'others'
+        'name', 'description', 'parent_id', 'others'
     ];
 
     /**
@@ -48,6 +48,24 @@ class UnitType extends Model
     public function units()
     {
         return $this->hasMany(Unit::class);
+    }
+
+    /**
+     * Get the unitType'children associated with the unitType
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(UnitType::class, 'parent_id');
+    }
+
+    /**
+     * Get the unitType'parent associated with the unitType
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(UnitType::class, 'parent_id');
     }
 
 }

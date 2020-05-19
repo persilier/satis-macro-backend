@@ -15,15 +15,12 @@ class User extends Authenticate
 {
     use Notifiable, HasApiTokens, UuidAsId, SoftDeletes, SecureDelete, HasRoles;
 
-    const VERIFIED_USER = '1';
-    const UNVERIFIED_USER = '0';
-
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'disabled_at'];
 
     /**
      * The table associated with the model.
@@ -38,7 +35,7 @@ class User extends Authenticate
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'email', 'verified', 'verification_token', 'identite_id'
+        'username', 'password', 'identite_id', 'disabled_at'
     ];
 
     /**
@@ -47,17 +44,12 @@ class User extends Authenticate
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'verification_token',
+        'password'
     ];
 
-    public function isVerified()
+    public function isEnabled()
     {
-        return $this->verified == User::VERIFIED_USER;
-    }
-
-    public static function generateVerificationToken()
-    {
-        return Str::random(40);
+        return is_null($this->disabled_at);
     }
 
     public function identite()
@@ -74,21 +66,6 @@ class User extends Authenticate
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first();
-    }
-
-    public function lastname()
-    {
-        return $this->identite->lastname;
-    }
-
-    public function firstname()
-    {
-        return $this->identite->firstname;
-    }
-
-    public function email()
-    {
-        return $this->identite->email;
     }
 
     public function role()

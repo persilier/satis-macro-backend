@@ -19,14 +19,16 @@ use Satis2020\ServicePackage\Models\User;
 */
 
 $factory->define(User::class, function (Faker $faker) {
-    $staff = Staff::all()->random();
+
+    $staff = \Satis2020\ServicePackage\Models\Staff::with('identite.user')->get()->filter(function ($value, $key) {
+        return is_null($value->identite->user);
+    })->random();
+
     return [
         'id' => (string) Str::uuid(),
         'username' => $staff->identite->email[0],
         'password' => bcrypt('123456789'),
-        'remember_token' => Str::random(10),
-        'verified' => $verified = $faker->randomElement([User::UNVERIFIED_USER, User::VERIFIED_USER]),
-        'verification_token' => $verified == User::VERIFIED_USER ? null : User::generateVerificationToken(),
         'identite_id' => $staff->identite->id,
+        'disabled_at' => null
     ];
 });

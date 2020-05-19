@@ -21,23 +21,32 @@ use Satis2020\ServicePackage\Models\Identite;
 
 $factory->define(\Satis2020\ServicePackage\Models\Staff::class, function (Faker $faker) {
 
-    $institution = \Satis2020\ServicePackage\Models\Institution::with(['units', 'positions'])->get()->filter(function ($value, $key) {
-        return count($value->units) !== 0 && count($value->positions) !== 0;
-    })->random();
+    $app_nature = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-nature')->first()->data);
 
-    $sexe = $faker->randomElement(['male', 'female']);
-    $identite = Identite::create([
-        'firstname' => $faker->firstName($sexe),
-        'lastname' => $faker->lastName,
-        'sexe' => strtoupper(substr($sexe, 0, 1)),
-        'telephone' => [$faker->phoneNumber],
-        'email' => [$faker->safeEmail]
-    ]);
+    $institution = $app_nature === "hub"
+        ? \Satis2020\ServicePackage\Models\Institution::all()->random()
+        : \Satis2020\ServicePackage\Models\Institution::with(['units', 'positions'])->get()->filter(function ($value, $key) {
+            return count($value->units) !== 0 && count($value->positions) !== 0;
+        })->random();
+
+    $unit = null;
+    if ($app_nature === "hub" && \Satis2020\ServicePackage\Models\Unit::all()->count() > 0) {
+        $unit = \Satis2020\ServicePackage\Models\Unit::all()->random();
+    } elseif ($app_nature !== "hub") {
+        $unit = Arr::random($institution->units->all());
+    }
+
+    $identites = \Satis2020\ServicePackage\Models\Identite::with('staff')->get()->filter(function ($value, $key) {
+        return is_null($value->staff);
+    });
 
     return [
         'id' => (string)Str::uuid(),
-        'identite_id' => $identite->id,
-        'position_id' => Arr::random($institution->positions->all())->id,
-        'unit_id' => Arr::random($institution->units->all())->id,
+        'identite_id' => $identites->random()->id,
+        'position_id' => $app_nature === "hub" ? \Satis2020\ServicePackage\Models\Position::all()->random()->id : Arr::random($institution->positions->all())->id,
+        'institution_id' => $institution->id,
+        'unit_id' => is_null($unit)
+            ? null
+            : $unit->id,
     ];
 });

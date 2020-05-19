@@ -38,7 +38,7 @@ class Unit extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'unit_type_id', 'institution_id', 'others', 'lead_id'
+        'name', 'description', 'unit_type_id', 'institution_id', 'others', 'lead_id', 'parent_id'
     ];
 
     /**
@@ -75,6 +75,24 @@ class Unit extends Model
     public function staffs()
     {
         return $this->hasMany(Staff::class);
+    }
+
+    /**
+     * Get the unit'children associated with the unit
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(Unit::class, 'parent_id');
+    }
+
+    /**
+     * Get the unit'parent associated with the unit
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Unit::class, 'parent_id');
     }
 
 }

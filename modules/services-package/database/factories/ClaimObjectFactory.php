@@ -22,6 +22,8 @@ $factory->define(\Satis2020\ServicePackage\Models\ClaimObject::class, function (
         'id' => (string) Str::uuid(),
         'name' => $faker->word,
         'description' => $faker->text,
-        'claim_category_id' => \Satis2020\ServicePackage\Models\ClaimCategory::all()->random()->id
+        'claim_category_id' => \Satis2020\ServicePackage\Models\ClaimCategory::all()->random()->id,
+        'severity_levels_id' => \Satis2020\ServicePackage\Models\SeverityLevel::all()->random()->id,
+        'time_limit' => $faker->numberBetween(1, 7)
     ];
 });
