@@ -14,7 +14,7 @@ class RemoveTimeLimitAndSeverityLevelsIdColumnsFromClaimCategoriesTable extends 
     public function up()
     {
         Schema::table('claim_categories', function (Blueprint $table) {
-            $table->dropIndex('claim_categories_severity_levels_id_foreign');
+            $table->dropForeign('claim_categories_severity_levels_id_foreign');
         });
 
         Schema::table('claim_categories', function (Blueprint $table) {
