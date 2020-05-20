@@ -22,7 +22,7 @@ class MetadataTableSeeder extends Seeder
         Metadata::truncate();
         Metadata::flushEventListeners();
 
-        $nature = config('app.nature');
+        $nature = env('APP_NATURE', 'pro');
         $sms_parameters = [
             'senderID' => 'default',
             'username' => "default",
