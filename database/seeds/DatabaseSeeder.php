@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\MetadataTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\MetadataTableSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstitutionTypeTableSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\CategoryClientTableSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\TypeClientTableSeeder::class);

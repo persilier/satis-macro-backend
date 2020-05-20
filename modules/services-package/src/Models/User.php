@@ -13,6 +13,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticate
 {
+    const VERIFIED_USER = '1';
+    const UNVERIFIED_USER = '0';
     use Notifiable, HasApiTokens, UuidAsId, SoftDeletes, SecureDelete, HasRoles;
 
     /**

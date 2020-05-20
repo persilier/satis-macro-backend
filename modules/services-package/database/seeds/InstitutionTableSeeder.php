@@ -25,7 +25,6 @@ class InstitutionTableSeeder extends Seeder
         Institution::flushEventListeners();
 
         $app_nature = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-nature')->first()->data);
-
         switch ($app_nature) {
 
             case 'pro':

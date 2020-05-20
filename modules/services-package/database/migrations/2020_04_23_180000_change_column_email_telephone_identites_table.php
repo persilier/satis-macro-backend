@@ -14,6 +14,11 @@ class ChangeColumnEmailTelephoneIdentitesTable extends Migration
     public function up()
     {
         Schema::table('identites', function (Blueprint $table) {
+            $table->dropIndex('identites_telephone_unique');
+            $table->dropIndex('identites_email_unique');
+        });
+
+        Schema::table('identites', function (Blueprint $table) {
             $table->json('email')->nullable()->change();
             $table->json('telephone')->nullable()->change();
         });
