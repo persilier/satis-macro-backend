@@ -17,7 +17,7 @@ class UnitType extends Model
      *
      * @var array
      */
-    public $translatable = ['name', 'description', 'others'];
+    public $translatable = ['name', 'description', 'parent_id',  'others'];
     /**
      * The attributes that should be cast to native types.
      *

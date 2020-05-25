@@ -59,6 +59,7 @@ class User extends Authenticate
         return $this->belongsTo(Identite::class, 'identite_id');
     }
 
+
     /**
      * Find the user instance for the given username.
      *

@@ -17,7 +17,6 @@ class User extends JsonResource
         return [
             'id'    => $this->id,
             'username' => $this->username,
-            'verified' => $this->verified,
             'identite' => new IdentiteResource($this->identite),
             'role'     => new RoleResource($this->roles->first()),
         ];

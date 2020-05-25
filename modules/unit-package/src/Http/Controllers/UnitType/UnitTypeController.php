@@ -15,7 +15,7 @@ class UnitTypeController extends ApiController
      */
     public function index()
     {
-        return response()->json(UnitType::all(), 200);
+        return response()->json(UnitType::with(['parent','children'])->get(), 200);
     }
 
     /**
@@ -39,13 +39,12 @@ class UnitTypeController extends ApiController
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'parent_id' => 'exists:unit_types,parent_id'
         ];
 
         $this->validate($request, $rules);
-
-        $unitType = UnitType::create($request->only(['name', 'description', 'others']));
-
+        $unitType = UnitType::create($request->only(['name', 'description','parent_id', 'others']));
         return response()->json($unitType, 201);
     }
 
@@ -68,7 +67,10 @@ class UnitTypeController extends ApiController
      */
     public function edit(UnitType $unitType)
     {
-        //
+        return response()->json([
+            'unitType' => $unitType->load('parent'),
+            'unitTypes' => UnitType::all()
+        ], 200);
     }
 
     /**
@@ -83,13 +85,12 @@ class UnitTypeController extends ApiController
     {
         $rules = [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'parent_id' => 'exists:unit_types,parent_id'
         ];
 
         $this->validate($request, $rules);
-
-        $unitType->update($request->only(['name', 'description', 'others']));
-
+        $unitType->update($request->only(['name','parent_id', 'description', 'others']));
         return response()->json($unitType, 201);
     }
 
@@ -102,8 +103,7 @@ class UnitTypeController extends ApiController
      */
     public function destroy(UnitType $unitType)
     {
-        $unitType->secureDelete('units');
-
+        $unitType->secureDelete('children','units');
         return response()->json($unitType, 200);
     }
 }

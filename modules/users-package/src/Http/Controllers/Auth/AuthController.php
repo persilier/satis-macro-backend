@@ -4,9 +4,11 @@ namespace Satis2020\UserPackage\Http\Controllers\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\UserPackage\Http\Resources\User as UserResource;
 class AuthController extends ApiController
 {
+    use DataUserNature;
 
     public function __construct()
     {
@@ -22,8 +24,9 @@ class AuthController extends ApiController
     {
         $user = Auth::user();
         return (new UserResource($user))->additional([
+            "app-nature" => $this->getNatureApp(),
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
-            //"menu" => $this->getMenus()
+            'institution'=> $this->getInstitution($user->identite->staff->institution_id)
         ]);
     }
 
