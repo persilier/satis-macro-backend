@@ -11,12 +11,13 @@ class UnitTypeController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        $this->middleware('permission:can-list-unit-type')->only(['index']);
-        $this->middleware('permission:can-create-unit-type')->only(['store']);
-        $this->middleware('permission:can-show-unit-type')->only(['show']);
-        $this->middleware('permission:can-update-unit-type')->only(['update']);
-        $this->middleware('permission:can-delete-unit-type')->only(['destroy']);
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-unit-type')->only(['index']);
+        $this->middleware('permission:create-unit-type')->only(['store']);
+        $this->middleware('permission:show-unit-type')->only(['show']);
+        $this->middleware('permission:edit-unit-type')->only(['edit']);
+        $this->middleware('permission:update-unit-type')->only(['update']);
+        $this->middleware('permission:delete-unit-type')->only(['destroy']);
     }
     /**
      * Display a listing of the resource.

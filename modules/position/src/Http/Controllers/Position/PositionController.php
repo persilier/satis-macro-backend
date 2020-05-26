@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\PositionPackage\Http\Controllers\Position;
+namespace Satis2020\Position\Http\Controllers\Position;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
@@ -9,6 +9,20 @@ use Illuminate\Http\Request;
 
 class PositionController extends ApiController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:list-position')->only(['index']);
+        $this->middleware('permission:show-position')->only(['show']);
+        $this->middleware('permission:store-position')->only(['store']);
+        $this->middleware('permission:update-position')->only(['update']);
+        $this->middleware('permission:destroy-position')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +30,7 @@ class PositionController extends ApiController
      */
     public function index()
     {
-        return response()->json(Position::with(['institutions'])->get(), 200);
+        return response()->json(Position::all(), 200);
     }
 
     /**
@@ -41,14 +55,9 @@ class PositionController extends ApiController
         $rules = [
             'name' => 'required',
             'description' => 'required',
-            'institutions' => 'required|array'
         ];
 
         $this->validate($request, $rules);
-
-        foreach ($request->institutions as $institution_id){
-            Institution::findOrFail($institution_id);
-        }
 
         $position = Position::create($request->only(['name', 'description', 'others']));
         $position->institutions()->sync($request->institutions);
@@ -64,7 +73,7 @@ class PositionController extends ApiController
      */
     public function show(Position $position)
     {
-        return response()->json($position->load('institutions'), 200);
+        return response()->json($position, 200);
     }
 
     /**
@@ -75,10 +84,7 @@ class PositionController extends ApiController
      */
     public function edit(Position $position)
     {
-        return response()->json([
-            'position' => $position->load('institutions'),
-            'institutions' => Institution::all()
-        ], 200);
+
     }
 
     /**
@@ -94,17 +100,11 @@ class PositionController extends ApiController
         $rules = [
             'name' => 'required',
             'description' => 'required',
-            'institutions' => 'required|array'
         ];
 
         $this->validate($request, $rules);
 
-        foreach ($request->institutions as $institution_id){
-            Institution::findOrFail($institution_id);
-        }
-
         $position->update($request->only(['name', 'description', 'others']));
-        $position->institutions()->sync($request->institutions);
 
         return response()->json($position, 201);
     }
@@ -118,7 +118,7 @@ class PositionController extends ApiController
      */
     public function destroy(Position $position)
     {
-        $position->delete();
+        $position->secureDelete('staffs');
 
         return response()->json($position, 200);
     }

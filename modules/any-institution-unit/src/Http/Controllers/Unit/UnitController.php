@@ -14,12 +14,12 @@ class UnitController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        /*$this->middleware('permission:can-list-any-unit')->only(['index']);
-        $this->middleware('permission:can-create-any-unit')->only(['store']);
-        $this->middleware('permission:can-show-any-unit')->only(['show']);
-        $this->middleware('permission:can-update-any-unit')->only(['update']);
-        $this->middleware('permission:can-delete-any-unit')->only(['destroy']);*/
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-any-unit')->only(['index']);
+        $this->middleware('permission:create-any-unit')->only(['store']);
+        $this->middleware('permission:show-any-unit')->only(['show']);
+        $this->middleware('permission:update-any-unit')->only(['update']);
+        $this->middleware('permission:delete-any-unit')->only(['destroy']);
 
     }
     /**
@@ -74,24 +74,24 @@ class UnitController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param Unit $any_unit
+     * @param Unit $unit
      * @return \Illuminate\Http\Response
      */
-    public function show(Unit $any_unit)
+    public function show(Unit $unit)
     {
-        return response()->json($any_unit, 200);
+        return response()->json($unit, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Unit $any_unit
+     * @param Unit $unit
      * @return \Illuminate\Http\Response
      */
-    public function edit(Unit $any_unit)
+    public function edit(Unit $unit)
     {
         return response()->json([
-            'unit' => $any_unit->load('unitType', 'institution', 'parent', 'children', 'lead'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'lead' => Staff::all(),
@@ -103,19 +103,19 @@ class UnitController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Unit $any_unit
+     * @param Unit $unit
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, Unit $any_unit)
+    public function update(Request $request, Unit $unit)
     {
         $rules = [
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
-            'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($request, $any_unit) {
-                $query->where('institution_id', $request->institution_id)->where('unit_id', $any_unit->id);
+            'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {
+                $query->where('institution_id', $request->institution_id)->where('unit_id', $unit->id);
             })],
             'parent_id' =>  [Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
@@ -124,9 +124,9 @@ class UnitController extends ApiController
 
         $this->validate($request, $rules);
 
-        $any_unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others']));
+        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others']));
 
-        return response()->json($any_unit, 201);
+        return response()->json($unit, 201);
     }
 
     /**

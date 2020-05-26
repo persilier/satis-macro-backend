@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 /**
  * Units
  */
-Route::resource('any-units', 'Unit\UnitController');
+Route::resource('units', 'Unit\UnitController');

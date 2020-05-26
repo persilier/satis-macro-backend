@@ -20,11 +20,11 @@ class UnitController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('permission:can-list-my-unit')->only(['index']);
-        $this->middleware('permission:can-create-my-unit')->only(['store']);
-        $this->middleware('permission:can-show-my-unit')->only(['show']);
-        $this->middleware('permission:can-update-my-unit')->only(['update']);
-        $this->middleware('permission:can-delete-my-unit')->only(['destroy']);
+        $this->middleware('permission:list-my-unit')->only(['index']);
+        $this->middleware('permission:create-my-unit')->only(['store']);
+        $this->middleware('permission:show-my-unit')->only(['show']);
+        $this->middleware('permission:update-my-unit')->only(['update']);
+        $this->middleware('permission:delete-my-unit')->only(['destroy']);
         $this->user = Auth::user();
         $this->institution = $this->getInstitution($this->user->identite->staff->institution_id);
     }

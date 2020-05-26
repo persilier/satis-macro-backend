@@ -23,7 +23,7 @@
         "satis2020/institutions-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
-        "satis2020/position-package": "^1.0",
+        "satis2020/position": "^1.0",
         "satis2020/severity-level-package": "^1.0",
         "satis2020/staff-package": "^1.0",
         "satis2020/users-package": "^1.0"
@@ -160,7 +160,7 @@
         },
         {
             "type": "path",
-            "url": "modules/position-package/",
+            "url": "modules/position/",
             "options": {
                 "symlink": true
             }

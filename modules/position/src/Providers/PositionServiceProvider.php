@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Satis2020\PositionPackage\Providers;
+namespace Satis2020\Position\Providers;
 
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class PositionPackageServiceProvider extends ServiceProvider
+class PositionServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -58,7 +58,7 @@ class PositionPackageServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\PositionPackage\Http\Controllers',
+            'namespace' => 'Satis2020\Position\Http\Controllers',
             'middleware' => ['api']
         ];
     }

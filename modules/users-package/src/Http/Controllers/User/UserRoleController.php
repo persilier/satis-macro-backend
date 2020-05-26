@@ -27,7 +27,7 @@ class UserRoleController extends ApiController
      */
     public function index(User $user)
     {
-        return new RoleResource($user->roles->first());
+        return response()->json($user->roles, 200);
     }
 
     /**
@@ -46,8 +46,8 @@ class UserRoleController extends ApiController
         $this->validate($request, $rules);
 
         $role = Role::where('name', $request->role)->where('guard_name', 'api')->firstOrFail();
-        $user->roles()->sync($role);
-        return new RoleResource($user->roles->first());
+        $user->assignRole($role);
+        return response()->json($user->roles, 201);
     }
 
 }
