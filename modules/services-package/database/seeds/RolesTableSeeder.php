@@ -29,7 +29,6 @@ class RolesTableSeeder extends Seeder
         Role::flushEventListeners();
 
         $nature = env('APP_NATURE');
-        dd($nature);
 
         // create positions permissions
         Permission::create(['name' => 'list-position', 'guard_name' => 'api']);
