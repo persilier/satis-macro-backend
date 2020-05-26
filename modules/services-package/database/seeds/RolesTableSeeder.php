@@ -28,7 +28,8 @@ class RolesTableSeeder extends Seeder
         DB::table('permissions')->truncate();
         Role::flushEventListeners();
 
-        $nature = env('APP_NATURE', 'MACRO');
+        $nature = env('APP_NATURE');
+        dd($nature);
 
         // create positions permissions
         Permission::create(['name' => 'list-position', 'guard_name' => 'api']);
