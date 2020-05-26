@@ -22,10 +22,10 @@ class RolesTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Role::truncate();
+        DB::table('roles')->truncate();
         DB::table('model_has_roles')->truncate();
         DB::table('role_has_permissions')->truncate();
-        Permission::truncate();
+        DB::table('permissions')->truncate();
         Role::flushEventListeners();
 
         $nature = env('APP_NATURE', 'MACRO');
