@@ -66,6 +66,7 @@ class RolesTableSeeder extends Seeder
             ]);
 
             // associate roles to admin observatory
+            User::find('94656cd3-d0c7-45bb-83b6-5ded02ded07b')->assignRole($role_admin_observatory);
         }
 
         if ($nature === 'PRO') {
