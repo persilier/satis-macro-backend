@@ -23,6 +23,9 @@ class RolesTableSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Role::truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('role_has_permissions')->truncate();
+        Permission::truncate();
         Role::flushEventListeners();
 
         $nature = env('APP_NATURE', 'MACRO');
