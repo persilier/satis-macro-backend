@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/position-package",
-  "description": "satis2020/position-package est un module qui va permettre de gérer les postes occupés par les agents des institutions",
+  "name": "satis2020/position",
+  "description": "satis2020/position est un module qui va permettre de gérer les postes occupés par les agents des institutions",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -20,14 +20,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\PositionPackage\\": "src/",
-      "Satis2020\\PositionPackage\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\Position\\": "src/",
+      "Satis2020\\Position\\Database\\Seeds\\": "database/seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\PositionPackage\\Providers\\PositionPackageServiceProvider"
+        "Satis2020\\Position\\Providers\\PositionServiceProvider"
       ]
     }
   }

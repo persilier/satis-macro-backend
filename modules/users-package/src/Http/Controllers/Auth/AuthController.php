@@ -13,6 +13,8 @@ class AuthController extends ApiController
     public function __construct()
     {
         parent::__construct();
+
+        $this->middleware('auth:api');
     }
 
     /**
@@ -23,6 +25,7 @@ class AuthController extends ApiController
     public function login()
     {
         $user = Auth::user();
+
         return (new UserResource($user))->additional([
             "app-nature" => $this->getNatureApp(),
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),

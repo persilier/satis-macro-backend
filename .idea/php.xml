@@ -155,6 +155,7 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/claim-object-package" />
       <path value="$PROJECT_DIR$/vendor/satis2020/severity-level-package" />
       <path value="$PROJECT_DIR$/vendor/nesbot/carbon" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/position" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
