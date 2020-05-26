@@ -49,7 +49,7 @@ class RolesTableSeeder extends Seeder
             ]);
 
             // associate roles to admin holding
-            User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole(['admin-holding']);
+            User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole($role_admin_holding);
 
             // associate roles to admin filial
         }
