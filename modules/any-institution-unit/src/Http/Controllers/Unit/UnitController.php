@@ -16,7 +16,7 @@ class UnitController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-any-unit')->only(['index']);
-        $this->middleware('permission:create-any-unit')->only(['create','store']);
+        $this->middleware('permission:store-any-unit')->only(['create','store']);
         $this->middleware('permission:show-any-unit')->only(['show']);
         $this->middleware('permission:update-any-unit')->only(['edit','update']);
         $this->middleware('permission:delete-any-unit')->only(['destroy']);

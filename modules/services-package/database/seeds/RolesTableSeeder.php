@@ -43,7 +43,6 @@ class RolesTableSeeder extends Seeder
         Permission::create(['name' => 'update-unit-type', 'guard_name' => 'api']);
         Permission::create(['name' => 'destroy-unit-type', 'guard_name' => 'api']);
         Permission::create(['name' => 'show-unit-type', 'guard_name' => 'api']);
-        Permission::create(['name' => 'edit-unit-type', 'guard_name' => 'api']);
 
         // create units permissions for any institutions
         Permission::create(['name' => 'list-any-unit', 'guard_name' => 'api']);
@@ -51,6 +50,34 @@ class RolesTableSeeder extends Seeder
         Permission::create(['name' => 'update-any-unit', 'guard_name' => 'api']);
         Permission::create(['name' => 'destroy-any-unit', 'guard_name' => 'api']);
         Permission::create(['name' => 'show-any-unit', 'guard_name' => 'api']);
+
+        // create units permissions for my institutions
+        Permission::create(['name' => 'list-my-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-my-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-my-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-my-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-my-unit', 'guard_name' => 'api']);
+
+        // create units permissions for without link any institutions
+        Permission::create(['name' => 'list-without-link-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-without-link-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-without-link-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-without-link-unit', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-without-link-unit', 'guard_name' => 'api']);
+
+        // create types client permissions
+        Permission::create(['name' => 'list-type-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-type-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-type-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-type-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-type-client', 'guard_name' => 'api']);
+
+        // create categories client permissions
+        Permission::create(['name' => 'list-category-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-category-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-category-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-category-client', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-category-client', 'guard_name' => 'api']);
 
         if ($nature === 'MACRO') {
             // create admin roles
@@ -60,17 +87,19 @@ class RolesTableSeeder extends Seeder
             // associate permissions to roles
             $role_admin_holding->syncPermissions([
                 'list-position', 'store-position', 'update-position', 'destroy-position', 'show-position',
-                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type','edit-unit-type',
+                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type',
                 'list-any-unit', 'store-any-unit', 'update-any-unit', 'destroy-any-unit', 'show-any-unit',
+                'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
+                'list-type-client', 'store-type-client', 'update-type-client', 'destroy-type-client', 'show-type-client',
             ]);
 
             $role_admin_filial->syncPermissions([
-
+                'list-my-unit', 'store-my-unit', 'update-my-unit', 'destroy-my-unit', 'show-my-unit',
             ]);
 
             // associate roles to admin holding
             User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole($role_admin_holding);
-
+            User::find('ceefcca8-35c6-4e62-9809-42bf6b9adb20')->assignRole($role_admin_filial);
             // associate roles to admin filial
         }
 
@@ -80,7 +109,8 @@ class RolesTableSeeder extends Seeder
             // associate permissions to roles
             $role_admin_observatory->syncPermissions([
                 'list-position', 'store-position', 'update-position', 'destroy-position', 'show-position',
-                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type','edit-unit-type',
+                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type',
+                'list-without-link-unit', 'store-without-link-unit', 'update-without-link-unit', 'destroy-without-link-unit', 'show-without-link-unit',
             ]);
 
             // associate roles to admin observatory
@@ -93,11 +123,14 @@ class RolesTableSeeder extends Seeder
             // associate permissions to roles
             $role_admin_pro->syncPermissions([
                 'list-position', 'store-position', 'update-position', 'destroy-position', 'show-position',
-                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type','edit-unit-type',
+                'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type',
+                'list-my-unit', 'store-my-unit', 'update-my-unit', 'destroy-my-unit', 'show-my-unit',
+                'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
+                'list-type-client', 'store-type-client', 'update-type-client', 'destroy-type-client', 'show-type-client',
             ]);
 
             // associate roles to admin pro
-            User::find('18732c5e-b485-474e-811d-de9bbb8d6cf2')->assignRole($role_admin_observatory);
+            User::find('18732c5e-b485-474e-811d-de9bbb8d6cf2')->assignRole($role_admin_pro);
         }
 
     }

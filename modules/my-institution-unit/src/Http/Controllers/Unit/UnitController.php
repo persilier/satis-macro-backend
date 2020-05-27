@@ -2,7 +2,6 @@
 
 namespace Satis2020\MyInstitutionUnit\Http\Controllers\Unit;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -19,14 +18,10 @@ class UnitController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-my-unit')->only(['index']);
-        $this->middleware('permission:create-my-unit')->only(['create','store']);
+        $this->middleware('permission:store-my-unit')->only(['create','store']);
         $this->middleware('permission:show-my-unit')->only(['show']);
         $this->middleware('permission:update-my-unit')->only(['edit','update']);
         $this->middleware('permission:delete-my-unit')->only(['destroy']);
-        $this->user = Auth::user();
-        $data = $this->getInstitutionStaff($this->user->id);
-        $this->institution = $data['institution'];
-        $this->staff = $data['staff'];
     }
     /**
      * Display a listing of the resource.
@@ -35,7 +30,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json($this->getAllUnitByInstitution($this->institution->id), 200);
+        return response()->json($this->getAllUnitByInstitution($this->institution()->id), 200);
     }
 
     /**
@@ -47,7 +42,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
-            'parent' => $this->getAllUnitByInstitution($this->institution->id)
+            'parent' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
 
@@ -65,7 +60,7 @@ class UnitController extends ApiController
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
             'parent_id' => [Rule::exists('units', 'id')->where(function ($query){
-                $query->where('institution_id', $this->institution->id);
+                $query->where('institution_id', $this->institution()->id);
             })],
         ];
 
@@ -76,7 +71,7 @@ class UnitController extends ApiController
             'description'=> $request->description,
             'unit_type_id'=> $request->unit_type_id,
             'parent_id'=> $request->parent_id,
-            'institution_id'=> $this->institution->id,
+            'institution_id'=> $this->institution()->id,
         ]);
         return response()->json($unit, 201);
     }
@@ -89,7 +84,7 @@ class UnitController extends ApiController
      */
     public function show($unit)
     {
-        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
+        $unit = $this->getOneUnitByInstitution($this->institution()->id, $unit);
         return response()->json($unit, 200);
     }
 
@@ -102,9 +97,9 @@ class UnitController extends ApiController
     public function edit($unit)
     {
         return response()->json([
-            'unit' => $this->getOneUnitByInstitution($this->institution->id, $unit),
-            'load' => Staff::where('institution_id',$this->institution->id)->where('unit_id',$unit->id)->get(),
-            'parent' => $this->getAllUnitByInstitution($this->institution->id)
+            'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
+            'load' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit->id)->get(),
+            'parent' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
 
@@ -118,16 +113,16 @@ class UnitController extends ApiController
      */
     public function update(Request $request, $unit)
     {
-        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
+        $unit = $this->getOneUnitByInstitution($this->institution()->id, $unit);
         $rules = [
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
             'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
-                $query->where('institution_id', $this->institution->id)->where('unit_id', $unit->id);
+                $query->where('institution_id', $this->institution()->id)->where('unit_id', $unit->id);
             })],
             'parent_id' => [Rule::exists('units', 'id')->where(function ($query){
-                $query->where('institution_id', $this->institution->id);
+                $query->where('institution_id', $this->institution()->id);
             })],
         ];
 
@@ -147,7 +142,7 @@ class UnitController extends ApiController
      */
     public function destroy($unit)
     {
-        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
+        $unit = $this->getOneUnitByInstitution($this->institution()->id, $unit);
         $unit->delete();
         return response()->json($unit, 200);
     }

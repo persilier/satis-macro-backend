@@ -17,7 +17,6 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "satis2020/claim-object-package": "^1.0",
-        "satis2020/clients-package": "^1.0",
         "satis2020/configurations-package": "^1.0",
         "satis2020/faq-package": "^1.0",
         "satis2020/institutions-package": "^1.0",
@@ -131,7 +130,14 @@
         },
         {
             "type": "path",
-            "url": "modules/clients-package/",
+            "url": "modules/type-client",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/category-client",
             "options": {
                 "symlink": true
             }
@@ -146,6 +152,13 @@
         {
             "type": "path",
             "url": "modules/any-institution-unit",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/without-link-with-institution-unit",
             "options": {
                 "symlink": true
             }

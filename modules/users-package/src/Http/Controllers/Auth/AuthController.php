@@ -2,7 +2,6 @@
 namespace Satis2020\UserPackage\Http\Controllers\Auth;
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\UserPackage\Http\Resources\User as UserResource;
 class AuthController extends ApiController
@@ -11,10 +10,6 @@ class AuthController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->user = Auth::user();
-        $data = $this->getInstitutionStaff($this->user->id);
-        $this->institution = $data['institution'];
-        $this->staff = $data['staff'];
     }
 
     /**
@@ -24,12 +19,12 @@ class AuthController extends ApiController
      */
     public function login()
     {
-        $user = $this->user;
+        $user = $this->user();
 
         return (new UserResource($user))->additional([
-            "app-nature" => $this->nature,
+            "app-nature" => $this->nature(),
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
-            'institution'=> $this->institution
+            'institution'=> $this->institution()
         ]);
     }
 
@@ -40,7 +35,7 @@ class AuthController extends ApiController
      */
     public function logout()
     {
-        $this->user->token()->revoke();
+        $this->user()->token()->revoke();
         return $this->showMessage('Déconnexion réussie de l\'utilisateur');
     }
 

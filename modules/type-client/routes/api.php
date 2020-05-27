@@ -18,5 +18,3 @@ use Illuminate\Support\Facades\Route;
  * Clients
  */
 Route::apiResource('type-clients', 'CategoryClients\TypeClientController');
-Route::apiResource('category-clients', 'CategoryClients\CategoryClientController');
-Route::resource('clients', 'Clients\ClientController');
