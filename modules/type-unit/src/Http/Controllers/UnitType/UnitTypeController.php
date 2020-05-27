@@ -15,8 +15,7 @@ class UnitTypeController extends ApiController
         $this->middleware('permission:list-unit-type')->only(['index']);
         $this->middleware('permission:create-unit-type')->only(['store']);
         $this->middleware('permission:show-unit-type')->only(['show']);
-        $this->middleware('permission:edit-unit-type')->only(['edit']);
-        $this->middleware('permission:update-unit-type')->only(['update']);
+        $this->middleware('permission:update-unit-type')->only(['edit','update']);
         $this->middleware('permission:delete-unit-type')->only(['destroy']);
     }
     /**
@@ -62,7 +61,7 @@ class UnitTypeController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\UnitType  $unitType
+     * @param UnitType $unitType
      * @return \Illuminate\Http\Response
      */
     public function show(UnitType $unitType)
@@ -73,7 +72,7 @@ class UnitTypeController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\UnitType  $unitType
+     * @param UnitType $unitType
      * @return \Illuminate\Http\Response
      */
     public function edit(UnitType $unitType)
@@ -88,7 +87,7 @@ class UnitTypeController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\UnitType $unitType
+     * @param UnitType $unitType
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -110,9 +109,9 @@ class UnitTypeController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\UnitType $unitType
+     * @param UnitType $unitType
      * @return \Illuminate\Http\Response
-     * @throws \Exception
+     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
     public function destroy(UnitType $unitType)
     {

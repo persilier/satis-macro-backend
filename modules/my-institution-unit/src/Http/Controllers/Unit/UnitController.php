@@ -4,29 +4,29 @@ namespace Satis2020\MyInstitutionUnit\Http\Controllers\Unit;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\UnitType;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\UnitTrait;
 
 class UnitController extends ApiController
 {
-    use DataUserNature;
-    protected $user;
-    protected $institution;
-
+    use UnitTrait;
     public function __construct()
     {
         parent::__construct();
+        $this->middleware('auth:api');
         $this->middleware('permission:list-my-unit')->only(['index']);
-        $this->middleware('permission:create-my-unit')->only(['store']);
+        $this->middleware('permission:create-my-unit')->only(['create','store']);
         $this->middleware('permission:show-my-unit')->only(['show']);
-        $this->middleware('permission:update-my-unit')->only(['update']);
+        $this->middleware('permission:update-my-unit')->only(['edit','update']);
         $this->middleware('permission:delete-my-unit')->only(['destroy']);
         $this->user = Auth::user();
-        $this->institution = $this->getInstitution($this->user->identite->staff->institution_id);
+        $data = $this->getInstitutionStaff($this->user->id);
+        $this->institution = $data['institution'];
+        $this->staff = $data['staff'];
     }
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'lead'])->get(), 200);
+        return response()->json($this->getAllUnitByInstitution($this->institution->id), 200);
     }
 
     /**
@@ -47,8 +47,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
-            'load' => Staff::where('institution_id', $this->institution)->get(),
-            'parent' => Unit::where('institution_id', $this->institution)->get()
+            'parent' => $this->getAllUnitByInstitution($this->institution->id)
         ], 200);
     }
 
@@ -65,8 +64,9 @@ class UnitController extends ApiController
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'lead_id' => 'exists:staff,id',
-            'parent_id' => 'exists:units,id'
+            'parent_id' => [Rule::exists('units', 'id')->where(function ($query){
+                $query->where('institution_id', $this->institution->id);
+            })],
         ];
 
         $this->validate($request, $rules);
@@ -75,9 +75,8 @@ class UnitController extends ApiController
             'name'=> $request->name,
             'description'=> $request->description,
             'unit_type_id'=> $request->unit_type_id,
-            'lead_id'=> $request->lead_id,
             'parent_id'=> $request->parent_id,
-            'institution_id'=> $this->institution,
+            'institution_id'=> $this->institution->id,
         ]);
         return response()->json($unit, 201);
     }
@@ -85,26 +84,27 @@ class UnitController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
+     * @param $unit
      * @return \Illuminate\Http\Response
      */
-    public function show(Unit $unit)
+    public function show($unit)
     {
+        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
         return response()->json($unit, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
+     * @param $unit
      * @return \Illuminate\Http\Response
      */
-    public function edit(Unit $unit)
+    public function edit($unit)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution'),
-            'load' => Staff::where('institution_id', $this->institution)->get(),
-            'parent' => Unit::where('institution_id', $this->institution)->get()
+            'unit' => $this->getOneUnitByInstitution($this->institution->id, $unit),
+            'load' => Staff::where('institution_id',$this->institution->id)->where('unit_id',$unit->id)->get(),
+            'parent' => $this->getAllUnitByInstitution($this->institution->id)
         ], 200);
     }
 
@@ -112,18 +112,23 @@ class UnitController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
+     * @param $unit
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, Unit $unit)
+    public function update(Request $request, $unit)
     {
+        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
         $rules = [
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'lead_id' => 'exists:staff,id',
-            'parent_id' => 'exists:units,id'
+            'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
+                $query->where('institution_id', $this->institution->id)->where('unit_id', $unit->id);
+            })],
+            'parent_id' => [Rule::exists('units', 'id')->where(function ($query){
+                $query->where('institution_id', $this->institution->id);
+            })],
         ];
 
         $this->validate($request, $rules);
@@ -140,10 +145,10 @@ class UnitController extends ApiController
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Unit $unit)
+    public function destroy($unit)
     {
+        $unit = $this->getOneUnitByInstitution($this->institution->id, $unit);
         $unit->delete();
-
         return response()->json($unit, 200);
     }
 }
