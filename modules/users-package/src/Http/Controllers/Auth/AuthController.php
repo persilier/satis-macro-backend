@@ -9,12 +9,24 @@ use Satis2020\UserPackage\Http\Resources\User as UserResource;
 class AuthController extends ApiController
 {
     use DataUserNature;
+    protected $user;
+    protected $institution;
 
     public function __construct()
     {
         parent::__construct();
-
+        $this->user = Auth::user();
+        $this->verified($this->user->id);
+        dd($this->user);
         $this->middleware('auth:api');
+    }
+
+    protected function verified($user_id){
+        $verifiedInstitution = $this->getInstitutionStaff($user_id);
+        if(true == $verifiedInstitution['status']){
+            return $this->institution = $verifiedInstitution['institution'];
+        }
+        return $this->showMessage($verifiedInstitution['message']);
     }
 
     /**
@@ -24,13 +36,13 @@ class AuthController extends ApiController
      */
     public function login()
     {
-        $user = Auth::user();
+        /*$user = Auth::user();
 
         return (new UserResource($user))->additional([
             "app-nature" => $this->getNatureApp(),
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
             'institution'=> $this->getInstitution($user->identite->staff->institution_id)
-        ]);
+        ]);*/
     }
 
     /**

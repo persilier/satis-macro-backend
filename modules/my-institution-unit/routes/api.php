@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 /**
  * Units
  */
-Route::resource('my-units', 'Unit\UnitController');
+Route::resource('units', 'Unit\UnitController');
