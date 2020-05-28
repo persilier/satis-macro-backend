@@ -8,9 +8,11 @@ use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Traits\SecureDelete;
 
 class UnitController extends ApiController
 {
+    use SecureDelete;
     public function __construct()
     {
         parent::__construct();
@@ -123,6 +125,10 @@ class UnitController extends ApiController
         ];
 
         $this->validate($request, $rules);
+        if(!$request->has('parent_id'))
+            $unit->parent_id = null;
+        if(!$request->has('lead_id'))
+            $unit->lead_id = null;
 
         $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others']));
 
@@ -138,8 +144,7 @@ class UnitController extends ApiController
      */
     public function destroy(Unit $unit)
     {
-        $unit->delete();
-
+        $unit->secureDelete('staffs', 'children');
         return response()->json($unit, 200);
     }
 }
