@@ -42,5 +42,13 @@ class TypeClient extends Model
      */
     protected $casts = ['name' => 'json', 'description'=> 'json'];
 
+    /**
+     * Get the clients associated with the type clients
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clients()
+    {
+        return $this->hasMany(Client::class, 'type_clients_id');
+    }
 
 }

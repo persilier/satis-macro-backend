@@ -5,8 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\TypeClient;
+use Satis2020\ServicePackage\Traits\SecureDelete;
 class TypeClientController extends ApiController
 {
+    use SecureDelete;
 
     public function __construct()
     {
@@ -16,7 +18,7 @@ class TypeClientController extends ApiController
         $this->middleware('permission:store-type-client')->only(['store']);
         $this->middleware('permission:show-type-client')->only(['show']);
         $this->middleware('permission:update-type-client')->only(['update']);
-        $this->middleware('permission:delete-type-client')->only(['destroy']);
+        $this->middleware('permission:destroy-type-client')->only(['destroy']);
     }
 
     /**
@@ -52,12 +54,12 @@ class TypeClientController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param TypeClient $clientClient
+     * @param TypeClient $type_client
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(TypeClient $clientClient)
+    public function show(TypeClient $type_client)
     {
-        return response()->json($clientClient, 200);
+        return response()->json($type_client, 200);
     }
 
 
@@ -65,31 +67,31 @@ class TypeClientController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param TypeClient $clientClient
+     * @param TypeClient $type_client
      * @return \Illuminate\Http\JsonResponse|TypeClientResource
      * @throws ValidationException
      */
-    public function update(Request $request, TypeClient $clientClient)
+    public function update(Request $request, TypeClient $type_client)
     {
         $rules = [
             'name' => 'required|string',
             'description' => 'required|string',
         ];
         $this->validate($request, $rules);
-        $clientClient->update(['name'=> $request->name, 'description'=> $request->description]);
-        return response()->json($clientClient, 200);
+        $type_client->update(['name'=> $request->name, 'description'=> $request->description]);
+        return response()->json($type_client, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param TypeClient $clientClient
+     * @param TypeClient $type_client
      * @return TypeClientResource
      * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
-    public function destroy(TypeClient $clientClient)
+    public function destroy(TypeClient $type_client)
     {
-        $clientClient->secureDelete('clients');
-        return response()->json($clientClient, 200);
+        $type_client->secureDelete('clients');
+        return response()->json($type_client, 200);
     }
 }

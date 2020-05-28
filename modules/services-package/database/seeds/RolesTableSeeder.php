@@ -79,7 +79,7 @@ class RolesTableSeeder extends Seeder
         Permission::create(['name' => 'destroy-category-client', 'guard_name' => 'api']);
         Permission::create(['name' => 'show-category-client', 'guard_name' => 'api']);
 
-        if ($nature === 'MACRO') {
+        if ($nature == 'MACRO') {
             // create admin roles
             $role_admin_holding = Role::create(['name' => 'admin-holding', 'guard_name' => 'api']);
             $role_admin_filial = Role::create(['name' => 'admin-filial', 'guard_name' => 'api']);
@@ -103,7 +103,7 @@ class RolesTableSeeder extends Seeder
             // associate roles to admin filial
         }
 
-        if ($nature === 'HUB') {
+        if ($nature == 'HUB') {
             $role_admin_observatory = Role::create(['name' => 'admin-observatory', 'guard_name' => 'api']);
 
             // associate permissions to roles
@@ -117,7 +117,7 @@ class RolesTableSeeder extends Seeder
             User::find('94656cd3-d0c7-45bb-83b6-5ded02ded07b')->assignRole($role_admin_observatory);
         }
 
-        if ($nature === 'PRO') {
+        if ($nature == 'PRO') {
             $role_admin_pro = Role::create(['name' => 'admin-pro', 'guard_name' => 'api']);
 
             // associate permissions to roles

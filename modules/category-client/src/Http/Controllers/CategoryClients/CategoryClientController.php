@@ -5,8 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Traits\SecureDelete;
 class CategoryClientController extends ApiController
 {
+    use SecureDelete;
 
     public function __construct()
     {
@@ -16,7 +18,7 @@ class CategoryClientController extends ApiController
         $this->middleware('permission:store-category-client')->only(['store']);
         $this->middleware('permission:show-category-client')->only(['show']);
         $this->middleware('permission:update-category-client')->only(['update']);
-        $this->middleware('permission:delete-category-client')->only(['destroy']);
+        $this->middleware('permission:destroy-category-client')->only(['destroy']);
     }
 
     /**
@@ -44,20 +46,20 @@ class CategoryClientController extends ApiController
             'description' => 'required|string',
         ];
         $this->validate($request, $rules);
-        $categoryClient = CategoryClient::create($request->only(['name', 'description']));
-        return response()->json($categoryClient, 201);
+        $category_client = CategoryClient::create($request->only(['name', 'description']));
+        return response()->json($category_client, 201);
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param CategoryClient $categoryClient
+     * @param CategoryClient $category_client
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(CategoryClient $categoryClient)
+    public function show(CategoryClient $category_client)
     {
-        return response()->json($categoryClient, 200);
+        return response()->json($category_client, 200);
     }
 
 
@@ -65,31 +67,31 @@ class CategoryClientController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param CategoryClient $categoryClient
+     * @param CategoryClient $category_client
      * @return \Illuminate\Http\JsonResponse|TypeClientResource
      * @throws ValidationException
      */
-    public function update(Request $request, CategoryClient $categoryClient)
+    public function update(Request $request, CategoryClient $category_client)
     {
         $rules = [
             'name' => 'required|string',
             'description' => 'required|string',
         ];
         $this->validate($request, $rules);
-        $categoryClient->update(['name'=> $request->name, 'description'=> $request->description]);
-        return response()->json($categoryClient, 200);
+        $category_client->update(['name'=> $request->name, 'description'=> $request->description]);
+        return response()->json($category_client, 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param CategoryClient $categoryClient
+     * @param CategoryClient $category_client
      * @return TypeClientResource
      * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
-    public function destroy(CategoryClient $categoryClient)
+    public function destroy(CategoryClient $category_client)
     {
-        $categoryClient->secureDelete('clients');
-        return response()->json($categoryClient, 200);
+        $category_client->secureDelete('clients');
+        return response()->json($category_client, 200);
     }
 }
