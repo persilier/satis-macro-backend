@@ -99,7 +99,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
-            'load' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit->id)->get(),
+            'load' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
             'parent' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
