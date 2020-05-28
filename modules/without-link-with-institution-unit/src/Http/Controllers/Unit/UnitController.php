@@ -19,7 +19,7 @@ class UnitController extends ApiController
         $this->middleware('permission:store-without-link-unit')->only(['create','store']);
         $this->middleware('permission:show-without-link-unit')->only(['show']);
         $this->middleware('permission:update-without-link-unit')->only(['edit','update']);
-        $this->middleware('permission:delete-without-link-unit')->only(['destroy']);
+        $this->middleware('permission:destroy-without-link-unit')->only(['destroy']);
 
     }
     /**

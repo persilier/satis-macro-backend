@@ -21,7 +21,7 @@ class UnitController extends ApiController
         $this->middleware('permission:store-my-unit')->only(['create','store']);
         $this->middleware('permission:show-my-unit')->only(['show']);
         $this->middleware('permission:update-my-unit')->only(['edit','update']);
-        $this->middleware('permission:delete-my-unit')->only(['destroy']);
+        $this->middleware('permission:destroy-my-unit')->only(['destroy']);
     }
     /**
      * Display a listing of the resource.
