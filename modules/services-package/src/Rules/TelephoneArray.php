@@ -5,7 +5,7 @@ namespace Satis2020\ServicePackage\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-class EmailArray implements Rule
+class TelephoneArray implements Rule
 {
     /**
      * Create a new rule instance.
@@ -26,25 +26,28 @@ class EmailArray implements Rule
      */
     public function passes($attribute, $value)
     {
+
         $collection = collect([]);
+        
+        foreach ($value as $phone) {
 
-        foreach ($value as $email) {
+            $phone = preg_replace("/\s+/", "", $phone);
 
-            if($collection->search($email, true) !== false){
-                $this->message = $email." is sent more than once";
+            if($collection->search($phone, true) !== false){
+                $this->message = $phone." is sent more than once";
                 return false;
             }
-
-            $validator = Validator::make(['email' => $email], [
-                'email' => 'email'
+            
+            $validator = Validator::make(['phone' => $phone], [
+                'phone' => 'digits_between:6,14'
             ]);
 
             if ($validator->fails()) {
-                $this->message = $email." is not a valid address mail";
+                $this->message = $phone." is not a valid phone number";
                 return false;
             }
 
-            $collection->push($email);
+            $collection->push($phone);
         }
         return true;
     }

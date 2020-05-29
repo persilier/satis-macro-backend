@@ -88,6 +88,17 @@ trait VerifyUnicity
         return in_array(Unit::find($unit_id)->institution->id, Position::find($position_id)->institutions->pluck('id')->all());
     }
 
+    /**
+     * Verify the consistency between the unit and the institution of a Staff
+     *
+     * @param $institution_id
+     * @param $unit_id
+     * @return bool
+     */
+    protected function handleUnitInstitutionVerification($institution_id, $unit_id)
+    {
+        return Unit::find($unit_id)->institution->id === $institution_id;
+    }
 
     protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
     {

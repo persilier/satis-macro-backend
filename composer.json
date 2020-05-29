@@ -25,7 +25,7 @@
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position": "^1.0",
         "satis2020/severity-level-package": "^1.0",
-        "satis2020/staff-package": "^1.0",
+        "satis2020/staff-from-any-unit": "^1.0",
         "satis2020/unit-package": "^1.0",
         "satis2020/users-package": "^1.0"
     },
@@ -154,7 +154,7 @@
         },
         {
             "type": "path",
-            "url": "modules/staff-package/",
+            "url": "modules/staff-from-any-unit/",
             "options": {
                 "symlink": true
             }

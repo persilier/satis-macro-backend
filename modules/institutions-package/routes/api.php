@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::apiResource('institutions', 'Institutions\InstitutionController')->except(['destroy']);
 Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
-Route::get('institutions/{institution}/positions-units', 'Institutions\InstitutionPositionUnitController@index')->name('institutions.filter.positions-units');
+Route::resource('institutions.units', 'Institutions\InstitutionUnitController@index', ['only' => ['index']]);
 
 /*
  *  Type Clients, Category Clients

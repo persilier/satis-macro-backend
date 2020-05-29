@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Satis2020\StaffPackage\Providers;
+namespace Satis2020\StaffFromAnyUnit\Providers;
 
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class StaffPackageServiceProvider extends ServiceProvider
+class StaffFromAnyUnitServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -58,7 +58,7 @@ class StaffPackageServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\StaffPackage\Http\Controllers',
+            'namespace' => 'Satis2020\StaffFromAnyUnit\Http\Controllers',
             'middleware' => ['api']
         ];
     }
