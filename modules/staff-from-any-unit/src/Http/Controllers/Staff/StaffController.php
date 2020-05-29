@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffPackage\Http\Controllers\Staff;
+namespace Satis2020\StaffFromAnyUnit\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -8,13 +8,30 @@ use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResour
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\EmailArray;
+use Satis2020\ServicePackage\Rules\TelephoneArray;
+use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class StaffController extends ApiController
 {
-    use VerifyUnicity;
+    use VerifyUnicity, Telephone;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:list-staff-from-any-unit')->only(['index']);
+        $this->middleware('permission:show-staff-from-any-unit')->only(['show']);
+        $this->middleware('permission:store-staff-from-any-unit')->only(['store']);
+        $this->middleware('permission:update-staff-from-any-unit')->only(['update']);
+        $this->middleware('permission:destroy-staff-from-any-unit')->only(['destroy']);
+        $this->middleware('permission:edit-staff-from-any-unit')->only(['edit']);
+    }
 
     /**
      * Display a listing of the resource.
@@ -23,7 +40,7 @@ class StaffController extends ApiController
      */
     public function index()
     {
-        return response()->json(Staff::with(['identite', 'position', 'unit'])->get(), 200);
+        return response()->json(Staff::with(['identite', 'position', 'unit', 'institution'])->get(), 200);
     }
 
     /**
@@ -49,19 +66,22 @@ class StaffController extends ApiController
             'firstname' => 'required',
             'lastname' => 'required',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => 'required|array',
+            'telephone' => ['required', 'array', new TelephoneArray],
             'email' => ['required', 'array', new EmailArray],
             'position_id' => 'required|exists:positions,id',
             'unit_id' => 'required|exists:units,id',
+            'institution_id' => 'required|exists:institutions,id'
         ];
 
         $this->validate($request, $rules);
 
-        // Position & Unit Consistency Verification
-        if (!$this->handleSameInstitutionVerification($request->position_id, $request->unit_id)) {
+        $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
+
+        // Institution & Unit Consistency Verification
+        if (!$this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id)) {
             return response()->json([
                 'status' => false,
-                'message' => 'The unit and the position selected must be linked to the same institution'
+                'message' => 'The unit must be linked to the institution'
             ], 409);
         }
 
@@ -83,10 +103,11 @@ class StaffController extends ApiController
             'identite_id' => $identite->id,
             'position_id' => $request->position_id,
             'unit_id' => $request->unit_id,
+            'institution_id' => $request->institution_id,
             'others' => $request->others
         ]);
 
-        return response()->json($staff->load('identite', 'position', 'unit'), 201);
+        return response()->json($staff->load('identite', 'position', 'unit', 'institution'), 201);
     }
 
     /**
@@ -97,7 +118,7 @@ class StaffController extends ApiController
      */
     public function show(Staff $staff)
     {
-        return response()->json($staff->load('identite', 'position', 'unit.institution'), 200);
+        return response()->json($staff->load('identite', 'position', 'unit', 'institution'), 200);
     }
 
     /**
@@ -108,11 +129,11 @@ class StaffController extends ApiController
      */
     public function edit(Staff $staff)
     {
-        $staff->load('identite', 'position', 'unit.institution');
-        $staff->unit->institution->load(['positions', 'units'])->only(['positions', 'units']);
+        $staff->load('identite', 'position', 'unit', 'institution.units');
         return response()->json([
             'staff' => $staff,
-            'institutions' => Institution::all()
+            'institutions' => Institution::all(),
+            'positions' => Position::all()
         ], 200);
     }
 
@@ -126,24 +147,28 @@ class StaffController extends ApiController
      */
     public function update(Request $request, Staff $staff)
     {
-        $staff->load('identite', 'position', 'unit.institution');
+        $staff->load('identite', 'position', 'unit', 'institution');
+
         $rules = [
             'firstname' => 'required',
             'lastname' => 'required',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => 'required|array',
+            'telephone' => ['required', 'array', new TelephoneArray],
             'email' => ['required', 'array', new EmailArray],
             'position_id' => 'required|exists:positions,id',
             'unit_id' => 'required|exists:units,id',
+            'institution_id' => 'required|exists:institutions,id'
         ];
 
         $this->validate($request, $rules);
 
-        // Position & Unit Consistency Verification
-        if (!$this->handleSameInstitutionVerification($request->position_id, $request->unit_id)) {
+        $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
+
+        // Institution & Unit Consistency Verification
+        if (!$this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id)) {
             return response()->json([
                 'status' => false,
-                'message' => 'The unit and the position selected must be linked to the same institution'
+                'message' => 'The unit must be linked to the institution'
             ], 409);
         }
 
@@ -164,8 +189,10 @@ class StaffController extends ApiController
         $staff->update([
             'position_id' => $request->position_id,
             'unit_id' => $request->unit_id,
+            'institution_id' => $request->institution_id,
             'others' => $request->others
         ]);
+
         $staff->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
         return response()->json($staff, 201);

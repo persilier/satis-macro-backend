@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
  * Staff
  */
 Route::resource('staff', 'Staff\StaffController');
+Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);

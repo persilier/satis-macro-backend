@@ -24,7 +24,6 @@ Route::name('give.all.permissions')->post('give-all-permissions', 'Role\RolePerm
  */
 Route::apiResource('permissions', 'Permission\PermissionController');
 Route::apiResource('identites', 'Identite\IdentiteController');
-Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
 Route::resource('identites.client', 'Identite\IdentiteClientController', ['only' => ['store']]);
 /**
  * Users

@@ -145,7 +145,6 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/external-dependencies-package" />
       <path value="$PROJECT_DIR$/vendor/satis2020/institutions-package" />
       <path value="$PROJECT_DIR$/vendor/satis2020/performance-indicator-package" />
-      <path value="$PROJECT_DIR$/vendor/satis2020/unit-package" />
       <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
       <path value="$PROJECT_DIR$/vendor/doctrine/event-manager" />
       <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
@@ -156,6 +155,12 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/severity-level-package" />
       <path value="$PROJECT_DIR$/vendor/nesbot/carbon" />
       <path value="$PROJECT_DIR$/vendor/satis2020/position" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/staff-from-any-unit" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/type-client" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/category-client" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/type-unit" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/my-institution-unit" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/any-institution-unit" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
