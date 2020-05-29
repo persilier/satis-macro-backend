@@ -35,7 +35,6 @@ class MetadataController extends ApiController
         if (empty($data))
             return $this->errorResponse('Aucune valeur métadata ' . $type . ' trouvée.', 422);
         $datas = $this->getAllDataMeta($data, $type);
-        //dd($datas);
         return (new MetadataResource(collect($datas), $type))->all();
     }
 

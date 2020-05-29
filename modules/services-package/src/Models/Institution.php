@@ -50,6 +50,17 @@ class Institution extends Model
     }
 
     /**
+     * Get the institution logo.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getLogoAttribute($value)
+    {
+        return empty($value) ? null : asset('storage' . $value);
+    }
+
+    /**
      * Get the units associated with the institution
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

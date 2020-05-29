@@ -79,6 +79,13 @@ class RolesTableSeeder extends Seeder
         Permission::create(['name' => 'destroy-category-client', 'guard_name' => 'api']);
         Permission::create(['name' => 'show-category-client', 'guard_name' => 'api']);
 
+        // create institutions permissions
+        Permission::create(['name' => 'list-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-institution', 'guard_name' => 'api']);
+
         if ($nature == 'MACRO') {
             // create admin roles
             $role_admin_holding = Role::create(['name' => 'admin-holding', 'guard_name' => 'api']);
@@ -91,10 +98,13 @@ class RolesTableSeeder extends Seeder
                 'list-any-unit', 'store-any-unit', 'update-any-unit', 'destroy-any-unit', 'show-any-unit',
                 'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
                 'list-type-client', 'store-type-client', 'update-type-client', 'destroy-type-client', 'show-type-client',
+                'list-institution', 'store-institution', 'update-institution', 'destroy-institution', 'show-institution',
             ]);
 
             $role_admin_filial->syncPermissions([
                 'list-my-unit', 'store-my-unit', 'update-my-unit', 'destroy-my-unit', 'show-my-unit',
+                'list-institution', 'store-institution', 'update-institution', 'destroy-institution', 'show-institution',
+
             ]);
 
             // associate roles to admin holding

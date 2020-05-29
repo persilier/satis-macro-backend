@@ -43,7 +43,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
-            'parent' => $this->getAllUnitByInstitution($this->institution()->id)
+            'parents' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
 
@@ -99,8 +99,9 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
-            'load' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
-            'parent' => $this->getAllUnitByInstitution($this->institution()->id)
+            'units' => $this->getAllUnitByInstitution($this->institution()->id),
+            'loads' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
+            'parents' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
 
