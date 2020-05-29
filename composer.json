@@ -21,7 +21,6 @@
         "satis2020/claim-object-package": "^1.0",
         "satis2020/configurations-package": "^1.0",
         "satis2020/faq-package": "^1.0",
-        "satis2020/institutions-package": "^1.0",
         "satis2020/metadata-package": "^1.0",
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
@@ -121,7 +120,7 @@
         },
         {
             "type": "path",
-            "url": "modules/institutions-package/",
+            "url": "modules/institution/",
             "options": {
                 "symlink": true
             }
