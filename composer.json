@@ -27,6 +27,7 @@
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/severity-level-package": "^1.0",
         "satis2020/staff-from-any-unit": "^1.0",
+        "satis2020/staff-from-my-unit": "^1.0",
         "satis2020/type-client": "^1.0",
         "satis2020/type-unit": "^1.0",
         "satis2020/users-package": "^1.0"
@@ -199,6 +200,13 @@
         {
             "type": "path",
             "url": "modules/severity-level-package/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/staff-from-my-unit/",
             "options": {
                 "symlink": true
             }

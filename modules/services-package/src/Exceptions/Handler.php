@@ -81,6 +81,14 @@ class Handler
             return redirect()->back()->withInput($request->input());
         }
 
+        if($exception instanceof RetrieveDataUserNatureException){
+            return $this->errorResponse($exception->getMessage(), $exception->getCode());
+        }
+
+        if($exception instanceof CustomException){
+            return $this->errorResponse($exception->getData(), $exception->getCode());
+        }
+
         return false;
 
     }
