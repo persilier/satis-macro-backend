@@ -17,6 +17,8 @@ Route::prefix('my')->group(function () {
     /**
      * Staff
      */
-    Route::resource('staff', 'Staff\StaffController');
-    Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
+    Route::name('my.')->group(function () {
+        Route::resource('staff', 'Staff\StaffController');
+        Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
+    });
 });
