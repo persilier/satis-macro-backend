@@ -25,6 +25,7 @@
         "satis2020/metadata-package": "^1.0",
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
+        "satis2020/severity-level": "^1.0",
         "satis2020/severity-level-package": "^1.0",
         "satis2020/staff-from-any-unit": "^1.0",
         "satis2020/staff-from-maybe-no-unit": "^1.0",
@@ -230,6 +231,13 @@
         {
             "type": "path",
             "url": "modules/staff-from-maybe-no-unit/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/severity-level/",
             "options": {
                 "symlink": true
             }
