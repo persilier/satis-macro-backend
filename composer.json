@@ -202,6 +202,20 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "modules/client-from-my-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/client-from-any-institution/",
+            "options": {
+                "symlink": true
+            }
         }
     ]
 }

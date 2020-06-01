@@ -14,11 +14,11 @@ class TypeClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-type-client')->only(['index']);
-        $this->middleware('permission:store-type-client')->only(['store']);
-        $this->middleware('permission:show-type-client')->only(['show']);
-        $this->middleware('permission:update-type-client')->only(['update']);
-        $this->middleware('permission:destroy-type-client')->only(['destroy']);
+        $this->middleware('permission:list-type-client-from-my-institution')->only(['index']);
+        $this->middleware('permission:store-type-client-from-my-institution')->only(['store']);
+        $this->middleware('permission:show-type-client-from-my-institution')->only(['show']);
+        $this->middleware('permission:update-type-client-from-my-institution')->only(['update']);
+        $this->middleware('permission:destroy-type-client-from-my-institution')->only(['destroy']);
     }
 
     /**

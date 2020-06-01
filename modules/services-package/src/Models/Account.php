@@ -51,7 +51,7 @@ class Account extends Model
     }
 
     /**
-     * Get the client associated with the account
+     * Get the client-from-my-institution associated with the account
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function client()

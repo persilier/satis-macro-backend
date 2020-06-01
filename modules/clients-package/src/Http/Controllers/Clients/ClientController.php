@@ -24,11 +24,11 @@ class ClientController extends ApiController
     use IdentiteVerifiedTrait, VerifyUnicity;
     public function __construct()
     {
-        /*$this->middleware('permission:can-list-client')->only(['index']);
-        $this->middleware('permission:can-create-client')->only(['store']);
-        $this->middleware('permission:can-show-client')->only(['show']);
-        $this->middleware('permission:can-update-client')->only(['update']);
-        $this->middleware('permission:can-delete-client')->only(['destroy']);*/
+        /*$this->middleware('permission:can-list-client-from-my-institution')->only(['index']);
+        $this->middleware('permission:can-create-client-from-my-institution')->only(['store']);
+        $this->middleware('permission:can-show-client-from-my-institution')->only(['show']);
+        $this->middleware('permission:can-update-client-from-my-institution')->only(['update']);
+        $this->middleware('permission:can-delete-client-from-my-institution')->only(['destroy']);*/
     }
 
     /**

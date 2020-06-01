@@ -35,7 +35,7 @@ class Client extends Model
     ];
 
     /**
-     * Get the type_client associated with the type client
+     * Get the type_client associated with the type client-from-my-institution
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type_client()
@@ -44,7 +44,7 @@ class Client extends Model
     }
 
     /**
-     * Get the category_client associated with the Categorie client
+     * Get the category_client associated with the Categorie client-from-my-institution
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function category_client()
@@ -58,7 +58,7 @@ class Client extends Model
     }
 
     /**
-     * Get the accounts associated with the client
+     * Get the accounts associated with the client-from-my-institution
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function accounts()

@@ -47,7 +47,7 @@ class CategoryClientController extends ApiController
         ];
         $this->validate($request, $rules);
         if($category_exist = CategoryClient::where('name->'.App::getLocale(),$request->name)->where('institutions_id',$request->institutions_id)->first())
-            return $this->errorResponse('Cette catégorie client existe déjà dans votre institution', 421);
+            return $this->errorResponse('Cette catégorie client-from-my-institution existe déjà dans votre institution', 421);
         $category_client = CategoryClient::create(['name' => $request->name, 'description'=>$request->description, 'institutions_id'=>$request->institutions_id]);
         return new CategoryClientResource($category_client);
     }

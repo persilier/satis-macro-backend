@@ -24,6 +24,6 @@ Route::resource('institutions.units', 'Institutions\InstitutionUnitController@in
  */
 Route::resource('institutions.type-clients', 'Institutions\InstitutionTypeClientController', ['only' => ['index']]);
 Route::resource('institutions.category-clients', 'Institutions\InstitutionCategoryClientController', ['only' => ['index']]);
-Route::resource('institutions.client', 'Institutions\InstitutionClientController', ['only' => ['index']]);
+Route::resource('institutions.client-from-my-institution', 'Institutions\InstitutionClientController', ['only' => ['index']]);
 Route::get('institutions/logo', 'Institutions\InstitutionController@getImage');
 Route::post('institutions/{institution}/update', 'Institutions\InstitutionController@update');

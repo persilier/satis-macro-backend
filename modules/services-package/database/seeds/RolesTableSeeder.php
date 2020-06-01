@@ -65,19 +65,19 @@ class RolesTableSeeder extends Seeder
         Permission::create(['name' => 'destroy-without-link-unit', 'guard_name' => 'api']);
         Permission::create(['name' => 'show-without-link-unit', 'guard_name' => 'api']);
 
-        // create types client permissions
-        Permission::create(['name' => 'list-type-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'store-type-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'update-type-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'destroy-type-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'show-type-client', 'guard_name' => 'api']);
+        // create types client-from-my-institution permissions
+        Permission::create(['name' => 'list-type-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-type-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-type-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-type-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-type-client-from-my-institution', 'guard_name' => 'api']);
 
-        // create categories client permissions
-        Permission::create(['name' => 'list-category-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'store-category-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'update-category-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'destroy-category-client', 'guard_name' => 'api']);
-        Permission::create(['name' => 'show-category-client', 'guard_name' => 'api']);
+        // create categories client-from-my-institution permissions
+        Permission::create(['name' => 'list-category-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'store-category-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'update-category-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'destroy-category-client-from-my-institution', 'guard_name' => 'api']);
+        Permission::create(['name' => 'show-category-client-from-my-institution', 'guard_name' => 'api']);
 
         // create institutions permissions
         Permission::create(['name' => 'list-institution', 'guard_name' => 'api']);
@@ -96,8 +96,8 @@ class RolesTableSeeder extends Seeder
                 'list-position', 'store-position', 'update-position', 'destroy-position', 'show-position',
                 'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type',
                 'list-any-unit', 'store-any-unit', 'update-any-unit', 'destroy-any-unit', 'show-any-unit',
-                'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
-                'list-type-client', 'store-type-client', 'update-type-client', 'destroy-type-client', 'show-type-client',
+                'list-category-client-from-my-institution', 'store-category-client-from-my-institution', 'update-category-client-from-my-institution', 'destroy-category-client-from-my-institution', 'show-category-client-from-my-institution',
+                'list-type-client-from-my-institution', 'store-type-client-from-my-institution', 'update-type-client-from-my-institution', 'destroy-type-client-from-my-institution', 'show-type-client-from-my-institution',
                 'list-institution', 'store-institution', 'update-institution', 'destroy-institution', 'show-institution',
             ]);
 
@@ -135,8 +135,8 @@ class RolesTableSeeder extends Seeder
                 'list-position', 'store-position', 'update-position', 'destroy-position', 'show-position',
                 'list-unit-type', 'store-unit-type', 'update-unit-type', 'destroy-unit-type', 'show-unit-type',
                 'list-my-unit', 'store-my-unit', 'update-my-unit', 'destroy-my-unit', 'show-my-unit',
-                'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
-                'list-type-client', 'store-type-client', 'update-type-client', 'destroy-type-client', 'show-type-client',
+                'list-category-client-from-my-institution', 'store-category-client-from-my-institution', 'update-category-client-from-my-institution', 'destroy-category-client-from-my-institution', 'show-category-client-from-my-institution',
+                'list-type-client-from-my-institution', 'store-type-client-from-my-institution', 'update-type-client-from-my-institution', 'destroy-type-client-from-my-institution', 'show-type-client-from-my-institution',
             ]);
 
             // associate roles to admin pro

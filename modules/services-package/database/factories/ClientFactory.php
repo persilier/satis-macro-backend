@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 
 $factory->define(\Satis2020\ServicePackage\Models\Client::class, function (Faker $faker) {
 
-    $identites = \Satis2020\ServicePackage\Models\Identite::with('client')->get()->filter(function ($value, $key) {
+    $identites = \Satis2020\ServicePackage\Models\Identite::with('client-from-my-institution')->get()->filter(function ($value, $key) {
         return is_null($value->client);
     });
 

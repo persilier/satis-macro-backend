@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
@@ -109,7 +110,7 @@ trait VerifyUnicity
                 return [
                     'status' => false,
                     'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
-                    'client' => $client,
+                    'client-from-my-institution' => $client,
                     'verify' => $verify
                 ];
             }
@@ -118,6 +119,20 @@ trait VerifyUnicity
                 'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Client',
                 'identite' => $verify['entity'],
                 'verify' => $verify
+            ];
+        }
+        return ['status' => true];
+    }
+
+
+    protected function handleAccountVerification($number, $id, $account_id=null)
+    {
+        $account = Account::where('number', $number)->where('institution_id', $id)->where('id', '!=', $account_id)->first();
+        if (!is_null($account)) {
+            return [
+                'status' => false,
+                'message' => 'A Client already exist with the ',
+                'client-from-my-institution' => $account->load('institution', 'client-from-my-institution.identite'),
             ];
         }
         return ['status' => true];

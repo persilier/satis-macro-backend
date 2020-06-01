@@ -47,7 +47,7 @@ class TypeClientController extends ApiController
         ];
         $this->validate($request, $rules);
         if($type_exist = TypeClient::where('name->'.App::getLocale(),$request->name)->where('institutions_id',$request->institutions_id)->first())
-            return $this->errorResponse('Ce type client existe déjà dans votre institution', 421);
+            return $this->errorResponse('Ce type client-from-my-institution existe déjà dans votre institution', 421);
 
         $type_client = TypeClient::create(['name' => $request->name, 'description'=>$request->description, 'institutions_id'=>$request->institutions_id]);
         return new TypeClientResource($type_client);
@@ -82,7 +82,7 @@ class TypeClientController extends ApiController
         ];
         $this->validate($request, $rules);
         if($type_exist = TypeClient::where('name->'.App::getLocale(),$request->name)->where('institutions_id',$request->institutions_id)->first())
-            return $this->errorResponse('Ce type client existe déjà dans votre institution', 421);
+            return $this->errorResponse('Ce type client-from-my-institution existe déjà dans votre institution', 421);
         $type_client->update(['name'=> $request->name, 'description'=> $request->description, 'institutions_id'=>$request->institutions_id]);
         return new TypeClientResource($type_client);
     }

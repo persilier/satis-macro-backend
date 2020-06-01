@@ -124,7 +124,7 @@ class Handler
     }
 
     /**
-     * Return true if request is from a browser and false if it's from an API client
+     * Return true if request is from a browser and false if it's from an API client-from-my-institution
      *
      * @param  Request  $request
      * @return bool
