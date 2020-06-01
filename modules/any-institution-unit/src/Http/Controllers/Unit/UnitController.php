@@ -8,11 +8,9 @@ use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Traits\SecureDelete;
 
 class UnitController extends ApiController
 {
-    use SecureDelete;
     public function __construct()
     {
         parent::__construct();
