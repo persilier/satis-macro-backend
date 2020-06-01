@@ -12,6 +12,6 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * SeverityLevel
+ * ClaimCategories
  */
-Route::apiResource('severity-levels', 'SeverityLevel\SeverityLevelController')->except(['create', 'edit']);
+Route::apiResource('severity-levels', 'ClaimCategories\SeverityLevelController')->except(['create', 'edit']);

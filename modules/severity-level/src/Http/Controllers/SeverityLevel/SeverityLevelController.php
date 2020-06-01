@@ -72,7 +72,7 @@ class SeverityLevelController extends ApiController
     {
         $rules = [
             'name' => 'required|string',
-            'time_limit' => 'integer',
+            'color' => 'required|string',
             'description' => 'required|string',
             'others' => 'array',
         ];
