@@ -30,7 +30,8 @@
         "satis2020/staff-from-my-unit": "^1.0",
         "satis2020/type-client": "^1.0",
         "satis2020/type-unit": "^1.0",
-        "satis2020/users-package": "^1.0"
+        "satis2020/users-package": "^1.0",
+        "satis2020/without-link-with-institution-unit": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
