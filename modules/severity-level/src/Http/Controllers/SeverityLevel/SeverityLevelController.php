@@ -14,7 +14,7 @@ class SeverityLevelController extends ApiController
         $this->middleware('permission:store-severity-level')->only(['store']);
         $this->middleware('permission:update-severity-level')->only(['update']);
         $this->middleware('permission:show-severity-level')->only(['show']);
-        $this->middleware('permission:delete-severity-level')->only(['destroy']);
+        $this->middleware('permission:destroy-severity-level')->only(['destroy']);
     }
     /**
      * Display a listing of the resource.
