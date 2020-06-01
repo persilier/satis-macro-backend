@@ -171,6 +171,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router->aliasMiddleware('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
         $router->aliasMiddleware('permission', \Satis2020\ServicePackage\Http\Middleware\Permission::class);
         $router->aliasMiddleware('verification', \Satis2020\ServicePackage\Http\Middleware\Verification::class);
+        $router->aliasMiddleware('mystaff', \Satis2020\ServicePackage\Http\Middleware\MyStaff::class);
     }
 
     /**

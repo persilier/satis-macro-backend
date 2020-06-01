@@ -6,6 +6,8 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
@@ -78,6 +80,49 @@ trait VerifyUnicity
     }
 
     /**
+     * @param $request
+     * @return void
+     * @throws CustomException
+     */
+    protected function handleStaffPhoneNumberAndEmailVerificationStore($request)
+    {
+        // Staff PhoneNumber Unicity Verification
+        $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone');
+        if (!$verifyPhone['status']) {
+            throw new CustomException($verifyPhone, 409);
+        }
+
+        // Staff Email Unicity Verification
+        $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email');
+        if (!$verifyEmail['status']) {
+            throw new CustomException($verifyEmail, 409);
+        }
+    }
+
+    /**
+     * @param $request
+     * @param $identite
+     * @return void
+     * @throws CustomException
+     */
+    protected function handleStaffPhoneNumberAndEmailVerificationUpdate($request, $identite)
+    {
+        // Staff PhoneNumber Unicity Verification
+        $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $identite->id);
+        if (!$verifyPhone['status']) {
+            $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
+            throw new CustomException($verifyPhone, 409);
+        }
+
+        // Staff Email Unicity Verification
+        $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $identite->id);
+        if (!$verifyEmail['status']) {
+            $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
+            throw new CustomException($verifyEmail, 409);
+        }
+    }
+
+    /**
      * Verify the consistency between the unit and the position of a Staff
      *
      * @param $position_id
@@ -94,11 +139,23 @@ trait VerifyUnicity
      *
      * @param $institution_id
      * @param $unit_id
-     * @return bool
+     * @return void
+     * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     protected function handleUnitInstitutionVerification($institution_id, $unit_id)
     {
-        return Unit::find($unit_id)->institution->id === $institution_id;
+        try {
+            $condition = Unit::findOrFail($unit_id)->institution->id !== $institution_id;
+        } catch (\Exception $exception) {
+            throw new RetrieveDataUserNatureException('Unable to find the unit institution');
+        }
+
+        if ($condition) {
+            throw new CustomException([
+                'message' => 'The unit is not linked to the institution'
+            ], 409);
+        }
     }
 
     protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
