@@ -1,14 +1,9 @@
 <?php
 
-namespace Satis2020\InstitutionPackage\Http\Controllers\Institutions;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
+namespace Satis2020\Institution\Http\Controllers\Institutions;
+
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Traits\UploadFile;
-use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
-use Satis2020\InstitutionPackage\Http\Resources\InstitutionCollection;
 
 class InstitutionUnitController extends ApiController
 {
@@ -22,7 +17,7 @@ class InstitutionUnitController extends ApiController
      * Display a listing of the resource.
      *
      * @param Institution $institution
-     * @return InstitutionCollection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Institution $institution)
     {
