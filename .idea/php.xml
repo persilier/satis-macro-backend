@@ -162,6 +162,13 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/my-institution-unit" />
       <path value="$PROJECT_DIR$/vendor/satis2020/any-institution-unit" />
       <path value="$PROJECT_DIR$/vendor/satis2020/staff-from-my-unit" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/institution" />
+      <path value="$PROJECT_DIR$/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/staff-from-maybe-no-unit" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
