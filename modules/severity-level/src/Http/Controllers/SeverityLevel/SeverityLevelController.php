@@ -11,7 +11,7 @@ class SeverityLevelController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-severity-level')->only(['index']);
-        $this->middleware('permission:create-severity-level')->only(['store']);
+        $this->middleware('permission:store-severity-level')->only(['store']);
         $this->middleware('permission:update-severity-level')->only(['update']);
         $this->middleware('permission:show-severity-level')->only(['show']);
         $this->middleware('permission:delete-severity-level')->only(['destroy']);
