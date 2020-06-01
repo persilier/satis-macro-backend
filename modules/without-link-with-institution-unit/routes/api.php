@@ -14,4 +14,6 @@ use Illuminate\Support\Facades\Route;
 /**
  * Units
  */
-Route::resource('units', 'Unit\UnitController');
+Route::prefix('/without-link')->name('without-link.')->group(function () {
+    Route::resource('units', 'Unit\UnitController');
+});

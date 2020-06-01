@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\UnitType;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 
@@ -41,6 +40,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
+            'units' => Unit::all(),
             'parents' => Unit::all()
         ], 200);
     }
@@ -88,9 +88,10 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unit' => $unit->load('unitType', 'parent', 'children', 'lead'),
+            'units' => Unit::all(),
             'unitTypes' => UnitType::all(),
-            'lead' => Staff::where('unit_id', $unit->id)->get(),
-            'parent' => Unit::all()
+            'leads' => Staff::where('unit_id', $unit->id)->get(),
+            'parents' => Unit::all()
         ], 200);
     }
 
@@ -130,8 +131,7 @@ class UnitController extends ApiController
      */
     public function destroy(Unit $unit)
     {
-        $unit->delete();
-
+        $unit->secureDelete('staffs', 'children');
         return response()->json($unit, 200);
     }
 }
