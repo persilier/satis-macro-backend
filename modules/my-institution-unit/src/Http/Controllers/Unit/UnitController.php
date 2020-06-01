@@ -46,6 +46,7 @@ class UnitController extends ApiController
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
+            'units' => $this->getAllUnitByInstitution($this->institution()->id),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
