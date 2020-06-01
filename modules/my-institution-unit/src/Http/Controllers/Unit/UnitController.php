@@ -24,10 +24,12 @@ class UnitController extends ApiController
         $this->middleware('permission:update-my-unit')->only(['edit','update']);
         $this->middleware('permission:destroy-my-unit')->only(['destroy']);
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -38,6 +40,7 @@ class UnitController extends ApiController
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function create()
     {
@@ -53,6 +56,7 @@ class UnitController extends ApiController
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -82,6 +86,7 @@ class UnitController extends ApiController
      *
      * @param $unit
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function show($unit)
     {
@@ -94,6 +99,7 @@ class UnitController extends ApiController
      *
      * @param $unit
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function edit($unit)
     {
@@ -112,6 +118,7 @@ class UnitController extends ApiController
      * @param $unit
      * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, $unit)
     {

@@ -15,4 +15,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Units
  */
-Route::resource('unit', 'Unit\UnitController');
+
+Route::prefix('/my')->name('my.')->group(function () {
+    Route::resource('units', 'Unit\UnitController');
+});
