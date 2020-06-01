@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
+*/
 
-/**
- * Staff
- */
-Route::resource('staff', 'Staff\StaffController');
-Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
+Route::prefix('any')->group(function () {
+    /**
+     * Staff
+     */
+    Route::name('any.')->group(function () {
+        Route::resource('staff', 'Staff\StaffController');
+        Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
+    });
+});

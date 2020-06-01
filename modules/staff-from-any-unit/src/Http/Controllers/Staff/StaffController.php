@@ -4,6 +4,7 @@ namespace Satis2020\StaffFromAnyUnit\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
@@ -12,12 +13,15 @@ use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Traits\StaffManagement;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class StaffController extends ApiController
 {
-    use VerifyUnicity, Telephone;
+    use VerifyUnicity, Telephone, DataUserNature, StaffManagement, IdentityManagement;
 
     public function __construct()
     {
@@ -27,10 +31,9 @@ class StaffController extends ApiController
 
         $this->middleware('permission:list-staff-from-any-unit')->only(['index']);
         $this->middleware('permission:show-staff-from-any-unit')->only(['show']);
-        $this->middleware('permission:store-staff-from-any-unit')->only(['store']);
-        $this->middleware('permission:update-staff-from-any-unit')->only(['update']);
+        $this->middleware('permission:store-staff-from-any-unit')->only(['store', 'create']);
+        $this->middleware('permission:update-staff-from-any-unit')->only(['update', 'edit']);
         $this->middleware('permission:destroy-staff-from-any-unit')->only(['destroy']);
-        $this->middleware('permission:edit-staff-from-any-unit')->only(['edit']);
     }
 
     /**
@@ -50,7 +53,10 @@ class StaffController extends ApiController
      */
     public function create()
     {
-
+        return response()->json([
+            'institutions' => Institution::all(),
+            'positions' => Position::all()
+        ], 200);
     }
 
     /**
@@ -58,54 +64,25 @@ class StaffController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
-        $rules = [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => ['required', 'array', new TelephoneArray],
-            'email' => ['required', 'array', new EmailArray],
-            'position_id' => 'required|exists:positions,id',
-            'unit_id' => 'required|exists:units,id',
-            'institution_id' => 'required|exists:institutions,id'
-        ];
-
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rules());
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // Institution & Unit Consistency Verification
-        if (!$this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'The unit must be linked to the institution'
-            ], 409);
-        }
+        $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
 
-        // Staff PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone');
-        if (!$verifyPhone['status']) {
-            return response()->json($verifyPhone, 409);
-        }
+        // Staff PhoneNumber and Email Unicity Verification
+        $this->handleStaffPhoneNumberAndEmailVerificationStore($request);
 
-        // Staff Email Unicity Verification
-        $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email');
-        if (!$verifyEmail['status']) {
-            return response()->json($verifyEmail, 409);
-        }
+        $identite = $this->createIdentity($request);
 
-        $identite = Identite::create($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
-
-        $staff = Staff::create([
-            'identite_id' => $identite->id,
-            'position_id' => $request->position_id,
-            'unit_id' => $request->unit_id,
-            'institution_id' => $request->institution_id,
-            'others' => $request->others
-        ]);
+        $staff = $this->createStaff($request, $identite);
 
         return response()->json($staff->load('identite', 'position', 'unit', 'institution'), 201);
     }
@@ -143,57 +120,27 @@ class StaffController extends ApiController
      * @param \Illuminate\Http\Request $request
      * @param \Satis2020\ServicePackage\Models\Staff $staff
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, Staff $staff)
     {
         $staff->load('identite', 'position', 'unit', 'institution');
 
-        $rules = [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => ['required', 'array', new TelephoneArray],
-            'email' => ['required', 'array', new EmailArray],
-            'position_id' => 'required|exists:positions,id',
-            'unit_id' => 'required|exists:units,id',
-            'institution_id' => 'required|exists:institutions,id'
-        ];
-
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rules());
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // Institution & Unit Consistency Verification
-        if (!$this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'The unit must be linked to the institution'
-            ], 409);
-        }
+        $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
 
-        // Staff PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $staff->identite->id);
-        if (!$verifyPhone['status']) {
-            $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyPhone, 409);
-        }
+        // Staff PhoneNumber and Email Unicity Verification
+        $this->handleStaffPhoneNumberAndEmailVerificationUpdate($request, $staff->identite);
 
-        // Staff Email Unicity Verification
-        $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $staff->identite->id);
-        if (!$verifyEmail['status']) {
-            $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyEmail, 409);
-        }
+        $this->updateIdentity($request, $staff->identite);
 
-        $staff->update([
-            'position_id' => $request->position_id,
-            'unit_id' => $request->unit_id,
-            'institution_id' => $request->institution_id,
-            'others' => $request->others
-        ]);
-
-        $staff->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
+        $this->updateStaff($request, $staff);
 
         return response()->json($staff, 201);
     }
