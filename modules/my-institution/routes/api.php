@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * ClaimObjects
+ * Institutions
  */
-Route::apiResource('severity-levels', 'ClaimObjects\SeverityLevelController')->except(['create', 'edit']);
+Route::prefix('/my')->name('my.')->group(function () {
+    Route::resource('institutions', 'Institutions\InstitutionController')->only(['show', 'update']);
+    Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
+    Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
+});
+/*

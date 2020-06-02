@@ -12,6 +12,6 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * ClaimCategories
+ * ClaimObjects
  */
-Route::apiResource('severity-levels', 'ClaimCategories\SeverityLevelController');
+Route::apiResource('severity-levels', 'ClaimObjects\SeverityLevelController');
