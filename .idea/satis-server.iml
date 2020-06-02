@@ -75,6 +75,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie/getallheaders" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/collection" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/any-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/any-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/category-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
@@ -84,12 +85,14 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/position" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/severity-level" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/severity-level-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-any-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-maybe-no-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-my-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-unit" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/without-link-with-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
