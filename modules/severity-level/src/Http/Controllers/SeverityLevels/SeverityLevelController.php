@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\SeverityLevel\Http\Controllers\SeverityLevel;
+namespace Satis2020\SeverityLevel\Http\Controllers\SeverityLevels;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\SeverityLevel;
