@@ -5,7 +5,6 @@ use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\SeverityLevel;
 class ClaimCategoryController extends ApiController
 {
     public function __construct()
