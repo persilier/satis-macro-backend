@@ -76,11 +76,6 @@ class StaffController extends ApiController
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
-        if ($request->has('unit_id')) {
-            // Institution & Unit Consistency Verification
-            $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
-        }
-
         // Staff PhoneNumber and Email Unicity Verification
         $this->handleStaffPhoneNumberAndEmailVerificationStore($request);
 
@@ -136,11 +131,6 @@ class StaffController extends ApiController
         $this->validate($request, $this->rules(false));
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
-
-        if ($request->has('unit_id')) {
-            // Institution & Unit Consistency Verification
-            $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
-        }
 
         // Staff PhoneNumber and Email Unicity Verification
         $this->handleStaffPhoneNumberAndEmailVerificationUpdate($request, $staff->identite);
