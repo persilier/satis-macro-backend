@@ -36,25 +36,4 @@ trait InstitutionTrait
             return false;
     }
 
-    protected function getOneMyInstitution($institution, $institution_id){
-
-        $message = "Vous n'êtes pas autorisé à accéder à cette ressource.";
-
-        try {
-            $institution = Institution::with('institutionType')->findOrFail($institution);
-        } catch (\Exception $exception) {
-            throw new CustomException($message);
-        }
-
-        if (is_null($institution)) {
-            throw new CustomException($message);
-        }
-
-        if ($institution != $institution_id) {
-            throw new CustomException($message);
-        }
-
-        return $institution;
-    }
-
 }

@@ -16,8 +16,11 @@ use Illuminate\Support\Facades\Route;
  * Institutions
  */
 Route::prefix('/my')->name('my.')->group(function () {
-    Route::resource('institutions', 'Institutions\InstitutionController')->only(['show', 'update']);
-    Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
-    Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
+    Route::get('/institutions', 'Institutions\InstitutionController@getMyInstitution');
+    Route::post('/institutions', 'Institutions\InstitutionController@updateMyInstitution');
+    Route::post('/institutions/logo', 'Institutions\InstitutionController@updateLogo');
+
+
+    Route::get('/institutions/units', 'Institutions\InstitutionUnitController@index');
 });
 /*
