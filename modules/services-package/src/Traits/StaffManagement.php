@@ -45,7 +45,7 @@ trait StaffManagement
      * @param bool $with_unit
      * @return array
      */
-    protected function createStaff($request, $identite, $with_unit = true)
+    protected function createStaff($request, $identite)
     {
         $data = [
             'identite_id' => $identite->id,
@@ -54,14 +54,14 @@ trait StaffManagement
             'others' => $request->others
         ];
 
-        if ($with_unit) {
+        if ($request->has('unit_id')) {
             $data['unit_id'] = $request->unit_id;
         }
 
         return $staff = Staff::create($data);
     }
 
-    protected function updateStaff($request, $staff, $with_unit = true)
+    protected function updateStaff($request, $staff)
     {
         $data = [
             'position_id' => $request->position_id,
@@ -69,7 +69,7 @@ trait StaffManagement
             'others' => $request->others
         ];
 
-        if ($with_unit) {
+        if ($request->has('unit_id')) {
             $data['unit_id'] = $request->unit_id;
         }
 

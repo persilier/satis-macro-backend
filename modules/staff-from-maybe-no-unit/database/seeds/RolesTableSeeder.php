@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffFromAnyUnit\Database\Seeds;
+namespace Satis2020\StaffFromMaybeNoUnit\Database\Seeds;
 
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
@@ -27,33 +27,31 @@ class RolesTableSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create staff from any unit permissions
-        $permission_list = Permission::create(['name' => 'list-staff-from-any-unit', 'guard_name' => 'api']);
-        $permission_store = Permission::create(['name' => 'store-staff-from-any-unit', 'guard_name' => 'api']);
-        $permission_update = Permission::create(['name' => 'update-staff-from-any-unit', 'guard_name' => 'api']);
-        $permission_destroy = Permission::create(['name' => 'destroy-staff-from-any-unit', 'guard_name' => 'api']);
-        $permission_show = Permission::create(['name' => 'show-staff-from-any-unit', 'guard_name' => 'api']);
-        $permission_edit = Permission::create(['name' => 'edit-staff-from-any-unit', 'guard_name' => 'api']);
+        $permission_list = Permission::create(['name' => 'list-staff-from-maybe-no-unit', 'guard_name' => 'api']);
+        $permission_store = Permission::create(['name' => 'store-staff-from-maybe-no-unit', 'guard_name' => 'api']);
+        $permission_update = Permission::create(['name' => 'update-staff-from-maybe-no-unit', 'guard_name' => 'api']);
+        $permission_destroy = Permission::create(['name' => 'destroy-staff-from-maybe-no-unit', 'guard_name' => 'api']);
+        $permission_show = Permission::create(['name' => 'show-staff-from-maybe-no-unit', 'guard_name' => 'api']);
 
         if ($nature === 'DEVELOP') {
-            // get role admin
+            // retrieve role admin
             $role_admin = Role::where('name', 'admin')->where('guard_name', 'api')->firstOrFail();
 
             // associate permissions to roles
             $role_admin->givePermissionTo([
-                $permission_list, $permission_store, $permission_update, $permission_destroy, $permission_show, $permission_edit
+                $permission_list, $permission_store, $permission_update, $permission_destroy, $permission_show
             ]);
 
         }
 
-        if ($nature === 'MACRO') {
-            // create admin roles
-            $role_admin_holding = Role::where('name', 'admin-holding')->where('guard_name', 'api')->firstOrFail();
+        if ($nature == 'HUB') {
+            // retrieve admin roles
+            $role_admin_observatory = Role::where('name', 'admin-observatory')->where('guard_name', 'api')->firstOrFail();
 
             // associate permissions to roles
-            $role_admin_holding->givePermissionTo([
-                $permission_list, $permission_store, $permission_update, $permission_destroy, $permission_show, $permission_edit
+            $role_admin_observatory->givePermissionTo([
+                $permission_list, $permission_store, $permission_update, $permission_destroy, $permission_show
             ]);
-
         }
 
     }
