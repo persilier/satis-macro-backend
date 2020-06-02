@@ -1,14 +1,10 @@
 <?php
 
-namespace Satis2020\Institution\Database\Seeds;
+namespace Satis2020\MyInstitution\Database\Seeds;
 
 use Faker\Factory as Faker;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\User;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -29,7 +25,6 @@ class RolesTableSeeder extends Seeder
         // create staff from any unit permissions
 
         $permission_update = Permission::create(['name' => 'update-institution', 'guard_name' => 'api']);
-        $permission_show = Permission::create(['name' => 'show-institution', 'guard_name' => 'api']);
 
         if ($nature === 'DEVELOP') {
             // get role admin
@@ -37,40 +32,33 @@ class RolesTableSeeder extends Seeder
 
             // associate permissions to roles
             $role_admin->givePermissionTo([
-                $permission_update, $permission_show
+                $permission_update
             ]);
 
         }
 
         if ($nature === 'MACRO') {
             // create admin roles
-            $role_admin_holding = Role::where('name', 'admin-holding')->where('guard_name', 'api')->firstOrFail();
+            $role_admin_filial = Role::where('name', 'admin-filial')->where('guard_name', 'api')->firstOrFail();
 
             // associate permissions to roles
-            $role_admin_holding->givePermissionTo([
-                $permission_update, $permission_show
+            $role_admin_filial->givePermissionTo([
+                $permission_update
             ]);
 
         }
 
         if ($nature === 'HUB') {
-            // create admin roles
-            $role_admin_holding = Role::where('name', 'admin-observ')->where('guard_name', 'api')->firstOrFail();
-
-            // associate permissions to roles
-            $role_admin_holding->givePermissionTo([
-                $permission_update, $permission_show
-            ]);
 
         }
 
         if ($nature === 'PRO') {
             // create admin roles
-            $role_admin_holding = Role::where('name', 'admin-pro')->where('guard_name', 'api')->firstOrFail();
+            $role_admin_pro = Role::where('name', 'admin-pro')->where('guard_name', 'api')->firstOrFail();
 
             // associate permissions to roles
-            $role_admin_holding->givePermissionTo([
-                $permission_update, $permission_show
+            $role_admin_pro->givePermissionTo([
+                $permission_update
             ]);
 
         }

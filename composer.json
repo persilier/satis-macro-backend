@@ -24,6 +24,7 @@
         "satis2020/faq-package": "^1.0",
         "satis2020/institution": "^1.0",
         "satis2020/metadata-package": "^1.0",
+        "satis2020/my-institution": "^1.0",
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/severity-level": "^1.0",

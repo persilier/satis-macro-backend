@@ -22,8 +22,5 @@ Route::prefix('/my')->name('my.')->group(function () {
 
 
     Route::get('/institutions/units', 'Institutions\InstitutionUnitController@index');
-    //Route::resource('institutions', 'Institutions\InstitutionController')->only(['show', 'update']);
-    //Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
-    //Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
 });
 /*
