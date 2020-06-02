@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffFromAnyUnit\Http\Controllers\Staff;
+namespace Satis2020\StaffFromMaybeNoUnit\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -11,6 +11,7 @@ use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Traits\DataUserNature;
@@ -55,7 +56,8 @@ class StaffController extends ApiController
     {
         return response()->json([
             'institutions' => Institution::all(),
-            'positions' => Position::all()
+            'positions' => Position::all(),
+            'units' => Unit::all()
         ], 200);
     }
 
@@ -84,9 +86,7 @@ class StaffController extends ApiController
 
         $identite = $this->createIdentity($request);
 
-        $staff = $request->has('unit_id')
-            ? $this->createStaff($request, $identite)
-            : $this->createStaff($request, $identite, false);
+        $staff = $this->createStaff($request, $identite);
 
         return response()->json($staff->load('identite', 'position', 'unit', 'institution'), 201);
     }
@@ -114,7 +114,8 @@ class StaffController extends ApiController
         return response()->json([
             'staff' => $staff,
             'institutions' => Institution::all(),
-            'positions' => Position::all()
+            'positions' => Position::all(),
+            'units' => Unit::all()
         ], 200);
     }
 
@@ -146,11 +147,7 @@ class StaffController extends ApiController
 
         $this->updateIdentity($request, $staff->identite);
 
-        if ($request->has('unit_id')) {
-            $this->updateStaff($request, $staff);
-        }else {
-            
-        }
+        $this->updateStaff($request, $staff);
 
         return response()->json($staff, 201);
     }

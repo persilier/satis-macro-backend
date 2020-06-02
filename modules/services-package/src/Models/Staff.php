@@ -48,7 +48,9 @@ class Staff extends Model
      */
     public function getIsLeadAttribute()
     {
-        return $this->unit->lead_id === $this->attributes['id'];
+        return is_null($this->unit)
+            ? false
+            : $this->unit->lead_id === $this->attributes['id'];
     }
 
     /**

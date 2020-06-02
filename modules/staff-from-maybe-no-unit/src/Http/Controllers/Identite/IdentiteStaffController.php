@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffFromAnyUnit\Http\Controllers\Identite;
+namespace Satis2020\StaffFromMaybeNoUnit\Http\Controllers\Identite;
 
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -25,7 +25,7 @@ class IdentiteStaffController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-staff-from-any-unit')->only(['store']);
+        $this->middleware('permission:store-staff-from-maybe-no-unit')->only(['store']);
     }
 
     /**
@@ -40,12 +40,14 @@ class IdentiteStaffController extends ApiController
      */
     public function store(Request $request, Identite $identite)
     {
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rules(false));
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
-        // Institution & Unit Consistency Verification
-        $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
+        if ($request->has('unit_id')) {
+            // Institution & Unit Consistency Verification
+            $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
+        }
 
         // Staff PhoneNumber and Email Unicity Verification
         $this->handleStaffPhoneNumberAndEmailVerificationUpdate($request, $identite);
@@ -54,7 +56,9 @@ class IdentiteStaffController extends ApiController
 
         $this->updateIdentity($request, $identite);
 
-        $staff = $this->createStaff($request, $identite);
+        $staff = $request->has('unit_id')
+            ? $this->createStaff($request, $identite)
+            : $this->createStaff($request, $identite, false);
 
         return response()->json($staff->load('identite', 'position', 'unit', 'institution'), 201);
 
