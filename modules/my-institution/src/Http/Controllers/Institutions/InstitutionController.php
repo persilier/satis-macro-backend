@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UploadFile;

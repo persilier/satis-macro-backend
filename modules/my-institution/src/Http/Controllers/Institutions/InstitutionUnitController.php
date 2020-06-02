@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\Institution\Http\Controllers\Institutions;
+namespace Satis2020\MyInstitution\Http\Controllers\Institutions;
 
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;

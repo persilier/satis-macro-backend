@@ -1,5 +1,5 @@
 <?php
-namespace Satis2020\Institution\Providers;
+namespace Satis2020\MyInstitution\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Traits\ApiResponser;
