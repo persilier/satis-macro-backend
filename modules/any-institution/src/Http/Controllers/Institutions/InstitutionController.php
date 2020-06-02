@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\InstitutionType;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\UploadFile;
 
@@ -34,6 +35,32 @@ class InstitutionController extends ApiController
     {
         $institutions = Institution::with('institutionType')->get();
         return response()->json($institutions, 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return response()->json([
+            'institutionTypes' => InstitutionType::all()
+        ], 200);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param Unit $unit
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Institution $institution)
+    {
+        return response()->json([
+            'institution' => $institution->load('InstitutionType'),
+            'institutionTypes' => InstitutionType::all()
+        ], 200);
     }
 
     /**
