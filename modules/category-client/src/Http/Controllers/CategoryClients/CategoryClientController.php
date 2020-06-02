@@ -14,11 +14,11 @@ class CategoryClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-category-client-from-my-institution')->only(['index']);
-        $this->middleware('permission:store-category-client-from-my-institution')->only(['store']);
-        $this->middleware('permission:show-category-client-from-my-institution')->only(['show']);
-        $this->middleware('permission:update-category-client-from-my-institution')->only(['update']);
-        $this->middleware('permission:destroy-category-client-from-my-institution')->only(['destroy']);
+        $this->middleware('permission:list-category-client')->only(['index']);
+        $this->middleware('permission:store-category-client')->only(['store']);
+        $this->middleware('permission:show-category-client')->only(['show']);
+        $this->middleware('permission:update-category-client')->only(['update']);
+        $this->middleware('permission:destroy-category-client')->only(['destroy']);
     }
 
     /**
