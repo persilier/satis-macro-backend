@@ -17,9 +17,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::prefix('/any')->name('any.')->group(function () {
-    Route::resource('institutions', 'Institutions\InstitutionController')->except(['create', 'edit']);
+    Route::resource('institutions', 'Institutions\InstitutionController');
     Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
     Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
 });
-
-/*
