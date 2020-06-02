@@ -9,7 +9,7 @@ use Satis2020\ServicePackage\Models\InstitutionType;
 trait InstitutionTrait
 {
     protected  function getMaximumInstitution($type_id, $nature){
-        $message = "Unable to find the user institution";
+        $message = "Impossible d'accéder au type de l'institution de l'utilisateur connecté.";
         try {
             $maxInstitution = InstitutionType::where('id', $type_id)->where('application_type',$nature)->firstOrFail()->maximum_number_of_institutions;
             return $maxInstitution;
@@ -20,7 +20,7 @@ trait InstitutionTrait
     }
 
     protected function getVerifiedStore($type_id, $nature){
-        $message = "Unable to find the user institution";
+        $message = "Impossible de créer une institution du type sélectionné.";
         try {
             $max = $this->getMaximumInstitution($type_id, $nature);
         } catch (CustomException $e) {
@@ -38,7 +38,7 @@ trait InstitutionTrait
 
     protected function getOneMyInstitution($institution, $institution_id){
 
-        $message = "Unable to find the user institution";
+        $message = "Vous n'êtes pas autorisé à accéder à cette ressource.";
 
         try {
             $institution = Institution::with('institutionType')->findOrFail($institution);

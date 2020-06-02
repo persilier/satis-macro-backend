@@ -56,7 +56,7 @@ class MyInstitutionServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\Institution\Http\Controllers',
+            'namespace' => 'Satis2020\MyInstitution\Http\Controllers',
             'middleware' => ['api']
         ];
     }

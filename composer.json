@@ -240,6 +240,20 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "modules/any-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/my-institution/",
+            "options": {
+                "symlink": true
+            }
         }
     ]
 }
