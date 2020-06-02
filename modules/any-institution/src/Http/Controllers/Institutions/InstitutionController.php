@@ -52,7 +52,7 @@ class InstitutionController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Unit $unit
+     * @param Institution $institution
      * @return \Illuminate\Http\Response
      */
     public function edit(Institution $institution)
