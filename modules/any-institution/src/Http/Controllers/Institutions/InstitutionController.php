@@ -208,7 +208,7 @@ class InstitutionController extends ApiController
      */
     public function destroy(Institution $institution)
     {
-        $institution->secureDelete('units', 'clients', 'positions', 'staff', 'accounts');
+        $institution->delete('units', 'clients', 'positions', 'staff', 'accounts');
         return response()->json($institution, 201);
     }
 
