@@ -36,6 +36,8 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\SeverityLevel\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\AnyInstitution\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\StaffFromMaybeNoUnit\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\MyInstitution\Database\Seeds\RolesTableSeeder::class);
+        //$this->call(\Satis2020\MyInstitution\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ClaimObject\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ClaimCategory\Database\Seeds\RolesTableSeeder::class);
     }
 }

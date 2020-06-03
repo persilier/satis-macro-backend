@@ -24,7 +24,7 @@ class RolesTableSeeder extends Seeder
 
         // create staff from any unit permissions
 
-        $permission_update = Permission::create(['name' => 'update-institution', 'guard_name' => 'api']);
+        $permission_update = Permission::create(['name' => 'update-my-institution', 'guard_name' => 'api']);
 
         if ($nature === 'DEVELOP') {
             // get role admin
