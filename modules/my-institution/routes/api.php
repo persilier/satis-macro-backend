@@ -23,4 +23,3 @@ Route::prefix('/my')->name('my.')->group(function () {
 
     Route::get('/institutions/units', 'Institutions\InstitutionUnitController@index');
 });
-/*
