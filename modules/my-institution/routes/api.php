@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/institutions', 'Institutions\InstitutionController@getMyInstitution');
-    Route::post('/institutions', 'Institutions\InstitutionController@updateMyInstitution');
+    Route::put('/institutions', 'Institutions\InstitutionController@updateMyInstitution');
     Route::post('/institutions/logo', 'Institutions\InstitutionController@updateLogo');
 
 
