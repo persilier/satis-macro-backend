@@ -4,7 +4,10 @@ namespace Satis2020\ClaimObject\Http\Controllers\ClaimObjects;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\SeverityLevel;
+
 class ClaimObjectController extends ApiController
 {
     public function __construct()
@@ -24,6 +27,19 @@ class ClaimObjectController extends ApiController
     public function index()
     {
         return response()->json(ClaimObject::with('claimCategory','severityLevel')->get(), 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return response()->json([
+            'claimCategories' => ClaimCategory::all(),
+            'severityLevels' => SeverityLevel::all()
+        ], 200);
     }
 
 
@@ -60,6 +76,20 @@ class ClaimObjectController extends ApiController
     public function show(ClaimObject $claimObject)
     {
         return response()->json($claimObject->load('claimCategory','severityLevel'), 200);
+    }
+
+    /**
+     * Edit the form for creating a new resource.
+     * @param ClaimObject $claimObject
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(ClaimObject $claimObject)
+    {
+        return response()->json([
+            'claimObject' => $claimObject,
+            'claimCategories' => ClaimCategory::all(),
+            'severityLevels' => SeverityLevel::all()
+        ], 200);
     }
 
     /**
