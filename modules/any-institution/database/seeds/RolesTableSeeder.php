@@ -53,12 +53,12 @@ class RolesTableSeeder extends Seeder
 
         if ($nature === 'HUB') {
             // create admin roles
-            $role_admin_holding = Role::where('name', 'admin-observatory')->where('guard_name', 'api')->firstOrFail();
+            /*$role_admin_holding = Role::where('name', 'admin-observatory')->where('guard_name', 'api')->firstOrFail();
 
             // associate permissions to roles
             $role_admin_holding->givePermissionTo([
                 $permission_list, $permission_store, $permission_update, $permission_destroy, $permission_show
-            ]);
+            ]);*/
 
         }
 

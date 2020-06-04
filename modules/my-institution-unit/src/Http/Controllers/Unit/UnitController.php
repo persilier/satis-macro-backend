@@ -3,7 +3,10 @@
 namespace Satis2020\MyInstitutionUnit\Http\Controllers\Unit;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\UnitType;
@@ -28,8 +31,8 @@ class UnitController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return Response
+     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -39,8 +42,8 @@ class UnitController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return Response
+     * @throws RetrieveDataUserNatureException
      */
     public function create()
     {
@@ -55,9 +58,9 @@ class UnitController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -86,8 +89,9 @@ class UnitController extends ApiController
      * Display the specified resource.
      *
      * @param $unit
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return Response
+     * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function show($unit)
     {
@@ -99,13 +103,15 @@ class UnitController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param $unit
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return Response
+     * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function edit($unit)
     {
         return response()->json([
             'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
+            'unitTypes' => UnitType::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
             'loads' => Staff::where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id)
@@ -117,9 +123,10 @@ class UnitController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param $unit
-     * @return \Illuminate\Http\Response
+     * @return Response
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function update(Request $request, $unit)
     {
@@ -151,8 +158,8 @@ class UnitController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param Unit $unit
+     * @return Response
      * @throws \Exception
      */
     public function destroy($unit)
