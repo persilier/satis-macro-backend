@@ -21,12 +21,12 @@ class ClientController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        /*$this->middleware('auth:api');
+        $this->middleware('auth:api');
         $this->middleware('permission:list-client-from-any-institution')->only(['index']);
         $this->middleware('permission:create-client-from-any-institution')->only(['store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['update']);
-        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);*/
+        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);
     }
 
     /**
@@ -35,7 +35,7 @@ class ClientController extends ApiController
      */
     public function index()
     {
-        return response()->json(Client::with(['identite','type_client', 'category_client', 'accounts'])->get(), 200);
+        return response()->json(Client::with(['identite','type_client', 'category_client', 'accounts.accountType'])->get(), 200);
     }
 
     /**
@@ -47,6 +47,7 @@ class ClientController extends ApiController
     public function create(){
         return response()->json([
             'institutions'=> Institution::all(),
+            'clients' => Client::with('accounts'),
             'clientTypes' => TypeClient::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
