@@ -205,10 +205,11 @@ class InstitutionController extends ApiController
      * @param $institution
      * @return \Illuminate\Http\JsonResponse
      * @throws SecureDeleteException
+     * @throws \Exception
      */
     public function destroy(Institution $institution)
     {
-        $institution->delete('units', 'clients', 'positions', 'staff', 'accounts');
+        $institution->secureDelete('units', 'clients', 'positions', 'staff','staff.identite.user', 'accounts');
         return response()->json($institution, 201);
     }
 
