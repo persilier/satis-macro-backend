@@ -28,7 +28,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'parent', 'children', 'lead'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'parent', 'children', 'lead.identite'])->get(), 200);
     }
 
     /**
@@ -75,7 +75,7 @@ class UnitController extends ApiController
      */
     public function show(Unit $unit)
     {
-        return response()->json($unit->load('unitType', 'parent', 'children', 'lead'), 200);
+        return response()->json($unit->load('unitType', 'parent', 'children', 'lead.identite'), 200);
     }
 
     /**
@@ -87,10 +87,10 @@ class UnitController extends ApiController
     public function edit(Unit $unit)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'parent', 'children', 'lead'),
+            'unit' => $unit->load('unitType', 'parent', 'children', 'lead.identite'),
             'units' => Unit::all(),
             'unitTypes' => UnitType::all(),
-            'leads' => Staff::where('unit_id', $unit->id)->get(),
+            'leads' => Staff::with('identite')->where('unit_id', $unit->id)->get(),
             'parents' => Unit::all()
         ], 200);
     }

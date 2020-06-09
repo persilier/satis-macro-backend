@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UserPackage\Http\Controllers\Identite;
+namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Identites;
 
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -10,10 +10,20 @@ use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
+use Satis2020\ServicePackage\Traits\ClientTrait;
 
 class IdentiteClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity;
+    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:store-client-from-my-institution')->only(['store']);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,6 +45,7 @@ class IdentiteClientController extends ApiController
             ],
             'ville' => 'required|string',
             'number' => 'required|string',
+            'institution_id' => 'required|exists:institutions,id',
             'account_type_id' => 'required|exists:account_types,id',
             'category_client_id' => 'required|exists:category_clients,id',
             'others' => 'array',
@@ -43,7 +54,6 @@ class IdentiteClientController extends ApiController
 
         $this->validate($request, $rules);
 
-        $institution = $this->institution();
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $identite->id);
         if (!$verifyPhone['status']) {
@@ -59,7 +69,7 @@ class IdentiteClientController extends ApiController
         }
 
         // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $institution->id);
+        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id);
         if (!$verifyAccount['status']) {
             return response()->json($verifyAccount, 409);
         }
@@ -73,7 +83,7 @@ class IdentiteClientController extends ApiController
         $client_institution = ClientInstitution::create([
             'client_id'             => $client->id,
             'category_client_id'    => $request->category_client_id,
-            'institution_id'        => $institution->id
+            'institution_id'        => $request->institution_id
         ]);
 
         $account = Account::create([

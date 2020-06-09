@@ -21,6 +21,8 @@ class CreateClientInstitutionTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('category_client_id')->references('id')->on('category_clients');
             $table->foreign('institution_id')->references('id')->on('institutions');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

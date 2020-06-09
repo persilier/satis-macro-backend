@@ -1,10 +1,10 @@
 <?php
-namespace Satis2020\ClientFromAnyInstitution\Providers;
+namespace Satis2020\Currency\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 
-class ClientFromAnyInstitutionServiceProvider extends ServiceProvider
+class CurrencyServiceProvider extends ServiceProvider
 {
     use ApiResponser;
     /**
@@ -56,7 +56,7 @@ class ClientFromAnyInstitutionServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ClientFromAnyInstitution\Http\Controllers',
+            'namespace' => 'Satis2020\Currency\Http\Controllers',
             'middleware' => ['api']
         ];
     }

@@ -15,12 +15,15 @@ class UpdateAccountsTable extends Migration
     {
         Schema::table('accounts', function (Blueprint $table){
             $table->dropForeign(['client_id']);
-            $table->dropForeign(['institution_id']);
+            $table->dropColumn('client_id');
         });
 
         Schema::table('accounts', function (Blueprint $table){
-            $table->dropColumn('client_id');
+            $table->dropForeign(['institution_id']);
             $table->dropColumn('institution_id');
+        });
+
+        Schema::table('accounts', function (Blueprint $table){
             $table->uuid('client_institution_id');
             $table->foreign('client_institution_id')->references('id')->on('client_institution');
         });

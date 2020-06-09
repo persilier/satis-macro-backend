@@ -19,7 +19,7 @@ trait IdentiteVerifiedTrait
                     [
                         "message" => "L'un des clients est retrouvé dans l\'institution sélectionnée avec ce numéro de compte. 
                                         Souhaitez vous apporter une modification à ce compte ?",
-                        "client-from-my-institution" => $filtered->first(),
+                        "client" => $filtered->first(),
                         "posts" => $posts
                     ]
                 ];

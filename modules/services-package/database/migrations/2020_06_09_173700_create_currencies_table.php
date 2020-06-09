@@ -4,8 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateClientTable extends Migration
+class CreateCurrenciesTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -13,9 +14,13 @@ class UpdateClientTable extends Migration
      */
     public function up()
     {
-        Schema::table('clients', function (Blueprint $table){
-            $table->dropForeign(['category_clients_id']);
-            $table->dropForeign(['type_clients_id']);
+        Schema::create('currencies', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('slug');
+            $table->json('name');
+            $table->string('iso_code');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +31,6 @@ class UpdateClientTable extends Migration
      */
     public function down()
     {
-
+        Schema::drop('currencies');
     }
 }
