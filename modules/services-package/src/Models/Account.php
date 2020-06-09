@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -18,7 +19,7 @@ class Account extends Model
      * @var array
      */
     public $fillable = [
-        'institution_id', 'client_id', 'number', 'account_type_id'
+        'number', 'account_type_id', 'client_institution_id'
     ];
 
     /**
@@ -42,21 +43,12 @@ class Account extends Model
     protected $casts = [];
 
     /**
-     * Get the institution associated with the account
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the client_institution associated with the Client Institution
+     * @return BelongsTo
      */
-    public function institution()
+    public function client_institution()
     {
-        return $this->belongsTo(Institution::class);
-    }
-
-    /**
-     * Get the client-from-my-institution associated with the account
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(ClientInstitution::class);
     }
 
     /**

@@ -60,7 +60,7 @@ trait VerifyUnicity
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
         if (!$verify['status']) {
-            $staff = Staff::with('identite')->where('identite_id', '=', $verify['entity']->id)->first();
+            $staff = Staff::with('identite')->where('identite_id', '=', $verify['entity']->id)->firstOrFail();
             if (!is_null($staff)) {
                 return [
                     'status' => false,
@@ -182,14 +182,21 @@ trait VerifyUnicity
     }
 
 
-    protected function handleAccountVerification($number, $id, $account_id=null)
+    protected function handleAccountVerification($number, $institution_id, $account_id = null)
     {
-        $account = Account::where('number', $number)->where('institution_id', $id)->where('id', '!=', $account_id)->first();
+        $account = Account::with([
+            'client_institution' => function($query) use ($institution_id) {
+                $query->where('institution_id', $institution_id);
+            }])->where('number', $number)->where('id', '!=', $account_id)->first();
         if (!is_null($account)) {
             return [
                 'status' => false,
                 'message' => 'A Client already exist with the ',
-                'client-from-my-institution' => $account->load('institution', 'client-from-my-institution.identite'),
+                'account' => $account->load(
+                    'AccountType',
+                    'client_institution.category_client',
+                    'client_institution.client.identite'
+                ),
             ];
         }
         return ['status' => true];

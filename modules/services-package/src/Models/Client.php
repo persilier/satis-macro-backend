@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Client extends Model
 {
     use UuidAsId, SoftDeletes, SecureDelete;
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -31,26 +32,9 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-         'type_clients_id', 'category_clients_id', 'identites_id', 'others'
+        'identites_id', 'others'
     ];
 
-    /**
-     * Get the type_client associated with the type client-from-my-institution
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function type_client()
-    {
-        return $this->belongsTo(TypeClient::class, 'type_clients_id');
-    }
-
-    /**
-     * Get the category_client associated with the Categorie client-from-my-institution
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function category_client()
-    {
-        return $this->belongsTo(CategoryClient::class, 'category_clients_id');
-    }
 
     public function identite()
     {
@@ -58,12 +42,21 @@ class Client extends Model
     }
 
     /**
-     * Get the accounts associated with the client-from-my-institution
+     * Get the client_institution associated with the client
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function client_institution()
+    {
+        return $this->hasOne(ClientInstitution::class, 'client_id');
+    }
+
+    /**
+     * Get the client_institution associated with the client
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function accounts()
+    public function client_institutions()
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(ClientInstitution::class, 'client_id');
     }
 
 
