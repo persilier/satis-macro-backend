@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ClientFromMyAnyInstitution\Database\Seeds;
+namespace Satis2020\ClientFromMyInstitution\Database\Seeds;
 
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
