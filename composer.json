@@ -24,6 +24,7 @@
         "satis2020/client-from-any-institution": "^1.0",
         "satis2020/client-from-my-institution": "^1.0",
         "satis2020/configuration": "^1.0",
+        "satis2020/currency": "^1.0",
         "satis2020/faq-package": "^1.0",
         "satis2020/institution": "^1.0",
         "satis2020/metadata-package": "^1.0",
@@ -271,6 +272,13 @@
         {
             "type": "path",
             "url": "modules/claim-category/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/currency/",
             "options": {
                 "symlink": true
             }
