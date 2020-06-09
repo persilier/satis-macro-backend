@@ -17,11 +17,6 @@ class UpdateClientTable extends Migration
             $table->dropForeign(['category_clients_id']);
             $table->dropForeign(['type_clients_id']);
         });
-
-        Schema::table('clients', function (Blueprint $table){
-            $table->dropColumn('category_clients_id');
-            $table->dropColumn('type_clients_id');
-        });
     }
 
     /**
