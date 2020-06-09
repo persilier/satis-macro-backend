@@ -166,8 +166,8 @@ trait VerifyUnicity
             if (!is_null($client)) {
                 return [
                     'status' => false,
-                    'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
-                    'client-from-my-institution' => $client,
+                    'message' => 'A Identite already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
+                    'identite' => $client,
                     'verify' => $verify
                 ];
             }

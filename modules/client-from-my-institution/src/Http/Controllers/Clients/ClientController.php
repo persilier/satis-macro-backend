@@ -234,12 +234,10 @@ class ClientController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy($client)
+    public function destroy(Account $account)
     {
-        $institution = $this->institution();
-        $client = $this->getOneClientByInstitution($institution->id, $client);
-        $client->secureDelete('accounts');
-        return response()->json($client, 201);
+        $account->delete();
+        return response()->json($account, 201);
     }
 
 }

@@ -56,7 +56,7 @@ class ClientFromAnyInstitutionServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ClientFromMyInstitution\Http\Controllers',
+            'namespace' => 'Satis2020\ClientFromAnyInstitution\Http\Controllers',
             'middleware' => ['api']
         ];
     }

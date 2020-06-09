@@ -7,8 +7,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\TypeClient;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
@@ -22,11 +20,11 @@ class ClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-client-from-any-institution')->only(['index']);
+        /*$this->middleware('permission:list-client-from-any-institution')->only(['index']);
         $this->middleware('permission:create-client-from-any-institution')->only(['store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['update']);
-        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);
+        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);*/
     }
 
     /**
@@ -35,20 +33,29 @@ class ClientController extends ApiController
      */
     public function index()
     {
-        return response()->json(Client::with(['identite','type_client', 'category_client', 'accounts.accountType'])->get(), 200);
+        return response()->json(ClientInstitution::with(
+            'client.identite',
+            'category_client',
+            'institution',
+            'accounts.accountType'
+        )->get(), 200);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws RetrieveDataUserNatureException
      */
     public function create(){
         return response()->json([
-            'institutions'=> Institution::all(),
-            'clients' => Client::with('accounts'),
-            'clientTypes' => TypeClient::all(),
+            'client_institutions' => ClientInstitution::with(
+                'client.identite',
+                'category_client',
+                'institution',
+                'accounts.accountType'
+            )->get(),
+            'AccountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
     }
@@ -60,6 +67,7 @@ class ClientController extends ApiController
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
+     * @throws RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -73,13 +81,15 @@ class ClientController extends ApiController
             ],
             'ville' => 'required|string',
             'number' => 'required|string',
-            'type_clients_id' => 'required|exists:type_clients,id',
-            'category_clients_id' => 'required|exists:category_clients,id',
             'institution_id' => 'required|exists:institutions,id',
+            'account_type_id' => 'required|exists:account_types,id',
+            'category_client_id' => 'required|exists:category_clients,id',
             'others' => 'array',
             'other_attributes' => 'array',
         ];
+
         $this->validate($request, $rules);
+
 
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone');
@@ -94,27 +104,32 @@ class ClientController extends ApiController
         }
 
         // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number,$request->institution_id);
+        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id);
         if (!$verifyAccount['status']) {
             return response()->json($verifyAccount, 409);
         }
 
 
+
         $identite = Identite::create($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
         $client = Client::create([
-            'type_clients_id'       => $request->type_clients_id,
-            'category_clients_id'   => $request->category_clients_id,
             'identites_id'          => $identite->id,
             'others'                => $request->others
         ]);
 
+        $client_institution = ClientInstitution::create([
+            'client_id'             => $client->id,
+            'category_client_id'    => $request->category_client_id,
+            'institution_id'        => $request->institution_id
+        ]);
+
         $account = Account::create([
-            'institution_id'   => $request->institution_id,
-            'client_id'        => $client->id,
+            'client_institution_id'   => $client_institution->id,
+            'account_type_id'  => $request->account_type_id,
             'number'           => $request->number
         ]);
-        return response()->json($client->load('identite','type_client', 'category_client', 'accounts'), 200);
+        return response()->json($account, 201);
     }
 
     /**
@@ -122,25 +137,38 @@ class ClientController extends ApiController
      * @param $client
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Client $client)
+    public function show($client)
     {
-        return response()->json($client->load('identite','type_client', 'category_client', 'accounts'), 200);
+        return response()->json(ClientInstitution::with(
+            'client.identite',
+            'category_client',
+            'institution',
+            'accounts.accountType'
+        )->where('client_id',$client)->firstOrFail(), 200);
     }
 
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Request $request
-     * @param \Satis2020\ServicePackage\Models\Client $client
+     * @param $account
      * @return \Illuminate\Http\JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
-    public function edit(Request $request, Client $client)
+    public function edit($account)
     {
+
         return response()->json([
-            'client' => $client->load('identite','type_client', 'category_client', 'accounts'),
-            'institutions' => Institution::all(),
-            'clientTypes' => TypeClient::all(),
+            'client_institution' => ClientInstitution::with([
+                'client.identite',
+                'category_client',
+                'institution',
+                'accounts' => function ($query) use ($account){
+                    $query->where('id',$account);
+                },
+                'accounts.accountType'
+            ])->firstOrFail(),
+            'AccountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
 
@@ -152,10 +180,11 @@ class ClientController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param $account
-     * @return \Illuminate\Http\JsonResponse|ClientResource
+     * @return \Illuminate\Http\JsonResponse
+     * @throws RetrieveDataUserNatureException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, $account)
+    public function update(Request $request,$account)
     {
         $rules = [
             'firstname' => 'required|string',
@@ -167,42 +196,51 @@ class ClientController extends ApiController
             ],
             'ville' => 'required|string',
             'number' => 'required|string',
-            'type_clients_id' => 'required|exists:type_clients,id',
-            'category_clients_id' => 'required|exists:category_clients,id',
+            'account_type_id' => 'required|exists:account_types,id',
             'institution_id' => 'required|exists:institutions,id',
+            'category_client_id' => 'required|exists:category_clients,id',
             'others' => 'array',
             'other_attributes' => 'array',
         ];
 
         $this->validate($request, $rules);
 
+        $client = ClientInstitution::with([
+            'client.identite',
+            'category_client',
+            'institution',
+            'accounts' => function ($query) use ($account){
+                $query->where('id',$account);
+            },
+            'accounts.accountType'
+        ])->firstOrFail();
+
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $account->client->identite->id);
+        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $client->client->identite->id);
         if (!$verifyPhone['status']) {
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
-        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $account->client->identite->id);
+        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $client->client->identite->id);
         if (!$verifyEmail['status']) {
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyEmail, 409);
         }
 
+
         // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id, $account->client->id);
+        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id, $client->accounts[0]->id);
         if (!$verifyAccount['status']) {
             return response()->json($verifyAccount, 409);
         }
 
-        $account->update($request->only(['number','others']));
+        $client->accounts[0]->update($request->only(['number', 'account_type_id']));
 
-        $account->client->update($request->only(['type_clients_id', 'category_clients_id','others']));
+        $client->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $account->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
-
-        return response()->json($account, 201);
+        return response()->json($client, 201);
     }
 
     /**
@@ -212,10 +250,10 @@ class ClientController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy(Client $client)
+    public function destroy(Account $account)
     {
-        $client->secureDelete('accounts');
-        return response()->json($client, 201);
+        $account->delete();
+        return response()->json($account, 201);
     }
 
 }
