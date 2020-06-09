@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
+use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
@@ -20,11 +21,11 @@ class ClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        /*$this->middleware('permission:list-client-from-any-institution')->only(['index']);
+        $this->middleware('permission:list-client-from-any-institution')->only(['index']);
         $this->middleware('permission:create-client-from-any-institution')->only(['store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['update']);
-        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);*/
+        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);
     }
 
     /**
