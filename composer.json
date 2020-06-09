@@ -22,7 +22,7 @@
         "satis2020/claim-category": "^1.0",
         "satis2020/claim-object": "^1.0",
         "satis2020/client-from-my-institution": "^1.0",
-        "satis2020/configurations-package": "^1.0",
+        "satis2020/configuration": "^1.0",
         "satis2020/faq-package": "^1.0",
         "satis2020/institution": "^1.0",
         "satis2020/metadata-package": "^1.0",
@@ -115,7 +115,7 @@
         },
         {
             "type": "path",
-            "url": "modules/configurations-package/",
+            "url": "modules/configuration/",
             "options": {
                 "symlink": true
             }

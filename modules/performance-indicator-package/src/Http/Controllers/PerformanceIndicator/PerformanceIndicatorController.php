@@ -11,6 +11,19 @@ use Satis2020\ServicePackage\Models\PerformanceIndicator;
 class PerformanceIndicatorController extends ApiController
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:list-performance-indicator')->only(['index']);
+        $this->middleware('permission:show-performance-indicator')->only(['show']);
+        $this->middleware('permission:store-performance-indicator')->only(['store', 'create']);
+        $this->middleware('permission:update-performance-indicator')->only(['update', 'edit']);
+        $this->middleware('permission:destroy-performance-indicator')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

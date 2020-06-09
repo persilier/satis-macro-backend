@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ConfigurationsPackage\Http\Controllers\Mail;
+namespace Satis2020\Configuration\Http\Controllers\Mail;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -9,6 +9,16 @@ use Satis2020\ServicePackage\Models\Metadata;
 
 class MailController extends ApiController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:show-mail-parameters')->only(['show']);
+        $this->middleware('permission:update-mail-parameters')->only(['update']);
+    }
 
     /**
      * Display the specified resource.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ConfigurationsPackage\Http\Controllers\Sms;
+namespace Satis2020\Configuration\Http\Controllers\Sms;
 
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -8,6 +8,16 @@ use Satis2020\ServicePackage\Models\Metadata;
 
 class SmsController extends ApiController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:show-sms-parameters')->only(['show']);
+        $this->middleware('permission:update-sms-parameters')->only(['update']);
+    }
 
     /**
      * Display the specified resource.
