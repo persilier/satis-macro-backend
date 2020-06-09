@@ -81,6 +81,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-category" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-requirement" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/client-from-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/clients-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/configuration" />
@@ -90,6 +91,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/position" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/relationship" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/severity-level" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-any-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-maybe-no-unit" />

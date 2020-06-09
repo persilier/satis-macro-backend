@@ -21,6 +21,7 @@
         "satis2020/category-client": "^1.0",
         "satis2020/claim-category": "^1.0",
         "satis2020/claim-object": "^1.0",
+        "satis2020/claim-object-requirement": "^1.0",
         "satis2020/client-from-my-institution": "^1.0",
         "satis2020/configuration": "^1.0",
         "satis2020/faq-package": "^1.0",
@@ -30,6 +31,7 @@
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position": "^1.0",
+        "satis2020/relationship": "^1.0",
         "satis2020/severity-level": "^1.0",
         "satis2020/staff-from-any-unit": "^1.0",
         "satis2020/staff-from-maybe-no-unit": "^1.0",
@@ -270,6 +272,20 @@
         {
             "type": "path",
             "url": "modules/claim-category/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/claim-object-requirement/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/relationship/",
             "options": {
                 "symlink": true
             }

@@ -58,4 +58,14 @@ class ClaimObject extends Model
     {
         return $this->belongsTo(SeverityLevel::class, 'severity_levels_id', 'id');
     }
+
+    /**
+     * Get the requirements associated with the claimObject
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function requirements()
+    {
+        return $this->belongsToMany(Requirement::class);
+    }
+
 }

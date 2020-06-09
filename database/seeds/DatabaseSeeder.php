@@ -39,8 +39,12 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\MyInstitution\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\ClaimObject\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\ClaimCategory\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\Configuration\Database\Seeds\SmsTableSeeder::class);
-        $this->call(\Satis2020\Configuration\Database\Seeds\MailsTableSeeder::class);
-        $this->call(\Satis2020\PerformanceIndicatorPackage\Database\Seeds\RolesTableSeeder::class);
+//        $this->call(\Satis2020\Configuration\Database\Seeds\SmsTableSeeder::class);
+//        $this->call(\Satis2020\Configuration\Database\Seeds\MailsTableSeeder::class);
+//        $this->call(\Satis2020\PerformanceIndicatorPackage\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\RequirementTableSeeder::class);
+        $this->call(\Satis2020\ClaimObjectRequirement\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\RelationshipTableSeeder::class);
+        $this->call(\Satis2020\Relationship\Database\Seeds\RolesTableSeeder::class);
     }
 }

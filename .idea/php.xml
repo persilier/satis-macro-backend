@@ -168,6 +168,8 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/claim-object" />
       <path value="$PROJECT_DIR$/vendor/satis2020/client-from-my-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/configuration" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/claim-object-requirement" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/relationship" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
