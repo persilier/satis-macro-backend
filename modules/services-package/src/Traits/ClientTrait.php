@@ -32,11 +32,29 @@ trait ClientTrait
             'client.identite',
             'category_client',
             'institution',
-            'accounts' => function ($query) use ($account){
-                $query->where('id',$account);
-            },
             'accounts.accountType'
-        ])->where('institution_id',$institution)->firstOrFail();
+        ])->where(function ($query) use ($account){
+            $query->whereHas('accounts', function ($q) use ($account){
+                $q->where('id', $account);
+            });
+        })->where('institution_id',$institution)->firstOrFail();
+
+        return $client;
+    }
+
+
+    protected  function getOneAccountClient($account){
+
+        $client = ClientInstitution::with([
+            'client.identite',
+            'category_client',
+            'institution',
+            'accounts.accountType'
+        ])->where(function ($query) use ($account){
+            $query->whereHas('accounts', function ($q) use ($account){
+                $q->where('id', $account);
+            });
+        })->firstOrFail();
 
         return $client;
     }

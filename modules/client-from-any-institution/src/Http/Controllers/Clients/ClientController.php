@@ -159,15 +159,7 @@ class ClientController extends ApiController
     {
 
         return response()->json([
-            'client_institution' => ClientInstitution::with([
-                'client.identite',
-                'category_client',
-                'institution',
-                'accounts' => function ($query) use ($account){
-                    $query->where('id',$account);
-                },
-                'accounts.accountType'
-            ])->firstOrFail(),
+            'client_institution' => $this->getOneAccountClient($account),
             'AccountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
@@ -205,15 +197,7 @@ class ClientController extends ApiController
 
         $this->validate($request, $rules);
 
-        $client = ClientInstitution::with([
-            'client.identite',
-            'category_client',
-            'institution',
-            'accounts' => function ($query) use ($account){
-                $query->where('id',$account);
-            },
-            'accounts.accountType'
-        ])->firstOrFail();
+        $client = $this->getOneAccountClient($account);
 
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $client->client->identite->id);
