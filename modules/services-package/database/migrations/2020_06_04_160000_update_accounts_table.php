@@ -19,8 +19,6 @@ class UpdateAccountsTable extends Migration
         });
 
         Schema::table('accounts', function (Blueprint $table){
-            $table->dropColumn('accounts_client_id');
-            $table->dropColumn('accounts_institution_id');
             $table->uuid('client_institution_id');
             $table->foreign('client_institution_id')->references('id')->on('client_institution');
         });
