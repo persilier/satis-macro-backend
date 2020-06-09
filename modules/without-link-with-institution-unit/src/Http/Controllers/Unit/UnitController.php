@@ -90,7 +90,7 @@ class UnitController extends ApiController
             'unit' => $unit->load('unitType', 'parent', 'children', 'lead.identite'),
             'units' => Unit::all(),
             'unitTypes' => UnitType::all(),
-            'leads' => Staff::where('unit_id', $unit->id)->get(),
+            'leads' => Staff::with('identite')->where('unit_id', $unit->id)->get(),
             'parents' => Unit::all()
         ], 200);
     }
