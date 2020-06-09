@@ -24,11 +24,11 @@ class ClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-       /* $this->middleware('permission:list-client-from-my-institution')->only(['index']);
+        $this->middleware('permission:list-client-from-my-institution')->only(['index']);
         $this->middleware('permission:store-client-from-my-institution')->only(['store']);
         $this->middleware('permission:show-client-from-my-institution')->only(['show']);
         $this->middleware('permission:update-client-from-my-institution')->only(['update']);
-        $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);*/
+        $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);
     }
 
     /**

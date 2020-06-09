@@ -29,7 +29,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead.identite'])->get(), 200);
     }
 
     /**
@@ -91,7 +91,7 @@ class UnitController extends ApiController
     public function edit(Unit $unit)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'leads' => Staff::where('unit_id', $unit->id)->get(),
