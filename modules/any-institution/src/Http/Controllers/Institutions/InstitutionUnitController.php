@@ -23,7 +23,7 @@ class InstitutionUnitController extends ApiController
     {
         $institution->load(['units']);
         return response()->json([
-            'units' => $institution->only(['units']),
+            $institution->only(['units']),
             'staffs' => Staff::with('identite')->where('institution_id', $institution->id)->get()
         ], 200);
     }
