@@ -63,7 +63,7 @@ trait ClientTrait
 
     protected function handleAccountClient($number, $id)
     {
-        if(Account::where('client_institution_id', $id)->where('number', $number)->get())
+        if(Account::where('client_institution_id', $id)->where('number', $number)->first())
             return ['code' => 409,'status' => true, 'message' => 'Impossible d\'enregistrer deux fois le même numéro de compte pour une institution donnée.'];
         return ['status' => false];
     }
