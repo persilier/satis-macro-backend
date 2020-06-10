@@ -109,9 +109,9 @@ class UnitController extends ApiController
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
+            'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
                 $query->where('unit_id', $unit->id);
-            })],
+            }),
             'parent_id' => 'exists:units,id'
         ];
 

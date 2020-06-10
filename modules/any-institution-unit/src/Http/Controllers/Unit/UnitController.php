@@ -60,9 +60,9 @@ class UnitController extends ApiController
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
-            'parent_id' => [Rule::exists('units', 'id')->where(function ($query) use ($request) {
+            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
-            })],
+            }),
         ];
         $this->validate($request, $rules);
 
@@ -115,12 +115,12 @@ class UnitController extends ApiController
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
-            'lead_id' => [Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {
+            'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {
                 $query->where('institution_id', $request->institution_id)->where('unit_id', $unit->id);
-            })],
-            'parent_id' =>  [Rule::exists('units', 'id')->where(function ($query) use ($request) {
+            }),
+            'parent_id' =>  'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
-            })],
+            }),
         ];
 
         $this->validate($request, $rules);
