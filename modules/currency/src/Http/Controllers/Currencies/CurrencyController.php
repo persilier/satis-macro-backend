@@ -77,7 +77,7 @@ class CurrencyController extends ApiController
         ];
         $this->validate($request, $rules);
         $currency->slug = null;
-        $currency->update(['name'=> $request->name, 'description'=> $request->description]);
+        $currency->update(['name'=> $request->name, 'iso_code'=> $request->iso_code]);
         return response()->json($currency, 201);
     }
 

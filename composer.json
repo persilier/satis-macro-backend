@@ -19,6 +19,7 @@
         "satis2020/any-institution": "^1.0",
         "satis2020/any-institution-unit": "^1.0",
         "satis2020/category-client": "^1.0",
+        "satis2020/channel": "^1.0",
         "satis2020/claim-category": "^1.0",
         "satis2020/claim-object": "^1.0",
         "satis2020/claim-object-requirement": "^1.0",
@@ -295,6 +296,13 @@
         {
             "type": "path",
             "url": "modules/currency/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/channel/",
             "options": {
                 "symlink": true
             }
