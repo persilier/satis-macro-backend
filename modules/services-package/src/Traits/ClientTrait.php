@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Satis2020\ServicePackage\Models\ClientInstitution;
+use Satis2020\ServicePackage\Models\Account;
 trait ClientTrait
 {
     protected  function getOneClientByInstitution($institution, $id){
@@ -57,6 +58,14 @@ trait ClientTrait
         })->firstOrFail();
 
         return $client;
+    }
+
+
+    protected function handleAccountClient($number, $id)
+    {
+        if(Account::where('client_institution_id', $id)->where('number', $number)->get())
+            return ['status' => false, 'message' => 'Impossible d\'enregistrer deux fois le même numéro de compte pour une institution donnée.'];
+        return ['status' => true];
     }
 
 
