@@ -4,16 +4,13 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Accounts;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
-use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Account;
 use Illuminate\Http\Request;
-use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
-use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
-use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 
 class AccountClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait;
+    use ClientTrait;
 
     public function __construct()
     {
@@ -25,11 +22,7 @@ class AccountClientController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param Identite $identite
-     * @return ClientResource
+     * Store a newly created resource in storage
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, $client)
