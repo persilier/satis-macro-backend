@@ -61,6 +61,7 @@ class ChannelController extends ApiController
     }
 
 
+
     /**
      * Update the specified resource in storage.
      *

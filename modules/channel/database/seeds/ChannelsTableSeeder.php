@@ -22,38 +22,37 @@ class ChannelsTableSeeder extends Seeder
         Channel::truncate();
         Channel::flushEventListeners();
 
-        $channels = [
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'SMS',
-                'slug' => 'sms',
-                'is_editable' => false,
-                'is_response' => true,
-            ],
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'EMAIL',
-                'slug' => 'email',
-                'is_editable' => false,
-                'is_response' => true,
-            ],
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'TELEPHONE',
-                'slug' => 'telephone',
-                'is_editable' => false,
-                'is_response' => true,
-            ],
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'ENTRETIEN',
-                'slug' => 'entretien',
-                'is_editable' => false,
-                'is_response' => true,
-            ]
-        ];
+        Channel::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'SMS',
+            'slug' => 'sms',
+            'is_editable' => false,
+            'is_response' => true,
+        ]);
 
-        Channel::create($channels);
+        Channel::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'EMAIL',
+            'slug' => 'email',
+            'is_editable' => false,
+            'is_response' => true,
+        ]);
+
+        Channel::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'TELEPHONE',
+            'slug' => 'telephone',
+            'is_editable' => false,
+            'is_response' => true,
+        ]);
+
+        Channel::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'ENTRETIEN',
+            'slug' => 'entretien',
+            'is_editable' => false,
+            'is_response' => true,
+        ]);
 
     }
 }
