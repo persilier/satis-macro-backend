@@ -80,7 +80,7 @@ class ChannelController extends ApiController
         $this->validate($request, $rules);
 
         if($channel->is_editable === 0)
-            return $this->showMessage('Ce cannal n\'est pas modifiable.', 400);
+            return $this->errorResponse('Ce cannal ne peut être modifier.', 400);
 
         $channel->slug = null;
         $channel->update(['name'=> $request->name, 'is_response'=> $request->is_response]);
@@ -95,6 +95,8 @@ class ChannelController extends ApiController
      */
     public function destroy(Channel $channel)
     {
+        if($channel->is_editable === 0)
+            return $this->errorResponse('Ce cannal ne peut être supprimer.', 400);
         $channel->delete();
         return response()->json($channel, 200);
     }
