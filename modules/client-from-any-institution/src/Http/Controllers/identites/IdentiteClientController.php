@@ -7,7 +7,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\ClientTrait;
@@ -22,7 +21,7 @@ class IdentiteClientController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-client-from-my-institution')->only(['store']);
+        $this->middleware('permission:store-client-from-any-institution')->only(['store']);
     }
 
     /**

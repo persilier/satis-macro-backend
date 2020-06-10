@@ -19,7 +19,6 @@ class UnitStaffController extends ApiController
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
      */
     public function index($institution)
     {

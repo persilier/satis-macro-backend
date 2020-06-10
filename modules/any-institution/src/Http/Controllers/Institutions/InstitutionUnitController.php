@@ -4,7 +4,7 @@ namespace Satis2020\AnyInstitution\Http\Controllers\Institutions;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
-
+use Satis2020\ServicePackage\Models\Staff;
 class InstitutionUnitController extends ApiController
 {
 
@@ -22,7 +22,10 @@ class InstitutionUnitController extends ApiController
     public function index(Institution $institution)
     {
         $institution->load(['units']);
-        return response()->json($institution->only(['units']), 200);
+        return response()->json([
+            'units' => $institution->only(['units']),
+            'staffs' => Staff::with('identite')->where('institution_id', $institution->id)->get()
+        ], 200);
     }
 
 }

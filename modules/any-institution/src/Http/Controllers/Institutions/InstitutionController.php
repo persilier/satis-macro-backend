@@ -85,7 +85,7 @@ class InstitutionController extends ApiController
 
         $this->validate($request, $rules);
 
-        if (false == $this->getVerifiedStore($request->institution_type_id, $this->nature()))
+        if (false === $this->getVerifiedStore($request->institution_type_id, $this->nature()))
             return response()->json(['error'=> "Impossible d'enregistrer une autre institution du type sélectionné.", 'code' => 400], 400);
 
         $filePath = null;
@@ -146,7 +146,7 @@ class InstitutionController extends ApiController
         ];
         $this->validate($request, $rules);
 
-        if (false == $this->getVerifiedStore($request->institution_type_id, $this->nature()))
+        if (false === $this->getVerifiedStore($request->institution_type_id, $this->nature()))
             return response()->json(['error'=> "Impossible d'enregistrer une autre institution du type sélectionné.", 'code' => 400], 400);
 
         if ($request->has('logo')) {
