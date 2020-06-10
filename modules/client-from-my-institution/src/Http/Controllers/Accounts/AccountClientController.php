@@ -37,7 +37,6 @@ class AccountClientController extends ApiController
         $rules = [
             'number' => 'required|string',
             'account_type_id' => 'required|exists:account_types,id',
-            'category_client_id' => 'required|exists:category_clients,id',
         ];
 
         $this->validate($request, $rules);
