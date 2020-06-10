@@ -10,8 +10,8 @@ class UnitStaffController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:api');
-        $this->middleware('permission:update-any-unit')->only(['index']);
+        //$this->middleware('auth:api');
+        //$this->middleware('permission:update-any-unit')->only(['index']);
 
     }
 
@@ -23,7 +23,7 @@ class UnitStaffController extends ApiController
      */
     public function index($institution)
     {
-        return response()->json(Staff::with('identite')->where('institution_id',$institution)->get(), 200);
+        return response()->json(Staff::with('identite')->where('institution_id', $institution)->get(), 200);
     }
 
 }
