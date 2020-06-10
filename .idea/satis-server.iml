@@ -82,9 +82,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-requirement" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/client-from-any-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/client-from-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/clients-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/configuration" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/currency" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution" />
