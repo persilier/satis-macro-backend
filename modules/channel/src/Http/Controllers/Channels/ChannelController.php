@@ -78,7 +78,7 @@ class ChannelController extends ApiController
         ];
 
         if(true == $channel->is_editable)
-            return response()->json($channel, 400);
+            return $this->showMessage('Ce cannal n\'est pas modifiable.', 400);
 
         $this->validate($request, $rules);
         $channel->slug = null;
