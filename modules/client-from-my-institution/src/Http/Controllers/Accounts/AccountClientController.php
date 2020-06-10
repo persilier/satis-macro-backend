@@ -43,7 +43,7 @@ class AccountClientController extends ApiController
 
         $institution = $this->institution();
 
-        $client_institution = ClientInstitution::where('institution_id', $institution->id)->where('client', $client)->firstOrFail();
+        $client_institution = ClientInstitution::where('institution_id', $institution->id)->where('client_id', $client)->firstOrFail();
 
         // Account Number Verification
         $verifyAccount = $this->handleAccountVerification($request->number, $institution->id);
