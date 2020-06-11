@@ -59,5 +59,22 @@ class Channel extends Model
         ];
     }
 
+    /**
+     * Get the claims associated with the channel as a request_channel
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'request_channel_slug', 'slug');
+    }
+
+    /**
+     * Get the claims associated with the channel as a response_channel
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function responseClaims()
+    {
+        return $this->hasMany(Claim::class, 'response_channel_slug', 'slug');
+    }
 
 }

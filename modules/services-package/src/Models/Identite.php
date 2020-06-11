@@ -60,4 +60,13 @@ class Identite extends Model
         return $this->hasOne(Client::class, 'identites_id');
     }
 
+    /**
+     * Get the claims associated with the identite
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'claimer_id');
+    }
+
 }

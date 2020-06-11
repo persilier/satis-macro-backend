@@ -95,4 +95,13 @@ class Unit extends Model
         return $this->belongsTo(Unit::class, 'parent_id');
     }
 
+    /**
+     * Get the claims associated with the unit
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'unit_targeted_id');
+    }
+
 }

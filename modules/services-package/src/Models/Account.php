@@ -60,4 +60,13 @@ class Account extends Model
         return $this->belongsTo(AccountType::class);
     }
 
+    /**
+     * Get the claims associated with the account
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'account_targeted_id');
+    }
+
 }

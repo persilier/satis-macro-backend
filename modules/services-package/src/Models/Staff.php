@@ -96,4 +96,22 @@ class Staff extends Model
         return $this->belongsTo(Institution::class);
     }
 
+    /**
+     * Get the claims registered by the staff
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function registeredClaims()
+    {
+        return $this->hasMany(Claim::class, 'created_by');
+    }
+
+    /**
+     * Get the claims completed by the staff
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedClaims()
+    {
+        return $this->hasMany(Claim::class, 'completed_by');
+    }
+
 }

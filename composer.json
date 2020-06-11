@@ -34,6 +34,7 @@
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position": "^1.0",
+        "satis2020/register-claim-against-any-institution": "^1.0",
         "satis2020/relationship": "^1.0",
         "satis2020/severity-level": "^1.0",
         "satis2020/staff-from-any-unit": "^1.0",
@@ -303,6 +304,13 @@
         {
             "type": "path",
             "url": "modules/channel/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/register-claim-against-any-institution/",
             "options": {
                 "symlink": true
             }
