@@ -28,6 +28,11 @@ class EmailArray implements Rule
     {
         $collection = collect([]);
 
+        if(!is_array($value)){
+            $this->message = " :attribute is not an array ";
+            return false;
+        }
+
         foreach ($value as $email) {
 
             if($collection->search($email, true) !== false){

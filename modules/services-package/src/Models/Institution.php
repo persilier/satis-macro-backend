@@ -105,4 +105,13 @@ class Institution extends Model
         return $this->hasMany(ClientInstitution::class);
     }
 
+    /**
+     * Get the claims associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'institution_targeted_id');
+    }
+
 }

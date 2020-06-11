@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -10,9 +11,14 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
+*/
 
-/*
- * ClaimObjects
- */
-Route::resource('claim-categories', 'ClaimCategories\ClaimCategoryController')->except(['create', 'edit']);
-Route::resource('claim-categories.claim-objects', 'ClaimCategories\ClaimCategoryObjectController')->only(['index']);
+Route::prefix('any')->group(function () {
+    /**
+     * Staff
+     */
+    Route::name('any.')->group(function () {
+        Route::resource('claims', 'Claim\ClaimController')->only(['create', 'store']);
+        Route::resource('identites.claims', 'Identite\IdentiteClaimController', ['only' => ['store']]);
+    });
+});

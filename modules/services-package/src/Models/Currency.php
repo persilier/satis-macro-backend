@@ -58,5 +58,13 @@ class Currency extends Model
         ];
     }
 
+    /**
+     * Get the claims associated with the currency
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'amount_currency_slug', 'slug');
+    }
 
 }

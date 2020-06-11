@@ -19,4 +19,5 @@ use Illuminate\Support\Facades\Route;
 Route::resource('institutions', 'Institutions\InstitutionController')->except(['create', 'edit']);
 Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
 Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
+Route::resource('institutions.clients', 'Institutions\InstitutionClientController')->only(['index']);
 

@@ -68,4 +68,13 @@ class ClaimObject extends Model
         return $this->belongsToMany(Requirement::class);
     }
 
+    /**
+     * Get the claims associated with the claimObject
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class);
+    }
+
 }

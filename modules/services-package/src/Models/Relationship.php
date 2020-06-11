@@ -38,4 +38,13 @@ class Relationship extends Model
      * @var array
      */
     protected $fillable = ['name', 'description'];
+
+    /**
+     * Get the claims associated with the relationship
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function claims()
+    {
+        return $this->hasMany(Claim::class);
+    }
 }
