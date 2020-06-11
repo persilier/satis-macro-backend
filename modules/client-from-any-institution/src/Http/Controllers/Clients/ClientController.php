@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\ClientInstitution;
@@ -22,10 +23,10 @@ class ClientController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-client-from-any-institution')->only(['index']);
-        $this->middleware('permission:create-client-from-any-institution')->only(['store']);
+        $this->middleware('permission:store-client-from-any-institution')->only(['create','store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
-        $this->middleware('permission:update-client-from-any-institution')->only(['update']);
-        $this->middleware('permission:delete-client-from-any-institution')->only(['destroy']);
+        $this->middleware('permission:update-client-from-any-institution')->only(['edit','update']);
+        $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);
     }
 
     /**
