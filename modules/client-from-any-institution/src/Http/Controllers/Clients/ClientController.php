@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
@@ -58,7 +59,8 @@ class ClientController extends ApiController
                 'institution',
                 'accounts.accountType'
             )->get(),
-            'AccountTypes' => AccountType::all(),
+            'institutions' => Institution::all(),
+            'accountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
     }
@@ -163,7 +165,8 @@ class ClientController extends ApiController
 
         return response()->json([
             'client_institution' => $this->getOneAccountClient($account),
-            'AccountTypes' => AccountType::all(),
+            'institutions' => Institution::all(),
+            'accountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
 
