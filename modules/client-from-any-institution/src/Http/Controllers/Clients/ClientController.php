@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
