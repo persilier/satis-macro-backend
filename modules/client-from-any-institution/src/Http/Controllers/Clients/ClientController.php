@@ -162,9 +162,10 @@ class ClientController extends ApiController
      */
     public function edit($account)
     {
-
+        $client = $this->getOneAccountClient($account);
         return response()->json([
-            'client_institution' => $this->getOneAccountClient($account),
+            'client_institution' => $client,
+            'clients' => $this->getAllClientByInstitution($client->institution_id),
             'institutions' => Institution::all(),
             'accountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
