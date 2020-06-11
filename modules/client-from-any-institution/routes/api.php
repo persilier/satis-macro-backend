@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/any')->name('any.')->group(function () {
     Route::resource('clients', 'Clients\ClientController');
+    Route::resource('clients.institutions', 'Clients\ClientInstitutionController', ['only' => ['index']]);
     Route::resource('identites.clients', 'Identites\IdentiteClientController', ['only' => ['store']]);
     Route::resource('accounts.clients', 'Accounts\AccountClientController', ['only' => ['store']]);
 });
