@@ -182,15 +182,22 @@ trait VerifyUnicity
         }
     }
 
-    protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
+    protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null)
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
         if (!$verify['status']) {
-            $client = Client::with('identite')->where('identites_id', '=', $verify['entity']->id)->first();
+            $client = Client::with([
+                    'identite', 'client_institution'
+                ])->where(function ($query) use ($idInstitution){
+                    $query->whereHas('client_institution', function ($q) use ($idInstitution){
+                        $q->where('institution_id', $idInstitution);
+                    });
+                })->where('identites_id', '=', $verify['entity']->id)
+                ->first();
             if (!is_null($client)) {
                 return [
                     'status' => false,
-                    'message' => 'A Identite already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
+                    'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
                     'identite' => $client,
                     'verify' => $verify
                 ];
@@ -206,12 +213,15 @@ trait VerifyUnicity
     }
 
 
-    protected function handleAccountVerification($number, $institution_id, $account_id = null)
+    protected function handleAccountVerification($number, $idInstitution, $accountId = null)
     {
         $account = Account::with([
-            'client_institution' => function($query) use ($institution_id) {
-                $query->where('institution_id', $institution_id);
-            }])->where('number', $number)->where('id', '!=', $account_id)->first();
+            'client_institution'
+        ])->where(function ($query) use ($idInstitution){
+            $query->whereHas('client_institution', function ($q) use ($idInstitution){
+                $q->where('institution_id', $idInstitution);
+            });
+        })->where('number', $number)->where('id', '!=', $accountId)->first();
         if (!is_null($account)) {
             return [
                 'status' => false,

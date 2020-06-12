@@ -20,9 +20,9 @@ class ClientInstitutionController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($institution)
+    public function index($institutionId)
     {
-        $clients = $this->getAllClientByInstitution($institution);
+        $clients = $this->getAllClientByInstitution($institutionId);
         return response()->json($clients, 200);
     }
 

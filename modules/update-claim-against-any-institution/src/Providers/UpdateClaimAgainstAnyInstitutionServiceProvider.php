@@ -58,7 +58,7 @@ class ClaimCompleteServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ClaimComplete\Http\Controllers',
+            'namespace' => 'Satis2020\UpdateClaimAgainstAnyInstitution\Http\Controllers',
             'middleware' => ['api']
         ];
     }

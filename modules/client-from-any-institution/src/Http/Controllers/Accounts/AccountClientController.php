@@ -25,31 +25,22 @@ class AccountClientController extends ApiController
      * Store a newly created resource in storage
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request, $client)
+    public function store(Request $request, $clientId)
     {
-        $rules = [
-            'number' => 'required|string',
-            'account_type_id' => 'required|exists:account_types,id',
-            'institution_id' => 'required|exists:institutions,id',
-        ];
+        $this->validate($request, $this->rulesAccount(true));
 
-        $this->validate($request, $rules);
-
-        $client_institution = ClientInstitution::where('institution_id', $request->institution_id)->where('client_id', $client)->firstOrFail();
+        $clientInstitution = ClientInstitution::where('institution_id', $request->institution_id)->where('client_id', $clientId)->firstOrFail();
 
         // Account Number Verification
-        $verifyAccount = $this->handleAccountClient($request->number, $client_institution->id);
+        $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
         if (!$verifyAccount['status']) {
             return response()->json($verifyAccount, 409);
         }
 
 
-        $account = Account::create([
-            'client_institution_id'   => $client_institution->id,
-            'account_type_id'  => $request->account_type_id,
-            'number'           => $request->number
-        ]);
-        return response()->json($account, 200);
+        $account = $this->storeAccount($request, $clientInstitution->id);
+
+        return response()->json($account, 201);
     }
 
 }

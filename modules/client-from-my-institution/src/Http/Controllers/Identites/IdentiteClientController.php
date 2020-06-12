@@ -35,34 +35,18 @@ class IdentiteClientController extends ApiController
      */
     public function store(Request $request, Identite $identite)
     {
-        $rules = [
-            'firstname' => 'required|string',
-            'lastname' => 'required|string',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => 'required|array',
-            'email' => [
-                'required', 'array', new EmailValidationRules,
-            ],
-            'ville' => 'required|string',
-            'number' => 'required|string',
-            'account_type_id' => 'required|exists:account_types,id',
-            'category_client_id' => 'required|exists:category_clients,id',
-            'others' => 'array',
-            'other_attributes' => 'array',
-        ];
-
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rulesClient());
 
         $institution = $this->institution();
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $identite->id);
+        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id,'id', $identite->id);
         if (!$verifyPhone['status']) {
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
-        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $identite->id);
+        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id,'id', $identite->id);
         if (!$verifyEmail['status']) {
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyEmail, 409);
@@ -75,23 +59,14 @@ class IdentiteClientController extends ApiController
         }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
-        $client = Client::create([
-            'identites_id'          => $identite->id,
-            'others'                => $request->others
-        ]);
 
-        $client_institution = ClientInstitution::create([
-            'client_id'             => $client->id,
-            'category_client_id'    => $request->category_client_id,
-            'institution_id'        => $institution->id
-        ]);
+        $client = $this->storeClient($request, $identite->id);
 
-        $account = Account::create([
-            'client_institution_id'   => $client_institution->id,
-            'account_type_id'  => $request->account_type_id,
-            'number'           => $request->number
-        ]);
-        return response()->json($account, 200);
+        $clientInstitution = $this->storeClientInstitution($request, $client->id, $institution->id);
+
+        $account = $this->storeAccount($request, $clientInstitution->id);
+
+        return response()->json($account, 201);
     }
 
 }

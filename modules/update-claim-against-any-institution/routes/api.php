@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * ClaimObjects
+ * Update Claim against any institution
  */
-Route::resource('claim-completes', 'ClaimCompletes\ClaimCompleteController')->except(['create', 'edit']);
+
+Route::prefix('/any')->name('any.')->group(function () {
+    Route::resource('claims-incompletes', 'Claims\ClaimController')->except(['create']);
+});
