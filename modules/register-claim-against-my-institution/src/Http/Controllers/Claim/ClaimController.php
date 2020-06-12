@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\RegisterClaimAgainstAnyInstitution\Http\Controllers\Claim;
+namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -39,19 +39,26 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-any-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
     }
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function create()
     {
+        $institution = $this->institution();
+        $institution->client_institutions->load(['client.identite', 'accounts']);
         return response()->json([
             'claimCategories' => ClaimCategory::all(),
-            'institutions' => Institution::all(),
+            'client_institutions' => $institution->only('client_institutions')['client_institutions'],
+            'units' => $institution->units()
+                ->whereHas('unitType', function ($q) {
+                    $q->where('can_be_target', true);
+                })->get(),
             'channels' => Channel::all(),
             'currencies' => Currency::all()
         ], 200);
@@ -72,6 +79,7 @@ class ClaimController extends ApiController
     {
 
         $request->merge(['created_by' => $this->staff()->id]);
+        $request->merge(['institution_targeted_id' => $this->institution()->id]);
 
         $this->validate($request, $this->rules($request));
 
