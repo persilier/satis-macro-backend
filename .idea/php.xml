@@ -175,6 +175,7 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/channel" />
       <path value="$PROJECT_DIR$/vendor/satis2020/register-claim-against-any-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/register-claim-against-my-institution" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/update-claim-against-any-institution" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
