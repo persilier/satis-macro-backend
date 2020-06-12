@@ -42,6 +42,7 @@
         "satis2020/staff-from-my-unit": "^1.0",
         "satis2020/type-client": "^1.0",
         "satis2020/type-unit": "^1.0",
+        "satis2020/update-claim-against-any-institution": "^1.0",
         "satis2020/users-package": "^1.0",
         "satis2020/without-link-with-institution-unit": "^1.0"
     },
@@ -311,6 +312,13 @@
         {
             "type": "path",
             "url": "modules/register-claim-against-any-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/update-claim-against-any-institution/",
             "options": {
                 "symlink": true
             }

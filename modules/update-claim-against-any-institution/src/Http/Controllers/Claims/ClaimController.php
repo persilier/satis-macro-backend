@@ -3,6 +3,7 @@
 namespace Satis2020\UpdateClaimAgainstAnyInstitution\Http\Controllers\Claims;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Channel;
@@ -20,7 +21,10 @@ class ClaimController extends ApiController
         $this->middleware('permission:update-claim-incomplete-against-any-institution')->only(['update']);
     }
 
-
+    /**
+     * Display a listing of the resource.
+     *
+     */
     public function index()
     {
         return response()->json(
@@ -29,36 +33,28 @@ class ClaimController extends ApiController
     }
 
 
-    public function show($claim)
+    public function show($claimId)
     {
         return response()->json(
-            $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claim ,'incomplete'),
+            $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete'),
         200);
     }
 
 
-    public function edit($claim)
+    public function edit($claimId)
     {
-        $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claim ,'incomplete');
-        return response()->json([
-            'claim' => $claim,
-            'claimCategories' => ClaimCategory::all(),
-            'institutions' => Institution::all(),
-            'channels' => Channel::all(),
-            'currencies' => Currency::all()
-        ],200);
+        $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete');
+        $datas = $this->getDataEdit($claim);
+        return response()->json($datas,200);
     }
 
-    public function update($claim)
+    public function update(Request $request, $claimId)
     {
-        $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claim ,'incomplete');
-        return response()->json([
-            'claim' => $claim,
-            'claimCategories' => ClaimCategory::all(),
-            'institutions' => Institution::all(),
-            'channels' => Channel::all(),
-            'currencies' => Currency::all()
-        ],200);
+        /*$this->validate($request, $this->rulesUpdate());
+        $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
+        $claim = $this->updateClaim($claim, $request);
+        return response()->json($claim,201);*/
     }
+
 
 }

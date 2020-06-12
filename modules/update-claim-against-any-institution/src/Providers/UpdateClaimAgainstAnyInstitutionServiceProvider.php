@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Satis2020\ClaimComplete\Providers;
+namespace Satis2020\UpdateClaimAgainstAnyInstitution\Providers;
 
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class ClaimCompleteServiceProvider extends ServiceProvider
+class UpdateClaimAgainstAnyInstitutionServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

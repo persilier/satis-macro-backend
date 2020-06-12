@@ -21,7 +21,7 @@
   "autoload": {
     "psr-4": {
       "Satis2020\\UpdateClaimAgainstAnyInstitution\\": "src/",
-      "Satis2020\\UpdateClaimAgainstAnyInstitution\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\UpdateClaimAgainstAnyInstitution\\Database\\Seeds\\": "database/Seeds/"
     }
   },
   "extra": {

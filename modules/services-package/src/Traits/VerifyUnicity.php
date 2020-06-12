@@ -187,9 +187,9 @@ trait VerifyUnicity
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
         if (!$verify['status']) {
             $client = Client::with([
-                    'identite', 'client_institution'
+                    'identite', 'client_institutions'
                 ])->where(function ($query) use ($idInstitution){
-                    $query->whereHas('client_institution', function ($q) use ($idInstitution){
+                    $query->whereHas('client_institutions', function ($q) use ($idInstitution){
                         $q->where('institution_id', $idInstitution);
                     });
                 })->where('identites_id', '=', $verify['entity']->id)

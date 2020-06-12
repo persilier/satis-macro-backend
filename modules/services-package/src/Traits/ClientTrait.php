@@ -104,8 +104,8 @@ trait ClientTrait
     protected function storeClientInstitution($request, $clientId, $institutionId)
     {
         $store = [
-            'client_id' => $clientId,
             'category_client_id'  => $request->category_client_id,
+            'client_id' => $clientId,
             'institution_id'  => $institutionId
         ];
         return $clientInstitution = ClientInstitution::create($store);
@@ -198,7 +198,6 @@ trait ClientTrait
     protected function handleAccountClient($number, $clientInstitutionId)
     {
         try{
-
             $account = Account::where('client_institution_id', $clientInstitutionId)->where('number', $number)->first();
 
         }catch (\Exception $exception){
@@ -208,4 +207,6 @@ trait ClientTrait
             return ['code' => 409,'status' => false, 'message' => 'Impossible d\'enregistrer deux fois le même numéro de compte pour une institution donnée.'];
         return ['status' => true];
     }
+
+
 }
