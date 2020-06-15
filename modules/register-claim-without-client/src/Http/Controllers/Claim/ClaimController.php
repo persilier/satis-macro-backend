@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\RegisterClaimAgainstAnyInstitution\Http\Controllers\Claim;
+namespace Satis2020\RegisterClaimWithoutClient\Http\Controllers\Claim;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -14,6 +14,7 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Relationship;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
 use Satis2020\ServicePackage\Rules\EmailArray;
@@ -39,7 +40,7 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-any-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-without-client')->only(['store', 'create']);
     }
 
     /**
@@ -53,7 +54,8 @@ class ClaimController extends ApiController
             'claimCategories' => ClaimCategory::all(),
             'institutions' => Institution::all(),
             'channels' => Channel::all(),
-            'currencies' => Currency::all()
+            'currencies' => Currency::all(),
+            'relationships' => Relationship::all()
         ], 200);
     }
 
@@ -73,27 +75,25 @@ class ClaimController extends ApiController
 
         $request->merge(['created_by' => $this->staff()->id]);
 
-        $this->validate($request, $this->rules($request));
+        $this->validate($request, $this->rules($request, false, true, false));
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // create reference
         $request->merge(['reference' => $this->createReference()]);
 
-        // create claimer if claimer_id is null
-        if (is_null($request->claimer_id)) {
-            // Verify phone number and email unicity
-            $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
+        // Verify phone number and email unicity
+        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
 
-            // register claimer
-            $claimer = $this->createIdentity($request);
-            $request->merge(['claimer_id' => $claimer->id]);
-        }
+        // register claimer
+        $claimer = $this->createIdentity($request);
+
+        $request->merge(['claimer_id' => $claimer->id]);
 
         // Check if the claim is complete
-        $request->merge(['status' => $this->getStatus($request)]);
+        $request->merge(['status' => $this->getStatus($request, false, true, false)]);
 
-        $claim = $this->createClaim($request);
+        $claim = $this->createClaim($request, false, true, false);
 
         return response()->json($claim, 201);
 
