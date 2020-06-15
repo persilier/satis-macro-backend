@@ -96,6 +96,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/position" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/register-claim-against-any-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/register-claim-against-my-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/register-claim-without-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/relationship" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/severity-level" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-any-unit" />
