@@ -1,6 +1,6 @@
 {
   "name": "satis2020/register-claim-against-any-institution",
-  "description": "satis2020/register-claim-against-any-institution est un package qui va nous permettre d'enregistrer une réclamation contre n'importe qu'elle institution",
+  "description": "satis2020/register-claim-against-any-institution est un package qui va nous permettre d'enregistrer une réclamation de toutes institutions",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [

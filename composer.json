@@ -45,6 +45,7 @@
         "satis2020/type-client": "^1.0",
         "satis2020/type-unit": "^1.0",
         "satis2020/update-claim-against-any-institution": "^1.0",
+        "satis2020/update-claim-against-my-institution": "^1.0",
         "satis2020/users-package": "^1.0",
         "satis2020/without-link-with-institution-unit": "^1.0"
     },
@@ -335,6 +336,20 @@
         {
             "type": "path",
             "url": "modules/register-claim-without-client/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/update-claim-against-my-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/update-claim-without-client/",
             "options": {
                 "symlink": true
             }

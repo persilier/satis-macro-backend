@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UpdateClaimAgainstAnyInstitution\Http\Controllers\Claims;
+namespace Satis2020\UpdateClaimAgainstMyInstitution\Http\Controllers\Claims;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -12,9 +12,9 @@ class ClaimController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-claim-incomplete-against-any-institution')->only(['index']);
-        $this->middleware('permission:show-claim-incomplete-against-any-institution')->only(['show']);
-        $this->middleware('permission:update-claim-incomplete-against-any-institution')->only(['update']);
+        $this->middleware('permission:list-claim-incomplete-against-my-institution')->only(['index']);
+        $this->middleware('permission:show-claim-incomplete-against-my-institution')->only(['show']);
+        $this->middleware('permission:update-claim-incomplete-against-my-institution')->only(['update']);
     }
 
     /**
@@ -24,7 +24,7 @@ class ClaimController extends ApiController
     public function index()
     {
         return response()->json(
-            $this->getAllClaimCompleteOrIncomplete($this->institution()->id,'incomplete'),
+            $this->getAllClaimCompleteOrIncompleteForMyInstitution($this->institution()->id,'incomplete'),
         200);
     }
 
@@ -32,7 +32,7 @@ class ClaimController extends ApiController
     public function show($claimId)
     {
         return response()->json(
-            $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete'),
+            $this->getOneClaimCompleteOrIncompleteForMyInstitution($this->institution()->id, $claimId ,'incomplete'),
         200);
     }
 
@@ -44,7 +44,7 @@ class ClaimController extends ApiController
      */
     public function edit($claimId)
     {
-        $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete');
+        $claim = $this->getOneClaimCompleteOrIncompleteForMyInstitution($this->institution()->id, $claimId ,'incomplete');
         $datas = $this->getDataEdit($claim);
         return response()->json($datas,200);
     }
@@ -62,7 +62,7 @@ class ClaimController extends ApiController
     {
         $this->validate($request, $this->rules($request));
 
-        $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
+        $claim = $this->getClaimUpdateForMyInstitution($this->institution()->id, $claimId, 'incomplete');
 
         $request->merge(['status' => $this->getStatus($request)]);
 

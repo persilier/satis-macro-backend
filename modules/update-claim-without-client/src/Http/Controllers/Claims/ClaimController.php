@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UpdateClaimAgainstAnyInstitution\Http\Controllers\Claims;
+namespace Satis2020\UpdateClaimWithoutClient\Http\Controllers\Claims;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -12,9 +12,9 @@ class ClaimController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-claim-incomplete-against-any-institution')->only(['index']);
-        $this->middleware('permission:show-claim-incomplete-against-any-institution')->only(['show']);
-        $this->middleware('permission:update-claim-incomplete-against-any-institution')->only(['update']);
+        $this->middleware('permission:list-claim-incomplete-without-client')->only(['index']);
+        $this->middleware('permission:show-claim-incomplete-without-client')->only(['show']);
+        $this->middleware('permission:update-claim-incomplete-without-client')->only(['update']);
     }
 
     /**
@@ -45,7 +45,7 @@ class ClaimController extends ApiController
     public function edit($claimId)
     {
         $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete');
-        $datas = $this->getDataEdit($claim);
+        $datas = $this->getDataEditWithoutClient($claim);
         return response()->json($datas,200);
     }
 
@@ -60,11 +60,12 @@ class ClaimController extends ApiController
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request));
+        $this->validate($request, $this->rules($request , false, true, false));
 
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
 
-        $request->merge(['status' => $this->getStatus($request)]);
+        // Check if the claim is complete
+        $request->merge(['status' => $this->getStatus($request, false, true, false)]);
 
         $claim = $this->updateClaim($request, $claim, $this->staff()->id);
 

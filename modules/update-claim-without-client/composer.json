@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/any-institution-unit",
-  "description": "satis2020/any-institution-unit est un module qui va permettre de gérer les unités toutes institutions",
+  "name": "satis2020/update-claim-without-client",
+  "description": "satis2020/update-claim-without-client est un package qui va la modificaion des réclamations sans lien avec les clients.",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -20,14 +20,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\AnyInstitutionUnit\\": "src/",
-      "Satis2020\\AnyInstitutionUnit\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\UpdateClaimWithoutClient\\": "src/",
+      "Satis2020\\UpdateClaimWithoutClient\\Database\\Seeds\\": "database/Seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\AnyInstitutionUnit\\Providers\\AnyInstitutionUnitServiceProvider"
+        "Satis2020\\UpdateClaimWithoutClient\\Providers\\UpdateClaimWithoutClientServiceProvider"
       ]
     }
   }
