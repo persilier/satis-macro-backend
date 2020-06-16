@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\UpdateClaimAgainstMyInstitution\Http\Controllers\Claims;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -41,6 +42,7 @@ class ClaimController extends ApiController
      *
      * @param claimId $claimId
      * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function edit($claimId)
     {
@@ -52,15 +54,14 @@ class ClaimController extends ApiController
 
     /**
      * Update the specified resource in storage.
-     *
      * @param \Illuminate\Http\Request $request
      * @param  $claimId
      * @return \Illuminate\Http\JsonResponse
-     * @throws ValidationException
+     * @throws CustomException
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request));
+        $this->validate($request, $this->rules($request, true, false , true , true ));
 
         $claim = $this->getClaimUpdateForMyInstitution($this->institution()->id, $claimId, 'incomplete');
 

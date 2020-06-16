@@ -20,7 +20,7 @@ use Faker\Factory as Faker;
 
 trait CreateClaim
 {
-    protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true)
+    protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true, $update = false)
     {
         $data = [
             'description' => 'required|string',
@@ -57,6 +57,10 @@ trait CreateClaim
 
         if ($with_unit) {
             $data['unit_targeted_id'] = ['exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+        }
+
+        if($update){
+            unset($data['created_by']);
         }
 
         return $data;

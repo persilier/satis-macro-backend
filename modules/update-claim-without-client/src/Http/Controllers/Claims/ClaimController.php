@@ -52,18 +52,15 @@ class ClaimController extends ApiController
 
     /**
      * Update the specified resource in storage.
-     *
      * @param \Illuminate\Http\Request $request
      * @param  $claimId
      * @return \Illuminate\Http\JsonResponse
-     * @throws ValidationException
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request , false, true, false));
+        $this->validate($request, $this->rules($request, false, true, false, true));
 
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
-
         // Check if the claim is complete
         $request->merge(['status' => $this->getStatus($request, false, true, false)]);
 

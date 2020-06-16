@@ -60,11 +60,13 @@ class ClaimController extends ApiController
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request));
+
+        $this->validate($request, $this->rules($request, true, false , true , true ));
 
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
 
         $request->merge(['status' => $this->getStatus($request)]);
+
 
         $claim = $this->updateClaim($request, $claim, $this->staff()->id);
 
