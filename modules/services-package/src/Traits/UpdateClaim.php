@@ -28,8 +28,7 @@ trait UpdateClaim
     {
         try {
             $claims = Claim::with([
-                'claimObject',
-                'claimCategory',
+                'claimObject.claimCategory',
                 'claimer',
                 'relationship',
                 'accountTargeted',
@@ -63,8 +62,7 @@ trait UpdateClaim
     {
         try {
             $claims = Claim::with([
-                'claimObject',
-                'claimCategory',
+                'claimObject.claimCategory',
                 'claimer',
                 'relationship',
                 'accountTargeted',
@@ -93,8 +91,7 @@ trait UpdateClaim
     {
         try {
             $claim = Claim::with([
-                'claimObject',
-                'claimCategory',
+                'claimObject.claimCategory',
                 'claimer',
                 'relationship',
                 'accountTargeted',
@@ -127,8 +124,7 @@ trait UpdateClaim
     {
         try {
             $claim = Claim::with([
-                'claimObject',
-                'claimCategory',
+                'claimObject.claimCategory',
                 'claimer',
                 'relationship',
                 'accountTargeted',

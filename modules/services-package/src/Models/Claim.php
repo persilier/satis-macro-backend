@@ -44,6 +44,7 @@ class Claim extends Model
         'created_by', 'completed_by', 'completed_at', 'active_treatment_id', 'archived_at', 'status'
     ];
 
+
     /**
      * Get the claimObject associated with the claim
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
