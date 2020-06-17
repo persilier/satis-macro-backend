@@ -73,7 +73,7 @@ trait UpdateClaim
                 'amountCurrency',
                 'createdBy.identite',
                 'completedBy.identite'
-            ])->where('institutionTargeted',$institutionId)->where('status', $status)->get();
+            ])->where('institution_targeted_id',$institutionId)->where('status', $status)->get();
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
         }
@@ -135,7 +135,7 @@ trait UpdateClaim
                 'amountCurrency',
                 'createdBy.identite',
                 'completedBy.identite'
-            ])->where('institutionTargeted', $institutionId)->where('status', $status)->findOrFail($claimId);
+            ])->where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
         }
