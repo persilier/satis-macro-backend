@@ -1,0 +1,50 @@
+<?php
+
+namespace Satis2020\ServicePackage\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Satis2020\ServicePackage\Traits\UuidAsId;
+use Spatie\Translatable\HasTranslations;
+
+class File extends Model
+{
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+
+    /**
+     * The attributes that are translatable
+     *
+     * @var array
+     */
+    public $translatable = [];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['title', 'url'];
+
+    /**
+     * Get the owning attachmentable model.
+     */
+    public function attachmentable()
+    {
+        return $this->morphTo();
+    }
+    
+}

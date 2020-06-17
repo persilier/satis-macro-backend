@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
@@ -32,7 +33,8 @@ trait CreateClaim
             'amount_disputed' => 'integer',
             'amount_currency_slug' => 'exists:currencies,slug',
             'is_revival' => 'required|boolean',
-            'created_by' => 'required|exists:staff,id'
+            'created_by' => 'required|exists:staff,id',
+            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
         ];
 
         if ($with_client) {
@@ -59,7 +61,7 @@ trait CreateClaim
             $data['unit_targeted_id'] = ['exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
         }
 
-        if($update){
+        if ($update) {
             unset($data['created_by']);
         }
 
@@ -142,7 +144,24 @@ trait CreateClaim
 
     protected function createClaim($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
-        return $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
+        $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
+        $this->uploadAttachments($request, $claim);
+        return $claim;
+    }
+
+    protected function uploadAttachments($request, $claim)
+    {
+        if ($request->hasfile('file')) {
+            foreach ($request->file('file') as $file) {
+
+                $title = $file->getClientOriginalName();
+                $path = $file->store('claim-attachments', 'public');
+                $url = Storage::url("$path");
+
+                // insert the file into database
+                $claim->files()->create(['title' => $title, 'url' => $url]);
+            }
+        }
     }
 
 }

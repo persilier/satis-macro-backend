@@ -55,7 +55,7 @@ class ClientBelongsToInstitutionRules implements Rule
      */
     public function message()
     {
-        return 'The account must belong to the chosen institution';
+        return 'The client must belong to the chosen institution';
     }
 
 }
