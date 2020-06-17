@@ -235,7 +235,8 @@ trait UpdateClaim
         }
 
         foreach($request->all() as $key => $value){
-            if(!isset($claim->{$key})) $claim->{$key} = $value;
+            if(($claim->{$key}) && (!empty($claim->{$key})))
+                $claim->{$key} = $value;
         }
 
         $claim->status = $request->status;

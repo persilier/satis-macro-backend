@@ -6,6 +6,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UpdateClaim;
+use Illuminate\Support\Arr;
 class ClaimController extends ApiController
 {
     use  CreateClaim, UpdateClaim;
@@ -48,6 +49,7 @@ class ClaimController extends ApiController
     {
         $claim = $this->getOneClaimCompleteOrIncompleteForMyInstitution($this->institution()->id, $claimId ,'incomplete');
         $datas = $this->getDataEdit($claim);
+        $datas = Arr::except($datas, ['institutions']);
         return response()->json($datas,200);
     }
 
