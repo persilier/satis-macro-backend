@@ -46,7 +46,6 @@ class ClaimController extends ApiController
     {
         $claim = $this->getOneClaimCompleteOrIncomplete($this->institution()->id, $claimId ,'incomplete');
         $datas = $this->getDataEdit($claim);
-        Arr::except($datas, ['institutions']);
         return response()->json($datas,200);
     }
 
