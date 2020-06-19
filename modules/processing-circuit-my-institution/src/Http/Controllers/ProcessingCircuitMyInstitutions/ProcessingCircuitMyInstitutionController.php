@@ -15,7 +15,7 @@ class ProcessingCircuitMyInstitutionController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:update-processing-circuit-my-institution')->only(['update', 'edit']);
+        //$this->middleware('permission:update-processing-circuit-my-institution')->only(['update', 'edit']);
     }
 
 

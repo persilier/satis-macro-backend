@@ -22,14 +22,13 @@ trait ProcessingCircuit
     protected function getAllProcessingCircuits($institutionId=null)
     {
         try {
-            $circuits = ClaimCategory::with(['claimObjects.units'])
-                ->where(function ($query) use ($institutionId){
+            $circuits = ClaimCategory::with(['claimObjects.units' => function ($query) use ($institutionId){
                     $query->whereHas('claimObjects', function ($q) use ($institutionId){
                         $q->whereHas('units', function ($p) use ($institutionId){
-                             $p->where('institution_id', $institutionId);
+                            $p->where('institution_id', $institutionId);
                         });
                     });
-                })->get();
+                }])->get();
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les circuits de traitements");
@@ -39,6 +38,7 @@ trait ProcessingCircuit
 
     protected function getAllUnits($institutionId = null){
         try {
+
             $units = Unit::where('institution_id', $institutionId)->get();
 
         } catch (\Exception $exception) {
