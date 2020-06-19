@@ -4,7 +4,8 @@
 namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Validation\ValidationException;
+use Exception;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\ClaimCategory;
