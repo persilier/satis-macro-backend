@@ -104,4 +104,12 @@ class Unit extends Model
         return $this->hasMany(Claim::class, 'unit_targeted_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function claimObjects()
+    {
+        return $this->belongsToMany(ClaimObject::class);
+    }
+
 }

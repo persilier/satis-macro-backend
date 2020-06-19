@@ -77,4 +77,12 @@ class ClaimObject extends Model
         return $this->hasMany(Claim::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class);
+    }
+
 }

@@ -34,6 +34,9 @@
         "satis2020/my-institution-unit": "^1.0",
         "satis2020/performance-indicator-package": "^1.0",
         "satis2020/position": "^1.0",
+        "satis2020/processing-circuit-any-institution": "^1.0",
+        "satis2020/processing-circuit-my-institution": "^1.0",
+        "satis2020/processing-circuit-without-institution": "^1.0",
         "satis2020/register-claim-against-any-institution": "^1.0",
         "satis2020/register-claim-against-my-institution": "^1.0",
         "satis2020/register-claim-without-client": "^1.0",
@@ -354,6 +357,27 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "modules/processing-circuit-my-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/processing-circuit-any-institution/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+          "type": "path",
+          "url": "modules/processing-circuit-without-institution/",
+          "options": {
+            "symlink": true
+          }
         }
     ]
 }
