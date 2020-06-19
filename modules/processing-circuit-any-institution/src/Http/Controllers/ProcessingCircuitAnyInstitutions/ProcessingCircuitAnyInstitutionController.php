@@ -30,7 +30,8 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institution->id),
             'units' =>   $this->getAllUnits($institution->id),
-            'institutions' => Institution::all()
+            'institutions' => Institution::all(),
+            'institution_id' => $institution->id
         ], 200);
     }
 
