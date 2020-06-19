@@ -20,6 +20,7 @@
         "satis2020/any-institution-unit": "^1.0",
         "satis2020/category-client": "^1.0",
         "satis2020/channel": "^1.0",
+        "satis2020/claim-awaiting-assignment": "^1.0",
         "satis2020/claim-category": "^1.0",
         "satis2020/claim-object": "^1.0",
         "satis2020/claim-object-requirement": "^1.0",
@@ -351,6 +352,13 @@
         {
             "type": "path",
             "url": "modules/update-claim-without-client/",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/claim-awaiting-assignment/",
             "options": {
                 "symlink": true
             }

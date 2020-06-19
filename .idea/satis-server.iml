@@ -79,6 +79,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/any-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/category-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/channel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-awaiting-assignment" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-category" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
@@ -105,6 +106,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/update-claim-against-any-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/update-claim-against-my-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/update-claim-without-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/without-link-with-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />

@@ -30,7 +30,7 @@ class Claim extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at', 'event_occured_at', 'completed_at', 'archived_at'];
+    protected $dates = ['deleted_at', 'event_occured_at', 'completed_at', 'archived_at', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.
