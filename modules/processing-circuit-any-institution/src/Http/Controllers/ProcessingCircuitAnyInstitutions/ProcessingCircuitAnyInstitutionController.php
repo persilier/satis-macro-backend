@@ -7,6 +7,7 @@ use Exception;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
 class ProcessingCircuitAnyInstitutionController extends ApiController
 {
@@ -23,11 +24,26 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
      * Edit the form for creating a new resource.
      * @return \Illuminate\Http\Response
      */
+    public function index()
+    {
+        $institution = $this->institution();
+        return response()->json([
+            'claimCategories' => $this->getAllProcessingCircuits($institution->id),
+            'units' =>   $this->getAllUnits($institution->id),
+            'institutions' => Institution::all()
+        ], 200);
+    }
+
+    /**
+     * Edit the form for creating a new resource.
+     * @return \Illuminate\Http\Response
+     */
     public function edit($institutionId)
     {
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institutionId),
-            'units' =>   $this->getAllUnits($institutionId)
+            'units' =>   $this->getAllUnits($institutionId),
+            'institutions' => Institution::all()
         ], 200);
     }
 
@@ -51,7 +67,8 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
 
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institutionId),
-            'units' =>   $this->getAllUnits($institutionId)
+            'units' =>   $this->getAllUnits($institutionId),
+            'institutions' => Institution::all()
         ], 200);
 
     }

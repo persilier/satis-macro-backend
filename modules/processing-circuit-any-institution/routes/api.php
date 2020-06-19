@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
  * Processing Circuit
  */
 Route::prefix('/any')->name('any.')->group(function () {
+    Route::get('/processing-circuits', 'ProcessingCircuitAnyInstitutions\ProcessingCircuitAnyInstitutionController@index')->name('processing-circuits.index');
     Route::get('/processing-circuits/{institution}', 'ProcessingCircuitAnyInstitutions\ProcessingCircuitAnyInstitutionController@edit')->name('processing-circuits.edit');
     Route::put('/processing-circuits/{institution}', 'ProcessingCircuitAnyInstitutions\ProcessingCircuitAnyInstitutionController@update')->name('processing-circuits.update');
 });
