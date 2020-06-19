@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
-class ProcessingCircuitAnyInstitution extends ApiController
+class ProcessingCircuitAnyInstitutionController extends ApiController
 {
     use ProcessingCircuit;
     public function __construct()
@@ -55,7 +55,5 @@ class ProcessingCircuitAnyInstitution extends ApiController
         ], 200);
 
     }
-
-
 
 }
