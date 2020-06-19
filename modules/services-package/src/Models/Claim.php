@@ -144,5 +144,13 @@ class Claim extends Model
         return $this->belongsTo(Staff::class, 'completed_by');
     }
 
+    /**
+     * Get all of the claim's files.
+     */
+    public function files()
+    {
+        return $this->morphMany(File::class, 'attachmentable');
+    }
+
 
 }
