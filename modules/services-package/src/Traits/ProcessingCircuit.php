@@ -2,6 +2,9 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\ClaimCategory;
@@ -34,7 +37,7 @@ trait ProcessingCircuit
         return $circuits;
     }
 
-    protected function getAllUnitByInstitution($institutionId = null){
+    protected function getAllUnits($institutionId = null){
         try {
             $units = Unit::where('institution_id', $institutionId)->get();
 

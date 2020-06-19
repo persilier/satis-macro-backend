@@ -3,6 +3,7 @@
 namespace Satis2020\ProcessingCircuitAnyInstitution\Http\Controllers\ProcessingCircuitAnyInstitutions;
 
 use Illuminate\Validation\ValidationException;
+use Exception;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
