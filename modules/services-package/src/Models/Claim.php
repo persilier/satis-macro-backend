@@ -152,5 +152,23 @@ class Claim extends Model
         return $this->morphMany(File::class, 'attachmentable');
     }
 
+    /**
+     * Get the treatments associated with the claim
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function treatments()
+    {
+        return $this->hasMany(Treatment::class);
+    }
+
+    /**
+     * Get the active treatment associated with the claim
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function activeTreatment()
+    {
+        return $this->belongsTo(Treatment::class);
+    }
+
 
 }

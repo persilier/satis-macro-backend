@@ -14,10 +14,12 @@ trait AwaitingAssignment
         return DB::table('claims')
             ->select('claims.*')
             ->join('staff', function ($join) use ($staff_id) {
-                $join->on('claims.created_by', '=', 'staff.id')
-                    ->where('staff.id', '=', $staff_id);
+                $join->on('claims.created_by', '=', 'staff.id');
             })
-            ->where('claims.status', 'full')
+            ->whereRaw(
+                '( (`staff`.`id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                [$staff_id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
+            )
             ->whereNull('claims.deleted_at');
     }
 
@@ -72,5 +74,14 @@ trait AwaitingAssignment
 
         return $percent;
 
+    }
+
+    protected function showClaim($claim)
+    {
+        $claim->load($this->getRelations());
+
+        $claim->duplicates = $this->getDuplicates($claim);
+
+        return $claim;
     }
 }

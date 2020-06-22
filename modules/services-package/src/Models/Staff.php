@@ -114,4 +114,22 @@ class Staff extends Model
         return $this->hasMany(Claim::class, 'completed_by');
     }
 
+    /**
+     * Get the treatments which has been assigned by the staff
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assignedTreatments()
+    {
+        return $this->hasMany(Treatment::class, 'assigned_to_staff_by');
+    }
+
+    /**
+     * Get the treatments which has been assigned to the staff
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function responsibleTreatments()
+    {
+        return $this->hasMany(Treatment::class, 'responsible_staff_id');
+    }
+
 }

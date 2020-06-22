@@ -112,4 +112,13 @@ class Unit extends Model
         return $this->belongsToMany(ClaimObject::class);
     }
 
+    /**
+     * Get the treatments for which the unit is responsible
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function treatments()
+    {
+        return $this->hasMany(Treatment::class, 'responsible_unit_id');
+    }
+
 }
