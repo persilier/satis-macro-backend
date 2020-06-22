@@ -48,9 +48,7 @@ class ProcessingCircuitMyInstitutionController extends ApiController
 
         $collection = $this->rules($request->all(), $collection, $institution->id);
 
-        $collection->each(function ($item, $key) {
-            $item['claim_object']->units()->sync($item['units_ids']);
-        });
+        $this->detachAttachUnits($collection ,  $institution->id);
 
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institution->id),

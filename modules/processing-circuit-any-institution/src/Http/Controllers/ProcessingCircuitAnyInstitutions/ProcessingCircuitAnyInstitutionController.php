@@ -17,7 +17,7 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:update-processing-circuit-any-institution')->only(['update', 'edit']);
+       // $this->middleware('permission:update-processing-circuit-any-institution')->only(['update', 'edit']);
     }
 
     /**
@@ -62,9 +62,7 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
 
         $collection = $this->rules($request->all(), $collection, $institutionId);
 
-        $collection->each(function ($item, $key) {
-            $item['claim_object']->units()->sync($item['units_ids']);
-        });
+        $this->detachAttachUnits($collection , $institutionId);
 
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institutionId),

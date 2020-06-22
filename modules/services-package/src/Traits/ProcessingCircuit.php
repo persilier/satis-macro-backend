@@ -76,4 +76,23 @@ trait ProcessingCircuit
         return $collection;
     }
 
+    protected function detachAttachUnits($collection , $institutionId=null){
+
+        try {
+
+            $collection->each(function ($item, $key) use ($institutionId){
+
+                $attachedIds = $item['claim_object']->units()->where('institution_id', $institutionId)->pluck('id');
+
+                $item['claim_object']->units()->detach($attachedIds);
+                $item['claim_object']->units()->attach($item['units_ids']);
+            });
+
+        } catch (\Exception $exception) {
+            throw new CustomException("Impossible de mettre à jour les circuits de traitements.");
+        }
+
+        return true;
+    }
+
 }
