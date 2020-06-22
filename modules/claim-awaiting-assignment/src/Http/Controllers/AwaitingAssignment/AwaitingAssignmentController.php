@@ -34,6 +34,7 @@ class AwaitingAssignmentController extends ApiController
      */
     public function index()
     {
+
         $claims = $this->getClaimsQuery($this->staff()->id)->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelations())->find($item->id);
             $item->is_duplicate = $this->getDuplicatesQuery($this->getClaimsQuery($this->staff()->id), $item)->exists();
@@ -52,11 +53,7 @@ class AwaitingAssignmentController extends ApiController
      */
     public function show(Claim $claim)
     {
-        $claim->load($this->getRelations());
-
-        $claim->duplicates = $this->getDuplicates($claim);
-
-        return response()->json($claim, 200);
+        return response()->json($this->showClaim($claim), 200);
     }
 
     /**
@@ -79,11 +76,13 @@ class AwaitingAssignmentController extends ApiController
 
         if ($claim->created_at >= $duplicate->created_at) {
             $duplicate->delete();
-            return redirect()->route('claim.awaiting.assignment.show', $claim->id);
+            $redirect = $claim;
+        } else {
+            $claim->delete();
+            $redirect = $duplicate;
         }
 
-        $claim->delete();
-        return redirect()->route('claim.awaiting.assignment.show', $duplicate->id);
+        return response()->json($this->showClaim($redirect), 200);
     }
 
 }
