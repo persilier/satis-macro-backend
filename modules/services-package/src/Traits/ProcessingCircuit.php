@@ -82,8 +82,6 @@ trait ProcessingCircuit
             $collection->each(function ($item, $key) use ($institutionId){
 
                 $attachedIds = $item['claim_object']->units()->where('institution_id', $institutionId)->pluck('id');
-                dd($attachedIds);
-                //$newIds = array_diff($request->get('users'), $attachedIds);
 
                 $item['claim_object']->units()->detach($attachedIds);
                 $item['claim_object']->units()->attach($item['units_ids']);
