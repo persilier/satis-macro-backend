@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Unit;
 
-class UnitCanBeTargetRules implements Rule
+class UnitCanTreatRules implements Rule
 {
 
     public function __construct()
@@ -28,11 +28,11 @@ class UnitCanBeTargetRules implements Rule
 
     public function passes($attribute, $value)
     {
-        $unit = Unit::with('institution', 'unitType')->where('id', $value)->firstOrFail();
+        $unit = Unit::with('institution', 'unitType')->findOrFail($value);
         try {
-            $condition = $unit->unitType->can_be_target;
+            $condition = $unit->unitType->can_treat;
         } catch (\Exception $exception) {
-            throw new CustomException("Can't retrieve the can_be_target attribute of the unit");
+            throw new CustomException("Can't retrieve the can_treat attribute of the unit");
         }
         return $condition;
     }
@@ -44,7 +44,7 @@ class UnitCanBeTargetRules implements Rule
      */
     public function message()
     {
-        return 'The unit must be targetable';
+        return 'The unit must be a treatment one';
     }
 
 }

@@ -6,14 +6,17 @@ use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
 
-class UnitCanBeTargetRules implements Rule
+class UnitBelongsToCircuitRules implements Rule
 {
 
-    public function __construct()
-    {
+    protected $claim_id;
 
+    public function __construct($claim_id)
+    {
+        $this->claim_id = $claim_id;
     }
 
 
@@ -28,13 +31,11 @@ class UnitCanBeTargetRules implements Rule
 
     public function passes($attribute, $value)
     {
-        $unit = Unit::with('institution', 'unitType')->where('id', $value)->firstOrFail();
-        try {
-            $condition = $unit->unitType->can_be_target;
-        } catch (\Exception $exception) {
-            throw new CustomException("Can't retrieve the can_be_target attribute of the unit");
-        }
-        return $condition;
+        $claim = Claim::with('claimObject.units')->findOrFail($this->claim_id);
+
+        return $claim->claimObject->units->search(function ($item, $key) use($value) {
+                return $item->id == $value;
+            }) !== false;
     }
 
     /**
@@ -44,7 +45,7 @@ class UnitCanBeTargetRules implements Rule
      */
     public function message()
     {
-        return 'The unit must be targetable';
+        return 'The unit must belong to the treatment circuit';
     }
 
 }
