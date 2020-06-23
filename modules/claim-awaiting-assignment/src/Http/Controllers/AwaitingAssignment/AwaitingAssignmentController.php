@@ -35,9 +35,9 @@ class AwaitingAssignmentController extends ApiController
     public function index()
     {
 
-        $claims = $this->getClaimsQuery($this->staff()->id)->get()->map(function ($item, $key) {
+        $claims = $this->getClaimsQuery()->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelations())->find($item->id);
-            $item->is_duplicate = $this->getDuplicatesQuery($this->getClaimsQuery($this->staff()->id), $item)->exists();
+            $item->is_duplicate = $this->getDuplicatesQuery($this->getClaimsQuery(), $item)->exists();
             return $item;
         });
 
