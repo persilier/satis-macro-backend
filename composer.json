@@ -402,6 +402,13 @@
       "options": {
         "symlink": true
       }
+    },
+    {
+      "type": "path",
+      "url": "modules/claim-awaiting-treatment/",
+      "options": {
+        "symlink": true
+      }
     }
   ]
 }
