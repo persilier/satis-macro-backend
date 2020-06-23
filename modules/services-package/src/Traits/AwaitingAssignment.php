@@ -9,16 +9,16 @@ use Satis2020\ServicePackage\Models\Claim;
 
 trait AwaitingAssignment
 {
-    protected function getClaimsQuery($staff_id)
+    protected function getClaimsQuery()
     {
         return DB::table('claims')
             ->select('claims.*')
-            ->join('staff', function ($join) use ($staff_id) {
+            ->join('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
             })
             ->whereRaw(
-                '( (`staff`.`id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
-                [$staff_id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
+                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                [$this->institution()->id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
             )
             ->whereNull('claims.deleted_at');
     }
@@ -33,7 +33,7 @@ trait AwaitingAssignment
 
     protected function getDuplicates($claim)
     {
-        return $this->getDuplicatesQuery($this->getClaimsQuery($this->staff()->id), $claim)
+        return $this->getDuplicatesQuery($this->getClaimsQuery(), $claim)
             ->get()
             ->map(function ($item, $key) use ($claim) {
                 $item = Claim::with($this->getRelations())->find($item->id);
