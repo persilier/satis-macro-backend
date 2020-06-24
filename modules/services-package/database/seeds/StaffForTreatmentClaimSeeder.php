@@ -29,7 +29,8 @@ class StaffForTreatmentClaimSeeder extends Seeder
                 //Institution Holding
                 $institution_holding = Institution::find('3d7f426e-494a-4650-a615-315db1b38c52');
 
-                $unit = Unit::where('institution_id', $institution_holding->id)->firstOrFail();
+                $unit = Unit::whereHas('staffs')->where('institution_id', $institution_holding->id)->first();
+
 
                 $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
                     $query->doesntHave('user');
@@ -63,7 +64,7 @@ class StaffForTreatmentClaimSeeder extends Seeder
             {
                 $institution_filial = Institution::find('b99a6d22-4af1-4a8a-9589-81468f5c020b');
 
-                $unit = Unit::where('institution_id', $institution_filial->id)->firstOrFail();
+                $unit = Unit::whereHas('staffs')->where('institution_id', $institution_filial->id)->firstOrFail();
 
                 $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
                     $query->doesntHave('user');
@@ -100,7 +101,7 @@ class StaffForTreatmentClaimSeeder extends Seeder
             {
                 $institution_pro= Institution::find('43ebf6c0-be03-4881-8196-59d476f75c9e');
 
-                $unit = Unit::where('institution_id', $institution_pro->id)->firstOrFail();
+                $unit = Unit::whereHas('staffs')->where('institution_id', $institution_pro->id)->firstOrFail();
 
                 $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
                     $query->doesntHave('user');
@@ -137,7 +138,7 @@ class StaffForTreatmentClaimSeeder extends Seeder
             {
                 $institution_observatory= Institution::find('e52e6a29-cfb3-4cdb-9911-ddaed1f17145');
 
-                $unit = Unit::firstOrFail();
+                $unit = Unit::whereHas('staffs')->first();
 
                 $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
                     $query->doesntHave('user');
@@ -172,7 +173,7 @@ class StaffForTreatmentClaimSeeder extends Seeder
             {
                 $institution_membre= Institution::find('74e98a2d-35ac-472e-911d-190f5a1d3fd6');
 
-                $unit = Unit::firstOrFail();
+                $unit =  Unit::whereHas('staffs');
 
                 $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
                     $query->doesntHave('user');
