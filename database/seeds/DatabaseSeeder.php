@@ -67,7 +67,6 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\TransferClaimToCircuitUnit\Database\Seeds\RolesTableSeeder::class);
           //$this->call(\Satis2020\TransferClaimToUnit\Database\Seeds\RolesTableSeeder::class);
        // $this->call(\Satis2020\TransferClaimToTargetedInstitution\Database\Seeds\RolesTableSeeder::class);
-
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\StaffForTreatmentClaimSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\StaffForUnitTreatmentClaimSeeder::class);
     }
 }
