@@ -21,93 +21,189 @@ class StaffForTreatmentClaimSeeder extends Seeder
     public function run()
     {
         $nature = env('APP_NATURE');
+        $n = 0;
 
-        switch ($nature) {
-            case 'MACRO':
-                $institutions = Institution::where('id', '7fb9dcbf-0747-4106-a036-0d7f504fc6f9')->orWhere('id', 'b99a6d22-4af1-4a8a-9589-81468f5c020b')->get();
-                break;
-            case 'PRO':
-                $institutions = Institution::where('id', '43ebf6c0-be03-4881-8196-59d476f75c9e')->get();
-                break;
-            case 'HUB':
-                $institutions = Institution::where('id', 'c0cf700f-b7bd-41fe-8640-71d689734ce1')->orWhere('id', 'e52e6a29-cfb3-4cdb-9911-ddaed1f17145')->get();
-                break;
-        }
+        if($nature === 'MACRO'){
 
-        if($nature === 'MACRO' || $nature === 'PRO'){
+            {
+                //Institution Holding
+                $institution_holding = Institution::find('3d7f426e-494a-4650-a615-315db1b38c52');
 
-            foreach ($institutions as $key => $institution){
+                $unit = Unit::where('institution_id', $institution_holding->id)->firstOrFail();
 
-                    $position_staff = Position::create(['name' => 'Position Staff '.$key, 'description' => 'Position Staff']);
+                $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
+                    $query->doesntHave('user');
+                })->where('institution_id', $institution_holding->id)->get();
 
-                    $position_staff_lead = Position::create(['name' => 'Position Staff lead '.$key, 'description' => 'Position Staff']);
 
-                    $institution->positions()->attach([$position_staff->id, $position_staff_lead->id]);
+                foreach ($staffs as $key => $staff){
 
-                    $units = Unit::where('institution_id', $institution->id)->get();
+                    if($staff->unit_id == $unit->id){
+                        if($n < 2){
+                            $user = User::create([
+                                'username' => $staff->identite->email[0],
+                                'password' => bcrypt('123456789'),
+                                'identite_id' => $staff->identite->id
+                            ]);
+                        }
 
-                    foreach($units as $key_unit => $unit){
+                        if($n==0){
+                            $unit->update(['lead_id', $staff->id]);
+                        }
 
-                        $key_combine = $key.'-'.$key_unit;
-
-                        // enregistrement d'un staff
-                        $identite_staff = Identite::create([
-                            'firstname' => 'Staff',
-                            'lastname' => 'Staff',
-                            'sexe' => 'M',
-                            'telephone' => json_encode(['22025842'.$key_combine, '84626846'.$key_combine]),
-                            'email' => json_encode(['staff@staff'.$key_combine.'.com', 'staff1@staff'.$key_combine.'.com']),
-                            'ville' => 'Cotonou'
-                        ]);
-
-                        $staff = Staff::create([
-                            'identite_id' => $identite_staff->id,
-                            'position_id' => $position_staff->id,
-                            'unit_id'    => $unit->id,
-                            'institution_id' => $institution->id
-                        ]);
-
-                        $user = User::create([
-                            'username' => 'staff@staff'.$key_combine.'.com',
-                            'password' => bcrypt('123456789'),
-                            'identite_id' => $identite_staff->id
-                        ]);
-
-                        // Enregistrement d'un staff lead
-
-                        $identite_staff_lead = Identite::create([
-                            'firstname' => 'Staff Lead',
-                            'lastname' => 'Staff Lead',
-                            'sexe' => 'M',
-                            'telephone' => json_encode(['022025842'.$key_combine, '084626846'.$key_combine]),
-                            'email' => json_encode(['stafflead@staff'.$key_combine.'.com', 'stafflead1@staff'.$key_combine.'.com']),
-                            'ville' => 'Cotonou'
-                        ]);
-
-                        $staff_lead = Staff::create([
-                            'identite_id' => $identite_staff_lead->id,
-                            'position_id' => $position_staff_lead->id,
-                            'unit_id'       => $unit->id,
-                            'institution_id' => $institution->id
-                        ]);
-
-                        $user_lead = User::create([
-                            'username' => 'stafflead@staff'.$key_combine.'.com',
-                            'password' => bcrypt('123456789'),
-                            'identite_id' => $identite_staff_lead->id
-                        ]);
-
-                        $unit->update([
-                            'lead_id' => $staff_lead->id
-                        ]);
-
+                        $n++;
                     }
+
                 }
+                $n = 0;
+
+            }
+
+            // Institution Filial
+            {
+                $institution_filial = Institution::find('b99a6d22-4af1-4a8a-9589-81468f5c020b');
+
+                $unit = Unit::where('institution_id', $institution_filial->id)->firstOrFail();
+
+                $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
+                    $query->doesntHave('user');
+                })->where('institution_id', $institution_filial->id)->get();
+
+
+                foreach ($staffs as $key => $staff){
+
+                    if($staff->unit_id == $unit->id){
+                        if($n < 2){
+                            $user = User::create([
+                                'username' => $staff->identite->email[0],
+                                'password' => bcrypt('123456789'),
+                                'identite_id' => $staff->identite->id
+                            ]);
+                        }
+
+                        if($n==0){
+                            $unit->update(['lead_id', $staff->id]);
+                        }
+
+                        $n++;
+                    }
+
+                }
+                $n = 0;
+            }
+
+       }
+
+        if($nature === 'PRO'){
+
+            // Institution pro
+            {
+                $institution_pro= Institution::find('43ebf6c0-be03-4881-8196-59d476f75c9e');
+
+                $unit = Unit::where('institution_id', $institution_pro->id)->firstOrFail();
+
+                $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
+                    $query->doesntHave('user');
+                })->where('institution_id', $institution_pro->id)->get();
+
+
+                foreach ($staffs as $key => $staff){
+
+                    if($staff->unit_id == $unit->id){
+                        if($n < 2){
+                            $user = User::create([
+                                'username' => $staff->identite->email[0],
+                                'password' => bcrypt('123456789'),
+                                'identite_id' => $staff->identite->id
+                            ]);
+                        }
+
+                        if($n==0){
+                            $unit->update(['lead_id', $staff->id]);
+                        }
+
+                        $n++;
+                    }
+
+                }
+                $n = 0;
+            }
         }
 
 
         if($nature === 'HUB'){
 
+            // Institution observatoire
+            {
+                $institution_observatory= Institution::find('e52e6a29-cfb3-4cdb-9911-ddaed1f17145');
+
+                $unit = Unit::firstOrFail();
+
+                $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
+                    $query->doesntHave('user');
+                })->where('institution_id', $institution_observatory->id)->get();
+
+
+                foreach ($staffs as $staff){
+
+                    if($staff->unit_id == $unit->id){
+                        if($n < 2){
+                            $user = User::create([
+                                'username' => $staff->identite->email[0],
+                                'password' => bcrypt('123456789'),
+                                'identite_id' => $staff->identite->id
+                            ]);
+                        }
+
+                        if($n==0){
+                            $unit->update(['lead_id', $staff->id]);
+                        }
+
+                        $n++;
+                    }
+
+                }
+                $n = 0;
+            }
+
+
+
+            // Institution membre
+            {
+                $institution_membre= Institution::find('74e98a2d-35ac-472e-911d-190f5a1d3fd6');
+
+                $unit = Unit::firstOrFail();
+
+                $staffs = Staff::with(['identite'])->whereHas('identite', function ($query) {
+                    $query->doesntHave('user');
+                })->where('institution_id', $institution_membre->id)->get();
+
+
+                foreach ($staffs as $staff){
+
+                    if($staff->unit_id == $unit->id){
+                        if($n < 2){
+                            $user = User::create([
+                                'username' => $staff->identite->email[0],
+                                'password' => bcrypt('123456789'),
+                                'identite_id' => $staff->identite->id
+                            ]);
+                        }
+
+                        if($n==0){
+                            $unit->update(['lead_id', $staff->id]);
+                        }
+
+                        $n++;
+                    }
+
+                }
+                $n = 0;
+            }
+
+
         }
+
+
     }
 }

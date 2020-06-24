@@ -83,10 +83,10 @@ class RolesTableSeeder extends Seeder
             ]);
 
 
-            User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole($role_staff_holding);
+            /*User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole($role_staff_holding);
             User::find('ceefcca8-35c6-4e62-9809-42bf6b9adb20')->assignRole($role_staff_filial);
             User::find('6f53d239-2890-4faf-9af9-f5a97aee881e')->assignRole($role_staff_lead_holding);
-            User::find('ceefcca8-35c6-4e62-9809-42bf6b9adb20')->assignRole($role_staff_lead_filial);
+            User::find('ceefcca8-35c6-4e62-9809-42bf6b9adb20')->assignRole($role_staff_lead_filial);*/
 
         }
 
