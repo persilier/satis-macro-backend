@@ -8,10 +8,10 @@ use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Models\UnitType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\UnitType;
 
 class StaffForUnitTreatmentClaimSeeder extends Seeder
 {
@@ -20,10 +20,17 @@ class StaffForUnitTreatmentClaimSeeder extends Seeder
 
         $institution = Institution::find($institutionId);
 
+        $type_unit = UnitType::create([
+            'name' => Str::random(10),
+            'description' => Str::random(100),
+            'can_be_target' => 1,
+            'can_treat' => 1
+        ]);
+
         $unit = Unit::create([
             'name' => Str::random(10),
             'description' => Str::random(100),
-            'unit_type_id' =>  UnitType::first()->id,
+            'unit_type_id' =>  $type_unit->id,
             'institution_id'=> $institution->id
         ]);
 
@@ -70,10 +77,17 @@ class StaffForUnitTreatmentClaimSeeder extends Seeder
 
         $institution = Institution::find($institutionId);
 
+        $type_unit = UnitType::create([
+            'name' => Str::random(10),
+            'description' => Str::random(100),
+            'can_be_target' => 1,
+            'can_treat' => 1
+        ]);
+
         $unit = Unit::create([
             'name' => Str::random(10),
             'description' => Str::random(100),
-            'unit_type_id'=>  UnitType::all()->random(1)->id
+            'unit_type_id'=>  $type_unit->id
         ]);
 
         for($n=0; $n < 7; $n++){
