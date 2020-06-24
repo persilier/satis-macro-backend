@@ -1,37 +1,108 @@
 <?php
 namespace Satis2020\ServicePackage\Traits;
-
+use Carbon\Carbon;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Claim;
-
+use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Unit;
 trait ClaimAwaitingTreatment
 {
-    protected function getAllClaimAwaitingTreatment($staffId, $institutionId){
-        try {
-            $claims = Claim::with($this->getRelations())
-                ->where(function ($query) use ($institutionId){
-                    $query->whereHas('createdBy', function ($q) use ($institutionId){
-                        $q->where('institution_id', $institutionId);
-                    })
-                    ->orWhereHas('treatments', function ($q) use ($institutionId){
-                        $q->where('institution_id', $institutionId);
-                    });
+    protected function getClaimsQuery($institutionId, $unitId){
+        return DB::table('claims')
+            ->select('claims.*')
+            ->join('staff', function ($join) {
+                $join->on('claims.created_by', '=', 'staff.id');
+            })
 
-                })->orWhere('institution_targeted_id',$institutionId)
+            ->join('treatments', function ($join) {
+                $join->on('claims.id', '=', 'treatments.claim_id')
+                    ->on('claims.active_treatment_id', '=', 'treatments.id');
+            })
 
-                ->where('status', 'full')->get();
-        } catch (\Exception $exception) {
-            throw new CustomException("Impossible de récupérer les listes des réclamations");
-        }
-        return $claims;
+            ->whereRaw(
+                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                [$institutionId, 'full', $institutionId, 'transferred_to_targeted_institution']
+            )->whereRaw(
+                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?)',
+                [null, $unitId]
+            )
+            ->whereNull('claims.deleted_at');
     }
 
-    protected function getRelations()
+    protected function checkLead($staff){
+        $unit = $staff->load('unit')->unit;
+
+        if($unit->lead === $staff->unit_id){
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function assignmentClaim($claim, $staffId){
+        $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'self_assigned_at'=> Carbon::now()]);
+
+        $claim->update(['status' => 'assigned_to_staff']);
+
+        return $claim;
+    }
+
+    protected function rejectedClaimUpdate($claim){
+        $claim->activeTreatment->update(['transfered_to_unit_at' => null]);
+
+        if(!is_null($claim->transfered_to_targeted_institution_at)){
+            $claim->update(['status', 'transfered_to_institution']);
+        }else{
+            $claim->update(['status', 'full']);
+        }
+
+        return $claim;
+    }
+
+    protected function getRelationsAwitingTreatment()
     {
         return [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files'
+            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
         ];
+    }
+
+    protected  function rules($staff, $assignment = true){
+
+        if($assignment == true){
+            $data['staff_id'] = [ 'required|', Rule::exists('staff', 'id')->where(function ($query) use ($staff){
+                $query->where('unit_id', $staff->unit_id);
+            })];
+        }else{
+            $data['unfounded_reason'] = ['required|string'];
+        }
+
+        return $data;
+    }
+
+
+    protected function getClaimsTreat($institutionId, $unitId, $staffId){
+        return DB::table('claims')
+            ->select('claims.*')
+            ->join('staff', function ($join) {
+                $join->on('claims.created_by', '=', 'staff.id');
+            })
+
+            ->join('treatments', function ($join) {
+                $join->on('claims.id', '=', 'treatments.claim_id')
+                    ->on('claims.active_treatment_id', '=', 'treatments.id');
+            })
+
+            ->whereRaw(
+                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                [$institutionId, 'assigned_to_staff', $institutionId, 'assigned_to_staff']
+            )->whereRaw(
+                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`self_assigned_at` != ?)',
+                [null, $unitId, $staffId, null]
+            )
+            ->whereNull('claims.deleted_at');
     }
 
 }

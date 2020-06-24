@@ -21,6 +21,7 @@
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
+    "satis2020/claim-awaiting-treatment": "^1.0",
     "satis2020/claim-category": "^1.0",
     "satis2020/claim-object": "^1.0",
     "satis2020/claim-object-requirement": "^1.0",
