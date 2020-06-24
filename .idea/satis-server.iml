@@ -108,6 +108,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-my-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/transfer-claim-to-circuit-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/transfer-claim-to-targeted-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/transfer-claim-to-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/type-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/update-claim-against-any-institution" />

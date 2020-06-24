@@ -185,6 +185,7 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/processing-circuit-without-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/transfer-claim-to-targeted-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/transfer-claim-to-circuit-unit" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/transfer-claim-to-unit" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 /*
  * TransferClaimToTargetedInstitution
  */
-Route::put('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\TransferToCircuitUnitController@update')->name('transfer.claim.to.circuit.unit');
-Route::get('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\TransferToCircuitUnitController@edit')->name('get.claim.circuit.units');
+Route::put('/transfer-claim-to-unit/{claim}', 'TransferToUnit\TransferToUnitController@update')->name('transfer.claim.to.unit');
+Route::get('/transfer-claim-to-unit/{claim}', 'TransferToUnit\TransferToUnitController@edit')->name('get.claim.units');

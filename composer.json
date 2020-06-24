@@ -48,6 +48,7 @@
     "satis2020/staff-from-my-unit": "^1.0",
     "satis2020/transfer-claim-to-circuit-unit": "^1.0",
     "satis2020/transfer-claim-to-targeted-institution": "^1.0",
+    "satis2020/transfer-claim-to-unit": "^1.0",
     "satis2020/type-client": "^1.0",
     "satis2020/type-unit": "^1.0",
     "satis2020/update-claim-against-any-institution": "^1.0",
@@ -406,6 +407,13 @@
     {
       "type": "path",
       "url": "modules/claim-awaiting-treatment/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/transfer-claim-to-unit/",
       "options": {
         "symlink": true
       }
