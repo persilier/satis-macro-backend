@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
  * ClaimAwaitingAssignment
  */
 
-Route::get('/claim-assignment', 'AwaitingAssignment\AwaitingAssignmentController@index')->name('claim.awaiting.assignment.index');
+Route::get('/claim-awaiting-assignment', 'AwaitingAssignment\AwaitingAssignmentController@index')->name('claim.awaiting.assignment.index');
 Route::get('/claim-awaiting-assignment/{claim}', 'AwaitingAssignment\AwaitingAssignmentController@show')->name('claim.awaiting.assignment.show');
 Route::put('/claim-awaiting-assignment/{claim}/merge/{duplicate}', 'AwaitingAssignment\AwaitingAssignmentController@merge')->name('claim.awaiting.assignment.merge');
