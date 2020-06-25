@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Satis2020\ ClaimAwaitingTreatment\Providers;
+namespace Satis2020\ClaimAwaitingTreatment\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -57,7 +57,7 @@ class ClaimAwaitingTreatmentServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ ClaimAwaitingTreatment\Http\Controllers',
+            'namespace' => 'Satis2020\ClaimAwaitingTreatment\Http\Controllers',
             'middleware' => ['api']
         ];
     }

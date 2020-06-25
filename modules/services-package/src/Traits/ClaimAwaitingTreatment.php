@@ -2,11 +2,13 @@
 namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+
 trait ClaimAwaitingTreatment
 {
     protected function getClaimsQuery($institutionId, $unitId){
@@ -26,9 +28,17 @@ trait ClaimAwaitingTreatment
                 [$institutionId, 'full', $institutionId, 'transferred_to_targeted_institution']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?)',
-                [null, $unitId]
+                ['NULL',$unitId]
             )
             ->whereNull('claims.deleted_at');
+    }
+
+    protected function getOneClaimQuery($institutionId, $unitId, $claim){
+
+        if(!$claim = $this->getClaimsQuery($institutionId, $unitId)->where('claims.id', $claim)->first())
+            throw new CustomException("Impossible de récupérer cette réclammation");
+        else
+            return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
 
     protected function checkLead($staff){
@@ -42,7 +52,7 @@ trait ClaimAwaitingTreatment
     }
 
     protected function assignmentClaim($claim, $staffId){
-        $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'self_assigned_at'=> Carbon::now()]);
+        $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'assigned_to_staff_at'=> Carbon::now()]);
 
         $claim->update(['status' => 'assigned_to_staff']);
 
@@ -50,10 +60,10 @@ trait ClaimAwaitingTreatment
     }
 
     protected function rejectedClaimUpdate($claim){
-        $claim->activeTreatment->update(['transfered_to_unit_at' => null]);
+        $claim->activeTreatment->update(['transferred_to_unit_at' => null]);
 
         if(!is_null($claim->transfered_to_targeted_institution_at)){
-            $claim->update(['status', 'transfered_to_institution']);
+            $claim->update(['status', 'transferred_to_institution']);
         }else{
             $claim->update(['status', 'full']);
         }
@@ -72,11 +82,11 @@ trait ClaimAwaitingTreatment
     protected  function rules($staff, $assignment = true){
 
         if($assignment == true){
-            $data['staff_id'] = [ 'required|', Rule::exists('staff', 'id')->where(function ($query) use ($staff){
+            $data['staff_id'] = [ 'required', Rule::exists('staff', 'id')->where(function ($query) use ($staff){
                 $query->where('unit_id', $staff->unit_id);
             })];
         }else{
-            $data['unfounded_reason'] = ['required|string'];
+            $data['unfounded_reason'] = ['required', 'string'];
         }
 
         return $data;
@@ -99,10 +109,18 @@ trait ClaimAwaitingTreatment
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
                 [$institutionId, 'assigned_to_staff', $institutionId, 'assigned_to_staff']
             )->whereRaw(
-                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`self_assigned_at` != ?)',
-                [null, $unitId, $staffId, null]
+                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`assigned_to_staff_at` != ?)',
+                ['NULL', $unitId, $staffId, 'NULL']
             )
             ->whereNull('claims.deleted_at');
+    }
+
+    protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId,  $claim){
+
+        if(!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId)->where('claims.id', $claim)->first())
+            throw new CustomException("Impossible de récupérer cette réclammation");
+        else
+            return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
 
 }

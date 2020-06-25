@@ -40,7 +40,10 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get();
+        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
+            $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+            return $item;
+        });
         return response()->json($claims, 200);
     }
 
@@ -55,8 +58,9 @@ class ClaimAwaitingTreatmentController extends ApiController
     {
         $institution = $this->institution();
         $staff = $this->staff();
-        $claim = $this->getClaimsQuery($institution->id, $staff->unit_id)->findOrFail($claim);
-        return response()->json($claim, 200);
+
+        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        return response()->json(Claim::with($this->getRelationsAwitingTreatment())->findOrFail($claim->id), 200);
     }
 
 
@@ -72,9 +76,9 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getClaimsQuery($institution->id, $staff->unit_id)->findOrFail($claim);
-        return response()->json(['claim' => $claim, 'staffs' => Staff::with('identite')->where('unit_id',$staff->unit_id)->get()]
-            , 200);
+        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        return response()->json(['claim' => $claim, 'staffs' => Staff::with('identite')->where('unit_id',$staff->unit_id)->get()
+            ], 200);
     }
 
     /**
@@ -89,7 +93,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getClaimsQuery($institution->id, $staff->unit_id)->findOrFail($claim);
+        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
         $claim = $this->rejectedClaimUpdate($claim);
 
@@ -103,7 +107,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getClaimsQuery($institution->id, $staff->unit_id)->findOrFail($claim);
+        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $staff->id);
 
@@ -122,7 +126,8 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->validate($request, $this->rules($staff));
 
-        $claim = $this->getClaimsQuery($institution->id, $staff->unit_id)->findOrFail($claim);
+
+        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $request->staff_id);
 
@@ -137,7 +142,7 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->validate($request, $this->rules($staff, false));
 
-        $claim = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->findOrFail($claim);
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
 
         $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
 
