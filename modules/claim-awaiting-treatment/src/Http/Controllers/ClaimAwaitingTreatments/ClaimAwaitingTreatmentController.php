@@ -104,14 +104,16 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @return \Illuminate\Http\Response
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function rejectedClaim($claim)
+    public function rejectedClaim(Request $request, $claim)
     {
         $institution = $this->institution();
         $staff = $this->staff();
 
+        $this->validate($request, $this->rules($staff, 'rejected'));
+
         $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
-        $claim = $this->rejectedClaimUpdate($claim);
+        $claim = $this->rejectedClaimUpdate($claim, $request);
 
         return response()->json($claim, 200);
 
@@ -156,7 +158,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $this->validate($request, $this->rules($staff, false));
+        $this->validate($request, $this->rules($staff, 'unfounded'));
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
 
