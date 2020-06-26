@@ -42,9 +42,8 @@ trait ClaimAwaitingTreatment
     }
 
     protected function checkLead($staff){
-        $unit = $staff->load('unit')->unit;
 
-        if($unit->lead === $staff->unit_id){
+        if(Unit::where('institution_id', $staff->institution_id)->where('lead_id', $staff->id)->find($staff->unit_id)){
             return true;
         }
 
