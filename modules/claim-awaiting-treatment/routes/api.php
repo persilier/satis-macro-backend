@@ -20,5 +20,5 @@ Route::get('/claim-awaiting-treatment/{claim}/edit', 'ClaimAwaitingTreatments\Cl
 Route::put('/claim-awaiting-treatment/{claim}/rejected', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@rejectedClaim')->name('claim.awaiting.treatment.rejected');
 Route::put('/claim-awaiting-treatment/{claim}/self-assignment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@selfAssignmentClaim')->name('claim.awaiting.treatment.selfAssignment');
 Route::put('/claim-awaiting-treatment/{claim}/assignment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@assignmentClaimStaff')->name('claim.awaiting.treatment.assignmentClaimStaff');
-Route::put('/claim-awaiting-treatment/{claim}/treatment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@showClaimQueryTreat')->name('claim.awaiting.treatment.showClaimQueryTreat');
+Route::get('/claim-awaiting-treatment/{claim}/treatment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@showClaimQueryTreat')->name('claim.awaiting.treatment.showClaimQueryTreat');
 Route::put('/claim-awaiting-treatment/{claim}/unfounded', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@unfoundedClaim')->name('claim.awaiting.treatment.unfoundedClaim');
