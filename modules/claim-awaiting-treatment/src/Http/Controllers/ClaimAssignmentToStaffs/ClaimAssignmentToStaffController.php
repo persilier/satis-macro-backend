@@ -22,6 +22,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
+        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show']);
     }
 
     /**
@@ -40,6 +41,22 @@ class ClaimAssignmentToStaffController extends ApiController
             return $item;
         });
         return response()->json($claims, 200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Claim $claim
+     * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     */
+    public function show($claim)
+    {
+        $institution = $this->institution();
+        $staff = $this->staff();
+
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
+        return response()->json($claim, 200);
     }
 
 
