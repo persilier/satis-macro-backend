@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ClaimAssignmentToStaff\Http\Controllers\ClaimAssignmentToStaffs;
+namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Exceptions\CustomException;
