@@ -153,21 +153,4 @@ class ClaimAwaitingTreatmentController extends ApiController
     }
 
 
-    protected function unfoundedClaim(Request $request, $claim){
-
-        $institution = $this->institution();
-        $staff = $this->staff();
-
-        $this->validate($request, $this->rules($staff, 'unfounded'));
-
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
-
-        $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
-
-        $claim->update([ 'status' => 'status']);
-
-        return response()->json($claim, 200);
-
-    }
-
 }

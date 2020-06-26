@@ -96,6 +96,13 @@ trait ClaimAwaitingTreatment
             $data['rejected_reason'] = ['required', 'string'];
         }
 
+        if($assignment === 'treatment'){
+            $data['amount_returned'] = ['required', 'integer'];
+            $data['solution'] = ['required', 'string'];
+            $data['comments'] = ['required', 'string'];
+            $data['preventive_measures'] = ['required', 'string'];
+        }
+
         return $data;
     }
 

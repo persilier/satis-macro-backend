@@ -59,21 +59,22 @@ class RolesTableSeeder extends Seeder
         $permission_rejected = Permission::create(['name' => 'rejected-claim-awaiting-treatment', 'guard_name' => 'api']);
         $permission_self_assignment = Permission::create(['name' => 'self-assignment-claim-awaiting-treatment', 'guard_name' => 'api']);
         $permission_assignment = Permission::create(['name' => 'assignment-claim-awaiting-treatment', 'guard_name' => 'api']);
-        $permission_unfounded= Permission::create(['name' => 'unfounded-claim-awaiting-treatment', 'guard_name' => 'api']);
+        $permission_assignment_list= Permission::create(['name' => 'list-claim-assignment-to-staff', 'guard_name' => 'api']);
+        $permission_assignment_show = Permission::create(['name' => 'show-claim-assignment-to-staff', 'guard_name' => 'api']);
 
         if ($nature === 'DEVELOP') {
             // create admin roles
             $role_staff_lead = Role::create(['name' => 'staff_lead', 'guard_name' => 'api']);
 
             $role_staff_lead->givePermissionTo([
-                $permission_list, $permission_show, $permission_rejected, $permission_self_assignment,$permission_unfounded, $permission_assignment
+                $permission_list, $permission_show, $permission_rejected, $permission_self_assignment,$permission_assignment_list, $permission_assignment, $permission_assignment_show
             ]);
 
             // create admin roles
             $role_staff = Role::create(['name' => 'staff', 'guard_name' => 'api']);
 
             $role_staff->givePermissionTo([
-                $permission_list, $permission_show, $permission_rejected, $permission_self_assignment,$permission_unfounded
+                $permission_list, $permission_show, $permission_rejected, $permission_self_assignment,$permission_assignment_list, $permission_assignment_show
             ]);
 
         }
@@ -87,11 +88,11 @@ class RolesTableSeeder extends Seeder
 
                 // associate permissions to roles
                 $role_staff_holding->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment_show
                 ]);
 
                 $role_staff_filial->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment_show
                 ]);
 
             }
@@ -102,11 +103,11 @@ class RolesTableSeeder extends Seeder
 
                 // associate permissions to roles
                 $role_staff_lead_holding->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded, $permission_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment, $permission_assignment_show
                 ]);
 
                 $role_staff_lead_filial->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded, $permission_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment, $permission_assignment_show
                 ]);
 
             }
@@ -127,11 +128,11 @@ class RolesTableSeeder extends Seeder
 
                 // associate permissions to roles
                 $role_staff_pro->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_unfounded, $permission_self_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_assignment_list, $permission_self_assignment, $permission_assignment_show
                 ]);
 
                 $role_staff_lead_pro->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded, $permission_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment, $permission_assignment_show
                 ]);
 
             }
@@ -150,11 +151,11 @@ class RolesTableSeeder extends Seeder
 
                 // associate permissions to roles
                 $role_staff_observatory->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment_show
                 ]);
 
                 $role_staff_membre->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment_show
                 ]);
 
             }
@@ -165,11 +166,11 @@ class RolesTableSeeder extends Seeder
 
                 // associate permissions to roles
                 $role_staff_lead_observatory->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded, $permission_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment, $permission_assignment_show
                 ]);
 
                 $role_staff_lead_membre->givePermissionTo([
-                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_unfounded, $permission_assignment
+                    $permission_list, $permission_show, $permission_rejected, $permission_self_assignment, $permission_assignment_list, $permission_assignment, $permission_assignment_show
                 ]);
 
             }
