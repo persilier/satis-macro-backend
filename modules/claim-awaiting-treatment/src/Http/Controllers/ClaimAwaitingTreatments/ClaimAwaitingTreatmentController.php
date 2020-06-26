@@ -25,8 +25,8 @@ class ClaimAwaitingTreatmentController extends ApiController
         $this->middleware('permission:show-claim-awaiting-treatment')->only(['show']);
         $this->middleware('permission:rejected-claim-awaiting-treatment')->only(['show', 'rejectedClaim']);
         $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);
-        $this->middleware('permission:assignment-claim-awaiting-treatment')->only(['show', 'edit', 'assignmentClaimStaff']);
-        $this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['showClaimQueryTreat','unfoundedClaim']);
+        $this->middleware('permission:assignment-claim-awaiting-treatment')->only(['edit', 'assignmentClaimStaff']);
+        $this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['unfoundedClaim']);
     }
 
     /**
@@ -104,14 +104,16 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @return \Illuminate\Http\Response
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function rejectedClaim($claim)
+    public function rejectedClaim(Request $request, $claim)
     {
         $institution = $this->institution();
         $staff = $this->staff();
 
+        $this->validate($request, $this->rules($staff, 'rejected'));
+
         $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
-        $claim = $this->rejectedClaimUpdate($claim);
+        $claim = $this->rejectedClaimUpdate($claim, $request);
 
         return response()->json($claim, 200);
 
@@ -156,7 +158,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $this->validate($request, $this->rules($staff, false));
+        $this->validate($request, $this->rules($staff, 'unfounded'));
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
 

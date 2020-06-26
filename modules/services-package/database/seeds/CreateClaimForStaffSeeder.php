@@ -49,11 +49,11 @@ class CreateClaimForStaffSeeder extends Seeder
             'is_revival' => 0,
             'created_by' => $staffID,
             'status' => 'full',
-            'claimer_expectation' => $faker->text
+            'claimer_expectation' => $faker->text,
+            'claimer_id' => $clientId
         ];
 
         if ($with_client) {
-            $data['claimer_id'] = $clientId;
             $data['account_targeted_id'] = $accountId;
         }
 
@@ -249,7 +249,7 @@ class CreateClaimForStaffSeeder extends Seeder
 
                 // enregistrement des réclammation pour les clients
                 {
-                    $claim = Claim::create($this->claimData($faker, $channel, $currency, $staff->id, $institutionId, $claim_object->id, false, false,
+                    $claim = Claim::create($this->claimData($faker, $channel, $currency, $staff->id, $institutionId, $claim_object->id, $identite->id, false,
                         $relationship->id, $unit->id, false, true ));
 
                     $this->treatmentData($claim, $unit->id);

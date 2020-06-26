@@ -59,8 +59,9 @@ trait ClaimAwaitingTreatment
         return $claim;
     }
 
-    protected function rejectedClaimUpdate($claim){
-        $claim->activeTreatment->update(['transferred_to_unit_at' => null]);
+    protected function rejectedClaimUpdate($claim, $request){
+
+        $claim->activeTreatment->update(['transferred_to_unit_at' => null, 'rejected_reason' => $request->rejected_reason, 'rejected_at' => Carbon::now()]);
 
         if(!is_null($claim->transfered_to_targeted_institution_at)){
             $claim->update(['status', 'transferred_to_institution']);
@@ -79,14 +80,20 @@ trait ClaimAwaitingTreatment
         ];
     }
 
-    protected  function rules($staff, $assignment = true){
+    protected  function rules($staff, $assignment = 'assignment'){
 
-        if($assignment == true){
+        if($assignment === 'assignment'){
             $data['staff_id'] = [ 'required', Rule::exists('staff', 'id')->where(function ($query) use ($staff){
                 $query->where('unit_id', $staff->unit_id);
             })];
-        }else{
+        }
+
+        if($assignment === 'unfounded'){
             $data['unfounded_reason'] = ['required', 'string'];
+        }
+
+        if($assignment === 'rejected'){
+            $data['rejected_reason'] = ['required', 'string'];
         }
 
         return $data;
