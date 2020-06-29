@@ -22,6 +22,8 @@
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
     "satis2020/claim-awaiting-treatment": "^1.0",
+    "satis2020/claim-awaiting-validation-any-institution": "^1.0",
+    "satis2020/claim-awaiting-validation-my-institution": "^1.0",
     "satis2020/claim-category": "^1.0",
     "satis2020/claim-object": "^1.0",
     "satis2020/claim-object-requirement": "^1.0",
@@ -415,6 +417,20 @@
     {
       "type": "path",
       "url": "modules/transfer-claim-to-unit/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/claim-awaiting-validation-my-institution/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/claim-awaiting-validation-any-institution/",
       "options": {
         "symlink": true
       }

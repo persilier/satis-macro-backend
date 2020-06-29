@@ -81,6 +81,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/channel" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-awaiting-assignment" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-awaiting-treatment" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-awaiting-validation-any-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-awaiting-validation-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-category" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
