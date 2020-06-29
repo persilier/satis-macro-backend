@@ -7,15 +7,12 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\User;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class StaffSeeder extends Seeder
 {
@@ -47,22 +44,11 @@ class StaffSeeder extends Seeder
         ]);
     }
 
-    public function createStaff($unit, $roleName = 'collector')
+    public function createStaff($unit)
     {
         $identity = $this->createIdentity();
 
-        if ($roleName == 'collector') {
-            if ($unit->institution->institutionType->holding == 'holding') {
-                $roleName = 'collector-holding';
-            }
-            if ($unit->institution->institutionType->holding == 'observatoire') {
-                $roleName = 'collector-observatory';
-            }
-        }
-        $role = Role::where('name', $roleName)->where('guard_name', 'api')->firstOrFail();
-
         $user = $this->createUser($identity);
-        $user->assignRole($role);
 
         return $staff = Staff::create([
             'id' => (string)Str::uuid(),
@@ -100,8 +86,8 @@ class StaffSeeder extends Seeder
 
         foreach ($units as $unit) {
             // register two staff
-            $staffCollector = $this->createStaff($unit, 'collector');
-            $staffCaterer = $this->createStaff($unit, 'caterer');
+            $staffCollector = $this->createStaff($unit);
+            $staffCaterer = $this->createStaff($unit);
 
             // select unit lead
             $unit->update(['lead_id' => $staffCollector->id]);
@@ -136,11 +122,15 @@ class StaffSeeder extends Seeder
                 'responsible_unit_id' => $unit->id,
                 'assigned_to_staff_at' => $claim->created_at->addDays($faker->numberBetween(1, 7)),
                 'assigned_to_staff_by' => $staffCaterer->id,
-                'responsible_staff_id' => $staffCaterer->id
+                'responsible_staff_id' => $staffCaterer->id,
+                'amount_returned' => $claim->amount_disputed,
+                'solution' => $faker->text,
+                'preventive_measures' => $faker->text,
+                'solved_at' => $claim->created_at->addDays($faker->numberBetween(8, 12)),
             ]);
 
             //update claim
-            $claim->update(['active_treatment_id' => $activeTreatment->id, 'status' => 'assigned_to_staff']);
+            $claim->update(['active_treatment_id' => $activeTreatment->id, 'status' => 'treated']);
         }
 
     }
