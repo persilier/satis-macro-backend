@@ -48,7 +48,12 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
-        $claim->activeTreatment()->update(['invalidated_reason' => $request->invalidated_reason, 'validated_at' => Carbon::now()]);
+        $claim->activeTreatment()->update([
+            'invalidated_reason' => $request->invalidated_reason,
+            'validated_at' => Carbon::now(),
+            'solved_at' => null,
+            'declared_unfounded_at' => null
+        ]);
 
         $claim->update(['status' => 'assigned_to_staff']);
 
