@@ -42,9 +42,8 @@ trait ClaimAwaitingTreatment
     }
 
     protected function checkLead($staff){
-        $unit = $staff->load('unit')->unit;
 
-        if($unit->lead === $staff->unit_id){
+        if(Unit::where('institution_id', $staff->institution_id)->where('lead_id', $staff->id)->find($staff->unit_id)){
             return true;
         }
 
@@ -94,6 +93,13 @@ trait ClaimAwaitingTreatment
 
         if($assignment === 'rejected'){
             $data['rejected_reason'] = ['required', 'string'];
+        }
+
+        if($assignment === 'treatment'){
+            $data['amount_returned'] = ['required', 'integer'];
+            $data['solution'] = ['required', 'string'];
+            $data['comments'] = ['required', 'string'];
+            $data['preventive_measures'] = ['required', 'string'];
         }
 
         return $data;
