@@ -7,6 +7,7 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,8 +15,19 @@ use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\User;
 
-class StaffSeeder extends Seeder
+class HubStaffSeeder extends Seeder
 {
+
+    public function getObservatory()
+    {
+        return DB::table('institutions')
+            ->select('institutions.*')
+            ->join('institution_types', function ($join) {
+                $join->on('institutions.institution_type_id', '=', 'institution_types.id');
+            })
+            ->where('institution_types.name', 'observatoire')
+            ->first();
+    }
 
     public function createIdentity()
     {
@@ -44,17 +56,21 @@ class StaffSeeder extends Seeder
         ]);
     }
 
-    public function createStaff($unit)
+    public function createStaff($unit, $role = 'caterer')
     {
         $identity = $this->createIdentity();
 
         $user = $this->createUser($identity);
 
+        $institutiton_id = $role == 'caterer'
+            ? Institution::all()->random()->id
+            : $this->getObservatory()->id;
+
         return $staff = Staff::create([
             'id' => (string)Str::uuid(),
             'identite_id' => $identity->id,
             'position_id' => \Satis2020\ServicePackage\Models\Position::all()->random()->id,
-            'institution_id' => $unit->institution->id,
+            'institution_id' => $institutiton_id,
             'unit_id' => $unit->id
         ]);
     }
@@ -88,7 +104,7 @@ class StaffSeeder extends Seeder
 
         foreach ($units as $unit) {
             // register two staff
-            $staffCollector = $this->createStaff($unit);
+            $staffCollector = $this->createStaff($unit, 'collector');
             $staffCaterer = $this->createStaff($unit);
 
             // select unit lead
@@ -103,7 +119,7 @@ class StaffSeeder extends Seeder
                 'description' => $faker->text,
                 'claim_object_id' => $claimObject->id,
                 'claimer_id' => $claimer->id,
-                'institution_targeted_id' => $unit->institution->id,
+                'institution_targeted_id' => $staffCaterer->institution_id,
                 'request_channel_slug' => \Satis2020\ServicePackage\Models\Channel::all()->random()->slug,
                 'response_channel_slug' => \Satis2020\ServicePackage\Models\Channel::where('is_response', true)->get()->random()->slug,
                 'event_occured_at' => $faker->date('Y-m-d H:i:s'),
