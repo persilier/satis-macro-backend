@@ -77,6 +77,8 @@ class StaffSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Treatment::truncate();
+        Treatment::flushEventListeners();
         Claim::truncate();
         Claim::flushEventListeners();
 
