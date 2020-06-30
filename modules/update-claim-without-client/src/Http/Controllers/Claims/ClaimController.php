@@ -1,10 +1,17 @@
 <?php
 
 namespace Satis2020\UpdateClaimWithoutClient\Http\Controllers\Claims;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UpdateClaim;
+
+/**
+ * Class ClaimController
+ * @package Satis2020\UpdateClaimWithoutClient\Http\Controllers\Claims
+ */
 class ClaimController extends ApiController
 {
     use  CreateClaim, UpdateClaim;
@@ -20,6 +27,7 @@ class ClaimController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @return JsonResponse
      */
     public function index()
     {
@@ -29,6 +37,10 @@ class ClaimController extends ApiController
     }
 
 
+    /**
+     * @param $claimId
+     * @return JsonResponse
+     */
     public function show($claimId)
     {
         return response()->json(
@@ -39,8 +51,8 @@ class ClaimController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param claimId $claimId
-     * @return \Illuminate\Http\JsonResponse
+     * @param $claimId
+     * @return JsonResponse
      */
     public function edit($claimId)
     {
@@ -52,9 +64,10 @@ class ClaimController extends ApiController
 
     /**
      * Update the specified resource in storage.
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param  $claimId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function update(Request $request, $claimId)
     {
@@ -65,6 +78,8 @@ class ClaimController extends ApiController
         $request->merge(['status' => $this->getStatus($request, false, true, false)]);
 
         $claim = $this->updateClaim($request, $claim, $this->staff()->id);
+
+        $this->uploadAttachments($request, $claim);
 
         return response()->json($claim,201);
     }
