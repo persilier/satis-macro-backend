@@ -44,7 +44,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where(function ($query) use ($institutionId){
                 $query->whereHas('createdBy', function ($q) use ($institutionId){
                     $q->where('institution_id', $institutionId);
@@ -78,7 +79,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where('institution_targeted_id',$institutionId)->where('status', $status)->get();
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
@@ -107,7 +109,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where(function ($query) use ($institution_id){
                 $query->whereHas('createdBy', function ($q) use ($institution_id){
                     $q->where('institution_id', $institution_id);
@@ -139,7 +142,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
