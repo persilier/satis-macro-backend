@@ -54,23 +54,15 @@ trait MonitoringClaim
      */
     protected function timeExpire($createdDate = false , $timeLimit = false){
 
-        $d = 'N/A';
+        $diff = 'N/A';
 
         if($timeLimit && $createdDate){
 
             $dateExpire = $createdDate->addDays($timeLimit);
-            $now = Carbon::now();
-            $diff = $now->diff($dateExpire);
-
-            if($diff->invert == 1){
-                $d = '-'.$diff->d;
-            }
-
-            $d = '+'.$diff->d;
-
+            $diff = now()->diffInDays(($dateExpire), false);
         }
 
-        return $d;
+        return $diff;
     }
 
 
@@ -170,17 +162,15 @@ trait MonitoringClaim
         $claim = Claim::with($this->getRelations())->findOrFail($claimId);
 
         if($institutionId){
-            if($institutionId == $claim->institution_targeted_id)
+            if($institutionId != $claim->institution_targeted_id)
                 throw new CustomException("Impossible de récupérer des réclamations.");
         }
 
-        $date_start = $claim->created_at;
-
-        $time_limit =  $claim->claimObject->time_limit;
+        $time_limit =  $this->timeExpire($claim->created_at, $claim->claimObject->time_limit);
 
         $claim = collect($claim)->toArray();
 
-        $claim['time_expire'] = $this->timeExpire($date_start, $time_limit);
+        $claim['time_expire'] = $time_limit;
 
         return $claim;
     }
