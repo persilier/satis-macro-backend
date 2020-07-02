@@ -33,12 +33,32 @@ class RolesTableSeeder extends Seeder
     function storeStaff($institution, $nature){
 
         $faker = Faker::create();
+        
+        $type_unit = UnitType::create([
+            'name' => $faker->name,
+            'description' => $faker->text,
+            'can_be_target' => 1,
+            'can_treat' => 1
+        ]);
+
+        
 
         if ($nature === 'HUB') {
-            $unit = Unit::first();
-        }else{
-            $unit = Unit::where('institution_id', $institution->id)->first();
+            
+            $unit = Unit::create([
+                'name' => $faker->name,
+                'description' => $faker->text,
+                'unit_type_id' =>  $type_unit->id
+            ]);
 
+        }else{
+
+            $unit = Unit::create([
+                'name' => $faker->name,
+                'description' => $faker->text,
+                'unit_type_id' =>  $type_unit->id,
+                'institution_id'=> $institution->id
+            ]);
         }
 
         $identite = Identite::create([
