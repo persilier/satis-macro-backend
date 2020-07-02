@@ -235,13 +235,13 @@ trait MonitoringClaim
         if($institutionId){
 
             $data['units'] = Unit::where('institution_id',$institutionId)->get();
-            $data['staffs'] = Staff::where('institution_id',$institutionId)->get();
+            $data['staffs'] = Staff::with('identite')->where('institution_id',$institutionId)->get();
 
         }else{
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
-            $data['staffs'] = Staff::all();
+            $data['staffs'] = Staff::with('identite')->get();
         }
 
         return $data;
