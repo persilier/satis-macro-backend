@@ -241,7 +241,7 @@ trait MonitoringClaim
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
-            $data['staffs'] = Unit::all();
+            $data['staffs'] = Staff::all();
         }
 
         return $data;
