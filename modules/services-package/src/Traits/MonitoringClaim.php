@@ -54,7 +54,7 @@ trait MonitoringClaim
      */
     protected function timeExpire($createdDate = false , $timeLimit = false){
 
-        $diff = 'N/A';
+        $diff = null;
 
         if($timeLimit && $createdDate){
 
