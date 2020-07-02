@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\User;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-
 /**
  * Class RolesTableSeeder
  * @package Satis2020\MonitoringClaimMyInstitution\Database\Seeds
@@ -28,11 +28,31 @@ class RolesTableSeeder extends Seeder
 
         $faker = Faker::create();
 
+        $type_unit = UnitType::create([
+            'name' => $faker->name,
+            'description' => $faker->text,
+            'can_be_target' => 1,
+            'can_treat' => 1
+        ]);
+
+        
+
         if ($nature === 'HUB') {
-            $unit = Unit::first();
+            
+            $unit = Unit::create([
+                'name' => $faker->name,
+                'description' => $faker->text,
+                'unit_type_id' =>  $type_unit->id
+            ]);
 
         }else{
-            $unit = Unit::where('institution_id', $institution->id)->first();
+
+            $unit = Unit::create([
+                'name' => $faker->name,
+                'description' => $faker->text,
+                'unit_type_id' =>  $type_unit->id,
+                'institution_id'=> $institution->id
+            ]);
         }
 
 
