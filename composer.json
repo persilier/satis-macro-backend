@@ -34,6 +34,8 @@
     "satis2020/faq-package": "^1.0",
     "satis2020/institution": "^1.0",
     "satis2020/metadata-package": "^1.0",
+    "satis2020/monitoring-claim-any-institution": "^1.0",
+    "satis2020/monitoring-claim-my-institution": "^1.0",
     "satis2020/my-institution": "^1.0",
     "satis2020/my-institution-unit": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
@@ -431,6 +433,20 @@
     {
       "type": "path",
       "url": "modules/claim-awaiting-validation-any-institution/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/monitoring-claim-any-institution/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/monitoring-claim-my-institution/",
       "options": {
         "symlink": true
       }
