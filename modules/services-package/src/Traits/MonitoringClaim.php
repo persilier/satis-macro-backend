@@ -82,64 +82,20 @@ trait MonitoringClaim
 
         }
 
-        if ($request->has('claim_category_id')) {
-
-            $claimCategoryId = $request->claim_category_id;
-
-            $claims->where(function ($query) use ($claimCategoryId){
-                $query->whereHas('claimObject', function ($q) use ($claimCategoryId){
-                    $q->where('claim_category_id', $claimCategoryId);
-                });
-            });
-        }
-
-        if ($request->has('claim_object_id')) {
-
-            $claims->where('claim_object_id',  $request->claim_object_id);
-        }
-
 
         if($treatment){
 
-            if ($request->has('unit_id')) {
+            $claims->join('treatments', function ($join) {
 
-                $claims->where(function ($query) use ($request){
-                    $query->whereHas('activeTreatment', function ($q) use ($request){
-                        $q->where('responsible_unit_id', $request->unit_id);
-                    })->where('active_treatment_id', '=', 'activeTreatment.id');
-                });
-            }
-
-
-            if ($request->has('staff_id')) {
-
-                $claims->where(function ($query) use ($request){
-                    $query->whereHas('activeTreatment', function ($q) use ($request){
-                        $q->where('responsible_staff_id', $request->staff_id);
-                    })->where('active_treatment_id', '=', 'activeTreatment.id');
-                });
-            }
-
+                $join->on('claims.id', '=', 'treatments.claim_id')
+                    ->on('claims.active_treatment_id', '=', 'treatments.id');
+            })->select('claims.*');
         }
 
 
-        if($request->has('date_start')){
+        if($status === 'transferred_to_targeted_institution'){
 
-            $claims->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay());
-        }
-
-
-        if($request->has('date_end')){
-
-            $claims->orWhere('created_at', '<=',Carbon::parse($request->date_start)->endOfDay());
-
-        }
-
-
-
-        if($status === 'transferred_to_institution'){
-
-            $claims->where('status', 'full')->orWhere('status', 'transferred_to_institution');
+            $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
 
         }else{
 
