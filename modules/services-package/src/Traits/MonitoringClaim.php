@@ -176,17 +176,25 @@ trait MonitoringClaim
     }
 
 
-
+    /**
+     * @return array
+     */
     protected function getRelations()
     {
         $relations = [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
+            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.responsibleStaff',
+             'activeTreatment.responsibleUnit'
         ];
 
         return $relations;
     }
 
+    /**
+     * @param $request
+     * @param bool $institutionId
+     * @return array
+     */
     protected function rules($request, $institutionId = false)
     {
 
