@@ -137,9 +137,9 @@ trait MonitoringClaim
 
 
 
-        if($status === 'transferred_to_targeted_institution'){
+        if($status === 'transferred_to_institution'){
 
-            $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
+            $claims->where('status', 'full')->orWhere('status', 'transferred_to_institution');
 
         }else{
 
