@@ -37,7 +37,7 @@ trait ClaimAwaitingTreatment
 
             ->whereRaw(
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
-                [$institutionId, 'full', $institutionId, 'transferred_to_targeted_institution']
+                [$institutionId, 'transferred_to_unit', $institutionId, 'transferred_to_unit']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?)',
                 ['NULL',$unitId]
