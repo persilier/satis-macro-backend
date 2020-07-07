@@ -187,7 +187,7 @@ class ResetProcessSeeder extends Seeder
                 'description' => $faker->text,
                 'unit_type_id' => UnitType::all()->random()->id,
                 'parent_id' => null,
-                'institution_id' => $institution->institutionType->name === 'observatory' ? null : $institution->id
+                'institution_id' => ($institution->institutionType->name === 'observatory' || $institution->institutionType->name === 'membre') ? null : $institution->id
             ]);
 
             // search if a user in that institution has the pilot role
@@ -223,6 +223,7 @@ class ResetProcessSeeder extends Seeder
         $units = Unit::with('institution.institutionType')->get();
 
         foreach ($units as $unit) {
+            dump($unit);
             // register the staff collector
             if (!is_null($unit->institution)) {
                 $staffCollector = $unit->institution->institutionType->name === 'holding'
