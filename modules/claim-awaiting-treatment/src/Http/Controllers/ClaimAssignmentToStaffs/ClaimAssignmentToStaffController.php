@@ -1,9 +1,12 @@
 <?php
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -11,6 +14,10 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 
+/**
+ * Class ClaimAssignmentToStaffController
+ * @package Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs
+ */
 class ClaimAssignmentToStaffController extends ApiController
 {
     use ClaimAwaitingTreatment;
@@ -25,11 +32,9 @@ class ClaimAssignmentToStaffController extends ApiController
         $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim','treatmentClaim']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function index()
     {
@@ -47,8 +52,8 @@ class ClaimAssignmentToStaffController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claim)
     {
@@ -60,6 +65,12 @@ class ClaimAssignmentToStaffController extends ApiController
     }
 
 
+    /**
+     * @param Request $request
+     * @param $claim
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     protected function treatmentClaim(Request $request, $claim){
 
         $institution = $this->institution();
@@ -84,6 +95,12 @@ class ClaimAssignmentToStaffController extends ApiController
     }
 
 
+    /**
+     * @param Request $request
+     * @param $claim
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     protected function unfoundedClaim(Request $request, $claim){
 
         $institution = $this->institution();

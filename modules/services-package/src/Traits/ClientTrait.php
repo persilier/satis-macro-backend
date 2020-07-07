@@ -3,6 +3,9 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
@@ -59,15 +62,10 @@ trait ClientTrait
         return $rules;
     }
 
-    /**
-     * Store Identite
-     * @param bool $request_institution
-     * @return array
-     */
 
     /**
      * @param $request
-     * @return array
+     * @return mixed
      */
     protected function storeIdentite($request)
     {
@@ -125,6 +123,11 @@ trait ClientTrait
         return $account = Account::create($store);
     }
 
+    /**
+     * @param $institutionId
+     * @param $clientId
+     * @return Builder|Model
+     */
     protected  function getOneClientByInstitution($institutionId, $clientId){
 
         $client = ClientInstitution::with(
@@ -136,6 +139,10 @@ trait ClientTrait
         return $client;
     }
 
+    /**
+     * @param $institutionId
+     * @return Builder[]|Collection
+     */
     protected  function getAllClientByInstitution($institutionId){
         try{
             $clients = ClientInstitution::with(
@@ -151,6 +158,11 @@ trait ClientTrait
         return $clients;
     }
 
+    /**
+     * @param $institutionId
+     * @param $accountId
+     * @return Builder|Model
+     */
     protected  function getOneAccountClientByInstitution($institutionId, $accountId){
 
         try{
@@ -173,6 +185,10 @@ trait ClientTrait
     }
 
 
+    /**
+     * @param $accountId
+     * @return Builder|Model
+     */
     protected  function getOneAccountClient($accountId){
 
         try{
@@ -195,6 +211,11 @@ trait ClientTrait
     }
 
 
+    /**
+     * @param $number
+     * @param $clientInstitutionId
+     * @return array
+     */
     protected function handleAccountClient($number, $clientInstitutionId)
     {
         try{

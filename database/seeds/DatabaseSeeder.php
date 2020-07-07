@@ -75,6 +75,8 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ClaimAwaitingValidationSeeder::class);
 //        $this->call(\Satis2020\ClaimAwaitingValidationMyInstitution\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\ClaimAwaitingValidationAnyInstitution\Database\Seeds\RolesTableSeeder::class);
+//        $this->call(\Satis2020\MonitoringClaimAnyInstitution\Database\Seeds\RolesTableSeeder::class);
+//        $this->call(\Satis2020\MonitoringClaimMyInstitution\Database\Seeds\RolesTableSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateProcessRolesSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetProcessSeeder::class);
     }

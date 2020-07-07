@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
@@ -15,6 +16,11 @@ use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Relationship;
+
+/**
+ * Trait UpdateClaim
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait UpdateClaim
 {
 
@@ -38,7 +44,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where(function ($query) use ($institutionId){
                 $query->whereHas('createdBy', function ($q) use ($institutionId){
                     $q->where('institution_id', $institutionId);
@@ -72,7 +79,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where('institution_targeted_id',$institutionId)->where('status', $status)->get();
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
@@ -101,7 +109,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where(function ($query) use ($institution_id){
                 $query->whereHas('createdBy', function ($q) use ($institution_id){
                     $q->where('institution_id', $institution_id);
@@ -114,11 +123,10 @@ trait UpdateClaim
     }
 
     /**
-     * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
-     * @param $id | Id claim
      * @param $institutionId | Id institution
+     * @param $claimId
+     * @param string $status | Claim complete - status=full | Claim incomplete - status=incomplete
      * @return array
-     * @throws CustomException
      */
     protected function getOneClaimCompleteOrIncompleteForMyInstitution($institutionId, $claimId, $status='full')
     {
@@ -134,7 +142,8 @@ trait UpdateClaim
                 'responseChannel',
                 'amountCurrency',
                 'createdBy.identite',
-                'completedBy.identite'
+                'completedBy.identite',
+                'files'
             ])->where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
@@ -200,6 +209,12 @@ trait UpdateClaim
         return $datas;
     }
 
+    /**
+     * @param $institutionId
+     * @param $claimId
+     * @param string $status
+     * @return mixed
+     */
     protected function getClaimUpdate($institutionId, $claimId, $status = 'full'){
         try {
             $claim = Claim::where(function ($query) use ($institutionId){
@@ -214,6 +229,12 @@ trait UpdateClaim
     }
 
 
+    /**
+     * @param $institutionId
+     * @param $claimId
+     * @param string $status
+     * @return mixed
+     */
     protected function getClaimUpdateForMyInstitution($institutionId, $claimId, $status = 'full'){
         try {
             $claim = Claim::where('institution_targeted_id',$institutionId)->where('status', $status)->findOrFail($claimId);
@@ -245,5 +266,7 @@ trait UpdateClaim
         $claim->save();
         return $claim;
     }
+
+
 
 }

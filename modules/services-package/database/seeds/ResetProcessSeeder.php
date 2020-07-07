@@ -187,7 +187,7 @@ class ResetProcessSeeder extends Seeder
                 'description' => $faker->text,
                 'unit_type_id' => UnitType::all()->random()->id,
                 'parent_id' => null,
-                'institution_id' => $institution->institutionType->name === 'observatoire' ? null : $institution->id
+                'institution_id' => $institution->institutionType->name === 'observatory' ? null : $institution->id
             ]);
 
             // search if a user in that institution has the pilot role

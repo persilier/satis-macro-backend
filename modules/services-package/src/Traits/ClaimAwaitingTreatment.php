@@ -1,6 +1,9 @@
 <?php
 namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -9,8 +12,17 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 
+/**
+ * Trait ClaimAwaitingTreatment
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait ClaimAwaitingTreatment
 {
+    /**
+     * @param $institutionId
+     * @param $unitId
+     * @return \Illuminate\Database\Query\Builder
+     */
     protected function getClaimsQuery($institutionId, $unitId){
         return DB::table('claims')
             ->select('claims.*')
@@ -25,7 +37,7 @@ trait ClaimAwaitingTreatment
 
             ->whereRaw(
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
-                [$institutionId, 'full', $institutionId, 'transferred_to_targeted_institution']
+                [$institutionId, 'transferred_to_unit', $institutionId, 'transferred_to_unit']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?)',
                 ['NULL',$unitId]
@@ -33,6 +45,12 @@ trait ClaimAwaitingTreatment
             ->whereNull('claims.deleted_at');
     }
 
+    /**
+     * @param $institutionId
+     * @param $unitId
+     * @param $claim
+     * @return Builder|Builder[]|Collection|Model|null
+     */
     protected function getOneClaimQuery($institutionId, $unitId, $claim){
 
         if(!$claim = $this->getClaimsQuery($institutionId, $unitId)->where('claims.id', $claim)->first())
@@ -41,6 +59,10 @@ trait ClaimAwaitingTreatment
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
 
+    /**
+     * @param $staff
+     * @return bool
+     */
     protected function checkLead($staff){
 
         if(Unit::where('institution_id', $staff->institution_id)->where('lead_id', $staff->id)->find($staff->unit_id)){
@@ -50,6 +72,11 @@ trait ClaimAwaitingTreatment
         return false;
     }
 
+    /**
+     * @param $claim
+     * @param $staffId
+     * @return mixed
+     */
     protected function assignmentClaim($claim, $staffId){
         $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'assigned_to_staff_at'=> Carbon::now()]);
 
@@ -58,6 +85,11 @@ trait ClaimAwaitingTreatment
         return $claim;
     }
 
+    /**
+     * @param $claim
+     * @param $request
+     * @return mixed
+     */
     protected function rejectedClaimUpdate($claim, $request){
 
         $claim->activeTreatment->update(['transferred_to_unit_at' => null, 'rejected_reason' => $request->rejected_reason, 'rejected_at' => Carbon::now()]);
@@ -71,6 +103,9 @@ trait ClaimAwaitingTreatment
         return $claim;
     }
 
+    /**
+     * @return array
+     */
     protected function getRelationsAwitingTreatment()
     {
         return [
@@ -79,6 +114,11 @@ trait ClaimAwaitingTreatment
         ];
     }
 
+    /**
+     * @param $staff
+     * @param string $assignment
+     * @return mixed
+     */
     protected  function rules($staff, $assignment = 'assignment'){
 
         if($assignment === 'assignment'){
@@ -106,6 +146,12 @@ trait ClaimAwaitingTreatment
     }
 
 
+    /**
+     * @param $institutionId
+     * @param $unitId
+     * @param $staffId
+     * @return \Illuminate\Database\Query\Builder
+     */
     protected function getClaimsTreat($institutionId, $unitId, $staffId){
         return DB::table('claims')
             ->select('claims.*')
@@ -128,7 +174,14 @@ trait ClaimAwaitingTreatment
             ->whereNull('claims.deleted_at');
     }
 
-    protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId,  $claim){
+    /**
+     * @param $institutionId
+     * @param $unitId
+     * @param $staffId
+     * @param $claim
+     * @return Builder|Builder[]|Collection|Model|null
+     */
+    protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId, $claim){
 
         if(!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId)->where('claims.id', $claim)->first())
             throw new CustomException("Impossible de récupérer cette réclammation");

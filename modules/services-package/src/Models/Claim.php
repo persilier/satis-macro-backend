@@ -8,6 +8,10 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
+/**
+ * Class Claim
+ * @package Satis2020\ServicePackage\Models
+ */
 class Claim extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;

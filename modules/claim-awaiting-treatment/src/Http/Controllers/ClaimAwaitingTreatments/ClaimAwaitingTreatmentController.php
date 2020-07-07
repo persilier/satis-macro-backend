@@ -1,9 +1,12 @@
 <?php
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAwaitingTreatments;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -11,6 +14,10 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 
+/**
+ * Class ClaimAwaitingTreatmentController
+ * @package Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAwaitingTreatments
+ */
 class ClaimAwaitingTreatmentController extends ApiController
 {
     use ClaimAwaitingTreatment;
@@ -32,8 +39,8 @@ class ClaimAwaitingTreatmentController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -51,8 +58,8 @@ class ClaimAwaitingTreatmentController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claim)
     {
@@ -68,8 +75,8 @@ class ClaimAwaitingTreatmentController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function edit($claim)
     {
@@ -85,8 +92,8 @@ class ClaimAwaitingTreatmentController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function showClaimQueryTreat($claim)
     {
@@ -100,9 +107,10 @@ class ClaimAwaitingTreatmentController extends ApiController
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function rejectedClaim(Request $request, $claim)
     {
@@ -120,7 +128,12 @@ class ClaimAwaitingTreatmentController extends ApiController
     }
 
 
-    protected  function selfAssignmentClaim($claim){
+    /**
+     * @param $claim
+     * @return JsonResponse
+     */
+    protected  function selfAssignmentClaim($claim)
+    {
 
         $institution = $this->institution();
         $staff = $this->staff();
@@ -133,7 +146,14 @@ class ClaimAwaitingTreatmentController extends ApiController
     }
 
 
-    protected  function assignmentClaimStaff(Request $request, $claim){
+    /**
+     * @param Request $request
+     * @param $claim
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    protected  function assignmentClaimStaff(Request $request, $claim)
+    {
 
         $institution = $this->institution();
         $staff = $this->staff();
