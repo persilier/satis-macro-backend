@@ -192,6 +192,12 @@ class ResetProcessSeeder extends Seeder
 
             // search if a user in that institution has the pilot role
             if (User::with('identite.staff')->get()->search(function ($value, $key) use ($institution, $roleName) {
+                    if (is_null($value->identite)) {
+                        return false;
+                    }
+                    if (is_null($value->identite->staff)) {
+                        return false;
+                    }
                     return $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName);
                 }) === false) {
                 $this->createStaff($unit, $roleName);
