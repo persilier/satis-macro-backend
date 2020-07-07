@@ -223,7 +223,6 @@ class ResetProcessSeeder extends Seeder
         $units = Unit::with('institution.institutionType')->get();
 
         foreach ($units as $unit) {
-            dump($unit);
             // register the staff collector
             if (!is_null($unit->institution)) {
                 $staffCollector = $unit->institution->institutionType->name === 'holding'
