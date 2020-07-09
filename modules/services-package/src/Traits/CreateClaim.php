@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -102,6 +103,9 @@ trait CreateClaim
         $validator = Validator::make($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)), $rules->all());
         if ($validator->fails()) {
             $status = 'incomplete';
+        } else {
+            // status = full so the claim is complete
+            $request->merge(['completed_by' => $request->created_by, 'completed_at' => Carbon::now()]);
         }
 
         return $status;
@@ -125,6 +129,13 @@ trait CreateClaim
             'reference',
             'claimer_expectation'
         ];
+
+        if ($request->has('status')) {
+            if ($request->status == 'full') {
+                $data[] = 'completed_by';
+                $data[] = 'completed_at';
+            }
+        }
 
         if ($with_client) {
             $data[] = 'account_targeted_id';
