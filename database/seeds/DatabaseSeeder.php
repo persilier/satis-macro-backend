@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\CreateProcessRolesSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\ResetProcessSeeder::class);
         $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ReportingClaimMyInstitution\Database\Seeds\RolesTableSeeder::class);
 
     }
 }
