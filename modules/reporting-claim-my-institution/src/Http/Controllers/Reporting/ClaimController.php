@@ -38,6 +38,11 @@ class ClaimController extends ApiController
 
         $this->validate($request, $this->rules(false));
 
+        if((!$request->has('date_start')) || (!$request->has('date_end'))){
+
+            $request->merge(['date_start' => now()->startOfYear(), 'date_end' =>now()->endOfYear()]);
+        }
+        
         $statistiques = [
             'statistiqueObject' => $this->numberClaimByObject($request, $institution->id),
             'statistiqueChannel' => $this->numberChannels($request, $institution->id),
