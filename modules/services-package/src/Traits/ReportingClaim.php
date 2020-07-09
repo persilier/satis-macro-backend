@@ -471,8 +471,8 @@ trait ReportingClaim
         $results['weeks']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 week');
         $results['weeks']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 week');
 
-        $results['days']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 week');
-        $results['days']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 week');
+        $results['days']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 day');
+        $results['days']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 day');
 
         return $results;
 
@@ -493,7 +493,7 @@ trait ReportingClaim
         }
 
         if($period === '1 day'){
-            $d = $value->format('d/m/y');
+            $d = $value->format('d/m/y').' - '.$value->endOfDay()->format('d/m/y');
         }
 
         return $d;
