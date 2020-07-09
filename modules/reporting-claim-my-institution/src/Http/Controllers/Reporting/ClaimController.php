@@ -42,7 +42,7 @@ class ClaimController extends ApiController
 
             $request->merge(['date_start' => now()->startOfYear(), 'date_end' =>now()->endOfYear()]);
         }
-        
+
         $statistiques = [
             'statistiqueObject' => $this->numberClaimByObject($request, $institution->id),
             'statistiqueChannel' => $this->numberChannels($request, $institution->id),

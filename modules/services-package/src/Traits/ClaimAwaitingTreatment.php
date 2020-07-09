@@ -95,7 +95,7 @@ trait ClaimAwaitingTreatment
         $claim->activeTreatment->update(['transferred_to_unit_at' => null, 'rejected_reason' => $request->rejected_reason, 'rejected_at' => Carbon::now()]);
 
         if(!is_null($claim->transfered_to_targeted_institution_at)){
-            $claim->update(['status', 'transferred_to_institution']);
+            $claim->update(['status', 'transferred_to_targeted_institution']);
         }else{
             $claim->update(['status', 'full']);
         }

@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -98,7 +99,7 @@ class Staff extends Model
 
     /**
      * Get the claims registered by the staff
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function registeredClaims()
     {
@@ -107,7 +108,7 @@ class Staff extends Model
 
     /**
      * Get the claims completed by the staff
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function completedClaims()
     {
@@ -116,7 +117,7 @@ class Staff extends Model
 
     /**
      * Get the treatments which has been assigned by the staff
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function assignedTreatments()
     {
@@ -125,11 +126,19 @@ class Staff extends Model
 
     /**
      * Get the treatments which has been assigned to the staff
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function responsibleTreatments()
     {
         return $this->hasMany(Treatment::class, 'responsible_staff_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function satisfactionMeasured()
+    {
+        return $this->hasMany(Treatment::class, 'satisfaction_measured_by');
     }
 
 }

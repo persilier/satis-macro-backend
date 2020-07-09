@@ -493,7 +493,7 @@ trait ReportingClaim
         }
 
         if($period === '1 day'){
-            $d = $value->format('d/m/y').' - '.$value->endOfDay()->format('d/m/y');
+            $d = $value->format('d/m/y');
         }
 
         return $d;

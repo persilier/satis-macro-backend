@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -43,13 +44,13 @@ class Treatment extends Model
     protected $fillable = [
         'claim_id', 'responsible_unit_id', 'assigned_to_staff_by', 'responsible_staff_id', 'unfounded_reason',
         'solution', 'preventive_measures', 'solution_communicated', 'is_claimer_satisfied', 'amount_returned',
-        'unsatisfied_reason', 'transferred_to_targeted_institution_at', 'transferred_to_unit_at',
+        'unsatisfied_reason', 'transferred_to_targeted_institution_at', 'transferred_to_unit_at','satisfaction_measured_by',
         'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at', 'assigned_to_staff_at'
     ];
 
     /**
      * Get the claim associated with the treatment
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function claim()
     {
@@ -58,7 +59,7 @@ class Treatment extends Model
 
     /**
      * Get the responsibleUnit associated with the treatment
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function responsibleUnit()
     {
@@ -67,7 +68,7 @@ class Treatment extends Model
 
     /**
      * Get the staff who assign the claim associated with the treatment
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function assignedToStaffBy()
     {
@@ -76,11 +77,19 @@ class Treatment extends Model
 
     /**
      * Get the staff who is responsible for the treatment
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function responsibleStaff()
     {
         return $this->belongsTo(Staff::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function satisfactionMeasuredBy()
+    {
+        return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
     }
 
 }
