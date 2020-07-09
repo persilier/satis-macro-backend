@@ -29,7 +29,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
-        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim','treatmentClaim']);
+        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim','unfoundedClaim']);
     }
 
 

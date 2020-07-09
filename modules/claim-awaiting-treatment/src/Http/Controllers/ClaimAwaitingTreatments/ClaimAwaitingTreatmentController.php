@@ -33,7 +33,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $this->middleware('permission:rejected-claim-awaiting-treatment')->only(['show', 'rejectedClaim']);
         $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);
         //$this->middleware('permission:assignment-claim-awaiting-treatment')->only(['edit', 'assignmentClaimStaff']);
-        $this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['unfoundedClaim']);
+        //$this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['unfoundedClaim']);
     }
 
     /**
