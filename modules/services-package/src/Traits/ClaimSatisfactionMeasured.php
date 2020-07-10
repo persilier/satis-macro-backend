@@ -17,14 +17,10 @@ trait ClaimSatisfactionMeasured
     protected  function getClaim($institutionId){
 
 
-        return $claims = Claim::with($this->getRelations())->where('institution_targeted_id', $institutionId)
-            ->join('staff', function ($join) {
-                $join->on('claims.created_by', '=', 'staff.id');
-            })->join('treatments', function ($join){
-                $join->on('claims.id', '=', 'treatments.claim_id')
-                        ->on('claims.active_treatment_id', '=', 'treatments.id');
-            })->where('staff.institution_id', $institutionId)->orWhere('claims.institution_targeted_id',$institutionId)
-            ->orWhere('claims.status', 'validated')->select('claims.*');
+        return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
+            $join->on('claims.id', '=', 'treatments.claim_id')
+                ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })->where('claims.institution_targeted_id',$institutionId)->where('claims.status', 'validated')->select('claims.*');
 
     }
 
