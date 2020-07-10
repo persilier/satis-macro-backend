@@ -46,7 +46,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @param $claim
      * @return JsonResponse
      */
-    public function edit($claim)
+    public function show($claim)
     {
         $institution = $this->institution();
         $claim = $this->getClaim($institution->id)->findOrFail($claim);
