@@ -193,6 +193,9 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/dashboard" />
       <path value="$PROJECT_DIR$/vendor/satis2020/monitoring-claim-my-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/monitoring-claim-any-institution" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/reporting-claim-my-institution" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/claim-satisfaction-measured" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/reporting-claim-any-institution" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

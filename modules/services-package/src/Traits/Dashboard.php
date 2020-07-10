@@ -21,7 +21,7 @@ trait Dashboard
     protected function getActiveTreatmentRelations()
     {
         return [
-            'responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite'
+            'responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite', 'satisfactionMeasuredBy.identite'
         ];
     }
 
