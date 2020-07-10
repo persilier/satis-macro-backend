@@ -25,7 +25,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-claim-satisfaction-measured')->only(['index']);
-        $this->middleware('permission:update-claim-satisfaction-measured')->only(['edit', 'satisfactionMeasured']);
+        $this->middleware('permission:update-claim-satisfaction-measured')->only(['show', 'satisfactionMeasured']);
     }
 
     /**

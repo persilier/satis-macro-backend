@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Claim;
 
@@ -14,13 +15,18 @@ use Satis2020\ServicePackage\Models\Claim;
 trait ClaimSatisfactionMeasured
 {
 
-    protected  function getClaim($institutionId){
+    /**
+     * @param $institutionId
+     * @param string $status
+     * @return Builder
+     */
+    protected  function getClaim($institutionId, $status = 'validated'){
 
 
         return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })->where('claims.institution_targeted_id',$institutionId)->where('claims.status', 'validated')->select('claims.*');
+        })->where('claims.institution_targeted_id',$institutionId)->where('claims.status', $status)->select('claims.*');
 
     }
 
