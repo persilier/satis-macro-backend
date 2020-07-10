@@ -24,14 +24,14 @@ trait ClaimSatisfactionMeasured
                 $join->on('claims.id', '=', 'treatments.claim_id')
                         ->on('claims.active_treatment_id', '=', 'treatments.id');
             })->where('staff.institution_id', $institutionId)->orWhere('claims.institution_targeted_id',$institutionId)
-            ->where('claims.status', 'validated')->select('claims.*');
+            ->orWhere('claims.status', 'validated')->select('claims.*');
 
     }
 
 
     protected  function rules(){
 
-        $data['is_claimer_satisfied'] = ['required', 'integer'];
+        $data['is_claimer_satisfied'] = ['required', 'boolean'];
         $data['unsatisfaction_reason'] = ['required', 'string'];
 
         return $data;
@@ -44,7 +44,7 @@ trait ClaimSatisfactionMeasured
     {
         return [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment', 'satisfactionMeasuredBy.identite'
+            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite'
         ];
     }
 

@@ -136,7 +136,7 @@ trait ReportingClaim
                 case 'archived':
 
                     return $claims->filter(function ($item) use ($objectClaimId , $status){
-                        return (($item->claim_object_id === $objectClaimId) && (($item->status === 'validated') || ($item->status === $status)));
+                        return (($item->claim_object_id === $objectClaimId) && (($item->status === 'unfounded') || ($item->status === 'validated') || ($item->status === $status)));
                     })->count();
 
                 default:
@@ -172,6 +172,12 @@ trait ReportingClaim
     }
 
 
+    /**
+     * @param $request
+     * @param $slug
+     * @param $institutionId
+     * @return mixed
+     */
     protected function queryCountClaimByChannel($request, $slug, $institutionId){
 
         if($request->has('date_start') && $request->has('date_end')){
@@ -447,7 +453,7 @@ trait ReportingClaim
         return $claims->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })->where('claims.status',  'validated')->orWhere('claims.status','archived')->select('claims.*');
+        })->where('claims.status',  'validated')->orWhere('claims.status','unfounded')->orWhere('claims.status','archived')->select('claims.*');
 
     }
 
