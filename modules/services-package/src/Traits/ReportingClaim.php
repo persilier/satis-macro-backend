@@ -492,7 +492,7 @@ trait ReportingClaim
      */
     protected function formatRangerDatePeriod($period, $value){
         if($period === '1 month'){
-            $d = $value->format('Y-d');
+            $d = $value->format('Y-m');
         }
 
         if($period === '1 week'){
