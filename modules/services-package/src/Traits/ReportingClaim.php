@@ -67,7 +67,8 @@ trait ReportingClaim
                     ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay())
                     ->get();
             }else{
-                $claims = Claim::whereBetween('created_at', [$request->date_end, $request->date_start])->get();
+                $claims = Claim::where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
+                    ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay())->get();
             }
 
         }else{
@@ -87,7 +88,7 @@ trait ReportingClaim
      * @param bool $institutionId
      * @return mixed
      */
-    protected function numberClaimObject($request, $claimCategoryId, $institutionId = false){
+    protected function numberClaimObject($request, $claimCategoryId, $institutionId){
 
         $claims = $this->queryNumberObject($request, $institutionId);
 
