@@ -20,5 +20,5 @@ Route::put('/claim-satisfaction-measured/{claim}', 'ClaimSatisfactionMeasured\Cl
 /*
  * ClaimArchived
  */
-Route::get('/claim-archived', 'ClaimSatisfactionMeasured\ClaimArchivedController@index')->name('claim.archived.index');
-Route::get('/claim-archived/{claim}', 'ClaimSatisfactionMeasured\ClaimArchivedController@show')->name('claim.archived.show');
+Route::get('/claim-archived', 'ClaimArchived\ClaimArchivedController@index')->name('claim.archived.index');
+Route::get('/claim-archived/{claim}', 'ClaimArchived\ClaimArchivedController@show')->name('claim.archived.show');
