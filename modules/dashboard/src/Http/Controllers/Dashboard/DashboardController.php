@@ -35,6 +35,9 @@ class DashboardController extends ApiController
         // initialise statistics collection
         $statistics = $this->getDataCollection($this->getStatisticsKeys(), $permissions);
 
+        // initialise total claims registered in last 30 days
+        $totalClaimsRegisteredStatistics = collect(['total'=>0]);
+
         // initialise channelsUse collection
         $channelsUse = $this->getDataCollection(Channel::all()->pluck('name'),
             $permissions->filter(function ($value, $key) {
@@ -70,11 +73,12 @@ class DashboardController extends ApiController
                 Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
             ])
             ->get()
-            ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution) {
+            ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics) {
 
                 if ($claim->created_at->between(Carbon::now()->subDays(30), Carbon::now())) {
 
                     // totalRegistered
+                    $totalClaimsRegisteredStatistics->put('total', ($totalClaimsRegisteredStatistics->get('total') + 1)) ;
                     $statistics->put('totalRegistered', $this->incrementTotalRegistered($claim, $statistics->get('totalRegistered')));
 
                     // totalIncomplete
@@ -185,7 +189,8 @@ class DashboardController extends ApiController
             'channelsUse' => $channelsUse,
             'claimObjectsUse' => $claimObjectsUse,
             'claimerSatisfactionEvolution' => $claimerSatisfactionEvolution,
-            'claimerProcessEvolution' => $claimerProcessEvolution
+            'claimerProcessEvolution' => $claimerProcessEvolution,
+            'totalClaimsRegisteredStatistics' => $totalClaimsRegisteredStatistics->get('total')
         ], 200);
     }
 
