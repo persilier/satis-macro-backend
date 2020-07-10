@@ -87,13 +87,17 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-object-requirement" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/claim-satisfaction-measured" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/client-from-any-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/client-from-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/clients-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/configuration" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/currency" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/dashboard" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/monitoring-claim-any-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/monitoring-claim-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/performance-indicator-package" />
@@ -105,6 +109,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/register-claim-against-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/register-claim-without-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/relationship" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/reporting-claim-any-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/reporting-claim-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/severity-level" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-any-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-from-maybe-no-unit" />
