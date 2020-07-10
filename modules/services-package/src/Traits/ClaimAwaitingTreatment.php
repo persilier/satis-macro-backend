@@ -78,7 +78,7 @@ trait ClaimAwaitingTreatment
      * @return mixed
      */
     protected function assignmentClaim($claim, $staffId){
-        $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'assigned_to_staff_at'=> Carbon::now()]);
+        $claim->activeTreatment->update(['responsible_staff_id' => $staffId,'assigned_to_staff_by'=> $this->staff()->id, 'assigned_to_staff_at'=> Carbon::now()]);
 
         $claim->update(['status' => 'assigned_to_staff']);
 
