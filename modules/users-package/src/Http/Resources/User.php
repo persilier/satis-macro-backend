@@ -1,6 +1,7 @@
 <?php
 namespace Satis2020\UserPackage\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\UserPackage\Http\Resources\Identite as IdentiteResource;
 use Satis2020\UserPackage\Http\Resources\Role as RoleResource;
 class User extends JsonResource

@@ -22,6 +22,7 @@ class AuthController extends ApiController
         $user = $this->user();
 
         return (new UserResource($user))->additional([
+            'staff' => $this->staff(),
             "app-nature" => $this->nature(),
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
             'institution'=> $this->institution()
