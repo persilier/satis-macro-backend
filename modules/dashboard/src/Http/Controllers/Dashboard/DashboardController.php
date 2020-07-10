@@ -175,8 +175,8 @@ class DashboardController extends ApiController
                                 , 'measured'
                             ));
 
-                        $claimerSatisfactionEvolution->put($claim->satisfaction_measured_at->month,
-                            $this->incrementClaimerSatisfactionEvolution($claim, $claimerSatisfactionEvolution->get($claim->satisfaction_measured_at->month)));
+                        $claimerSatisfactionEvolution->put($claim->activeTreatment->satisfaction_measured_at->month,
+                            $this->incrementClaimerSatisfactionEvolution($claim, $claimerSatisfactionEvolution->get($claim->activeTreatment->satisfaction_measured_at->month)));
                     }
 
                 }
