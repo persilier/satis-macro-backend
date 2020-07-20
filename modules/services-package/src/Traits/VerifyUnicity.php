@@ -185,6 +185,7 @@ trait VerifyUnicity
     protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null)
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
+
         if (!$verify['status']) {
             $client = Client::with([
                     'identite', 'client_institutions'

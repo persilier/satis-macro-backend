@@ -42,6 +42,7 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
         $this->app->register(\Spatie\Permission\PermissionServiceProvider::class);
         $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
         $this->app->register(\Cviebrock\EloquentSluggable\ServiceProvider::class);
+        $this->app->register(\Maatwebsite\Excel\ExcelServiceProvider::class);
 
     }
 
@@ -51,5 +52,6 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
     protected function registerAliases()
     {
         $this->app->alias('cache', \Illuminate\Cache\CacheManager::class);
+        $this->app->alias('Excel', \Maatwebsite\Excel\Facades\Excel::class);
     }
 }
