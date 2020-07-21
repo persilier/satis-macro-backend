@@ -147,7 +147,7 @@ class ResetProcessSeeder extends Seeder
             'id' => (string)Str::uuid(),
             'identite_id' => $identity->id,
             'position_id' => \Satis2020\ServicePackage\Models\Position::all()->random()->id,
-            'institution_id' => is_null($unit->institution) ? null : $unit->institution->id,
+            'institution_id' => is_null($unit->institution) ? Institution::all()->random()->id : $unit->institution->id,
             'unit_id' => $unit->id
         ]);
     }
