@@ -150,6 +150,8 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     protected  function assignmentClaimStaff(Request $request, $claim)

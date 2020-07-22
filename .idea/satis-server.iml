@@ -94,6 +94,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/configuration" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/currency" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/dashboard" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/discussion" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institutions-package" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/monitoring-claim-any-institution" />
