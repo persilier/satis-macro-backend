@@ -141,4 +141,31 @@ class Staff extends Model
         return $this->hasMany(Treatment::class, 'satisfaction_measured_by');
     }
 
+    /**
+     * Get the discussions registered by the staff
+     * @return HasMany
+     */
+    public function discussionsRegistered()
+    {
+        return $this->hasMany(Discussion::class, 'created_by');
+    }
+
+    /**
+     * Get the discussions associated with the staff
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function discussions()
+    {
+        return $this->belongsToMany(Discussion::class);
+    }
+
+    /**
+     * Get the messages posted by the staff
+     * @return HasMany
+     */
+    public function messagesPosted()
+    {
+        return $this->hasMany(Message::class, 'posted_by');
+    }
+
 }

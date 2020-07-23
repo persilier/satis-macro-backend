@@ -174,5 +174,15 @@ class Claim extends Model
         return $this->belongsTo(Treatment::class);
     }
 
+    /**
+     * Get the discussions associated with the claim
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function discussions()
+    {
+        return $this->hasMany(Discussion::class);
+    }
+
+
 
 }
