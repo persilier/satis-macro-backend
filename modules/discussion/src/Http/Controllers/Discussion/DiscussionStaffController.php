@@ -98,7 +98,8 @@ class DiscussionStaffController extends ApiController
         $rules = [
             'discussion' => ['required', 'exists:discussions,id',
                 new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())],
-            'staff_id' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
+            'staff_id' => 'required|array',
+            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
                 new StaffCanBeAddToDiscussionRules($discussion)],
         ];
 
