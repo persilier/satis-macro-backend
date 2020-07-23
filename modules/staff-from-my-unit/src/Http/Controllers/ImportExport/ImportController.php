@@ -16,7 +16,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-staff-from-my-unit')->only(['importClient']);
+        $this->middleware('permission:store-staff-from-my-unit')->only(['importStaffs']);
     }
 
     /**
@@ -28,13 +28,14 @@ class ImportController extends ApiController
         $institution = $this->institution();
 
         $request->validate([
+
             'file' => 'required|file|max:2048|mimes:xls,xlsx',
             'etat_update' => 'required|boolean',
             'stop_identite_exist' => 'required|boolean'
         ]);
 
         $datas = [
-            'status' => true,
+            'status' => false,
             'staffs' => ''
         ];
 
@@ -55,7 +56,7 @@ class ImportController extends ApiController
         if($imports->getErrors()){
             $datas = [
 
-                'status' => false,
+                'status' => true,
                 'staffs' => $imports->getErrors()
             ];
         }

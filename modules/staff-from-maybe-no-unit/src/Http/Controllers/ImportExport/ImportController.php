@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffFromMyUnit\Http\Controllers\ImportExport;
+namespace Satis2020\StaffFromMaybeNoUnit\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -8,7 +8,7 @@ use Satis2020\ServicePackage\Imports\Staff;
 
 /**
  * Class ImportExportController
- * @package Satis2020\StaffFromMyUnit\Http\Controllers\ImportExport
+ * @package Satis2020\StaffFromMaybeNoUnit\Http\Controllers\ImportExport
  */
 class ImportController extends ApiController
 {
@@ -16,7 +16,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-staff-from-my-unit')->only(['importClient']);
+        $this->middleware('permission:store-staff-from-maybe-no-unit')->only(['importStaffs']);
     }
 
     /**
@@ -24,8 +24,6 @@ class ImportController extends ApiController
      * @return JsonResponse
      */
     public function importStaffs(Request $request){
-
-        $institution = $this->institution();
 
         $request->validate([
             'file' => 'required|file|max:2048|mimes:xls,xlsx',
@@ -40,9 +38,9 @@ class ImportController extends ApiController
 
         $file = $request->file('file')->store('import');
 
-        $myInstitution = $institution->name;
+        $myInstitution = false;
 
-        $unitRequired = true;
+        $unitRequired = false;
 
         $stop_identite_exist = $request->stop_identite_exist;
 

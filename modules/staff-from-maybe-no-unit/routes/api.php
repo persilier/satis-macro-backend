@@ -20,5 +20,7 @@ Route::prefix('maybe/no')->group(function () {
     Route::name('maybe.no.')->group(function () {
         Route::resource('staff', 'Staff\StaffController');
         Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
+        // Route for import excel data to database.
+        Route::post('import-staffs', 'ImportExport\ImportController@importStaffs');
     });
 });

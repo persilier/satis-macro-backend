@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\ImportClient;
+use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 /**
@@ -16,7 +17,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class Client implements ToCollection, WithHeadingRow
 {
-    use Importable, SkipsFailures, ImportClient, IdentiteVerifiedTrait, VerifyUnicity;
+    use Importable, SkipsFailures, ImportClient, ImportIdentite, IdentiteVerifiedTrait, VerifyUnicity;
 
     private $etat; // action for
     private $errors; // array to accumulate errors
@@ -96,6 +97,7 @@ class Client implements ToCollection, WithHeadingRow
                 $verifyAccount = $this->handleAccountVerification($data['account_number'], $data['institution']);
 
                 if (!$verifyAccount['status']) {
+
                     $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                     $this->errors[$key]['conflits']['account_number'] = $verifyAccount['message'];
 

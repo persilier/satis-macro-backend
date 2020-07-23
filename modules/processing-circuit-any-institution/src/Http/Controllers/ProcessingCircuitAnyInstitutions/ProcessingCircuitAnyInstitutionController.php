@@ -9,6 +9,11 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
+
+/**
+ * Class ProcessingCircuitAnyInstitutionController
+ * @package Satis2020\ProcessingCircuitAnyInstitution\Http\Controllers\ProcessingCircuitAnyInstitutions
+ */
 class ProcessingCircuitAnyInstitutionController extends ApiController
 {
     use ProcessingCircuit;
@@ -37,6 +42,7 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
 
     /**
      * Edit the form for creating a new resource.
+     * @param $institutionId
      * @return \Illuminate\Http\Response
      */
     public function edit($institutionId)
@@ -52,9 +58,8 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
      * Update the specified resource in storage.
      *
      * @param Request $request
+     * @param $institutionId
      * @return JsonResponse
-     * @throws ValidationException
-     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request, $institutionId){
 

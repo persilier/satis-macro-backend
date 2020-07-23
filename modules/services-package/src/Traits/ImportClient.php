@@ -21,158 +21,29 @@ use Satis2020\ServicePackage\Rules\NameModelRules;
 trait ImportClient
 {
 
+
     /**
-     * @param $row
-     * @param $keyRow
-     * @param string $separator
      * @return mixed
      */
-    public function explodeValueRow($row, $keyRow, $separator = ' ')
-    {
-        if(array_key_exists($keyRow, $row)) {
-            // put keywords into array
-            $datas = explode($separator, $row[$keyRow]);
-            $i = 0;
-            $values = [];
-            foreach($datas as $data)
-            {
-                $values[$i] = $data;
-                $i++;
-            }
+    public function rules(){
 
-            $row[$keyRow] = $values;
-        }
+        $rules = $this->rulesIdentite();
 
-        return $row;
-    }
-
-
-    /**
-     * @param $row
-     * @param $table
-     * @param $keyRow
-     * @param $column
-     * @return mixed
-     */
-    public function getIds($row, $table, $keyRow, $column)
-    {
-        if(array_key_exists($keyRow, $row)) {
-            // put keywords into array
-            try {
-
-                $lang = app()->getLocale();
-
-                $data = DB::table($table)->whereNull('deleted_at')->get();
-
-                $data = $data->filter(function ($item) use ($row, $column, $keyRow, $lang) {
-
-                    $name = json_decode($item->{$column})->{$lang};
-
-                    if($name === $row[$keyRow])
-                        return $item;
-                })->first()->id;
-
-            } catch (\Exception $exception) {
-
-                $data = null;
-
-            }
-
-            $row[$keyRow] = $data;
-        }
-
-        return $row;
-
-    }
-
-
-    /**
-     * @param $row
-     * @param $keyRow
-     * @param $column
-     * @return mixed
-     */
-    public function getIdInstitution($row, $keyRow, $column)
-    {
-        if(array_key_exists($keyRow, $row)) {
-            // put keywords into array
-            try {
-
-                $data = Institution::where($column, $row[$keyRow])->first()->id;
-
-            } catch (\Exception $exception) {
-
-                $data = null;
-
-            }
-
-            $row[$keyRow] = $data;
-        }
-
-        return $row;
-
-    }
-
-
-    /**
-     * @return array
-     */
-    protected function rules(){
-
-        $rules = [
-            'firstname' => 'required|string',
-            'lastname' => 'required|string',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => [
-                'required', new ExplodeTelephoneRules,
-            ],
-            'email' => [
-                'required', new ExplodeEmailRules,
-            ],
-            'ville' => 'required|string',
-            'account_number' => 'required|string',
-            'account_type' => ['required',
-                new NameModelRules(['table' => 'account_types', 'column'=> 'name']),
-            ],
-            'category_client' => ['required',
-                new NameModelRules(['table' => 'category_clients', 'column'=> 'name']),
-            ],
-            'others' => 'array',
-            'other_attributes' => 'array',
+        $rules['account_number'] = 'required|string';
+        $rules['account_type'] = ['required',
+            new NameModelRules(['table' => 'account_types', 'column'=> 'name']),
         ];
+        $rules['category_client'] = ['required',
+            new NameModelRules(['table' => 'category_clients', 'column'=> 'name']),
+        ];
+        $rules['other_attributes_clients'] = 'array';
 
         if (!$this->myInstitution)
             $rules['institution'] = 'required|exists:institutions,name';
 
         return $rules;
-
     }
 
-    /**
-     * @param $row
-     * @return mixed
-     */
-    protected function mergeMyInstitution($row){
-
-        if(!$this->myInstitution){
-
-            $row['institution'] = $this->myInstitution;
-
-        }
-
-        return $row;
-    }
-
-
-    /**
-     * @param $row
-     * @return mixed
-     */
-    protected function storeIdentite($row)
-    {
-        $store = $this->fillableIdentite($row);
-        return $identite = Identite::create($store);
-    }
 
     /**
      * @param $row
@@ -186,7 +57,7 @@ trait ImportClient
         ){
             $store = [
                 'identites_id' => $identiteId,
-                'others'  => $row['others_clients'],
+                'others'  => $row['other_attributes_clients'],
             ];
 
             $client = Client::create($store);
@@ -235,39 +106,6 @@ trait ImportClient
         return $account = Account::create($store);
     }
 
-
-    /**
-     * @param $row
-     * @return mixed
-     */
-    protected function getIdentite($row){
-
-        $identite = $this->handleInArrayUnicityVerification($row['email'], 'identites', 'email');
-
-        if(!$identite['status']){
-            $identite = $identite['entity'];
-        }
-
-        return $identite;
-    }
-
-
-    /**
-     * @param $row
-     * @return array
-     */
-    protected function fillableIdentite($row){
-
-        return [
-            'firstname' => $row['firstname'],
-            'lastname'  => $row['lastname'],
-            'sexe'      => $row['sexe'],
-            'telephone' => $row['telephone'],
-            'email'     => $row['email'],
-            'ville'     => $row['ville'],
-            'other_attributes' => $row['other_identites'],
-        ];
-    }
 
 
 }

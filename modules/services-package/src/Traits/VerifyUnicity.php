@@ -182,6 +182,16 @@ trait VerifyUnicity
         }
     }
 
+    /**
+     * @param $values
+     * @param $table
+     * @param $column
+     * @param $attribute
+     * @param $idInstitution
+     * @param null $idColumn
+     * @param null $idValue
+     * @return array
+     */
     protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null)
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
@@ -214,6 +224,12 @@ trait VerifyUnicity
     }
 
 
+    /**
+     * @param $number
+     * @param $idInstitution
+     * @param null $accountId
+     * @return array
+     */
     protected function handleAccountVerification($number, $idInstitution, $accountId = null)
     {
         $account = Account::with([

@@ -2,6 +2,8 @@
 
 namespace Satis2020\ReportingClaimAnyInstitution\Http\Controllers\Reporting;
 
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -40,7 +42,8 @@ class ClaimController extends ApiController
 
         if((!$request->has('date_start')) || (!$request->has('date_end'))){
 
-            $request->merge(['date_start' => now()->startOfYear(), 'date_end' =>now()->endOfYear()]);
+            $request->merge(['date_start' => now()->startOfYear(), 'date_end' => now()->endOfYear()]);
+
         }
 
         if($request->has('institution_id')){

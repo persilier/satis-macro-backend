@@ -1,0 +1,202 @@
+<?php
+
+
+namespace Satis2020\ServicePackage\Traits;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Rules\ExplodeEmailRules;
+use Satis2020\ServicePackage\Rules\ExplodeTelephoneRules;
+use Satis2020\ServicePackage\Rules\NameModelRules;
+
+/**
+ * Trait ImportIdentite
+ * @package Satis2020\ServicePackage\Traits
+ */
+trait ImportIdentite
+{
+
+    /**
+     * @param $row
+     * @param $keyRow
+     * @param string $separator
+     * @return mixed
+     */
+    public function explodeValueRow($row, $keyRow, $separator = ' ')
+    {
+        if(array_key_exists($keyRow, $row)) {
+            // put keywords into array
+            $datas = explode($separator, $row[$keyRow]);
+            $i = 0;
+            $values = [];
+            foreach($datas as $data)
+            {
+                $values[$i] = $data;
+                $i++;
+            }
+
+            $row[$keyRow] = $values;
+        }
+
+        return $row;
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function rulesIdentite(){
+
+        $rules = [
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
+            'telephone' => [
+                'required', new ExplodeTelephoneRules,
+            ],
+            'email' => [
+                'required', new ExplodeEmailRules,
+            ],
+            'ville' => 'required|string',
+            //'other_attributes_identites' => 'array',
+        ];
+
+        return $rules;
+
+    }
+
+
+
+    /**
+     * @param $row
+     * @return mixed
+     */
+    protected function mergeMyInstitution($row){
+
+        if(!$this->myInstitution){
+
+            $row['institution'] = $this->myInstitution;
+
+        }
+
+        return $row;
+    }
+
+
+
+
+    /**
+     * @param $row
+     * @param $keyRow
+     * @param $column
+     * @return mixed
+     */
+    public function getIdInstitution($row, $keyRow, $column)
+    {
+        if(array_key_exists($keyRow, $row)) {
+            // put keywords into array
+            try {
+
+                $data = Institution::where($column, $row[$keyRow])->first()->id;
+
+            } catch (\Exception $exception) {
+
+                $data = null;
+
+            }
+
+            $row[$keyRow] = $data;
+        }
+
+        return $row;
+
+    }
+
+
+    /**
+     * @param $row
+     * @param $table
+     * @param $keyRow
+     * @param $column
+     * @return mixed
+     */
+    public function getIds($row, $table, $keyRow, $column)
+    {
+        if(array_key_exists($keyRow, $row)) {
+            // put keywords into array
+            try {
+
+                $lang = app()->getLocale();
+
+                $data = DB::table($table)->whereNull('deleted_at')->get();
+
+                $data = $data->filter(function ($item) use ($row, $column, $keyRow, $lang) {
+
+                    $name = json_decode($item->{$column})->{$lang};
+
+                    if($name === $row[$keyRow])
+                        return $item;
+                })->first()->id;
+
+            } catch (\Exception $exception) {
+
+                $data = null;
+
+            }
+
+            $row[$keyRow] = $data;
+        }
+
+        return $row;
+
+    }
+
+
+    /**
+     * @param $row
+     * @return mixed
+     */
+    protected function getIdentite($row){
+
+        $identite = $this->handleInArrayUnicityVerification($row['email'], 'identites', 'email');
+
+        if(!$identite['status']){
+            $identite = $identite['entity'];
+        }
+
+        return $identite;
+    }
+
+
+    /**
+     * @param $row
+     * @return mixed
+     */
+    protected function storeIdentite($row)
+    {
+        $store = $this->fillableIdentite($row);
+        return $identite = Identite::create($store);
+    }
+
+
+    /**
+     * @param $row
+     * @return array
+     */
+    protected function fillableIdentite($row){
+
+        return [
+            'firstname' => $row['firstname'],
+            'lastname'  => $row['lastname'],
+            'sexe'      => $row['sexe'],
+            'telephone' => $row['telephone'],
+            'email'     => $row['email'],
+            'ville'     => $row['ville'],
+            'other_attributes' => $row['other_attributes_identites'],
+        ];
+    }
+
+
+}

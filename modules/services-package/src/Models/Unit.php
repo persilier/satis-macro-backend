@@ -121,4 +121,5 @@ class Unit extends Model
         return $this->hasMany(Treatment::class, 'responsible_unit_id');
     }
 
+
 }

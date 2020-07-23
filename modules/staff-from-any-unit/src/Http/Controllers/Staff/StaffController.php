@@ -19,6 +19,10 @@ use Satis2020\ServicePackage\Traits\StaffManagement;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
+/**
+ * Class StaffController
+ * @package Satis2020\StaffFromAnyUnit\Http\Controllers\Staff
+ */
 class StaffController extends ApiController
 {
     use VerifyUnicity, Telephone, DataUserNature, StaffManagement, IdentityManagement;

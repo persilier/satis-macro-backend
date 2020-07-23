@@ -11,6 +11,10 @@ use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
+/**
+ * Trait StaffManagement
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait StaffManagement
 {
     /**

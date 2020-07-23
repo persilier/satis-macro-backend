@@ -8,17 +8,21 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Unit;
+
+/**
+ * Trait ProcessingCircuit
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait ProcessingCircuit
 {
 
     /**
-     * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $institutionId | Id institution
      * @return array
-     * @throws CustomException
      */
     protected function getAllProcessingCircuits($institutionId=null)
     {
@@ -26,16 +30,21 @@ trait ProcessingCircuit
 
             $circuits = ClaimCategory::with(['claimObjects.units' => function ($query) use ($institutionId){
                 $query->whereHas('claimObjects', function ($q) use ($institutionId){
-                    $q->where('units.institution_id', $institutionId);
+                    $q->whereRaw('units.institution_id = ?',[$institutionId]);
                 });
             }])->get();
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les circuits de traitements");
         }
+
         return $circuits;
     }
 
+    /**
+     * @param null $institutionId
+     * @return mixed
+     */
     protected function getAllUnits($institutionId = null){
         try {
 
@@ -47,6 +56,12 @@ trait ProcessingCircuit
         return $units;
     }
 
+    /**
+     * @param $request
+     * @param $collection
+     * @param null $institutionId
+     * @return mixed
+     */
     protected function rules($request, $collection, $institutionId = null){
 
         foreach ($request as $claim_object_id => $units_ids) {
@@ -75,7 +90,12 @@ trait ProcessingCircuit
         return $collection;
     }
 
-    protected function detachAttachUnits($collection , $institutionId=null){
+    /**
+     * @param $collection
+     * @param null $institutionId
+     * @return bool
+     */
+    protected function detachAttachUnits($collection , $institutionId = null){
 
         try {
 

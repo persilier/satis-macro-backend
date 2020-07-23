@@ -446,6 +446,7 @@ trait ReportingClaim
         $claims = $this->queryClaimByTreatmentPeriod($institutionId);
 
         if($request->has('date_start') && $request->has('date_end')){
+
             $claims->where('claims.created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
                 ->where('claims.created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
         }
@@ -472,69 +473,29 @@ trait ReportingClaim
         $date_start = Carbon::parse($request->date_start)->startOfDay();
         $date_end = Carbon::parse($request->date_end)->endOfDay();
 
-        $results['months']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 month');
-        $results['months']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 month');
+        $results['months']['claims_received'] =  $this->rangerDate($claims_requests, $this->rangerPerMonths($date_start, $date_end));
+        $results['months']['claims_resolved'] =  $this->rangerDate($claims_resolues, $this->rangerPerMonths($date_start, $date_end));
 
-        $results['weeks']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 week');
-        $results['weeks']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 week');
+        $results['weeks']['claims_received'] =  $this->rangerDate($claims_requests, $this->rangerPerWeeks($date_start, $date_end));
+        $results['weeks']['claims_resolved'] =  $this->rangerDate($claims_resolues, $this->rangerPerWeeks($date_start, $date_end));
 
-        $results['days']['claims_received'] =  $this->rangerDate($claims_requests, $date_start, $date_end, '1 day');
-        $results['days']['claims_resolved'] =  $this->rangerDate($claims_resolues, $date_start, $date_end, '1 day');
+        $results['days']['claims_received'] =  $this->rangerDate($claims_requests, $this->rangerPerDays($date_start, $date_end));
+        $results['days']['claims_resolved'] =  $this->rangerDate($claims_resolues, $this->rangerPerDays($date_start, $date_end));
 
         return $results;
 
     }
 
     /**
-     * @param $period
-     * @param $value
-     * @return string
-     */
-    protected function formatRangerDatePeriod($period, $value){
-        if($period === '1 month'){
-            $d = $value->format('Y-m');
-        }
-
-        if($period === '1 week'){
-            $d = $value->format('Y-m-d').' - '.$value->endOfWeek()->format('Y-m-d');
-        }
-
-        if($period === '1 day'){
-            $d = $value->format('Y-m-d');
-        }
-
-        return $d;
-    }
-
-
-    /**
      * @param $claims
-     * @param $date_start
-     * @param $date_end
-     * @param $period
+     * @param $ranger
      * @return mixed
      */
-    protected function rangerDate($claims, $date_start, $date_end, $period){
-
-        $ranger = CarbonPeriod::create($date_start, $period, $date_end);
+    protected function rangerDate($claims, $ranger){
 
         foreach ($ranger as  $value){
 
-            $d = $this->formatRangerDatePeriod($period, $value);
-
-            if($period === '1 month'){
-                $nbre[$d] = $this->grapheMonths($claims, $value, $period);
-            }
-
-            if($period === '1 week'){
-
-                $nbre[$d] = $this->grapheMonths($claims, $value, $period);
-            }
-
-            if($period === '1 day'){
-
-                $nbre[$d] = $this->grapheMonths($claims, $value, $period);
-            }
+             $nbre[$value['text']] = $this->graphes($claims, $value);
 
         }
 
@@ -545,26 +506,135 @@ trait ReportingClaim
     /**
      * @param $claims
      * @param $value
-     * @param $period
      * @return mixed
      */
-    protected function grapheMonths($claims, $value, $period){
+    protected function graphes($claims, $value){
 
-        return $claims->filter(function ($item) use ($value, $period){
+        return $claims->filter(function ($item) use ($value){
 
-            if($period === '1 month'){
-                return $item->created_at >= $value->startOfMonth() && $item->created_at <= $value->endOfMonth();
-            }
-
-            if($period === '1 week'){
-                return $item->created_at >= $value->startOfWeek() && $item->created_at <= $value->endOfWeek();
-            }
-
-            if($period === '1 day'){
-                return $item->created_at >= $value->startOfDay() && $item->created_at <= $value->endOfDay();
-            }
+            if($item->created_at >= $value['period_start'] && $item->created_at <= $value['period_end'])
+                return $item;
 
         })->count();
+    }
+
+    /**
+     * @param $nbreDay
+     * @param $date_start
+     * @param $date_end
+     * @return array
+     */
+    protected function rangerPerDays($date_start, $date_end){
+
+        $nbreDays = $date_start->copy()->startOfDay()->diffInDays($date_end->copy()->endOfDay());
+
+        $rangerDays = [];
+
+        for($n = 0; $n <= $nbreDays; $n++){
+
+            $rangerDays[$n]['text'] = $date_start->copy()->startOfDay()->addDays($n)->format('Y-m-d');
+            $rangerDays[$n]['period_start'] = $date_start->copy()->startOfDay()->addDays($n);
+            $rangerDays[$n]['period_end'] = $date_start->copy()->endOfDay()->addDays($n);
+
+        }
+
+        return $rangerDays;
+    }
+
+    /**
+     * @param $date_start
+     * @param $date_end
+     * @return array
+     */
+    protected function rangerPerWeeks($date_start, $date_end){
+
+        $diffFirstDayWeek = $date_start->copy()->startOfDay()->diffInDays($date_start->copy()->startOfWeek());
+        $diffEndDayWeek = $date_end->copy()->endOfWeek()->diffInDays($date_end->copy()->endOfDay());
+        $nbreWeeks = $date_end->copy()->endOfWeek()->diffInWeeks($date_start->copy()->startOfWeek());
+
+        $start = $date_start->copy()->startOfWeek();
+        $end = $date_start->copy()->endOfWeek();
+
+        $rangerWeeks = [];
+
+        $dj = 0;
+        $j = 7;
+        $m = 1;
+
+        for($n = 0; $n <= $nbreWeeks; $n++){
+
+
+            $rangerWeeks[$n]['text'] = $date_start->copy()->startOfWeek()->addDays($dj)->format('Y-m-d').' - '.$date_start->copy()->addDays(($dj))->endOfWeek()->format('Y-m-d');
+
+            if(($n === 0)){
+
+                $rangerWeeks[$n]['period_start'] = $start->copy()->addDays($diffFirstDayWeek);
+
+            }else{
+
+                $rangerWeeks[$n]['period_start'] = $date_start->copy()->startOfWeek()->addDays($dj);
+            }
+
+            if($n === $nbreWeeks){
+
+                $rangerWeeks[$n]['period_end'] = $date_end->copy()->endOfWeek()->subDays($diffEndDayWeek);
+
+            }else{
+
+                $rangerWeeks[$n]['period_end'] = $end->copy()->addDays($dj);
+            }
+
+            $dj = ($j * $m);
+            $m++;
+        }
+
+        return $rangerWeeks;
+    }
+
+
+    /**
+     * @param $date_start
+     * @param $date_end
+     * @return array
+     */
+    protected function rangerPerMonths($date_start, $date_end){
+
+        $diffFirstDayMonth = $date_start->copy()->startOfDay()->diffInDays($date_start->copy()->startOfMonth());
+        $diffEndDayMonth = $date_end->copy()->endOfMonth()->diffInDays($date_end->copy()->endOfDay());
+        $nbreMonth = $date_end->copy()->endOfMonth()->diffInMonths($date_start->copy()->startOfMonth());
+
+        $start = $date_start->copy()->startOfMonth();
+        $end = $date_start->copy()->endOfMonth();
+
+        $rangerMonths = [];
+
+        $dj = 0;
+
+        for($n = 0; $n <= $nbreMonth; $n++){
+
+            $rangerMonths[$n]['text'] = $date_start->copy()->startOfMonth()->addMonths($n)->format('Y-m');
+
+            if(($n === 0)){
+
+                $rangerMonths[$n]['period_start'] = $start->copy()->addDays($diffFirstDayMonth);
+
+            }else{
+
+                $rangerMonths[$n]['period_start'] = $date_start->copy()->startOfMonth()->addMonths($dj);
+            }
+
+            if($n === $nbreMonth){
+
+                $rangerMonths[$n]['period_end'] = $date_end->copy()->endOfMonth()->subDays($diffEndDayMonth);
+
+            }else{
+
+                $rangerMonths[$n]['period_end'] = $end->copy()->addMonths($dj);
+            }
+
+        }
+
+        return $rangerMonths;
     }
 
 
