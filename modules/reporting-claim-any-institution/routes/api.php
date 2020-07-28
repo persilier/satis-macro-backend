@@ -18,5 +18,5 @@ Route::prefix('/any')->name('any.')->group(function () {
     Route::get('/reporting-claim', 'Reporting\ClaimController@index')->name('reporting-claim.index');
 
     // Export pdf
-    Route::get('/reporting-claim/export-pdf', 'Export\ExportController@pdfExport')->name('reporting-claim.pdfExport');
+    Route::post('/reporting-claim/export-pdf', 'Export\ExportController@pdfExport')->name('reporting-claim.pdfExport');
 });
