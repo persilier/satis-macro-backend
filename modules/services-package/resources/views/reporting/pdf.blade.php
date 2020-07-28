@@ -239,11 +239,11 @@
             <div>
                 <div style="margin-bottom: 1em">&nbsp;</div>
                 <div class="title_tableau" style="margin-left: 0.2em; font-weight: bold">Utilisation des canaux de déclaration des réclamations </div>
-                <div style="margin-top: 2em">
-                    <div style="display: inline-block; width:70%; text-align: right; vertical-align: top">
-                        <img src="{{ $chanelGraph['image'] }}" alt="logo" style="width: 80%">
+                <div style="margin-top: 2em; margin-left: 2em">
+                    <div style="display: inline-block; text-align: right; vertical-align: top;">
+                        <img src="{{ $chanelGraph['image'] }}" alt="logo">
                     </div>
-                    <div style="display: inline-block; width: 30%;margin-left: 0.2em; padding: auto;vertical-align: top">
+                    <div style="display: inline-block;margin-left: 0.2em;vertical-align: top">
                         @for($n = 0; $n < count($chanelGraph['libelle']); $n++)
                             <div> <span style="background-color:{{ $chanelGraph['color'][$n] }}" class="dot"></span>
                                 <span style="font-size: 8px; font-weight: bold;">{{ $chanelGraph['libelle'][$n] }}</span>

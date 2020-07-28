@@ -712,7 +712,7 @@ trait ReportingClaim
         return [
             'libelle' => $libelle,
             'color' => $color,
-            'image' => $this->getFileImage($image)
+            'image' => $image
         ];
     }
 
@@ -726,7 +726,7 @@ trait ReportingClaim
 
         return [
             'legend' => $legend,
-            'image' => $this->getFileImage($image)
+            'image' => $image
         ];
     }
 
@@ -747,18 +747,19 @@ trait ReportingClaim
 
             $logo = $institution->logo;
         }
-         return  [
-             'statistiqueObject' => $data['statistiqueObject'],
-             'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
-             'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
-             'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
-             'chanelGraph' => $this->chanelGraphExport($data),
-             'evolutionClaim' => $this->evolutionClaimExport($data),
-             'periode' => $data['filter'],
-             'logo' => $logo,
-             'color_table_header' => '#7F9CF5',
-             'lang' => $lang
-         ];
+
+        return  [
+         'statistiqueObject' => $data['statistiqueObject'],
+         'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
+         'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
+         'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
+         'chanelGraph' => $this->chanelGraphExport($data),
+         'evolutionClaim' => $this->evolutionClaimExport($data),
+         'periode' => $data['filter'],
+         'logo' => $logo,
+         'color_table_header' => '#7F9CF5',
+         'lang' => $lang
+        ];
     }
 
 

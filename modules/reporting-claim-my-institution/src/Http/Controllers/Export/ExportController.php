@@ -35,14 +35,14 @@ class ExportController extends ApiController
     public function pdfExport(Request $request)
     {
         $rules = [
-            'data_export' => 'required'
+            'data_export' => 'required|json'
         ];
 
         $this->validate($request, $rules);
 
         $institution = $this->institution();
 
-        $data = json_decode($request->data_export);
+        $data = $request->data_export;
 
         $lang = app()->getLocale();
 
@@ -51,6 +51,7 @@ class ExportController extends ApiController
         $file = 'assets/reporting/Reporting-'.$institution->acronyme.'-'.date("Y-m-d H:i:s").'.pdf';
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
+
         return $pdf->download($file);
     }
 
