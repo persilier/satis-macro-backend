@@ -13,6 +13,7 @@ use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Institution;
 
 
 /**
@@ -655,6 +656,109 @@ trait ReportingClaim
         }
 
         return $data;
+    }
+
+
+    /**
+     * @param $data
+     * @param $lang
+     * @return array
+     */
+    protected function statistiqueChannelExport($data, $lang){
+
+        $data = $data['statistiqueChannel'];
+
+        foreach ($data as $key => $value){
+
+            $libelle[$key] = $value['name'][$lang];
+            $total_claim[$key] = $value['total_claim'];
+            $total_pourcentage[$key] = $value['pourcentage'];
+
+        }
+
+        return [
+            'name' => $libelle,
+            'total_claim' => $total_claim,
+            'total_pourcentage' => $total_pourcentage
+        ];
+    }
+
+    /**
+     * @param $image
+     * @return string
+     */
+    protected function getFileImage($image){
+
+        $fileName = $image->file->extension();
+
+        $image->file->move(public_path('assets/reporting/images'), $fileName);
+
+        return asset('assets/reporting/images/'.$fileName);
+
+    }
+
+    protected function chanelGraphExport($data){
+
+        $legend = $data['chanelGraph']['legend'];
+        $image = $data['chanelGraph']['image'];
+
+        foreach ($legend as $key => $value){
+
+            $libelle[] = $key;
+            $color[] = $value;
+
+        }
+
+        return [
+            'libelle' => $libelle,
+            'color' => $color,
+            'image' => $this->getFileImage($image)
+        ];
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    protected function evolutionClaimExport($data){
+        $legend = $data['evolutionClaim']['legend'];
+        $image = $data['evolutionClaim']['image'];
+
+        return [
+            'legend' => $legend,
+            'image' => $this->getFileImage($image)
+        ];
+    }
+
+    protected function dataPdf($data, $lang, $institution, $myInstitution = false){
+
+        if($myInstitution){
+
+            if($institution->id !== $data['filter']['institution']){
+
+                throw new CustomException("Vous n'êtes pas autorité à accéder au reporting de cette insitution.");
+            }
+        }
+
+        if(is_null($institution->logo)){
+
+            $logo = asset('assets/reporting/images/regerg65_1588865981.png');
+        }else{
+
+            $logo = $institution->logo;
+        }
+         return  [
+             'statistiqueObject' => $data['statistiqueObject'],
+             'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
+             'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
+             'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
+             'chanelGraph' => $this->chanelGraphExport($data),
+             'evolutionClaim' => $this->evolutionClaimExport($data),
+             'periode' => $data['filter'],
+             'logo' => $logo,
+             'color_table_header' => '#7F9CF5',
+             'lang' => $lang
+         ];
     }
 
 

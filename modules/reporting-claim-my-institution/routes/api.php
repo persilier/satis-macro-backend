@@ -16,4 +16,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/reporting-claim', 'Reporting\ClaimController@index')->name('reporting-claim.index');
+
+    // Export pdf
+    Route::get('/reporting-claim/export-pdf', 'Export\ExportController@pdfExport')->name('reporting-claim.pdfExport');
 });

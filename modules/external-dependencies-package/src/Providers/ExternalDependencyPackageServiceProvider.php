@@ -3,6 +3,10 @@
 namespace Satis2020\ExternalDependency\Providers;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class ExternalDependencyPackageServiceProvider
+ * @package Satis2020\ExternalDependency\Providers
+ */
 class ExternalDependencyPackageServiceProvider extends ServiceProvider
 {
     /**
@@ -43,6 +47,7 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
         $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
         $this->app->register(\Cviebrock\EloquentSluggable\ServiceProvider::class);
         $this->app->register(\Maatwebsite\Excel\ExcelServiceProvider::class);
+        $this->app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 
     }
 
@@ -53,5 +58,6 @@ class ExternalDependencyPackageServiceProvider extends ServiceProvider
     {
         $this->app->alias('cache', \Illuminate\Cache\CacheManager::class);
         $this->app->alias('Excel', \Maatwebsite\Excel\Facades\Excel::class);
+        $this->app->alias('PDF', \Barryvdh\DomPDF\Facade::class);
     }
 }
