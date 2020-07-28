@@ -106,6 +106,8 @@ class DiscussionMessageController extends ApiController
 
         }
 
+        $message->load('files');
+
         return response()->json($message, 201);
 
     }

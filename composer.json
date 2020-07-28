@@ -41,6 +41,7 @@
     "satis2020/monitoring-claim-my-institution": "^1.0",
     "satis2020/my-institution": "^1.0",
     "satis2020/my-institution-unit": "^1.0",
+    "satis2020/notification": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
     "satis2020/position": "^1.0",
     "satis2020/processing-circuit-any-institution": "^1.0",
@@ -488,6 +489,13 @@
     {
       "type": "path",
       "url": "modules/discussion/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/notification/",
       "options": {
         "symlink": true
       }

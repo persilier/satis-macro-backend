@@ -44,8 +44,16 @@ class Metadata extends Model
      */
     protected $hidden = [];
 
-    public static function getRoles() {
-        // ... you business logic.
+    /**
+     * Scope a query to only include metadata of a given name.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param $name
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfName($query, $name)
+    {
+        return $query->where('name', $name);
     }
 
 }

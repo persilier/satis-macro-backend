@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\StaffFromMyUnit\Http\Controllers\ImportExport;
+namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
