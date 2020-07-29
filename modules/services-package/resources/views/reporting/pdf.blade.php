@@ -60,6 +60,11 @@
                 color: white;
             }
 
+            .title-center{
+                text-align: center;
+                font-weight: bold;
+            }
+
 
         </style>
 
@@ -74,7 +79,7 @@
         <div style="margin-bottom: .3em;border-bottom: 1px solid #F3F3F3 ">&nbsp;</div>
 
         @if($statistiqueObject['data'])
-            <div class="title_tableau">Statistiques des types de réclamations collectées</div>
+            <div class="title_tableau title-center" >Statistiques des types de réclamations collectées</div>
             <div class="title_tableau">Légende: R. = RÉCLAMATIONS</div>
             <table class="table">
                 <thead style="background: {{ $color_table_header }};font-size: 0.398em">
@@ -141,7 +146,7 @@
         @endif
         @if($statistiqueQualificationPeriod)
             <div style="margin-bottom: 1em">&nbsp;</div>
-            <div class="title_tableau">Délai de qualification des réclamations </div>
+            <div class="title_tableau title-center" >Délai de qualification des réclamations </div>
             <table class="table">
                 <thead style="background: {{ $color_table_header }};font-size: 0.4em">
                     <tr>
@@ -176,7 +181,7 @@
 
         @if($statistiqueTreatmentPeriod)
             <div style="margin-top: 1em">&nbsp;</div>
-            <div class="title_tableau">Délai de traitement des réclamations </div>
+            <div class="title_tableau title-center">Délai de traitement des réclamations </div>
             <table class="table">
                 <thead style="background: {{ $color_table_header }};font-size: 0.4em">
                     <tr>
@@ -211,7 +216,7 @@
 
         @if($statistiqueChannel)
             <div style="margin-bottom: 1em">&nbsp;</div>
-            <div class="title_tableau">Utilisation des canaux de déclaration des réclamations </div>
+            <div class="title_tableau title-center">Utilisation des canaux de déclaration des réclamations </div>
             <table class="table">
                 <thead style="background: {{ $color_table_header }};font-size: 0.4em">
                     <tr>
@@ -236,14 +241,15 @@
         @endif
 
         @if($chanelGraph)
-            <div>
+            <div style="display: block">
                 <div style="margin-bottom: 1em">&nbsp;</div>
-                <div class="title_tableau" style="margin-left: 0.2em; font-weight: bold">Utilisation des canaux de déclaration des réclamations </div>
-                <div style="margin-top: 2em; margin-left: 2em">
-                    <div style="display: inline-block; text-align: right; vertical-align: top;">
-                        <img src="{{ $chanelGraph['image'] }}" alt="logo">
+                <div class="title_tableau title-center" >Utilisation des canaux de déclaration des réclamations </div>
+                <div class="row" style="padding-top: 1em">
+                    <div class="col-xs-7">
+                        <img src="{{ $chanelGraph['image'] }}" alt="logo" style="margin-left: 10em">
                     </div>
-                    <div style="display: inline-block;margin-left: 0.2em;vertical-align: top">
+
+                    <div class="col-xs-4" style="padding-top: 1em">
                         @for($n = 0; $n < count($chanelGraph['libelle']); $n++)
                             <div> <span style="background-color:{{ $chanelGraph['color'][$n] }}" class="dot"></span>
                                 <span style="font-size: 8px; font-weight: bold;">{{ $chanelGraph['libelle'][$n] }}</span>
@@ -251,7 +257,7 @@
                         @endfor
                     </div>
                 </div>
-                <div style="text-align: center; font-size: 10px; font-weight: bold; margin-top: 1em">
+                <div style="text-align: center; font-size: 10px; margin-top: 1em; text-decoration: underline">
                     Pourcentage d'utilisation des canneaux
                 </div>
             </div>
@@ -260,18 +266,19 @@
         @if($evolutionClaim)
             <div style="border-bottom: 1px solid #F3F3F3; padding-bottom: 2em">
                 <div style="margin-bottom: 1em">&nbsp;</div>
-                <div class="title_tableau" style="margin-left: 0.2em; font-weight: bold">Evolution des réclamations </div>
-                <div style="margin-top: 2em">
-                    <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="width: 100%">
-                    <div style="text-align: center;">
-                         <span style="background-color:{{ $evolutionClaim['legend']['claims_received'] }}" class="dot"></span>
-                        <span style="font-size: 11px;display: inline-block; margin-top: 1px; margin-right: .2em">Réclamations reçus</span>
-                        <span style="background-color:{{ $evolutionClaim['legend']['claims_resolved'] }}" class="dot"></span>
-                        <span style="font-size: 11px;display: inline-block; margin-top: 1px">Réclamations résolues</span>
-
+                <div class="title_tableau title-center">Evolution des réclamations par @if($evolutionClaim['type']==='months') mois @elseif($evolutionClaim['type']==='weeks') semaines @else jours @endif </div>
+                <div class="row" style="padding-top: 1em">
+                    <div class="col-xs-12">
+                        <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="width: 100%">
                     </div>
                 </div>
-                <div style="text-align: center; font-size: 10px; font-weight: bold; margin-top: 2em">
+                <div style="margin-left: 15em; margin-right: 15em">
+                    <span style="background-color:{{ $evolutionClaim['legend']['claims_received'] }}" class="dot"></span>
+                    <span style="font-size: 11px;display: inline-block; margin-top: 1px; margin-right: .2em">Réclamations reçus</span>
+                    <span style="background-color:{{ $evolutionClaim['legend']['claims_resolved'] }}" class="dot"></span>
+                    <span style="font-size: 11px;display: inline-block; margin-top: 1px">Réclamations résolues</span>
+                </div>
+                <div style="text-align: center; font-size: 10px; margin-top: 2em; text-decoration: underline">
                     Evolution des réclamations
                 </div>
             </div>

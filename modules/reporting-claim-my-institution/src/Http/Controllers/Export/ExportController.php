@@ -51,9 +51,7 @@ class ExportController extends ApiController
         $file = 'Reporting_'.time().'.pdf';
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
-        $pdf->save($file);
-        $file = public_path().'/'.$file;
-        return response()->download($file);
+        return $pdf->download($file);
     }
 
 

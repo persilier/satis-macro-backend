@@ -723,10 +723,12 @@ trait ReportingClaim
     protected function evolutionClaimExport($data){
         $legend = $data['evolutionClaim']['legend'];
         $image = $data['evolutionClaim']['image'];
+        $type = $data['evolutionClaim']['filter'];
 
         return [
             'legend' => $legend,
-            'image' => $image
+            'image' => $image,
+            'type_graphe' => $type
         ];
     }
 
@@ -749,24 +751,32 @@ trait ReportingClaim
 
         if(is_null($institution->logo)){
 
-            $logo = asset('assets/reporting/images/regerg65_1588865981.png');
+            $logo = asset('assets/reporting/images/satisLogo.png');
+
         }else{
 
             $logo = $institution->logo;
         }
 
         return  [
-         'statistiqueObject' => $data['statistiqueObject'],
-         'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
-         'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
-         'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
-         'chanelGraph' => $this->chanelGraphExport($data),
-         'evolutionClaim' => $this->evolutionClaimExport($data),
-         'periode' => $data['filter'],
-         'logo' => $logo,
-         'color_table_header' => '#7F9CF5',
-         'lang' => $lang
+             'statistiqueObject' => $data['statistiqueObject'],
+             'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
+             'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
+             'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
+             'chanelGraph' => $this->chanelGraphExport($data),
+             'evolutionClaim' => $this->evolutionClaimExport($data),
+             'periode' => $this->periodeFormat($data['filter']),
+             'logo' => $logo,
+             'color_table_header' => $data['headeBackground'],
+             'lang' => $lang
         ];
+    }
+
+    protected function periodeFormat($data){
+
+        $data['startDate'] = ($data['startDate']==="") ? now()->startOfYear()->translatedFormat('l, jS F Y') : Carbon::parse($data['startDate'])->startOfDay()->translatedFormat('l, jS F Y');
+        $data['endDate'] = ($data['endDate']==="") ? now()->endOfYear()->translatedFormat('l, jS F Y')  : Carbon::parse($data['endDate'])->endOfDay()->translatedFormat('l, jS F Y');
+        return $data;
     }
 
 
