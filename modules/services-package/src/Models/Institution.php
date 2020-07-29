@@ -114,4 +114,13 @@ class Institution extends Model
         return $this->hasMany(Claim::class, 'institution_targeted_id');
     }
 
+    /**
+     * Get the institutionMessageApi record associated with the institution.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function institutionMessageApi()
+    {
+        return $this->hasOne(InstitutionMessageApi::class);
+    }
+
 }
