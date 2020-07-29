@@ -266,7 +266,7 @@
         @if($evolutionClaim)
             <div style="border-bottom: 1px solid #F3F3F3; padding-bottom: 2em">
                 <div style="margin-bottom: 1em">&nbsp;</div>
-                <div class="title_tableau title-center">Evolution des réclamations par @if($evolutionClaim['type']==='months') mois @elseif($evolutionClaim['type']==='weeks') semaines @else jours @endif </div>
+                <div class="title_tableau title-center">Evolution des réclamations par @if($evolutionClaim['type_graphe']==='months') mois @elseif($evolutionClaim['type_graphe']==='weeks') semaines @else jours @endif </div>
                 <div class="row" style="padding-top: 1em">
                     <div class="col-xs-12">
                         <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="width: 100%">
