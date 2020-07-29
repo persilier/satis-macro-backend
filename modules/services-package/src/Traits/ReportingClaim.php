@@ -730,6 +730,13 @@ trait ReportingClaim
         ];
     }
 
+    /**
+     * @param $data
+     * @param $lang
+     * @param $institution
+     * @param bool $myInstitution
+     * @return array
+     */
     protected function dataPdf($data, $lang, $institution, $myInstitution = false){
 
         if($myInstitution){

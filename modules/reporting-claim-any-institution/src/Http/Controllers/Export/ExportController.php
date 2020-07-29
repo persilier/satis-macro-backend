@@ -29,8 +29,8 @@ class ExportController extends ApiController
     {
         parent::__construct();
 
-        //$this->middleware('auth:api');
-        //$this->middleware('permission:list-reporting-claim-any-institution')->only(['index']);
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-reporting-claim-any-institution')->only(['index']);
     }
 
 
@@ -55,18 +55,14 @@ class ExportController extends ApiController
 
         $data = view('ServicePackage::reporting.pdf',$this->dataPdf($data, $lang, $institution))->render();
 
-        $file = 'Reporting-'.$institution->slug.'-'.date("Y-m-d H:i:s").'.pdf';
+        $file = 'Reporting_'.time().'.pdf';
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
-
-        $pdf->save('stored_file.pdf');
-
-        $path = public_path('stored_file.pdf');
-
-        return response()->download($path, 'file.pdf', ['Content-Type' => 'application/pdf']);
-
-        //return $pdf->download($file);
+        $pdf->save($file);
+        $file = public_path().'/'.$file;
+        return response()->download($file);
     }
+
 
 
 }

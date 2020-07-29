@@ -48,11 +48,12 @@ class ExportController extends ApiController
 
         $data = view('ServicePackage::reporting.pdf',$this->dataPdf($data, $lang, $institution, true))->render();
 
-        $file = 'assets/reporting/Reporting-'.$institution->acronyme.'-'.date("Y-m-d H:i:s").'.pdf';
+        $file = 'Reporting_'.time().'.pdf';
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
-
-        return $pdf->download($file);
+        $pdf->save($file);
+        $file = public_path().'/'.$file;
+        return response()->download($file);
     }
 
 
