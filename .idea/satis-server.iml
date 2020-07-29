@@ -101,6 +101,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/dashboard" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/discussion" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/message-api" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/monitoring-claim-any-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/monitoring-claim-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution" />
