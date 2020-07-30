@@ -4,6 +4,8 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use ReflectionClass;
 use Satis2020\ServicePackage\MessageApiMethod;
 
@@ -34,6 +36,28 @@ trait MessageApi
         )
             ->pluck('name')
             ->all();
+    }
+
+    /**
+     * @param $rules
+     * @param $request
+     * @return array
+     */
+    protected function getRules($rules, $request)
+    {
+        try {
+            $messageApi = \Satis2020\ServicePackage\Models\MessageApi::findOrFail($request->message_api_id);
+
+            foreach ($messageApi->params as $param) {
+                $rules['params.' . $param] = 'required';
+            }
+
+            $rulesFiltered = Arr::except($rules, ['params.to', 'params.text']);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $rulesFiltered = $rules;
+        }
+
+        return $rulesFiltered;
     }
 
 }

@@ -10,9 +10,8 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\InstitutionMessageApi;
 use Satis2020\ServicePackage\Models\MessageApi;
 
-class InstitutionMessageApiController extends ApiController
+class MyInstitutionMessageApiController extends ApiController
 {
-
     use \Satis2020\ServicePackage\Traits\MessageApi;
 
     public function __construct()
@@ -21,16 +20,18 @@ class InstitutionMessageApiController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:update-institution-message-api')->only(['create', 'store']);
+        $this->middleware('permission:update-my-institution-message-api')->only(['create', 'store']);
     }
 
     /**
      * Edit the form for creating a new resource.
      * @param Institution $institution
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function create(Institution $institution)
+    public function create()
     {
+        $institution = $this->institution();
         $institution->load(['institutionMessageApi.messageApi']);
         return response()->json([
             'institutionMessageApi' => $institution->institutionMessageApi,
@@ -45,12 +46,15 @@ class InstitutionMessageApiController extends ApiController
      * @param Institution $institution
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function store(Request $request, Institution $institution)
+    public function store(Request $request)
     {
         $rules = ['message_api_id' => 'required|exists:message_apis,id', 'params' => 'required|array'];
 
         $this->validate($request, $this->getRules($rules, $request));
+
+        $institution = $this->institution();
 
         $institutionMessageApi = InstitutionMessageApi::updateOrCreate(
             ['institution_id' => $institution->id],
