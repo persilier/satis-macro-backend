@@ -19,7 +19,9 @@
         "laravel/passport": "^8.4",
         "cviebrock/eloquent-sluggable": "^7.0",
         "maatwebsite/excel": "^3.1",
-        "barryvdh/laravel-dompdf": "^0.8"
+        "barryvdh/laravel-dompdf": "^0.8",
+        "beyondcode/laravel-websockets": "^1.4",
+        "pusher/pusher-php-server": "^4.1"
     },
     "require-dev": {
     },

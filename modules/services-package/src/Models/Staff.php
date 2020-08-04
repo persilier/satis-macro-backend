@@ -24,7 +24,7 @@ class Staff extends Model
      *
      * @var array
      */
-    protected $casts = ['others' => 'json'];
+    protected $casts = ['others' => 'json', 'feedback_preferred_channels' => 'array'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -39,7 +39,7 @@ class Staff extends Model
      * @var array
      */
     protected $fillable = [
-        'identite_id', 'position_id', 'unit_id', 'others', 'institution_id'
+        'identite_id', 'position_id', 'unit_id', 'others', 'institution_id', 'feedback_preferred_channels'
     ];
 
     /**

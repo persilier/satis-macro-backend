@@ -11,6 +11,8 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
@@ -22,6 +24,9 @@ use Faker\Factory as Faker;
 
 trait CreateClaim
 {
+
+    use Notification;
+
     protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true, $update = false)
     {
         $data = [
@@ -157,6 +162,13 @@ trait CreateClaim
     {
         $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
         $this->uploadAttachments($request, $claim);
+
+        // send notification to claimer
+        $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+
+        // send notification to pilot
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+
         return $claim;
     }
 

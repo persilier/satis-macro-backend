@@ -19,7 +19,7 @@ class MessageApiMethod
      * @param $api
      * @return mixed
      */
-    public function toOceanicsms($user, $password, $from, $to, $text, $api)
+    static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
 
         return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
