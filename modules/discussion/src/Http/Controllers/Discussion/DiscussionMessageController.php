@@ -3,12 +3,14 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\Message;
+use Satis2020\ServicePackage\Notifications\PostDiscussionMessage;
 use Satis2020\ServicePackage\Rules\MessageBelongsToDiscussionRules;
 use Satis2020\ServicePackage\Rules\MessageIsPostedByStaffRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
@@ -48,7 +50,7 @@ class DiscussionMessageController extends ApiController
 
         $discussion->load('messages');
 
-        return response()->json(Message::with('parent', 'files', 'postedBy.identite')
+        return response()->json(Message::with('parent.postedBy.identite', 'files', 'postedBy.identite')
             ->where('discussion_id', $discussion->id)
             ->orderByDesc('created_at')
             ->get(), 200);
@@ -105,6 +107,9 @@ class DiscussionMessageController extends ApiController
             }
 
         }
+
+        Notification::send($this->getStaffIdentities($discussion->staff->pluck('id')->all(), [$this->staff()->id])
+            , new PostDiscussionMessage($message));
 
         $message->load('files');
 

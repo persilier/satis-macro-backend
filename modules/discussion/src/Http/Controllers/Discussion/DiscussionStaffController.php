@@ -3,10 +3,12 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
 use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
@@ -15,7 +17,7 @@ use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
 
     public function __construct()
     {
@@ -106,6 +108,8 @@ class DiscussionStaffController extends ApiController
         $this->validate($request, $rules);
 
         $discussion->staff()->attach($request->staff_id);
+
+        Notification::send($this->getStaffIdentities($request->staff_id), new AddContributorToDiscussion($discussion));
 
         return response()->json($discussion->staff, 201);
     }

@@ -61,7 +61,7 @@ class MessageApiController extends ApiController
     {
 
         $rules = [
-            'name' => ['required', 'unique:message_apis,name'],
+            'name' => "required|unique:message_apis,name,NULL,NULL,deleted_at,NULL",
             'method' => ['required', new MessageApiMethodRules()]
         ];
 
@@ -112,7 +112,7 @@ class MessageApiController extends ApiController
     public function update(Request $request, MessageApi $messageApi)
     {
         $rules = [
-            'name' => ['required', Rule::unique('message_apis')->ignore($messageApi->id)],
+            'name' => "required|unique:message_apis,name,{$messageApi->id},id,deleted_at,NULL",
             'method' => ['required', new MessageApiMethodRules($messageApi->method)]
         ];
 

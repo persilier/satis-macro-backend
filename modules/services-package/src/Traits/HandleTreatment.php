@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Models\Treatment;
+use Satis2020\ServicePackage\Notifications\TransferredToUnit;
 
 trait HandleTreatment
 {
@@ -26,6 +27,9 @@ trait HandleTreatment
         $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
         $activeTreatment->update(['transferred_to_unit_at' => Carbon::now(), 'responsible_unit_id' => $request->unit_id]);
         $claim->update(['status' => 'transferred_to_unit']);
+
+        \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
+
         return $claim;
     }
 

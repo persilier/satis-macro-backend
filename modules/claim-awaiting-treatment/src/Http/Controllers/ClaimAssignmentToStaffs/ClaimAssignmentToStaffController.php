@@ -12,7 +12,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Traits\Notification;
 
 /**
  * Class ClaimAssignmentToStaffController
@@ -35,6 +37,7 @@ class ClaimAssignmentToStaffController extends ApiController
 
     /**
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -54,6 +57,7 @@ class ClaimAssignmentToStaffController extends ApiController
      * @param Claim $claim
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function show($claim)
     {
@@ -69,6 +73,8 @@ class ClaimAssignmentToStaffController extends ApiController
      * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     protected function treatmentClaim(Request $request, $claim){
@@ -90,6 +96,8 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update([ 'status' => 'treated']);
 
+        $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+
         return response()->json($claim, 200);
 
     }
@@ -99,6 +107,8 @@ class ClaimAssignmentToStaffController extends ApiController
      * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     protected function unfoundedClaim(Request $request, $claim){
@@ -113,6 +123,8 @@ class ClaimAssignmentToStaffController extends ApiController
         $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
 
         $claim->update([ 'status' => 'treated']);
+
+        $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
 
         return response()->json($claim, 200);
 

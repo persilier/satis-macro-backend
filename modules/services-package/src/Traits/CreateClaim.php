@@ -25,8 +25,6 @@ use Faker\Factory as Faker;
 trait CreateClaim
 {
 
-    use Notification;
-
     protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true, $update = false)
     {
         $data = [

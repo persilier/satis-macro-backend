@@ -13,9 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('mail', function () {
-    $claim = \Satis2020\ServicePackage\Models\Claim::find("a9a79643-cffc-443f-a7d9-df53e1fb8f81");
-    $identity = \Satis2020\ServicePackage\Models\Identite::find("ed2f15a9-2b1b-4549-b48f-65fcf50d8cd9");
-
-    return $identity->notify(new \Satis2020\ServicePackage\Notifications\RegisterAClaim($claim));
-});
+Route::get('mail', 'Controller@index');

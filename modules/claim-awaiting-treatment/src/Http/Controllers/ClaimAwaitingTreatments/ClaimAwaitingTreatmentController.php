@@ -60,6 +60,7 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @param Claim $claim
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function show($claim)
     {
@@ -77,6 +78,7 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @param Claim $claim
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function edit($claim)
     {
@@ -94,6 +96,7 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @param Claim $claim
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
+     * @throws CustomException
      */
     public function showClaimQueryTreat($claim)
     {
@@ -110,6 +113,8 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @param Request $request
      * @param Claim $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     public function rejectedClaim(Request $request, $claim)
@@ -131,6 +136,8 @@ class ClaimAwaitingTreatmentController extends ApiController
     /**
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     protected  function selfAssignmentClaim($claim)
     {
@@ -166,10 +173,11 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->validate($request, $this->rules($staff));
 
-
         $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $request->staff_id);
+
+        Staff::with('identite')->find($request->staff_id)->identite->notify(new \Satis2020\ServicePackage\Notifications\AssignedToStaff($claim));
 
         return response()->json($claim, 200);
     }

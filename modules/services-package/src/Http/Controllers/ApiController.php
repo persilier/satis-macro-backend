@@ -2,10 +2,11 @@
 namespace Satis2020\ServicePackage\Http\Controllers;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\Notification;
 
 class ApiController extends Controller
 {
-    use ApiResponser, DataUserNature;
+    use ApiResponser, DataUserNature, Notification;
     /**
      * ApiController constructor.
      */

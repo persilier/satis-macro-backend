@@ -16,6 +16,7 @@ use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Relationship;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 
 /**
  * Trait UpdateClaim
@@ -23,7 +24,6 @@ use Satis2020\ServicePackage\Models\Relationship;
  */
 trait UpdateClaim
 {
-
     /**
      * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $institutionId | Id institution
@@ -127,6 +127,7 @@ trait UpdateClaim
      * @param $claimId
      * @param string $status | Claim complete - status=full | Claim incomplete - status=incomplete
      * @return array
+     * @throws CustomException
      */
     protected function getOneClaimCompleteOrIncompleteForMyInstitution($institutionId, $claimId, $status='full')
     {
@@ -214,6 +215,7 @@ trait UpdateClaim
      * @param $claimId
      * @param string $status
      * @return mixed
+     * @throws CustomException
      */
     protected function getClaimUpdate($institutionId, $claimId, $status = 'full'){
         try {
@@ -248,6 +250,7 @@ trait UpdateClaim
      * @param $claim
      * @return $request
      * @return $userId
+     * @throws CustomException
      */
     protected function updateClaim($request, $claim, $userId){
 
@@ -264,6 +267,10 @@ trait UpdateClaim
         $claim->completed_by = $userId;
         $claim->completed_at = Carbon::now();
         $claim->save();
+
+        // send notification to pilot
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+
         return $claim;
     }
 
