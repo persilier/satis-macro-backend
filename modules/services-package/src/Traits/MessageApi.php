@@ -20,7 +20,8 @@ trait MessageApi
                 return is_null($except)
                     ? $methodsUsed->search($value, true) === false
                     : $methodsUsed->search($value, true) === false || $value == $except;
-            });
+            })
+            ->values();
     }
 
     /**
