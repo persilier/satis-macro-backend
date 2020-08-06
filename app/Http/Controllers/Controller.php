@@ -6,7 +6,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Storage;
 use Satis2020\ServicePackage\Models\Discussion;
+use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Message;
 use Satis2020\ServicePackage\Models\Staff;
@@ -26,5 +28,10 @@ class Controller extends BaseController
         dd($this->getStaffIdentities($discussion->staff->pluck('id')->all()));
 
         return $identity->notify(new \Satis2020\ServicePackage\Notifications\PostDiscussionMessage($message));
+    }
+
+    public function download(File $file)
+    {
+        return response()->download(public_path($file->url), "{$file->title}");
     }
 }

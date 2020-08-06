@@ -14,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('mail', 'Controller@index');
+Route::get('download/{file}', 'Controller@download');
