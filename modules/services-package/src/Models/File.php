@@ -46,7 +46,7 @@ class File extends Model
      */
     public function getBase64Attribute()
     {
-        return file_get_contents(public_path($this->attributes['url']));
+        return base64_encode(file_get_contents(public_path($this->attributes['url'])));
     }
 
     /**
