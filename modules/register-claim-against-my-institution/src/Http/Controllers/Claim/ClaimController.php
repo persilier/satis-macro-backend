@@ -86,7 +86,7 @@ class ClaimController extends ApiController
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // create reference
-        $request->merge(['reference' => $this->createReference()]);
+        $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // create claimer if claimer_id is null
         if (is_null($request->claimer_id)) {

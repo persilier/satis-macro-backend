@@ -28,6 +28,8 @@ class ClaimController extends ApiController
      * Display a listing of the resource.
      *
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -40,6 +42,8 @@ class ClaimController extends ApiController
     /**
      * @param $claimId
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function show($claimId)
     {
@@ -53,6 +57,8 @@ class ClaimController extends ApiController
      *
      * @param $claimId
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function edit($claimId)
     {
@@ -63,7 +69,6 @@ class ClaimController extends ApiController
     }
 
 
-
     /**
      * Update the specified resource in storage.
      *
@@ -71,6 +76,8 @@ class ClaimController extends ApiController
      * @param  $claimId
      * @return JsonResponse
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, $claimId)
     {

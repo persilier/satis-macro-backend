@@ -11,6 +11,9 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
@@ -22,6 +25,7 @@ use Faker\Factory as Faker;
 
 trait CreateClaim
 {
+
     protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true, $update = false)
     {
         $data = [
@@ -69,10 +73,25 @@ trait CreateClaim
         return $data;
     }
 
-    protected function createReference()
+    /**
+     * @param $institution_targeted_id
+     * @return string
+     */
+    protected function createReference($institution_targeted_id)
     {
-        $faker = Faker::create();
-        return date('Y') . date('m') . '-' . $faker->randomNumber(6, true);
+        $institutionTargeted = Institution::with('institutionType')->findOrFail($institution_targeted_id);
+
+        $appNature = substr($this->getAppNature($institution_targeted_id), 0, 2);
+
+        $claimsNumber = Claim::withTrashed()
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
+                Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
+            ])
+            ->get()
+            ->count();
+
+        return 'SATIS'.$appNature.date('Y').date('s').date('m').($claimsNumber+1).'-'.$institutionTargeted->acronyme;
     }
 
     /**
@@ -157,6 +176,13 @@ trait CreateClaim
     {
         $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
         $this->uploadAttachments($request, $claim);
+
+        // send notification to claimer
+        $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+
+        // send notification to pilot
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+
         return $claim;
     }
 

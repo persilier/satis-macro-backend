@@ -103,4 +103,29 @@ trait DataUserNature
         return $this->nature;
     }
 
+    protected function getAppNature($institutionId)
+    {
+        $institutionTargeted = Institution::with('institutionType')->findOrFail($institutionId);
+
+        $nature = "PRO";
+
+        switch ($institutionTargeted->institutionType->name) {
+            case "filiale":
+            case "holding":
+                $nature = 'MACRO';
+                break;
+
+            case "observatory":
+            case "membre":
+                $nature = 'HUB';
+                break;
+
+            default:
+                $nature = "PRO";
+                break;
+        }
+
+        return $nature;
+    }
+
 }

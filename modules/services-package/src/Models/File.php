@@ -40,6 +40,23 @@ class File extends Model
     protected $fillable = ['title', 'url'];
 
     /**
+     * Get the lead flag for the staff.
+     *
+     * @return bool
+     */
+    public function getBase64Attribute()
+    {
+        return base64_encode(file_get_contents(public_path($this->attributes['url'])));
+    }
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['base64'];
+
+    /**
      * Get the owning attachmentable model.
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */

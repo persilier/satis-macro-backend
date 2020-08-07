@@ -10,12 +10,15 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Treatment;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Notifications\TransferredToTargetedInstitution;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
+use Satis2020\ServicePackage\Traits\Notification;
 
 class TransferToInstitutionController extends ApiController
 {
 
-    use AwaitingAssignment;
+    use AwaitingAssignment, Notification;
 
     public function __construct()
     {
@@ -43,6 +46,10 @@ class TransferToInstitutionController extends ApiController
         }
         $activeTreatment->update(['transferred_to_targeted_institution_at' => Carbon::now()]);
         $claim->update(['status' => 'transferred_to_targeted_institution']);
+
+        // send notification to pilot
+        $this->getInstitutionPilot(Institution::find($claim->institution_targeted_id))->notify(new TransferredToTargetedInstitution($claim));
+
         return response()->json($claim, 201);
     }
 
