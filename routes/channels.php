@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('Satis2020.ServicePackage.Models.Identite.{identite}', \Satis2020\ServicePackage\Broadcasting\IdentiteChannel::class);
