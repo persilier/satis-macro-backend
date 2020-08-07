@@ -8,16 +8,15 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class File extends Model
+/**
+ * Class CronTask
+ * @package Satis2020\ServicePackage\Models
+ */
+class CronTask extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use UuidAsId, SoftDeletes, SecureDelete;
 
-    /**
-     * The attributes that are translatable
-     *
-     * @var array
-     */
-    public $translatable = [];
+    protected $primaryKey = 'cron_id';
     /**
      * The attributes that should be cast to native types.
      *
@@ -37,15 +36,15 @@ class File extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'url'];
+    protected $fillable = [];
 
     /**
-     * Get the owning attachmentable model.
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function attachmentable()
+    public function cron()
     {
         return $this->morphTo();
     }
-    
+
+
 }

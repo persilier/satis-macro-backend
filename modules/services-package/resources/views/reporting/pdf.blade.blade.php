@@ -101,7 +101,7 @@
                         {{
                            $count = count($value['claim_objects'])
                         }}
-                        @if($count > 1)
+                        @if($count > 0)
 
                             @foreach ($value['claim_objects'] as $keyObject => $valueObject)
                                 <tr style="border-bottom: 0.1em solid #F3F3F3">

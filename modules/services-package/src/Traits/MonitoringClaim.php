@@ -212,4 +212,40 @@ trait MonitoringClaim
     }
 
 
+
+    protected function treamentRelance($claim){
+
+        if($claim->status === 'incomplete'){
+
+            dd($claim);
+
+        }
+
+        if($claim->status === 'full'){
+
+        }
+
+        if($claim->status === 'transferred_to_targeted_institution'){
+
+        }
+
+        if($claim->status === 'transferred_to_unit'){
+
+        }
+
+        if($claim->status === 'assigned_to_staff'){
+
+        }
+
+        if($claim->status === 'treated'){
+
+        }
+
+        if($claim->status === 'validated'){
+
+        }
+
+    }
+
+
 }

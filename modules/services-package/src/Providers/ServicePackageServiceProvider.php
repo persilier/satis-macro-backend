@@ -1,6 +1,7 @@
 <?php
 namespace Satis2020\ServicePackage\Providers;
 use Carbon\Carbon;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * Class ServicePackageServiceProvider
+ * @package Satis2020\ServicePackage\Providers
+ */
 class ServicePackageServiceProvider extends ServiceProvider
 {
     /**
@@ -39,6 +45,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         /*Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
             $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
             dd($path);
@@ -51,6 +58,27 @@ class ServicePackageServiceProvider extends ServiceProvider
         });*/
         JsonResource::withoutWrapping();
         $this->registerResources();
+        $this->registerCommands();
+    }
+
+
+    protected function registerCommands(){
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+
+                \Satis2020\ServicePackage\Console\Commands\ReportingDayCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\ReportingWeekCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\ReportingMonthCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\RelanceCommand::class,
+            ]);
+
+            $this->app->booted(function () {
+                $this->app->make(Schedule::class)->command('service:generate-reporting-day')->everyMinute();//->twiceDaily(0, 13);
+                $this->app->make(Schedule::class)->command('service:generate-reporting-week')->mondays();
+                $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn (1, '01:00')->monthlyOn (1, '13:00');
+            });
+        }
     }
 
     /**
@@ -121,6 +149,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->app->singleton('Handler', function ($app){
             return new \Satis2020\ServicePackage\Exceptions\Handler();
         });
+
     }
 
     /**
