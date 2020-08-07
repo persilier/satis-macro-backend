@@ -20,14 +20,14 @@ class Controller extends BaseController
 
     public function index()
     {
-        $claim = \Satis2020\ServicePackage\Models\Claim::find("a9a79643-cffc-443f-a7d9-df53e1fb8f81");
-        $identity = \Satis2020\ServicePackage\Models\Identite::find("ed2f15a9-2b1b-4549-b48f-65fcf50d8cd9");
-        $discussion = Discussion::findOrFail("54ca6988-7139-4042-ada2-bb1af8a13af2");
-        $message = Message::findOrFail("bc3e54ba-d377-4486-b1d7-10158cc2b881");
+        $claim = \Satis2020\ServicePackage\Models\Claim::find("0155686b-55d9-4ebe-ada1-79191e1b9b82");
+        $identity = \Satis2020\ServicePackage\Models\Identite::find("b7acf27c-894e-4d9c-866e-efb67ad9188a");
+        //$discussion = Discussion::findOrFail("54ca6988-7139-4042-ada2-bb1af8a13af2");
+        //$message = Message::findOrFail("bc3e54ba-d377-4486-b1d7-10158cc2b881");
 
-        dd($this->getStaffIdentities($discussion->staff->pluck('id')->all()));
+        //dd($this->getStaffIdentities($discussion->staff->pluck('id')->all()));
 
-        return $identity->notify(new \Satis2020\ServicePackage\Notifications\PostDiscussionMessage($message));
+        return $identity->notify(new \Satis2020\ServicePackage\Notifications\AssignedToStaff($claim));
     }
 
     public function download(File $file)
