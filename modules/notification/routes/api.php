@@ -18,3 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('notifications/edit', 'Notification\NotificationController@edit')->name('notifications.edit');
 Route::put('notifications', 'Notification\NotificationController@update')->name('notifications.update');
+
+Route::get('unread-notifications', 'Notification\UnreadNotificationController@index')->name('notifications.unread.index');
+Route::put('unread-notifications', 'Notification\UnreadNotificationController@update')->name('notifications.unread.update');
+
