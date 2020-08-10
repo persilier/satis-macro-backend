@@ -84,14 +84,17 @@ trait CreateClaim
         $appNature = substr($this->getAppNature($institution_targeted_id), 0, 2);
 
         $claimsNumber = Claim::withTrashed()
-            ->whereBetween('created_at', [
-                Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
-                Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
-            ])
-            ->get()
-            ->count();
+                ->whereBetween('created_at', [
+                    Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
+                    Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
+                ])
+                ->where('institution_targeted_id', $institution_targeted_id)
+                ->get()
+                ->count() + 1;
 
-        return 'SATIS'.$appNature.date('Y').date('s').date('m').($claimsNumber+1).'-'.$institutionTargeted->acronyme;
+        $formatClaimsNumber = str_pad("{$claimsNumber}", 6, "0", STR_PAD_LEFT);
+
+        return 'SATIS' . $appNature . '-' . date('Y') . date('m') . $formatClaimsNumber . '-' . $institutionTargeted->acronyme;
     }
 
     /**

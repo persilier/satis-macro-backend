@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('mail', 'Controller@index');
 Route::get('download/{file}', 'Controller@download');
+Route::get('new-claim-reference/{institution}', 'Controller@claimReference');
