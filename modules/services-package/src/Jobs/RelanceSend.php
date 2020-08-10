@@ -6,8 +6,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Mail;
-use Satis2020\ServicePackage\Mail\RelanceMail;
 use Exception;
 
 
@@ -15,20 +13,20 @@ use Exception;
  * Class RelanceSendMail
  * @package Satis2020\ServicePackage\Jobs
  */
-class RelanceSendMail implements ShouldQueue
+class RelanceSend implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $details;
+    protected $responses;
 
     /**
      * Create a new job instance.
      *
-     * @param $details
+     * @param $responses
      */
-    public function __construct($details)
+    public function __construct($responses)
     {
-        $this->details = $details;
+        $this->responses = $responses;
     }
 
     /**
@@ -38,9 +36,8 @@ class RelanceSendMail implements ShouldQueue
      */
     public function handle()
     {
-        $data['email'] = $this->details['email'];
-        $mail = new RelanceMail($data);
-        Mail::to($recipient)->send($mail);
+        // traitement et envoie des notifications de relances
+
     }
 
     /**

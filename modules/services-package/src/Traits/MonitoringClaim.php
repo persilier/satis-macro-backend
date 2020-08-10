@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Jobs\RelanceSend;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
@@ -58,7 +60,7 @@ trait MonitoringClaim
 
         if($timeLimit && $createdDate){
 
-            $dateExpire = $createdDate->addDays($timeLimit);
+            $dateExpire = $createdDate->addWeekdays($timeLimit);
             $diff = now()->diffInDays(($dateExpire), false);
         }
 
@@ -212,39 +214,232 @@ trait MonitoringClaim
     }
 
 
+    /**
+     * @param $unit
+     * @return mixed
+     */
+    protected function getIdentitesResponsibleUnit($unit){
 
-    protected function treamentRelance($claim){
+        return Identite::whereHas('staff', function($query) use ($unit){
+            $query->where('unit_id', $unit->id);
+        })->get();
+    }
 
-        if($claim->status === 'incomplete'){
+    /**
+     * @param $staff
+     * @return mixed
+     */
+    protected function getIdentitesResponsibleStaff($staff){
 
-            dd($claim);
+        $lead = NULL;
 
-        }
+        if($staff->unit->lead){
 
-        if($claim->status === 'full'){
-
-        }
-
-        if($claim->status === 'transferred_to_targeted_institution'){
-
-        }
-
-        if($claim->status === 'transferred_to_unit'){
-
-        }
-
-        if($claim->status === 'assigned_to_staff'){
-
-        }
-
-        if($claim->status === 'treated'){
+            $lead = $staff->unit->lead->id;
 
         }
 
-        if($claim->status === 'validated'){
+        return Identite::whereHas('staff', function($query) use ($staff, $lead){
 
+            $query->where('id', $staff->id)->orWhere('id', $lead);
+
+        })->get();
+    }
+
+
+    /**
+     * @param $treatment
+     * @param $coef
+     * @return array
+     */
+    protected function getAllClaimRelance($treatment, $coef)
+    {
+        $claims = Claim::with($this->getRelations());
+
+        if($treatment){
+
+            $claims->join('treatments', function ($join) {
+
+                $join->on('claims.id', '=', 'treatments.claim_id')
+                    ->on('claims.active_treatment_id', '=', 'treatments.id');
+            })->select('claims.*');
         }
 
+         return $claims->where('status','!=', 'archived')
+            ->orWhere('status','!=', 'unfounded')
+             ->get()->filter(function ($item) use ($coef) {
+
+                 if(now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+                     return $item;
+
+             })->all();
+
+    }
+
+
+    /**
+     * @param bool $treatment
+     * @return void
+     */
+    protected function treatmentRelance($treatment = false){
+
+        $coef = 50;
+
+        $claims = $this->getAllClaimRelance($treatment, $coef);
+
+        foreach($claims as $claim){
+
+            $identite = null;
+
+            if($claim->status === 'incomplete' || $claim->status === 'full' || $claim->status === 'transferred_to_targeted_institution'){
+
+                $identite = $this->getInstitutionPilot($claim->createdBy->identite->staff->institution);
+
+            }
+
+            if($claim->status === 'transferred_to_unit'){
+
+                $identite = $this->getIdentitesResponsibleUnit($claim->activeTreatment->responsibleUnit);
+
+            }
+
+            if($claim->status === 'assigned_to_staff'){
+
+                $identite = $this->getIdentitesResponsibleStaff($claim->activeTreatment->responsibleStaff);
+
+            }
+
+            if($claim->status === 'treated' || $claim->status === 'validated'){
+
+                $identite = $this->getInstitutionPilot($claim->activeTreatment->responsibleStaff->institution);
+
+            }
+
+            if(!is_null($identite)){
+
+                $interval = $this->timeExpireRelance($claim->created_at , $claim->claimObject->time_limit);
+                $responses = $this->responseRelanceSend($interval, $identite, $claim);
+                RelanceSend::dispatch($responses);
+
+            }
+
+        };
+
+    }
+
+
+    /**
+     * @param $interval
+     * @param $identite
+     * @param $claim
+     * @return mixed
+     */
+    protected function responseRelanceSend($interval, $identite, $claim){
+
+        $responses['identite']  = $identite;
+        $responses['claim']  = $claim;
+
+        $time = $this->stringDateInterval($interval);
+
+        if($interval->invert === 1){
+            $responses['time_after']  = $time;
+        }else{
+            $responses['time_before']  = $time;
+        }
+
+        return $responses;
+    }
+
+
+    /**
+     * @param $interval
+     * @return string
+     */
+    protected function stringDateInterval($interval){
+
+        $message = '';
+
+        if($interval->y > 0){
+            $message .= $interval->y. 'an(s) ';
+        }
+
+        if($interval->m > 0){
+            $message .= $interval->m. 'moi(s) ';
+        }
+
+        if($interval->d > 0){
+            $message .= $interval->d. 'jour(s) ';
+        }
+
+        if($interval->h > 0){
+            $message .= $interval->h. 'heure(s) ';
+        }
+
+        if($interval->i > 0){
+            $message .= $interval->i. 'minute(s) ';
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param $createdDate
+     * @param $timeLimit
+     * @param $coef
+     * @return mixed
+     */
+    protected function echeanceNotif($createdDate, $timeLimit, $coef){
+
+        $timeNotif = (($timeLimit * 86400) * $coef) / 100;
+
+        $timeNotif = $this->convertSecondeJHMS($timeNotif);
+
+        $echeanceNotif = $createdDate->copy()->addWeekdays($timeNotif['j'])->addHours($timeNotif['h'])->addMinutes($timeNotif['m'])->addSeconds($timeNotif['s']);
+
+        return $echeanceNotif;
+    }
+
+
+    /**
+     * @param $createdDate
+     * @param $timeLimit
+     * @return null
+     */
+    protected function timeExpireRelance($createdDate , $timeLimit){
+
+        $echeance = $createdDate->copy()->addWeekdays($timeLimit);
+
+        $diff = now()->copy()->diff($echeance, false);
+
+        return $diff;
+    }
+
+
+    /**
+     * @param $seconde
+     * @return array
+     */
+    protected function convertSecondeJHMS($seconde){
+        $jour = 0;
+        $heure = 0;
+        $minute = 0;
+
+        while ($seconde >= 86400){
+            $jour = $jour + 1; $seconde = $seconde - 86400;
+        }
+        while ($seconde >= 3600){
+            $heure = $heure + 1; $seconde = $seconde - 3600;
+        }
+        while ($seconde >= 60){
+            $minute = $minute + 1; $seconde = $seconde - 60;
+        }
+
+        return [
+            'j' => $jour,
+            'h' => $heure,
+            'm' => $minute,
+            's' => $seconde
+        ];
     }
 
 
