@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Channels\MessageChannel;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\User;
 use Spatie\Permission\Models\Role;
 
@@ -67,25 +68,34 @@ trait Notification
 
     protected function getUnitStaffIdentities($unitId)
     {
-        return Identite::with('staff.unit', 'user')
+        return Staff::with('unit', 'identite.user')
             ->get()
             ->filter(function ($value, $key) use ($unitId) {
-                return is_null($value->staff->unit)
-                    ? false
-                    : $value->staff->unit->id == $unitId && $value->user->hasRole('staff');
+
+                if(is_null($value->unit) || is_null($value->identite)) {
+                    return false;
+                }
+
+                if (is_null($value->identite->user)){
+                    return false;
+                }
+
+                return $value->unit->id == $unitId && $value->identite->user->hasRole('staff');
             })
+            ->pluck('identite')
             ->values();
     }
 
     protected function getStaffIdentities($staffIds, $exceptIds = [])
     {
-        return Identite::with('staff')
+        return Staff::with('identite')
             ->get()
             ->filter(function ($value, $key) use ($staffIds, $exceptIds) {
-                return is_null($value->staff)
+                return is_null($value->identite)
                     ? false
-                    : in_array($value->staff->id, $staffIds) && !in_array($value->staff->id, $exceptIds);
+                    : in_array($value->id, $staffIds) && !in_array($value->id, $exceptIds);
             })
+            ->pluck('identite')
             ->values();
     }
 

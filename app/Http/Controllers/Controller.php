@@ -12,11 +12,13 @@ use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Message;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Notification;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Notification, CreateClaim, DataUserNature;
 
     public function index()
     {
@@ -25,7 +27,7 @@ class Controller extends BaseController
         //$discussion = Discussion::findOrFail("54ca6988-7139-4042-ada2-bb1af8a13af2");
         //$message = Message::findOrFail("bc3e54ba-d377-4486-b1d7-10158cc2b881");
 
-        //dd($this->getStaffIdentities($discussion->staff->pluck('id')->all()));
+        dd($this->getStaffIdentities(["3b4bcea9-ea57-4e29-956c-5c2702a1c04c", "343c2188-32e6-44b6-a090-6045f9b4b86d", "7d2c8ca6-bd0d-49f6-a238-34608d02dee4"], ["7d2c8ca6-bd0d-49f6-a238-34608d02dee4"]));
 
         return $identity->notify(new \Satis2020\ServicePackage\Notifications\ReminderAfterDeadline($claim, '2h'));
     }
@@ -33,5 +35,10 @@ class Controller extends BaseController
     public function download(File $file)
     {
         return response()->download(public_path($file->url), "{$file->title}");
+    }
+
+    public function claimReference(Institution $institution)
+    {
+        return response()->json($this->createReference($institution->id), 200);
     }
 }
