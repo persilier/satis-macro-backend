@@ -45,7 +45,7 @@ class ReportingDayCommand extends Command
 
             foreach ($reportinTasks as $reportinTask){
 
-                $treatment = $this->TreatmentReportingTasks($request, $reportinTask);
+                $this->TreatmentReportingTasks($request, $reportinTask);
 
             }
 

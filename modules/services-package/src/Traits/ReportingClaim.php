@@ -17,6 +17,7 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ReportingTask;
+use Satis2020\ServicePackage\Rules\EmailValidationRules;
 
 
 /**
@@ -952,12 +953,56 @@ trait ReportingClaim
      */
     protected function rulesTasksConfig($institution = true)
     {
+        $data = [
+            'period' => ['required', Rule::in(['days', 'weeks', 'months'])],
+            'email' => [
+                'required', 'array', new EmailValidationRules,
+            ],
+        ];
 
         if($institution){
+
             $data['institution_id'] = 'sometimes|exists:institutions,id';
+
         }
 
         return $data;
+    }
+
+    /**
+     * @param $request
+     * @param $institution
+     * @return array
+     */
+    protected  function createFillableTasks($request, $institution){
+
+        $data = [
+
+            'institution_id' => $institution->id,
+            'period' => $request->period,
+            'email' => $request->email
+        ];
+
+        if($request->has('institution_id')){
+
+            $data['institution_targeted_id'] = $request->institution_id;
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $request
+     * @param $institution
+     * @param null $reportingTask
+     */
+    protected function reportingTasksExists($request, $institution, $reportingTask = null){
+
+        if(ReportingTask::where('period', $request->period)->where('institution_targeted_id',$request->institution_id)
+            ->where('institution_id', $institution->id)->where('id', '!=', $reportingTask)->first()){
+            throw new CustomException("Cette configuration de rapport automatique existe déjà pour la période choisie.");
+        }
     }
 
 }

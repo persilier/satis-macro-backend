@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Jobs\RelanceSend;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
@@ -18,6 +17,9 @@ use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Notifications\ReminderAfterDeadline;
+use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 
 /**
  * Trait MonitoringClaim
@@ -283,7 +285,12 @@ trait MonitoringClaim
      */
     protected function treatmentRelance($treatment = false){
 
-        $coef = 50;
+        $coef = 100;
+
+        if($taux = Metadata::where('name', 'coef-relance')->first()){
+
+            $coef = json_decode($taux->data);
+        }
 
         $claims = $this->getAllClaimRelance($treatment, $coef);
 
@@ -318,8 +325,7 @@ trait MonitoringClaim
             if(!is_null($identite)){
 
                 $interval = $this->timeExpireRelance($claim->created_at , $claim->claimObject->time_limit);
-                $responses = $this->responseRelanceSend($interval, $identite, $claim);
-                RelanceSend::dispatch($responses);
+                $this->sendNotificationRelance($interval, $identite, $claim);
 
             }
 
@@ -334,20 +340,40 @@ trait MonitoringClaim
      * @param $claim
      * @return mixed
      */
-    protected function responseRelanceSend($interval, $identite, $claim){
-
-        $responses['identite']  = $identite;
-        $responses['claim']  = $claim;
+    protected function sendNotificationRelance($interval, $identite, $claim){
 
         $time = $this->stringDateInterval($interval);
 
         if($interval->invert === 1){
-            $responses['time_after']  = $time;
+
+            $notif = new ReminderAfterDeadline($claim, $time);
+
         }else{
-            $responses['time_before']  = $time;
+
+            $notif = new ReminderBeforeDeadline($claim, $time);
         }
 
-        return $responses;
+
+        $this->notificationRelance($identite, $notif);
+
+    }
+
+    /**
+     * @param $identite
+     * @param $notif
+     */
+    protected function notificationRelance($identite, $notif){
+
+        if($identite instanceof Collection){
+
+            \Illuminate\Support\Facades\Notification::send($identite, $notif);
+
+        }else{
+
+            $identite->notify($notif);
+
+        }
+
     }
 
 

@@ -23,3 +23,7 @@ Route::put("/configurations/sms", "Sms\SmsController@update")->name("configurati
  */
 Route::get("/configurations/mail", "Mail\MailController@show")->name("configurations.mail.show");
 Route::put("/configurations/mail", "Mail\MailController@update")->name("configurations.mail.update");
+
+// Update Coef send relance
+Route::get("/configurations/relance", "Relance\RelanceController@show")->name("configurations.relance.show");
+Route::put("/configurations/relance", "Relance\RelanceController@update")->name("configurations.relance.update");

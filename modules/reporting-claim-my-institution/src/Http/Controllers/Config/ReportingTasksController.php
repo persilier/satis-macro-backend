@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ReportingClaimAnyInstitution\Http\Controllers\Config;
+namespace Satis2020\ReportingClaimMyInstitution\Http\Controllers\Config;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -16,7 +16,7 @@ use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 /**
  * Class ReportingTasksController
- * @package Satis2020\ReportingClaimAnyInstitution\Http\Controllers\ReportingTasks
+ * @package Satis2020\ReportingClaimMyInstitution\Http\Controllers\ReportingTasks
  */
 class ReportingTasksController extends ApiController
 {
@@ -26,14 +26,17 @@ class ReportingTasksController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:list-reporting-claim-any-institution')->except(['show']);
+        $this->middleware('permission:list-reporting-claim-any-institution')->only(['show']);
     }
 
 
+    /**
+     * @return JsonResponse
+     */
     public function index()
     {
         $institution = $this->institution();
-        $reporting = ReportingTask::with('institutionTargeted')->where('institution_id', $institution->id)->get();
+        $reporting = ReportingTask::where('institution_id', $institution->id)->get();
         return response()->json($reporting,200);
     }
 
@@ -45,37 +48,30 @@ class ReportingTasksController extends ApiController
     {
 
         $period = [
-           'days' => 'Jours',
-           'weeks' => 'Weeks',
-           'months' => 'Mois'
+            'days' => 'Jours',
+            'weeks' => 'Weeks',
+            'months' => 'Mois'
         ];
 
-        $institutions = Institution::all();
-
         return response()->json([
-            'period' => $period,
-            'institutions' => $institutions
+            'period' => $period
         ],200);
     }
 
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws ValidationException
-     */
     public function store(Request $request)
     {
-        $this->validate($request, $this->rulesTasksConfig());
+        $this->validate($request, $this->rulesTasksConfig(false));
 
         $institution = $this->institution();
+
+        $request->merge(['institution_targeted_id' => $institution->id]);
 
         $this->reportingTasksExists($request, $institution);
 
         $reporting = ReportingTask::create($this->createFillableTasks($request, $institution));
 
         return response()->json($reporting,201);
-
     }
 
 
@@ -92,12 +88,9 @@ class ReportingTasksController extends ApiController
             'months' => 'Mois'
         ];
 
-        $institutions = Institution::all();
-
         return response()->json([
             'period' => $period,
             'reportingTask' => $reportingTask,
-            'institutions' => $institutions
         ],200);
     }
 
@@ -111,7 +104,7 @@ class ReportingTasksController extends ApiController
     public function update(Request $request, ReportingTask $reportingTask)
     {
 
-        $this->validate($request, $this->rulesTasksConfig());
+        $this->validate($request, $this->rulesTasksConfig(false));
 
         $institution = $this->institution();
 

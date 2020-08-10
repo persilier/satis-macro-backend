@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 /*
  * Institutions
  */
+/*
 Route::resource('institutions', 'Institutions\InstitutionController')->except(['create', 'edit']);
 Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
 Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
 Route::resource('institutions.clients', 'Institutions\InstitutionClientController')->only(['index']);
-
+*/
 Route::prefix('any')->name('any.')->group(function () {
 
     Route::get('institutions/{institution}/message-apis/create', 'Institutions\InstitutionMessageApiController@create')->name('institutions.message-apis.create');
