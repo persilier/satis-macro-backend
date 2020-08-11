@@ -92,5 +92,6 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\Notification\Database\Seeds\RelanceNotificationsTableSeeder::class);
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceSendNotificationSeeder::class);
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceRoleSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
     }
 }
