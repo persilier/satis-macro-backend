@@ -9,6 +9,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * Class SendMail
+ * @package Satis2020\ServicePackage\Jobs
+ */
 class SendMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;

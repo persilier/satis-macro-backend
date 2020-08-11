@@ -7,13 +7,17 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\ReportingTask;
+use Satis2020\ServicePackage\Rules\EmailValidationRules;
 
 
 /**
@@ -513,7 +517,7 @@ trait ReportingClaim
 
         return $claims->filter(function ($item) use ($value){
 
-            if($item->created_at >= $value['period_start'] && $item->created_at <= $value['period_end'])
+            if(($item->created_at >= $value['period_start']) && ($item->created_at <= $value['period_end']))
                 return $item;
 
         })->count();
@@ -613,7 +617,7 @@ trait ReportingClaim
 
         for($n = 0; $n <= $nbreMonth; $n++){
 
-            $rangerMonths[$n]['text'] = $date_start->copy()->startOfMonth()->addMonths($n)->format('Y-m');
+            $rangerMonths[$n]['text'] = $date_start->copy()->startOfMonth()->addMonthsNoOverflow($n)->format('Y-m');
 
             if(($n === 0)){
 
@@ -621,7 +625,7 @@ trait ReportingClaim
 
             }else{
 
-                $rangerMonths[$n]['period_start'] = $date_start->copy()->startOfMonth()->addMonths($dj);
+                $rangerMonths[$n]['period_start'] = $date_start->copy()->startOfMonth()->addMonthsNoOverflow($dj);
             }
 
             if($n === $nbreMonth){
@@ -630,8 +634,10 @@ trait ReportingClaim
 
             }else{
 
-                $rangerMonths[$n]['period_end'] = $end->copy()->addMonths($dj);
+                $rangerMonths[$n]['period_end'] = $end->copy()->addMonthsNoOverflow($dj);
             }
+
+            $dj = $dj +1;
 
         }
 
@@ -741,6 +747,7 @@ trait ReportingClaim
      */
     protected function dataPdf($data, $lang, $institution, $myInstitution = false){
 
+
         if($myInstitution){
 
             if($institution->id !== $data['filter']['institution']){
@@ -772,14 +779,230 @@ trait ReportingClaim
         ];
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     protected function periodeFormat($data){
 
-        $data['startDate'] = ($data['startDate']==="") ? now()->startOfYear()->translatedFormat('l, jS F Y') : Carbon::parse($data['startDate'])->startOfDay()->translatedFormat('l, jS F Y');
-        $data['endDate'] = ($data['endDate']==="") ? now()->endOfYear()->translatedFormat('l, jS F Y')  : Carbon::parse($data['endDate'])->endOfDay()->translatedFormat('l, jS F Y');
+        $data['startDate'] = !empty($data['startDate']) ? Carbon::parse($data['startDate'])->startOfDay()->translatedFormat('l, jS F Y') : now()->startOfYear()->translatedFormat('l, jS F Y');
+        $data['endDate'] = !empty($data['endDate']) ? Carbon::parse($data['endDate'])->endOfDay()->translatedFormat('l, jS F Y')  : now()->endOfYear()->translatedFormat('l, jS F Y');
         return $data;
+
     }
 
 
+    /**
+     * @param $value
+     * @param $date
+     * @return Builder[]|Collection
+     */
+    protected function getAllReportingTasks($value, $dateCron){
 
+        $reportinTasks = ReportingTask::with(['institution', 'institutionTargeted'])->whereDoesntHave(
+            'cronTasks',  function($query) use ($dateCron){
+                $query->where('created_at', '>=', Carbon::parse($dateCron->copy())->startOfDay())
+                    ->where('created_at', '<=',Carbon::parse($dateCron->copy())->endOfDay());
+        })->where('period', $value)->get();
+
+        return $reportinTasks;
+    }
+
+    /**
+     * @param $request
+     * @param $institution
+     * @param $institutionId
+     * @return array
+     */
+    protected function generateReportingAuto($request, $institution, $institutionId){
+
+
+        if($request->has('institution_id')){
+            $institutionId = $request->institution_id;
+        }
+
+        $lang = app()->getLocale();
+
+        $filter = [
+            'institution' => $request->institution_id,
+            'startDate' => $request->date_start,
+            'endDate' => $request->date_end,
+        ];
+
+        if(is_null($institution->logo)){
+
+            $logo = asset('assets/reporting/images/satisLogo.png');
+
+        }else{
+
+            $logo = $institution->logo;
+        }
+
+        $statistiques =  [
+            'statistiqueObject' => $this->addDataTotalInStatistiqueObject($request, $institutionId),
+            'statistiqueQualificationPeriod' => $this->qualificationPeriod($request, $institutionId),
+            'statistiqueTreatmentPeriod' =>  $this->treatmentPeriod($request, $institutionId),
+            //'statistiqueChannel' =>  $this->numberChannels($request, $institutionId),
+            'periode' =>  $this->periodeFormat($filter),
+            'logo' => $logo,
+            'color_table_header' => '#7F9CF5',
+            'lang' => $lang
+        ];
+
+        return $statistiques;
+
+    }
+
+    /**
+     * @param $request
+     * @param $institutionId
+     * @return Collection|\Illuminate\Support\Collection|ClaimCategory[]
+     */
+    protected  function addDataTotalInStatistiqueObject($request, $institutionId){
+
+        $dataTotal = [
+            'totalCollect' => 0,
+            'totalIncomplete' => 0,
+            'totalToAssignUnit' => 0,
+            'totalToAssignStaff' => 0,
+            'totalAwaitingTreatment' => 0,
+            'totalToValidate' => 0,
+            'totalToMeasureSatisfaction' => 0,
+            'totalPercentage' => 0,
+        ];
+
+        $statistiqueObject = $this->numberClaimByObject($request, $institutionId);
+
+        foreach ($statistiqueObject as $category) {
+
+            if($category->claim_objects->isNotEmpty()){
+
+                foreach ($category->claim_objects as $value){
+
+                    $dataTotal['totalCollect'] = $dataTotal['totalCollect'] + $value->total;
+                    $dataTotal['totalIncomplete'] = $dataTotal['totalIncomplete'] + $value->incomplete;
+                    $dataTotal['totalToAssignUnit'] = $dataTotal['totalToAssignUnit'] + $value->toAssignementToUnit;
+                    $dataTotal['totalToAssignStaff'] = $dataTotal['totalToAssignStaff'] + $value->toAssignementToStaff;
+                    $dataTotal['totalAwaitingTreatment'] = $dataTotal['totalAwaitingTreatment'] + $value->awaitingTreatment;
+                    $dataTotal['totalToValidate'] = $dataTotal['totalToValidate'] + $value->toValidate;
+                    $dataTotal['totalToMeasureSatisfaction'] = $dataTotal['totalToMeasureSatisfaction'] + $value->toMeasureSatisfaction;
+                    $dataTotal['totalPercentage'] = ($dataTotal['totalPercentage'] + $value->percentage);
+
+                }
+
+            }
+
+        };
+
+        $statistique['data']  = $statistiqueObject;
+        $statistique['total'] = $dataTotal;
+
+        return $statistique;
+    }
+
+
+    /**
+     * @param $request
+     * @param $reportinTask
+     * @throws \Throwable
+     */
+    protected function TreatmentReportingTasks($request, $reportinTask){
+
+        $institutionId = false;
+
+        if(!is_null($reportinTask->institutionTargeted)){
+
+            $request->merge(['institution_id' => $reportinTask->institutionTargeted->id]);
+
+        }
+
+        $institution = $reportinTask->institution;
+
+        if(!empty($reportinTask->email)){
+
+            $rapportData = $this->generateReportingAuto($request, $institution, $institutionId);
+
+            $data = view('ServicePackage::reporting.pdf-auto', $rapportData)->render();
+
+            $file = public_path().'/temp/Reporting_'.time().'.pdf';
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadHTML($data);
+            $pdf->save($file);
+
+            $dd = $request->date_start;
+            $df = $request->date_end;
+
+            $details = [
+                'file' => $file,
+                'email' => $reportinTask->email,
+                'reportingTask' => $reportinTask,
+                'dateStart' => $dd->format('Y-m-d'),
+                'dateEnd' => $df->format('Y-m-d'),
+            ];
+
+            PdfReportingSendMail::dispatch($details);
+        }
+
+    }
+
+
+    /* CONFIGURATIONS*/
+    /**
+     * @param bool $institution
+     * @return array
+     */
+    protected function rulesTasksConfig($institution = true)
+    {
+        $data = [
+            'period' => ['required', Rule::in(['days', 'weeks', 'months'])],
+            'email' => [
+                'required', 'array', new EmailValidationRules,
+            ],
+        ];
+
+        if($institution){
+
+            $data['institution_id'] = 'sometimes|exists:institutions,id';
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $request
+     * @param $institution
+     * @return array
+     */
+    protected  function createFillableTasks($request, $institution){
+
+        $data = [
+
+            'institution_id' => $institution->id,
+            'period' => $request->period,
+            'email' => $request->email
+        ];
+
+        if($request->has('institution_id')){
+
+            $data['institution_targeted_id'] = $request->institution_id;
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $request
+     * @param $institution
+     * @param null $reportingTask
+     */
+    protected function reportingTasksExists($request, $institution, $reportingTask = null){
+
+        if(ReportingTask::where('period', $request->period)->where('institution_targeted_id',$request->institution_id)
+            ->where('institution_id', $institution->id)->where('id', '!=', $reportingTask)->first()){
+            throw new CustomException("Cette configuration de rapport automatique existe déjà pour la période choisie.");
+        }
+    }
 
 }
