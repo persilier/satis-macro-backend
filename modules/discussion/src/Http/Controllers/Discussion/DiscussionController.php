@@ -39,6 +39,7 @@ class DiscussionController extends ApiController
             ->filter(function ($value, $key) {
                 return $value->claim->status != 'archived';
             })
+            ->values()
             , 200);
     }
 
