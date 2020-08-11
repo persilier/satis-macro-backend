@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
@@ -1005,6 +1006,42 @@ trait ReportingClaim
         }
     }
 
+    /**
+     * @param $institution
+     * @return Builder[]|Collection|\Illuminate\Support\Collection
+     */
+    protected function reportingTasksMap($institution){
+
+        return ReportingTask::with('institutionTargeted')->where('institution_id', $institution->id)->get()->map(function($item){
+
+            $item['period_tag'] =  Arr::first($this->periodList(), function ($value) use ($item){
+                return $value['value'] === $item->period;
+            });
+
+            return $item;
+
+        });
+    }
+
+
+    /**
+     * @param $reportingTask
+     * @return mixed
+     */
+    protected function reportingTaskMap($reportingTask){
+
+        $reportingTask->load('institutionTargeted');
+
+        $reportingTask['period_tag'] = Arr::first($this->periodList(), function ($value) use ($reportingTask){
+            return $value['value'] === $reportingTask->period;
+        });
+
+        return $reportingTask;
+    }
+
+    /**
+     * @return array
+     */
     protected function periodList(){
 
         return [

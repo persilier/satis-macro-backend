@@ -36,7 +36,7 @@ class ReportingTasksController extends ApiController
     public function index()
     {
         $institution = $this->institution();
-        $reporting = ReportingTask::where('institution_id', $institution->id)->get();
+        $reporting = $this->reportingTasksMap($institution);
         return response()->json($reporting,200);
     }
 
@@ -82,7 +82,7 @@ class ReportingTasksController extends ApiController
 
         return response()->json([
             'period' => $period,
-            'reportingTask' => $reportingTask,
+            'reportingTask' =>  $this->reportingTaskMap($reportingTask),
         ],200);
     }
 

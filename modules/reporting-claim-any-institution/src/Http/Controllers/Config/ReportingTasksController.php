@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class ReportingTasksController extends ApiController
     public function index()
     {
         $institution = $this->institution();
-        $reporting = ReportingTask::with('institutionTargeted')->where('institution_id', $institution->id)->get();
+        $reporting = $this->reportingTasksMap($institution);
         return response()->json($reporting,200);
     }
 
@@ -88,7 +89,7 @@ class ReportingTasksController extends ApiController
 
         return response()->json([
             'period' => $period,
-            'reportingTask' => $reportingTask,
+            'reportingTask' => $this->reportingTaskMap($reportingTask),
             'institutions' => $institutions
         ],200);
     }

@@ -18,7 +18,6 @@
     "laravel/tinker": "^2.0",
     "satis2020/any-institution": "^1.0",
     "satis2020/any-institution-unit": "^1.0",
-    "satis2020/any-user": "^1.0",
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
