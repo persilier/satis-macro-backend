@@ -1005,4 +1005,19 @@ trait ReportingClaim
         }
     }
 
+    protected function periodList(){
+
+        return [
+            [
+                'value' => 'days', 'label' => 'Jour'
+            ],
+            [
+                'value' => 'weeks', 'label' => 'Semaine'
+            ],
+            [
+                'value' => 'months', 'label' => 'Mois'
+            ]
+        ];
+    }
+
 }

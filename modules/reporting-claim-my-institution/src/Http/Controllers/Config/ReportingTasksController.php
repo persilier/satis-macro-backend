@@ -47,11 +47,7 @@ class ReportingTasksController extends ApiController
     public function create()
     {
 
-        $period = [
-            'days' => 'Jours',
-            'weeks' => 'Weeks',
-            'months' => 'Mois'
-        ];
+        $period = $this->periodList();
 
         return response()->json([
             'period' => $period
@@ -82,11 +78,7 @@ class ReportingTasksController extends ApiController
     public function edit(ReportingTask $reportingTask)
     {
 
-        $period = [
-            'days' => 'Jours',
-            'weeks' => 'Weeks',
-            'months' => 'Mois'
-        ];
+        $period = $this->periodList();
 
         return response()->json([
             'period' => $period,
