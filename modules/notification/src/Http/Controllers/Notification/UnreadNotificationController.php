@@ -16,7 +16,7 @@ class UnreadNotificationController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
 
-        $this->middleware('permission:update-notifications')->only(['edit', 'update']);
+//        $this->middleware('permission:update-notifications')->only(['edit', 'update']);
     }
 
     /**
