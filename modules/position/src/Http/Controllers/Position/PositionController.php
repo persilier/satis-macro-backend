@@ -6,6 +6,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Position;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class PositionController extends ApiController
 {
@@ -53,8 +54,8 @@ class PositionController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('positions', 'name')],
+            'description' => 'nullable',
         ];
 
         $this->validate($request, $rules);
@@ -98,8 +99,8 @@ class PositionController extends ApiController
     public function update(Request $request, Position $position)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('positions', 'name', 'id', "{$position->id}")],
+            'description' => 'nullable',
         ];
 
         $this->validate($request, $rules);

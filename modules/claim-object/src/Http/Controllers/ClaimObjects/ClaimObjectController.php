@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\SeverityLevel;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class ClaimObjectController extends ApiController
 {
@@ -54,8 +55,8 @@ class ClaimObjectController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
+            'description' => 'nullable',
             'claim_category_id' => 'required|exists:claim_categories,id',
             'severity_levels_id' => 'exists:severity_levels,id',
             'time_limit' => 'required|integer',
@@ -103,8 +104,8 @@ class ClaimObjectController extends ApiController
     public function update(Request $request, ClaimObject $claimObject)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name', 'id', "{$claimObject->id}")],
+            'description' => 'nullable',
             'claim_category_id' => 'required|exists:claim_categories,id',
             'severity_levels_id' => 'exists:severity_levels,id',
             'time_limit' => 'required|integer',

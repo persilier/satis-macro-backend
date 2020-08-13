@@ -5,6 +5,8 @@ use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+
 class ClaimCategoryController extends ApiController
 {
     public function __construct()
@@ -38,8 +40,8 @@ class ClaimCategoryController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('claim_categories', 'name')],
+            'description' => 'nullable',
             'others' => 'array',
         ];
         $this->validate($request, $rules);
@@ -70,8 +72,8 @@ class ClaimCategoryController extends ApiController
     public function update(Request $request, ClaimCategory $claimCategory)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('claim_categories', 'name', 'id', "{$claimCategory->id}")],
+            'description' => 'nullable',
             'others' => 'array',
         ];
         $this->validate($request, $rules);

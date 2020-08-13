@@ -4,6 +4,8 @@ namespace Satis2020\SeverityLevel\Http\Controllers\SeverityLevels;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\SeverityLevel;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+
 class SeverityLevelController extends ApiController
 {
     public function __construct()
@@ -37,8 +39,8 @@ class SeverityLevelController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('severity_levels', 'name')],
+            'description' => 'nullable',
             'color' => 'required|string',
             'others' => 'array',
         ];
@@ -71,9 +73,9 @@ class SeverityLevelController extends ApiController
     public function update(Request $request, SeverityLevel $severityLevel)
     {
         $rules = [
-            'name' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('severity_levels', 'name', 'id', "{$severityLevel->id}")],
+            'description' => 'nullable',
             'color' => 'required|string',
-            'description' => 'required|string',
             'others' => 'array',
         ];
         $this->validate($request, $rules);
