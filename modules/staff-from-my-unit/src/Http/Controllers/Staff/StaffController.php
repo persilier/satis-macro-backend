@@ -63,7 +63,7 @@ class StaffController extends ApiController
     public function create()
     {
         return response()->json([
-            'units' => Unit::where('institution_id', $this->institution()->id)->get(),
+            'units' => Unit::with('lead.identite')->where('institution_id', $this->institution()->id)->get(),
             'positions' => Position::all()
         ], 200);
     }
@@ -118,11 +118,11 @@ class StaffController extends ApiController
      */
     public function edit(Staff $staff)
     {
-        $staff->load('identite', 'position', 'unit', 'institution');
+        $staff->load('identite', 'position', 'unit.lead.identite', 'institution');
 
         return response()->json([
             'staff' => $staff,
-            'units' => Unit::where('institution_id', $this->institution()->id)->get(),
+            'units' => Unit::with('lead.identite')->where('institution_id', $this->institution()->id)->get(),
             'positions' => Position::all()
         ], 200);
     }
