@@ -53,7 +53,7 @@ class Currency extends Model
     {
         return [
             'slug' => [
-                'source' => 'name'
+                'source' => 'iso_code'
             ]
         ];
     }
