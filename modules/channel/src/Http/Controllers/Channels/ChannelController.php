@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+
 class ChannelController extends ApiController
 {
 
@@ -39,8 +41,11 @@ class ChannelController extends ApiController
      */
     public function store(Request $request)
     {
+
+        $request->merge(['is_response' => false]);
+
         $rules = [
-            'name' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('channels', 'name')],
             'is_response' => 'required|boolean',
         ];
         $this->validate($request, $rules);
@@ -72,8 +77,11 @@ class ChannelController extends ApiController
      */
     public function update(Request $request, Channel $channel)
     {
+
+        $request->merge(['is_response' => false]);
+
         $rules = [
-            'name' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('channels', 'name', 'id', "{$channel->id}")],
             'is_response' => 'required|boolean',
         ];
 

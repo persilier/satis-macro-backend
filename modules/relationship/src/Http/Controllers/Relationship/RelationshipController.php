@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Relationship;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
@@ -44,8 +45,8 @@ class RelationshipController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('relationships', 'name')],
+            'description' => 'nullable',
         ];
         $this->validate($request, $rules);
         $relationship = Relationship::create($request->only(['name', 'description']));
@@ -75,8 +76,8 @@ class RelationshipController extends ApiController
     public function update(Request $request, Relationship $relationship)
     {
         $rules = [
-            'name' => 'required|string',
-            'description' => 'required|string'
+            'name' => ['required', new TranslatableFieldUnicityRules('relationships', 'name', 'id', "{$relationship->id}")],
+            'description' => 'nullable',
         ];
         $this->validate($request, $rules);
         $relationship->update($request->only(['name', 'description']));

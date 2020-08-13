@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Rules\SmtpParametersRules;
 
 class MailController extends ApiController
 {
@@ -46,22 +47,22 @@ class MailController extends ApiController
         $rules = [
             'senderID' => 'required',
             'username' => 'required',
-            'password' => 'min:2',
+            'password' => [
+                'min:2',
+                Rule::requiredIf(function () use ($parameters) {
+                    return !property_exists($parameters, 'password');
+                })],
             'from' => 'required',
-            'server' => 'required',
+            'server' => ['required', new SmtpParametersRules($request->all())],
             'port' => 'integer|required',
             'security' => ['required', Rule::in(['ssl', 'tls'])]
         ];
 
         $this->validate($request, $rules);
 
-        if (is_null($parameters->password)) {
-            $this->errorResponse('password is required.', 204);
-        }
-
         $new_parameters = $request->only(['senderID', 'username', 'password', 'from', 'server', 'port', 'security']);
-        
-        Metadata::where('name', 'mail-parameters')->first()->update(['data'=> json_encode($new_parameters)]);
+
+        Metadata::where('name', 'mail-parameters')->first()->update(['data' => json_encode($new_parameters)]);
 
         return response()->json($new_parameters, 200);
     }

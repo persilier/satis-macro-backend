@@ -8,6 +8,7 @@ use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class UnitController extends ApiController
 {
@@ -55,9 +56,10 @@ class UnitController extends ApiController
      */
     public function store(Request $request)
     {
+
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
+            'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
             'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
@@ -110,9 +112,10 @@ class UnitController extends ApiController
      */
     public function update(Request $request, Unit $unit)
     {
+
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name', 'id', "{$unit->id}")],
+            'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
             'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {

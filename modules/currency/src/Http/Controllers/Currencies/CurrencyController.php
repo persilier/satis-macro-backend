@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Currency;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+
 class CurrencyController extends ApiController
 {
 
@@ -40,8 +42,8 @@ class CurrencyController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string',
-            'iso_code' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('currencies', 'name')],
+            'iso_code' => 'required|string|unique:currencies,iso_code,NULL,NULL,deleted_at,NULL',
         ];
         $this->validate($request, $rules);
         $currencies = Currency::create($request->only(['name', 'iso_code']));
@@ -72,8 +74,8 @@ class CurrencyController extends ApiController
     public function update(Request $request, Currency $currency)
     {
         $rules = [
-            'name' => 'required|string',
-            'iso_code' => 'required|string',
+            'name' => ['required', new TranslatableFieldUnicityRules('currencies', 'name', 'id', "{$currency->id}")],
+            'iso_code' => "required|string|unique:currencies,iso_code,{$currency->id},id,deleted_at,NULL",
         ];
         $this->validate($request, $rules);
         $currency->slug = null;

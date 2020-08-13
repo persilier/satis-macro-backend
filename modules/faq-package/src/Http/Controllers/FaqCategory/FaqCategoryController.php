@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\FaqCategory;
 use Satis2020\FaqPackage\Http\Resources\FaqCategory as FaqCategoryResource;
 use Satis2020\FaqPackage\Http\Resources\FaqCategoryCollection;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class FaqCategoryController extends ApiController
 {
@@ -14,11 +15,12 @@ class FaqCategoryController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        /*$this->middleware('permission:can-list-faqcategory')->only(['index']);
-        $this->middleware('permission:can-create-faqcategory')->only(['store']);
-        $this->middleware('permission:can-show-faqcategory')->only(['show']);
-        $this->middleware('permission:can-update-faqcategory')->only(['update']);
-        $this->middleware('permission:can-delete-faqcategory')->only(['destroy']);*/
+
+        $this->middleware('permission:list-faq-category')->only(['index']);
+        $this->middleware('permission:store-faq-category')->only(['store']);
+        $this->middleware('permission:show-faq-category')->only(['show']);
+        $this->middleware('permission:update-faq-category')->only(['update']);
+        $this->middleware('permission:destroy-faq-category')->only(['destroy']);
     }
 
     /**
@@ -41,26 +43,24 @@ class FaqCategoryController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string|max:255'
+            'name' => ['required', new TranslatableFieldUnicityRules('faq_categories', 'name')],
         ];
         $this->validate($request, $rules);
-        if($category = FaqCategory::where('name->'.App::getLocale(), $request->name)->first())
-            return $this->errorResponse('Cette catégorie de faq existe déjà dans la base.', 400);
-        $faq_category = FaqCategory::create(['name' => $request->name]);
-        return new FaqCategoryResource($faq_category);
+
+        $faqCategory = FaqCategory::create(['name' => $request->name]);
+        return new FaqCategoryResource($faqCategory);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param FaqCategory $faq_category
+     * @param FaqCategory $faqCategory
      * @return FaqCategoryResource
      */
-    public function show($faq_category)
+    public function show(FaqCategory $faqCategory)
     {
-        $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)->orWhere('id',$faq_category)->firstOrFail();
         return new FaqCategoryResource(
-            $category
+            $faqCategory
         );
     }
 
@@ -69,40 +69,34 @@ class FaqCategoryController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string $faq_category
+     * @param string $faqCategory
      * @return FaqCategoryResource
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, $faq_category)
+    public function update(Request $request, FaqCategory $faqCategory)
     {
+        
         $rules = [
-            'name' => 'required|string|max:255'
+            'name' => ['required', new TranslatableFieldUnicityRules('faq_categories', 'name', 'id', "{$faqCategory->id}")],
         ];
         $this->validate($request, $rules);
 
-        $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)
-            ->orWhere('id',$faq_category)->firstOrFail();
-
-        if($check = FaqCategory::where('name->'.App::getLocale(), $request->name)->first())
-            return $this->errorResponse('Cette catégorie de faq existe déjà dans la base.', 400);
-        $category->slug = null;
-        $category->name = $request->name;
-        $category->save();
-        return new FaqCategoryResource($category);
+        $faqCategory->slug = null;
+        $faqCategory->name = $request->name;
+        $faqCategory->save();
+        return new FaqCategoryResource($faqCategory);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param FaqCategory $faq_category
+     * @param FaqCategory $faqCategory
      * @return FaqCategoryResource
      * @throws \Exception
      */
-    public function destroy($faq_category)
+    public function destroy(FaqCategory $faqCategory)
     {
-        $category = FaqCategory::where('slug->'.App::getLocale(), $faq_category)
-            ->orWhere('id',$faq_category)->firstOrFail();
-        $category->secureDelete('faqs');
-        return new FaqCategoryResource($category);
+        $faqCategory->secureDelete('faqs');
+        return new FaqCategoryResource($faqCategory);
     }
 }
