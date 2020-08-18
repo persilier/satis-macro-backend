@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ReportingTask;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 
@@ -49,9 +50,12 @@ class ReportingTasksController extends ApiController
 
         $institutions = Institution::all();
 
+        $staffs = $this->getAllStaffsReportingTasks();
+
         return response()->json([
             'period' => $period,
-            'institutions' => $institutions
+            'institutions' => $institutions,
+            'staffs' => $staffs
         ],200);
     }
 
@@ -65,11 +69,15 @@ class ReportingTasksController extends ApiController
     {
         $this->validate($request, $this->rulesTasksConfig());
 
+        $this->verifiedStaffsExist($request);
+
         $institution = $this->institution();
 
         $this->reportingTasksExists($request, $institution);
 
         $reporting = ReportingTask::create($this->createFillableTasks($request, $institution));
+
+        $reporting->staffs()->sync($request->staffs);
 
         return response()->json($reporting,201);
 
@@ -82,13 +90,13 @@ class ReportingTasksController extends ApiController
      */
     public function edit(ReportingTask $reportingTask)
     {
-
         $period = $this->periodList();
 
         $institutions = Institution::all();
 
         return response()->json([
             'period' => $period,
+            'staffs' => $this->getAllStaffsReportingTasks(),
             'reportingTask' => $this->reportingTaskMap($reportingTask),
             'institutions' => $institutions
         ],200);
@@ -106,11 +114,15 @@ class ReportingTasksController extends ApiController
 
         $this->validate($request, $this->rulesTasksConfig());
 
+        $this->verifiedStaffsExist($request);
+
         $institution = $this->institution();
 
         $this->reportingTasksExists($request, $institution, $reportingTask->id);
 
         $reportingTask->update($this->createFillableTasks($request, $institution));
+
+        $reportingTask->staffs()->sync($request->staffs);
 
         return response()->json($reportingTask, 201);
     }

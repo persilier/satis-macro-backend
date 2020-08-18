@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/any-user",
-  "description": "satis2020/any-user est un module qui va permettre la gestion des utilisateursdans toutes les institutions",
+  "name": "satis2020/my-user",
+  "description": "satis2020/my-user est un module qui va permettre la gestion des utilisateurs dans mon institution",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -20,14 +20,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\AnyUser\\": "src/",
-      "Satis2020\\AnyUser\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\MyUser\\": "src/",
+      "Satis2020\\MyUser\\Database\\Seeds\\": "database/seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\AnyUser\\Providers\\AnyUserServiceProvider"
+        "Satis2020\\MyUser\\Providers\\MyUserServiceProvider"
       ]
     }
   }

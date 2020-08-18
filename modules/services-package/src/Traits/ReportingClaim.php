@@ -18,6 +18,7 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ReportingTask;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 
 
@@ -98,7 +99,7 @@ trait ReportingClaim
 
         $claims = $this->queryNumberObject($request, $institutionId);
 
-        $objects = ClaimObject::where('claim_category_id', $claimCategoryId)->get()->map(function ($item) use ($claims){
+        $objects = ClaimObject::has('claims')->where('claim_category_id', $claimCategoryId)->get()->map(function ($item) use ($claims){
             $claimsResolue = $this->statistique($claims, $item->id, 'archived');
             $item['total'] = $this->statistique($claims, $item->id, false, true);
             $item['incomplete'] = $this->statistique($claims, $item->id, 'incomplete');
@@ -919,30 +920,54 @@ trait ReportingClaim
 
         $institution = $reportinTask->institution;
 
-        if(!empty($reportinTask->email)){
+        $rapportData = $this->generateReportingAuto($request, $institution, $institutionId);
 
-            $rapportData = $this->generateReportingAuto($request, $institution, $institutionId);
+        $data = view('ServicePackage::reporting.pdf-auto', $rapportData)->render();
 
-            $data = view('ServicePackage::reporting.pdf-auto', $rapportData)->render();
+        $file = public_path().'/temp/Reporting_'.time().'.pdf';
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($data);
+        $pdf->save($file);
 
-            $file = public_path().'/temp/Reporting_'.time().'.pdf';
-            $pdf = App::make('dompdf.wrapper');
-            $pdf->loadHTML($data);
-            $pdf->save($file);
+        $dd = $request->date_start;
+        $df = $request->date_end;
 
-            $dd = $request->date_start;
-            $df = $request->date_end;
+        $details = [
+            'file' => $file,
+            'email' => $this->emailDestinatairesReportingTasks($reportinTask),
+            'reportingTask' => $reportinTask,
+            'dateStart' => $dd->format('Y-m-d'),
+            'dateEnd' => $df->format('Y-m-d'),
+        ];
 
-            $details = [
-                'file' => $file,
-                'email' => $reportinTask->email,
-                'reportingTask' => $reportinTask,
-                'dateStart' => $dd->format('Y-m-d'),
-                'dateEnd' => $df->format('Y-m-d'),
-            ];
+        PdfReportingSendMail::dispatch($details);
+    }
 
-            PdfReportingSendMail::dispatch($details);
+
+    /**
+     * @param $reportingTask
+     * @return array
+     */
+    protected function emailDestinatairesReportingTasks($reportingTask){
+
+        $emails = [];
+
+        $staffs = Staff::with('reportingTasks', 'identite')->whereHas('identite', function ($q){
+
+            $q->whereNotNull('email');
+
+        })->whereHas('reportingTasks', function($query) use ($reportingTask){
+
+            $query->where('id', $reportingTask->id);
+
+        })->get();
+
+        foreach($staffs as $staff){
+
+            $emails[] = $staff->identite->email[0];
         }
+
+        return $emails;
 
     }
 
@@ -955,19 +980,33 @@ trait ReportingClaim
     protected function rulesTasksConfig($institution = true)
     {
         $data = [
-            'period' => ['required', Rule::in(['days', 'weeks', 'months'])],
-            'email' => [
-                'required', 'array', new EmailValidationRules,
+            'period' => ['required', Rule::in(['days', 'weeks', 'months', 'quarterly', 'biannual'])],
+            'staffs' => [
+                'required', 'array',
             ],
         ];
 
         if($institution){
 
-            $data['institution_id'] = 'sometimes|exists:institutions,id';
+            $data['institution_id'] = 'nullable|exists:institutions,id';
 
         }
 
         return $data;
+    }
+
+    /**
+     * @param $request
+     * @return array
+     */
+    protected function verifiedStaffsExist($request){
+
+        foreach ($request->staffs as $staff){
+
+            Staff::findOrFail($staff);
+
+        }
+
     }
 
     /**
@@ -981,7 +1020,6 @@ trait ReportingClaim
 
             'institution_id' => $institution->id,
             'period' => $request->period,
-            'email' => $request->email
         ];
 
         if($request->has('institution_id')){
@@ -1012,7 +1050,7 @@ trait ReportingClaim
      */
     protected function reportingTasksMap($institution){
 
-        return ReportingTask::with('institutionTargeted')->where('institution_id', $institution->id)->get()->map(function($item){
+        return ReportingTask::with('institutionTargeted', 'staffs.identite')->where('institution_id', $institution->id)->get()->map(function($item){
 
             $item['period_tag'] =  Arr::first($this->periodList(), function ($value) use ($item){
                 return $value['value'] === $item->period;
@@ -1025,12 +1063,28 @@ trait ReportingClaim
 
 
     /**
+     * @return Builder[]|Collection
+     */
+    protected function getAllStaffsReportingTasks(){
+
+        $institution = $this->institution();
+
+        return Staff::with('identite')->whereHas('identite', function ($query){
+
+            $query->whereNotNull('email');
+
+        })->where('institution_id', $institution->id)->get();
+
+    }
+
+
+    /**
      * @param $reportingTask
      * @return mixed
      */
     protected function reportingTaskMap($reportingTask){
 
-        $reportingTask->load('institutionTargeted');
+        $reportingTask->load('institutionTargeted', 'staffs.identite');
 
         $reportingTask['period_tag'] = Arr::first($this->periodList(), function ($value) use ($reportingTask){
             return $value['value'] === $reportingTask->period;
@@ -1046,13 +1100,19 @@ trait ReportingClaim
 
         return [
             [
-                'value' => 'days', 'label' => 'Jour'
+                'value' => 'days', 'label' => 'Journalier'
             ],
             [
-                'value' => 'weeks', 'label' => 'Semaine'
+                'value' => 'weeks', 'label' => 'Hebdomadaire'
             ],
             [
-                'value' => 'months', 'label' => 'Mois'
+                'value' => 'months', 'label' => 'Mensuel'
+            ],
+            [
+                'value' => 'quarterly', 'label' => 'Trimestriel'
+            ],
+            [
+                'value' => 'biannual', 'label' => 'Semestriel'
             ]
         ];
     }

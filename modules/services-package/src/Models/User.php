@@ -49,11 +49,17 @@ class User extends Authenticate
         'password'
     ];
 
+    /**
+     * @return bool
+     */
     public function isEnabled()
     {
         return is_null($this->disabled_at);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function identite()
     {
         return $this->belongsTo(Identite::class, 'identite_id');
@@ -71,6 +77,9 @@ class User extends Authenticate
         return $this->where('username', $username)->first();
     }
 
+    /**
+     * @return |null
+     */
     public function role()
     {
         $role = $this->roles->first();

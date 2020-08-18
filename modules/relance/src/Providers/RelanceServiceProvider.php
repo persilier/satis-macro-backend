@@ -1,16 +1,18 @@
 <?php
-namespace Satis2020\AnyUser\Providers;
-use Illuminate\Support\ServiceProvider;
+
+
+namespace Satis2020\Relance\Providers;
+
+
 use Illuminate\Support\Facades\Route;
-use Satis2020\ServicePackage\Traits\ApiResponser;
+use Illuminate\Support\ServiceProvider;
 
 /**
- * Class AnyUserServiceProvider
- * @package Satis2020\AnyUser\Providers
+ * Class RelanceServiceProvider
+ * @package Satis2020\Relance\Providers
  */
-class AnyUserServiceProvider extends ServiceProvider
+class RelanceServiceProvider extends ServiceProvider
 {
-    use ApiResponser;
     /**
      * Register any application services.
      *
@@ -61,7 +63,7 @@ class AnyUserServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\AnyUser\Http\Controllers',
+            'namespace' => 'Satis2020\Relance\Http\Controllers',
             'middleware' => ['api']
         ];
     }
