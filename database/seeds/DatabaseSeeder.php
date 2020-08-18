@@ -99,9 +99,9 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyInstitutionsSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyClaimsSeeder::class);
 //        $this->call(\Satis2020\Relance\Database\Seeds\RolesTableSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateUserForTestInMacroSeeder::class);
-        $this->call(\Satis2020\AnyUser\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\MyUser\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateUserForTestInMacroSeeder::class);
+//        $this->call(\Satis2020\AnyUser\Database\Seeds\RolesTableSeeder::class);
+//        $this->call(\Satis2020\MyUser\Database\Seeds\RolesTableSeeder::class);
 
 
 

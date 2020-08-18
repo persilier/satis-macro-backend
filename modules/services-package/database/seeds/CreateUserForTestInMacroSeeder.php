@@ -51,15 +51,19 @@ class CreateUserForTestInMacroSeeder extends Seeder
     {
         Identite::all()->map(function ($item, $key) {
 
-            if (in_array($item->email[0], ['dga.macro@satis.com', 'cons.macro@satis.com'])) {
-                $this->createUser($item, 'staff');
-            }
+//            if (in_array($item->email[0], ['dga.macro@satis.com', 'cons.macro@satis.com'])) {
+//                $this->createUser($item, 'staff');
+//            }
+//
+//            if (in_array($item->email[0], ['dgac.macro@satis.com', 'consc.macro@satis.com'])) {
+//                $this->createUser($item, 'collector-holding');
+//            }
+//
+//            if (in_array($item->email[0], ['dgap.macro@satis.com', 'consp.macro@stais.com'])) {
+//                $this->createUser($item, 'pilot-holding');
+//            }
 
-            if (in_array($item->email[0], ['dgac.macro@satis.com', 'consc.macro@satis.com'])) {
-                $this->createUser($item, 'collector-holding');
-            }
-
-            if (in_array($item->email[0], ['dgap.macro@satis.com', 'consp.macro@stais.com'])) {
+            if (in_array($item->email[0], ['consp.macro@satis.com'])) {
                 $this->createUser($item, 'pilot-holding');
             }
 
