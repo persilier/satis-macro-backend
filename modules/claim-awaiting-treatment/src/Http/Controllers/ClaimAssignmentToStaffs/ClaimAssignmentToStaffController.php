@@ -85,6 +85,8 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $staff = $this->staff();
 
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+
         $rules = [
             'amount_returned' => ['integer', Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug))],
             'solution' => ['required', 'string'],
@@ -93,8 +95,6 @@ class ClaimAssignmentToStaffController extends ApiController
         ];
 
         $this->validate($request, $rules);
-
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $claim->activeTreatment->update([
             'amount_returned' => $request->amount_returned,
