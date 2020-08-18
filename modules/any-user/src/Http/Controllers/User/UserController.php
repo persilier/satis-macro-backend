@@ -26,8 +26,6 @@ class UserController extends ApiController
         $this->middleware('permission:list-user-any-institution')->only(['index']);
         $this->middleware('permission:store-user-any-institution')->only(['create','store']);
         $this->middleware('permission:show-user-any-institution')->only(['show']);
-        //$this->middleware('permission:update-user-any-institution')->only(['edit','update']);
-        //$this->middleware('permission:destroy-user-any-institution')->only(['destroy']);
     }
 
 
