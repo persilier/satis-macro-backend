@@ -86,9 +86,9 @@ trait UserTrait
 
             $query->where('institution_id', $request->institution_id);
 
-        })->doesntHave('user')->where('id', $request->id)->firstOrFail();
+        })->doesntHave('user')->findOrFail($request->identite_id);
 
-        $role = Role::where('name', $request->role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firtOrFail();
+        $role = Role::where('name', $request->role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
         if(is_array($role->institution_types) && in_array($identite->staff->institution->institutionType->name, $role->institution_types)){
 
@@ -135,11 +135,9 @@ trait UserTrait
 
         $institution = $this->institution();
 
-        $user =  $user->load('identite.staff');
-
         if($myInstitution){
 
-            if($user->staff->institution->id !== $institution->id){
+            if($user->identite->staff->institution->id !== $institution->id){
 
                 throw new CustomException("Ce rôle n'existe pas pour ce type d'institution.");
 
