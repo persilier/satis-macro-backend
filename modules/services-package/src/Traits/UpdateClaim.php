@@ -152,6 +152,19 @@ trait UpdateClaim
         return $claim;
     }
 
+    protected function getAllRequirements($claimObject){
+
+        $requirements = $claimObject->requirements->pluck('name');
+        $rules = collect([]);
+
+        foreach ($requirements as $requirement) {
+            $rules->put($requirement, 'required');
+        }
+
+        return $rules;
+
+    }
+
     /**
      * @param $claim
      * @return array
@@ -165,9 +178,11 @@ trait UpdateClaim
             'channels' => Channel::all(),
             'claimObjects' => ClaimObject::all(),
             'currencies' => Currency::all(),
+            'requirements' => $this->getAllRequirements($claim->claimObject)
         ];
 
         try {
+
             $institutionId = $claim->institution_targeted_id;
             $identiteId = $claim->claimer_id;
             $accounts = Account::with([
@@ -180,6 +195,7 @@ trait UpdateClaim
                     });
                 });
             })->get();
+
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les informations nécessaires à la modification d'une réclamation.");
         }
@@ -205,6 +221,7 @@ trait UpdateClaim
             'claimObjects' => ClaimObject::all(),
             'currencies' => Currency::all(),
             'relationships' => Relationship::all(),
+            'requirements' => $this->getAllRequirements($claim->claimObject)
         ];
 
         return $datas;
@@ -225,7 +242,7 @@ trait UpdateClaim
                 });
             })->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
-            throw new CustomException("Impossible de récupérer cette réclamation");
+            throw new CustomException("Impossible de récupérer cette réclamation.");
         }
         return $claim;
     }

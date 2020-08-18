@@ -18,6 +18,7 @@
     "laravel/tinker": "^2.0",
     "satis2020/any-institution": "^1.0",
     "satis2020/any-institution-unit": "^1.0",
+    "satis2020/any-user": "^1.0",
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
@@ -42,6 +43,7 @@
     "satis2020/monitoring-claim-my-institution": "^1.0",
     "satis2020/my-institution": "^1.0",
     "satis2020/my-institution-unit": "^1.0",
+    "satis2020/my-user": "^1.0",
     "satis2020/notification": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
     "satis2020/position": "^1.0",
@@ -51,6 +53,7 @@
     "satis2020/register-claim-against-any-institution": "^1.0",
     "satis2020/register-claim-against-my-institution": "^1.0",
     "satis2020/register-claim-without-client": "^1.0",
+    "satis2020/relance": "^1.0",
     "satis2020/relationship": "^1.0",
     "satis2020/reporting-claim-any-institution": "^1.0",
     "satis2020/reporting-claim-my-institution": "^1.0",
@@ -519,6 +522,20 @@
     {
       "type": "path",
       "url": "modules/any-user/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/my-user/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/relance/",
       "options": {
         "symlink": true
       }

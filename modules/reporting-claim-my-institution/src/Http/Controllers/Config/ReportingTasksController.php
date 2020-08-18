@@ -49,8 +49,11 @@ class ReportingTasksController extends ApiController
 
         $period = $this->periodList();
 
+        $staffs = $this->getAllStaffsReportingTasks();
+
         return response()->json([
-            'period' => $period
+            'period' => $period,
+            'staffs' => $staffs
         ],200);
     }
 
@@ -59,6 +62,8 @@ class ReportingTasksController extends ApiController
     {
         $this->validate($request, $this->rulesTasksConfig(false));
 
+        $this->verifiedStaffsExist($request);
+
         $institution = $this->institution();
 
         $request->merge(['institution_targeted_id' => $institution->id]);
@@ -66,6 +71,8 @@ class ReportingTasksController extends ApiController
         $this->reportingTasksExists($request, $institution);
 
         $reporting = ReportingTask::create($this->createFillableTasks($request, $institution));
+
+        $reporting->staffs()->sync($request->staffs);
 
         return response()->json($reporting,201);
     }
@@ -82,6 +89,7 @@ class ReportingTasksController extends ApiController
 
         return response()->json([
             'period' => $period,
+            'staffs' => $this->getAllStaffsReportingTasks(),
             'reportingTask' =>  $this->reportingTaskMap($reportingTask),
         ],200);
     }
@@ -98,11 +106,15 @@ class ReportingTasksController extends ApiController
 
         $this->validate($request, $this->rulesTasksConfig(false));
 
+        $this->verifiedStaffsExist($request);
+
         $institution = $this->institution();
 
         $this->reportingTasksExists($request, $institution, $reportingTask->id);
 
         $reportingTask->update($this->createFillableTasks($request, $institution));
+
+        $reportingTask->staffs()->sync($request->staffs);
 
         return response()->json($reportingTask, 201);
     }

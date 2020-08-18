@@ -2,6 +2,7 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -24,18 +25,26 @@ trait ProcessingCircuit
      * @param $institutionId | Id institution
      * @return array
      */
+    /**
+     * @param $institutionId | Id institution
+     * @return array
+     */
     protected function getAllProcessingCircuits($institutionId=null)
     {
         try {
 
-            $circuits = ClaimCategory::with(['claimObjects.units' => function ($query) use ($institutionId){
-                $query->whereHas('claimObjects', function ($q) use ($institutionId){
-                    $q->whereRaw('units.institution_id = ?',[$institutionId]);
-                });
-            }])->get();
+            $circuits =   ClaimCategory::has('claimObjects')->get()->map(function ($item) use ($institutionId){
+                $item['claimObjects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
+                    $query->where('claim_object_unit.institution_id', '=', $institutionId);
+                }])->get();
+
+                return $item;
+            });
 
         } catch (\Exception $exception) {
+
             throw new CustomException("Impossible de récupérer les circuits de traitements");
+
         }
 
         return $circuits;
@@ -69,6 +78,7 @@ trait ProcessingCircuit
             $claim_object = ClaimObject::findOrFail($claim_object_id);
             // Check if requirement_ids don't contain same values and exist
             $unit_ids_collection = collect([]);
+            $unitsSync = [];
             foreach ($units_ids as $unit_id) {
 
                 if ($unit_ids_collection->search($unit_id, true) !== false) {
@@ -78,11 +88,15 @@ trait ProcessingCircuit
                 Unit::where('institution_id',$institutionId)->findOrFail($unit_id);
 
                 $unit_ids_collection->push($unit_id);
+
+                $unitsSync[$unit_id] = ['institution_id' => $institutionId];
+
             }
-            //dd($claim_object);
+
+
             $collection->push([
                 'claim_object' => $claim_object,
-                'units_ids' => $units_ids
+                'units_ids' => $unitsSync,
             ]);
 
         }
@@ -97,14 +111,12 @@ trait ProcessingCircuit
      */
     protected function detachAttachUnits($collection , $institutionId = null){
 
-        try {
+        try{
 
             $collection->each(function ($item, $key) use ($institutionId){
 
-                $attachedIds = $item['claim_object']->units()->where('institution_id', $institutionId)->pluck('id');
+                $item['claim_object']->units()->sync($item['units_ids']);
 
-                $item['claim_object']->units()->detach($attachedIds);
-                $item['claim_object']->units()->attach($item['units_ids']);
             });
 
         } catch (\Exception $exception) {

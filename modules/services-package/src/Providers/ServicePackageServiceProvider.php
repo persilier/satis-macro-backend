@@ -70,6 +70,8 @@ class ServicePackageServiceProvider extends ServiceProvider
                 \Satis2020\ServicePackage\Console\Commands\ReportingDayCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\ReportingWeekCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\ReportingMonthCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\ReportingQuarterlyCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\ReportingBiannualCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\RelanceCommand::class,
             ]);
 
@@ -78,6 +80,8 @@ class ServicePackageServiceProvider extends ServiceProvider
                 $this->app->make(Schedule::class)->command('service:generate-reporting-day')->twiceDaily(0, 13);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-week')->mondays();
                 $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn (1, '01:00')->monthlyOn (1, '13:00');
+                $this->app->make(Schedule::class)->command('service:generate-reporting-quarterly')->quarterly()->between(07, 18);
+                $this->app->make(Schedule::class)->command('service:generate-reporting-biannual')->quarterly()->quarterly();
             });
         }
     }

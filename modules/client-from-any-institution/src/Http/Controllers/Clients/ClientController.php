@@ -1,8 +1,10 @@
 <?php
 
 namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Clients;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Institution;
@@ -67,8 +69,8 @@ class ClientController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      * @throws RetrieveDataUserNatureException
      */
     public function store(Request $request)
@@ -106,7 +108,7 @@ class ClientController extends ApiController
     /**
      * Display the specified resource.
      * @param $clientId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($clientId)
     {
@@ -123,7 +125,7 @@ class ClientController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param $accountId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function edit($accountId)
@@ -141,15 +143,12 @@ class ClientController extends ApiController
 
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param $accountId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      */
-    public function update(Request $request,$accountId)
+    public function update(Request $request, $accountId)
     {
         $this->validate($request, $this->rulesClient(true));
 
@@ -183,11 +182,10 @@ class ClientController extends ApiController
         return response()->json($client, 201);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param $client
-     * @return \Illuminate\Http\JsonResponse
+     * @param Account $account
+     * @return JsonResponse
      * @throws \Exception
      */
     public function destroy(Account $account)

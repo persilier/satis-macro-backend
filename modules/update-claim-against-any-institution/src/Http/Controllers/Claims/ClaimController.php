@@ -3,6 +3,7 @@
 namespace Satis2020\UpdateClaimAgainstAnyInstitution\Http\Controllers\Claims;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -29,7 +30,7 @@ class ClaimController extends ApiController
      *
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -43,7 +44,7 @@ class ClaimController extends ApiController
      * @param $claimId
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claimId)
     {
@@ -58,7 +59,7 @@ class ClaimController extends ApiController
      * @param $claimId
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function edit($claimId)
     {
@@ -77,7 +78,7 @@ class ClaimController extends ApiController
      * @return JsonResponse
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request, $claimId)
     {
@@ -86,8 +87,7 @@ class ClaimController extends ApiController
 
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
 
-        $request->merge(['status' => $this->getStatus($request)]);
-
+        $request->merge(['status' => $this->getStatus($request, true, false, true, true)]);
 
         $claim = $this->updateClaim($request, $claim, $this->staff()->id);
 

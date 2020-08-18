@@ -67,15 +67,7 @@ class InstitutionController extends ApiController
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws RetrieveDataUserNatureException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     */
+
     public function store(Request $request)
     {
 
