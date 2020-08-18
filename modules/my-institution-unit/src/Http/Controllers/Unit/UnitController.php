@@ -11,6 +11,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UnitTrait;
 
@@ -65,8 +66,8 @@ class UnitController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
+            'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
                 $query->where('institution_id', $this->institution()->id);
@@ -132,8 +133,8 @@ class UnitController extends ApiController
     {
         $unit = $this->getOneUnitByInstitution($this->institution()->id, $unit);
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name', 'id', "{$unit->id}")],
+            'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
                 $query->where('institution_id', $this->institution()->id)->where('unit_id', $unit->id);

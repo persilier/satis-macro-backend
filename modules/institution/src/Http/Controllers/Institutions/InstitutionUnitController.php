@@ -21,7 +21,7 @@ class InstitutionUnitController extends ApiController
      */
     public function index(Institution $institution)
     {
-        $institution->load(['units']);
+        $institution->load(['units.lead.identite']);
         return response()->json($institution->only(['units']), 200);
     }
 

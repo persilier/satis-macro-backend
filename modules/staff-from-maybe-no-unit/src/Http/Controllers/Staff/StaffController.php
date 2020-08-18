@@ -57,7 +57,7 @@ class StaffController extends ApiController
         return response()->json([
             'institutions' => Institution::all(),
             'positions' => Position::all(),
-            'units' => Unit::all()
+            'units' => Unit::with('lead.identite')->get()
         ], 200);
     }
 
@@ -105,12 +105,12 @@ class StaffController extends ApiController
      */
     public function edit(Staff $staff)
     {
-        $staff->load('identite', 'position', 'unit', 'institution.units');
+        $staff->load('identite', 'position', 'unit.lead.identite', 'institution.units');
         return response()->json([
             'staff' => $staff,
             'institutions' => Institution::all(),
             'positions' => Position::all(),
-            'units' => Unit::all()
+            'units' => Unit::with('lead.identite')->get()
         ], 200);
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
@@ -26,11 +27,12 @@ trait StaffManagement
         $data = [
             'firstname' => 'required',
             'lastname' => 'required',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
+            'sexe' => ['required'],
             'telephone' => ['required', 'array', new TelephoneArray],
             'email' => ['required', 'array', new EmailArray],
             'position_id' => 'required|exists:positions,id',
-            'institution_id' => 'required|exists:institutions,id'
+            'institution_id' => 'required|exists:institutions,id',
+            'is_lead' => [Rule::in([true, false])]
         ];
 
         if ($required_unit) {
@@ -62,7 +64,17 @@ trait StaffManagement
             $data['unit_id'] = $request->unit_id;
         }
 
-        return $staff = Staff::create($data);
+        $staff = Staff::create($data);
+
+        if ($request->has('unit_id') && $request->has('is_lead') && $request->is_lead) {
+
+            $unit = Unit::find($request->unit_id);
+
+            $unit->update(['lead_id', $staff->id]);
+
+        }
+
+        return $staff;
     }
 
     protected function updateStaff($request, $staff)
@@ -77,6 +89,14 @@ trait StaffManagement
             $data['unit_id'] = $request->unit_id;
         }
 
+        if ($request->has('unit_id') && $request->has('is_lead') && $request->is_lead) {
+
+            $unit = Unit::find($request->unit_id);
+
+            $unit->update(['lead_id', $staff->id]);
+
+        }
+
         return $staff->update($data);
     }
 
@@ -88,13 +108,13 @@ trait StaffManagement
     {
         $staff->load('identite', 'position', 'unit', 'institution');
 
-        try{
+        try {
             $condition = $staff->institution->id !== $institution_id;
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             throw new CustomException("Can't retrieve the staff institution");
         }
 
-        if ($condition){
+        if ($condition) {
             throw new CustomException("You do not own this staff.");
         }
 

@@ -38,7 +38,7 @@ class UnitType extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parent_id', 'others', 'can_be_target', 'can_treat'
+        'name', 'description', 'parent_id', 'others', 'can_be_target', 'can_treat', 'is_editable'
     ];
 
     /**

@@ -7,6 +7,7 @@ namespace Satis2020\PerformanceIndicatorPackage\Http\Controllers\PerformanceIndi
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\PerformanceIndicator;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class PerformanceIndicatorController extends ApiController
 {
@@ -44,8 +45,8 @@ class PerformanceIndicatorController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('performance_indicators', 'name')],
+            'description' => 'nullable',
             'value' => 'required|integer',
             'mesure_unit' => 'required'
         ];
@@ -79,8 +80,8 @@ class PerformanceIndicatorController extends ApiController
     public function update(Request $request, PerformanceIndicator $performanceIndicator)
     {
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => ['required', new TranslatableFieldUnicityRules('performance_indicators', 'name', 'id', "{$performanceIndicator->id}")],
+            'description' => 'nullable',
             'value' => 'required|integer',
             'mesure_unit' => 'required'
         ];

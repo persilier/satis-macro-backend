@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\AnyInstitution\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\StaffFromMaybeNoUnit\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\MyInstitution\Database\Seeds\RolesTableSeeder::class);
-        //$this->call(\Satis2020\ClaimObject\Database\Seeds\RolesTableSeeder::class);
+//        $this->call(\Satis2020\ClaimObject\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\ClaimCategory\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\Configuration\Database\Seeds\SmsTableSeeder::class);
 //        $this->call(\Satis2020\Configuration\Database\Seeds\MailsTableSeeder::class);
@@ -93,7 +93,9 @@ class DatabaseSeeder extends Seeder
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceSendNotificationSeeder::class);
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceRoleSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\RolesInstitutionTypesSeeder::class);
+        //$this->call(\Satis2020\ServicePackage\Database\Seeds\RolesInstitutionTypesSeeder::class);
+        //$this->call(\Satis2020\FaqPackage\Database\Seeds\RolesTableSeeder::class);
         $this->call(\Satis2020\Relance\Database\Seeds\RolesTableSeeder::class);
     }
+
 }

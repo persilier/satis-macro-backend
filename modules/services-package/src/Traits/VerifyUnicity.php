@@ -60,7 +60,7 @@ trait VerifyUnicity
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
         if (!$verify['status']) {
-            $staff = Staff::with('identite')->where('identite_id', '=', $verify['entity']->id)->firstOrFail();
+            $staff = Staff::with('identite')->where('identite_id', '=', $verify['entity']->id)->first();
             if (!is_null($staff)) {
                 return [
                     'status' => false,

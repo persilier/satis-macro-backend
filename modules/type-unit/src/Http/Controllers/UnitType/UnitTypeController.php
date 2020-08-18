@@ -2,9 +2,13 @@
 
 namespace Satis2020\TypeUnit\Http\Controllers\UnitType;
 
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\UnitType;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\FieldUnicityRules;
+use Satis2020\ServicePackage\Rules\IsEditableRules;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 class UnitTypeController extends ApiController
 {
@@ -47,14 +51,20 @@ class UnitTypeController extends ApiController
      */
     public function store(Request $request)
     {
+
+        $request->merge(['is_editable' => true]);
+
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
-            'parent_id' => 'exists:unit_types,id'
+            'name' => ['required', new TranslatableFieldUnicityRules('unit_types', 'name')],
+            'description' => 'nullable',
+            'parent_id' => 'exists:unit_types,id',
+            'is_editable' => ['required', Rule::in([true])],
+            'can_be_target' => ['required', Rule::in([true, false])],
+            'can_treat' => ['required', Rule::in([true, false])],
         ];
 
         $this->validate($request, $rules);
-        $unitType = UnitType::create($request->only(['name', 'description','parent_id', 'others']));
+        $unitType = UnitType::create($request->only(['name', 'description','parent_id', 'others', 'is_editable', 'can_be_target', 'can_treat']));
         return response()->json($unitType, 201);
     }
 
@@ -93,16 +103,21 @@ class UnitTypeController extends ApiController
      */
     public function update(Request $request, UnitType $unitType)
     {
+        $request->merge(['is_editable' => $unitType->is_editable]);
+
         $rules = [
-            'name' => 'required',
-            'description' => 'required',
-            'parent_id' => 'exists:unit_types,id'
+            'name' => ['required', new TranslatableFieldUnicityRules('unit_types', 'name', 'id', "{$unitType->id}")],
+            'description' => 'nullable',
+            'parent_id' => 'exists:unit_types,id',
+            'is_editable' => ['required', Rule::in([$unitType->is_editable]), new IsEditableRules],
+            'can_be_target' => ['required', Rule::in([true, false])],
+            'can_treat' => ['required', Rule::in([true, false])]
         ];
 
         $this->validate($request, $rules);
         if(!$request->has('parent_id'))
             $unitType->parent_id = null;
-        $unitType->update($request->only(['name', 'parent_id', 'description', 'others']));
+        $unitType->update($request->only(['name', 'parent_id', 'description', 'others', 'can_be_target', 'can_treat']));
         return response()->json($unitType, 201);
     }
 
