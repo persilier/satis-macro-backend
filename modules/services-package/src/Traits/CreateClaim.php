@@ -102,10 +102,10 @@ trait CreateClaim
      * @param bool $with_client
      * @param bool $with_relationship
      * @param bool $with_unit
+     * @param bool $completion
      * @return string
-     * @throws CustomException
      */
-    protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true)
+    protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true, $completion = false)
     {
         try {
             $requirements = ClaimObject::with('requirements')
@@ -114,20 +114,35 @@ trait CreateClaim
                 ->requirements
                 ->pluck('name');
             $rules = collect([]);
+
             foreach ($requirements as $requirement) {
                 $rules->put($requirement, 'required');
             }
+
         } catch (\Exception $exception) {
+
             throw new CustomException("Can't retrieve the claimObject requirements");
+
         }
 
         $status = 'full';
+
         $validator = Validator::make($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)), $rules->all());
+
         if ($validator->fails()) {
+
             $status = 'incomplete';
+
+            if($completion){
+
+                throw new CustomException($validator->errors());
+
+            }
+
         } else {
             // status = full so the claim is complete
             $request->merge(['completed_by' => $request->created_by, 'completed_at' => Carbon::now()]);
+
         }
 
         return $status;

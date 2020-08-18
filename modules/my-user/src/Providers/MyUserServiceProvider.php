@@ -1,14 +1,14 @@
 <?php
-namespace Satis2020\AnyUser\Providers;
+namespace Satis2020\MyUser\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 
 /**
- * Class AnyUserServiceProvider
- * @package Satis2020\AnyUser\Providers
+ * Class MyUserServiceProvider
+ * @package Satis2020\MyUser\Providers
  */
-class AnyUserServiceProvider extends ServiceProvider
+class MyUserServiceProvider extends ServiceProvider
 {
     use ApiResponser;
     /**
@@ -61,7 +61,7 @@ class AnyUserServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\AnyUser\Http\Controllers',
+            'namespace' => 'Satis2020\MyUser\Http\Controllers',
             'middleware' => ['api']
         ];
     }

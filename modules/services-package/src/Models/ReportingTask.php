@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -16,7 +17,7 @@ class ReportingTask extends Model
      *
      * @var array
      */
-    protected $casts = ['email' => 'array'];
+    protected $casts = ['staffs' => 'array'];
     /**
      * The attributes that should be mutated to dates.
      *
@@ -30,7 +31,7 @@ class ReportingTask extends Model
      * @var array
      */
     protected $fillable = [
-        'period','email' , 'institution_id', 'institution_targeted_id'
+        'period', 'staffs' , 'institution_id', 'institution_targeted_id'
     ];
 
 
@@ -56,6 +57,15 @@ class ReportingTask extends Model
     public function cronTasks()
     {
         return $this->morphMany(CronTask::class, 'model');
+    }
+
+
+    /**
+     * @return BelongsToMany
+     */
+    public function staffs()
+    {
+        return $this->belongsToMany(Staff::class);
     }
 
 

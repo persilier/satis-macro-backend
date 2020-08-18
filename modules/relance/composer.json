@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/any-user",
-  "description": "satis2020/any-user est un module qui va permettre la gestion des utilisateursdans toutes les institutions",
+  "name": "satis2020/relance",
+  "description": "satis2020/relance est un package qui va la gestion des relances.",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -14,20 +14,20 @@
     }
   ],
   "require": {
-    "satis2020/services-package": "1.0.0"
+    "satis2020/external-dependencies-package": "1.0.0"
   },
   "require-dev": {
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\AnyUser\\": "src/",
-      "Satis2020\\AnyUser\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\Relance\\": "src/",
+      "Satis2020\\Relance\\Database\\Seeds\\": "database/seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\AnyUser\\Providers\\AnyUserServiceProvider"
+        "Satis2020\\Relance\\Providers\\RelanceServiceProvider"
       ]
     }
   }

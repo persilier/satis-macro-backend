@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -152,7 +153,7 @@ class Staff extends Model
 
     /**
      * Get the discussions associated with the staff
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function discussions()
     {
@@ -166,6 +167,15 @@ class Staff extends Model
     public function messagesPosted()
     {
         return $this->hasMany(Message::class, 'posted_by');
+    }
+
+
+    /**
+     * @return BelongsToMany
+     */
+    public function reportingTasks()
+    {
+        return $this->belongsToMany(ReportingTask::class);
     }
 
 }

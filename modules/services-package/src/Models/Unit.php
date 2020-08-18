@@ -109,7 +109,7 @@ class Unit extends Model
      */
     public function claimObjects()
     {
-        return $this->belongsToMany(ClaimObject::class);
+        return $this->belongsToMany(ClaimObject::class)->withPivot('institution_id');
     }
 
     /**
