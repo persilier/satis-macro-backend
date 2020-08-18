@@ -35,7 +35,7 @@ trait CreateClaim
             'request_channel_slug' => 'required|exists:channels,slug',
             'response_channel_slug' => ['exists:channels,slug', new ChannelIsForResponseRules],
             'event_occured_at' => 'date_format:Y-m-d H:i',
-            'amount_disputed' => 'integer',
+            'amount_disputed' => 'nullable|integer',
             'amount_currency_slug' => 'exists:currencies,slug',
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
@@ -217,6 +217,16 @@ trait CreateClaim
                 $claim->files()->create(['title' => $title, 'url' => $url]);
             }
         }
+    }
+
+    protected function getTargetedInstitutions()
+    {
+        return Institution::with('institutionType')
+            ->get()
+            ->filter(function ($value, $key) {
+                return $value->institutionType->name != 'holding' && $value->institutionType->name != 'observatory';
+            })
+            ->values();
     }
 
 }
