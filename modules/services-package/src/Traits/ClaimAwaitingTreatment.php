@@ -55,6 +55,7 @@ trait ClaimAwaitingTreatment
      * @param $unitId
      * @param $claim
      * @return Builder|Builder[]|Collection|Model|null
+     * @throws CustomException
      */
     protected function getOneClaimQuery($institutionId, $unitId, $claim)
     {
@@ -194,6 +195,7 @@ trait ClaimAwaitingTreatment
      * @param $staffId
      * @param $claim
      * @return Builder|Builder[]|Collection|Model|null
+     * @throws CustomException
      */
     protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId, $claim)
     {
@@ -202,6 +204,23 @@ trait ClaimAwaitingTreatment
             throw new CustomException("Impossible de récupérer cette réclammation");
         else
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
+    }
+
+    protected function getTargetedStaffFromUnit($unitId)
+    {
+        return Staff::with('identite.user')
+            ->where('unit_id', $unitId)
+            ->get()
+            ->filter(function ($value, $key) {
+                if (is_null($value->identite)) {
+                    return false;
+                }
+                if (is_null($value->identite->user)) {
+                    return false;
+                }
+                return $value->identite->user->hasRole('staff');
+            })
+            ->values();
     }
 
 }

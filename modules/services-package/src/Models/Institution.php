@@ -5,13 +5,14 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Traits\SecureDelete;
+use Satis2020\ServicePackage\Traits\SecureForceDeleteWithoutException;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Institution extends Model
 {
-    use Sluggable, UuidAsId, SoftDeletes, SecureDelete;
+    use Sluggable, UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException;
     /**
      * The attributes that should be cast to native types.
      *

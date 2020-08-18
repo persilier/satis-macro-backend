@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAwaitingTreatments;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -83,11 +84,15 @@ class ClaimAwaitingTreatmentController extends ApiController
     public function edit($claim)
     {
         $institution = $this->institution();
+
         $staff = $this->staff();
 
         $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
-        return response()->json(['claim' => $claim, 'staffs' => Staff::with('identite')->where('unit_id',$staff->unit_id)->get()
-            ], 200);
+
+        return response()->json([
+            'claim' => $claim,
+            'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)
+        ], 200);
     }
 
     /**
@@ -103,7 +108,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
         return response()->json($claim, 200);
     }
 
@@ -139,10 +144,11 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    protected  function selfAssignmentClaim($claim)
+    protected function selfAssignmentClaim($claim)
     {
 
         $institution = $this->institution();
+
         $staff = $this->staff();
 
         $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
@@ -161,13 +167,13 @@ class ClaimAwaitingTreatmentController extends ApiController
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
-    protected  function assignmentClaimStaff(Request $request, $claim)
+    protected function assignmentClaimStaff(Request $request, $claim)
     {
 
         $institution = $this->institution();
         $staff = $this->staff();
 
-        if(!$this->checkLead($staff)){
+        if (!$this->checkLead($staff)) {
             throw new CustomException("Impossible d'affecter cette réclamation à un staff.");
         }
 

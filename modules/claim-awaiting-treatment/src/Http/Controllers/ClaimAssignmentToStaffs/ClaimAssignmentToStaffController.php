@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -31,7 +32,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
-        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim','unfoundedClaim']);
+        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim', 'unfoundedClaim']);
     }
 
 
@@ -64,7 +65,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
         return response()->json($claim, 200);
     }
 
@@ -77,24 +78,33 @@ class ClaimAssignmentToStaffController extends ApiController
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
-    protected function treatmentClaim(Request $request, $claim){
+    protected function treatmentClaim(Request $request, $claim)
+    {
 
         $institution = $this->institution();
+
         $staff = $this->staff();
 
-        $this->validate($request, $this->rules($staff, 'treatment'));
+        $rules = [
+            'amount_returned' => ['integer', Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug))],
+            'solution' => ['required', 'string'],
+            'comments' => ['nullable', 'string'],
+            'preventive_measures' => ['nullable', 'string']
+        ];
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
+        $this->validate($request, $rules);
+
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $claim->activeTreatment->update([
-            'amount_returned'   => $request->amount_returned,
-            'solution'          => $request->solution,
-            'comments'          => $request->comments,
+            'amount_returned' => $request->amount_returned,
+            'solution' => $request->solution,
+            'comments' => $request->comments,
             'preventive_measures' => $request->preventive_measures,
-            'solved_at'         => Carbon::now()
+            'solved_at' => Carbon::now()
         ]);
 
-        $claim->update([ 'status' => 'treated']);
+        $claim->update(['status' => 'treated']);
 
         $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
 
@@ -111,18 +121,19 @@ class ClaimAssignmentToStaffController extends ApiController
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
-    protected function unfoundedClaim(Request $request, $claim){
+    protected function unfoundedClaim(Request $request, $claim)
+    {
 
         $institution = $this->institution();
         $staff = $this->staff();
 
         $this->validate($request, $this->rules($staff, 'unfounded'));
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id,  $claim);
+        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
 
-        $claim->update([ 'status' => 'treated']);
+        $claim->update(['status' => 'treated']);
 
         $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
 

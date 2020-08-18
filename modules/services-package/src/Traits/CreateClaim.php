@@ -204,4 +204,14 @@ trait CreateClaim
         }
     }
 
+    protected function getTargetedInstitutions()
+    {
+        return Institution::with('institutionType')
+            ->get()
+            ->filter(function ($value, $key) {
+                return $value->institutionType->name != 'holding' && $value->institutionType->name != 'observatory';
+            })
+            ->values();
+    }
+
 }
