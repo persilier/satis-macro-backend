@@ -52,7 +52,7 @@ class ClaimController extends ApiController
     {
         return response()->json([
             'claimCategories' => ClaimCategory::all(),
-            'institutions' => Institution::all(),
+            'institutions' => $this->getTargetedInstitutions(),
             'channels' => Channel::all(),
             'currencies' => Currency::all(),
             'relationships' => Relationship::all()
