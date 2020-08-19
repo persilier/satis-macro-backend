@@ -45,7 +45,7 @@ trait CreateClaim
             'claim_object_id' => 'required|exists:claim_objects,id',
             'institution_targeted_id' => 'required|exists:institutions,id',
             'request_channel_slug' => 'required|exists:channels,slug',
-            'response_channel_slug' => ['nullable', 'exists:channels,slug', new ChannelIsForResponseRules],
+            'response_channel_slug' => ['required', 'exists:channels,slug', new ChannelIsForResponseRules],
             'event_occured_at' => [
                 'required',
                 'date_format:Y-m-d H:i',
