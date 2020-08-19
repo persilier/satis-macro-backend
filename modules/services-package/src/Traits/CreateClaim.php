@@ -33,10 +33,10 @@ trait CreateClaim
             'claim_object_id' => 'required|exists:claim_objects,id',
             'institution_targeted_id' => 'required|exists:institutions,id',
             'request_channel_slug' => 'required|exists:channels,slug',
-            'response_channel_slug' => ['exists:channels,slug', new ChannelIsForResponseRules],
-            'event_occured_at' => 'date_format:Y-m-d H:i',
-            'amount_disputed' => 'nullable|integer',
-            'amount_currency_slug' => 'exists:currencies,slug',
+            'response_channel_slug' => ['nullable', 'exists:channels,slug', new ChannelIsForResponseRules],
+            'event_occured_at' => 'nullable|date_format:Y-m-d H:i',
+            'amount_disputed' => 'nullable|integer|min:1',
+            'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
@@ -63,7 +63,7 @@ trait CreateClaim
         }
 
         if ($with_unit) {
-            $data['unit_targeted_id'] = ['exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+            $data['unit_targeted_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
         }
 
         if ($update) {
