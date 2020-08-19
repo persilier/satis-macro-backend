@@ -83,7 +83,7 @@ trait UpdateClaim
             'amount_disputed' => 'nullable|integer',
             'amount_currency_slug' => [Rule::requiredIf(!is_null($request->amount_disputed)),'exists:currencies,slug'],
             'is_revival' => 'required|boolean',
-            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png,mp3,mp4'
+            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
         ];
 
         $data['firstname'] = 'required|string';

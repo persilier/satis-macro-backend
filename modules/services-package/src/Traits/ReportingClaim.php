@@ -301,9 +301,9 @@ trait ReportingClaim
      */
     protected function treatmentPeriod($request, $institutionId = false){
 
-        $totalClaim = $this->numberClaimByTreatmentPeriod($request,$institutionId)->count();
+        $totalClaim = $this->numberClaimByTreatmentPeriod($request, $institutionId)->count();
 
-        $datas = $this->numberClaimByTreatmentPeriod($request,$institutionId);
+        $datas = $this->numberClaimByTreatmentPeriod($request, $institutionId);
 
         return [
             '0-2' => $this->countFilterBetweenDateTreatmentPeriod($datas, 0, 2, $finish = false, $totalClaim),
@@ -352,13 +352,32 @@ trait ReportingClaim
     protected  function countFilterBetweenDateTreatmentPeriod($datas, $valStart, $valEnd, $finish, $total){
 
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
-            $nbre = $item->activeTreatment->validated_at->diffInDays($item->activeTreatment->assigned_to_staff_at, true);
+
             if($finish){
-                return (($nbre >= $valStart) || ($nbre < $valEnd)) ;
+
+                $begin = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valStart);
+
+                if(($begin >= $item->activeTreatment->transferred_to_unit_at)){
+
+                    return $item;
+
+                }
+
             }else{
-                return ($nbre > $valEnd);
+
+                $begin = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valStart);
+                $end = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valEnd);
+
+                if(($begin >= $item->activeTreatment->transferred_to_unit_at) && ($end < $item->activeTreatment->satisfaction_measured_at)){
+
+                    return $item;
+
+                }
             }
+
         })->count();
+
+        //dd($data['total']);
 
         $data['pourcentage'] = ( ($data['total'] !== 0) && ($total !==0)) ? round((( $data['total']/$total) * 100),2) : 0;
 
@@ -412,7 +431,7 @@ trait ReportingClaim
      * @param string $orderBy
      * @return Builder[]|Collection
      */
-    protected  function numberClaimByTreatmentPeriod($request, $institutionId, $condition = 'validated_at', $orderBy = 'assigned_to_staff_at'){
+    protected  function numberClaimByTreatmentPeriod($request, $institutionId, $condition = 'satisfaction_measured_at', $orderBy = 'satisfaction_measured_at'){
 
         $claims = $this->queryClaimByTreatmentPeriod($institutionId);
 
