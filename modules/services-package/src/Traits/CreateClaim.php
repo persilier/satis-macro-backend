@@ -116,6 +116,7 @@ trait CreateClaim
      * @param bool $with_unit
      * @param bool $completion
      * @return string
+     * @throws CustomException
      */
     protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true, $completion = false)
     {
@@ -145,7 +146,7 @@ trait CreateClaim
 
             $status = 'incomplete';
 
-            if($completion){
+            if ($completion) {
 
                 throw new CustomException($validator->errors());
 
@@ -171,13 +172,18 @@ trait CreateClaim
             'response_channel_slug',
             'event_occured_at',
             'amount_disputed',
-            'amount_currency_slug',
             'is_revival',
             'created_by',
             'status',
             'reference',
             'claimer_expectation'
         ];
+
+        if ($request->has('amount_disputed')) {
+            if ($request->amount_disputed >= 1) {
+                $data[] = 'amount_currency_slug';
+            }
+        }
 
         if ($request->has('status')) {
             if ($request->status == 'full') {
