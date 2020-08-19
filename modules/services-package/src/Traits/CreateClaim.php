@@ -45,10 +45,18 @@ trait CreateClaim
             'claim_object_id' => 'required|exists:claim_objects,id',
             'institution_targeted_id' => 'required|exists:institutions,id',
             'request_channel_slug' => 'required|exists:channels,slug',
-            'response_channel_slug' => ['exists:channels,slug', new ChannelIsForResponseRules],
-            'event_occured_at' => 'date_format:Y-m-d H:i',
-            'amount_disputed' => 'nullable|integer',
-            'amount_currency_slug' => 'exists:currencies,slug',
+            'response_channel_slug' => ['required', 'exists:channels,slug', new ChannelIsForResponseRules],
+            'event_occured_at' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->gt(Carbon::now())) {
+                        $fail($attribute . ' is invalid! The value is greater than now');
+                    }
+                }
+            ],
+            'amount_disputed' => 'nullable|integer|min:1',
+            'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
@@ -75,7 +83,7 @@ trait CreateClaim
         }
 
         if ($with_unit) {
-            $data['unit_targeted_id'] = ['exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+            $data['unit_targeted_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
         }
 
         if ($update) {
@@ -116,6 +124,7 @@ trait CreateClaim
      * @param bool $with_unit
      * @param bool $completion
      * @return string
+     * @throws CustomException
      */
     protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true, $completion = false)
     {
@@ -145,7 +154,7 @@ trait CreateClaim
 
             $status = 'incomplete';
 
-            if($completion){
+            if ($completion) {
 
                 throw new CustomException($validator->errors());
 
@@ -171,13 +180,18 @@ trait CreateClaim
             'response_channel_slug',
             'event_occured_at',
             'amount_disputed',
-            'amount_currency_slug',
             'is_revival',
             'created_by',
             'status',
             'reference',
             'claimer_expectation'
         ];
+
+        if ($request->has('amount_disputed')) {
+            if ($request->amount_disputed >= 1) {
+                $data[] = 'amount_currency_slug';
+            }
+        }
 
         if ($request->has('status')) {
             if ($request->status == 'full') {
