@@ -16,6 +16,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "laravel/framework": "^7.0",
     "laravel/tinker": "^2.0",
+    "satis2020/account-type": "^1.0",
     "satis2020/any-institution": "^1.0",
     "satis2020/any-institution-unit": "^1.0",
     "satis2020/any-user": "^1.0",
@@ -66,7 +67,6 @@
     "satis2020/transfer-claim-to-circuit-unit": "^1.0",
     "satis2020/transfer-claim-to-targeted-institution": "^1.0",
     "satis2020/transfer-claim-to-unit": "^1.0",
-    "satis2020/type-client": "^1.0",
     "satis2020/type-unit": "^1.0",
     "satis2020/update-claim-against-any-institution": "^1.0",
     "satis2020/update-claim-against-my-institution": "^1.0",
@@ -178,7 +178,7 @@
     },
     {
       "type": "path",
-      "url": "modules/type-client",
+      "url": "modules/account-type",
       "options": {
         "symlink": true
       }

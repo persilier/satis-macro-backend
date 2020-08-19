@@ -69,22 +69,31 @@ trait ReportingClaim
         if($request->has('date_start') && $request->has('date_end')){
 
             if($institutionId){
+
                 $claims = Claim::where('institution_targeted_id', $institutionId)
                     ->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
                     ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay())
                     ->get();
+
             }else{
+
                 $claims = Claim::where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
                     ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay())->get();
             }
 
         }else{
+
             if($institutionId){
+
                 $claims = Claim::where('institution_targeted_id', $institutionId)->get();
+
             }else{
+
                 $claims = Claim::all();
             }
+
         }
+
         return $claims;
 
     }
@@ -100,7 +109,7 @@ trait ReportingClaim
         $claims = $this->queryNumberObject($request, $institutionId);
 
         $objects = ClaimObject::has('claims')->where('claim_category_id', $claimCategoryId)->get()->map(function ($item) use ($claims){
-            $claimsResolue = $this->statistique($claims, $item->id, 'archived');
+            $claimsResolue = $this->statistique($claims, $item->id, 'validated');
             $item['total'] = $this->statistique($claims, $item->id, false, true);
             $item['incomplete'] = $this->statistique($claims, $item->id, 'incomplete');
             $item['toAssignementToUnit'] = $this->statistique($claims, $item->id, 'transferred_to_targeted_institution');
@@ -134,6 +143,12 @@ trait ReportingClaim
         }else{
 
             switch ($status){
+                case 'resolue':
+
+                    return $claims->filter(function ($item) use ($objectClaimId , $status){
+                        return (($item->claim_object_id === $objectClaimId) && ($item->satisfaction_measured_by !== null));
+                    })->count();
+
                 case 'transferred_to_targeted_institution':
 
                     return $claims->filter(function ($item) use ($objectClaimId , $status){

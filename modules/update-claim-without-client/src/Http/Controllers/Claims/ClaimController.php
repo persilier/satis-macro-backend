@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UpdateClaim;
+use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 /**
  * Class ClaimController
@@ -14,7 +15,7 @@ use Satis2020\ServicePackage\Traits\UpdateClaim;
  */
 class ClaimController extends ApiController
 {
-    use  CreateClaim, UpdateClaim;
+    use  CreateClaim, UpdateClaim, VerifyUnicity;
     public function __construct()
     {
         parent::__construct();
@@ -71,9 +72,13 @@ class ClaimController extends ApiController
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request, false, true, false, true));
-
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
+
+        $request->merge(['claimer_id' => $claim->claimer_id]);
+
+        $this->validate($request, $this->rulesCompletion($request, true, false));
+
+        $this->validateUnicityIdentiteCompletion($request, $claim);
         // Check if the claim is complete
         $request->merge(['status' => $this->getStatus($request, false, true, false, true)]);
 
