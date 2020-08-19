@@ -49,7 +49,7 @@ trait UpdateClaim
             throw new CustomException("We can't perform your request. The phone number  belongs to someone else");
 
         }
-        
+
 
         $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id);
 
