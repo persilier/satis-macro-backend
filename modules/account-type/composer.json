@@ -1,6 +1,6 @@
 {
-  "name": "satis2020/type-client",
-  "description": "satis2020/type-client est un module qui va permettre la gestion des types clients",
+  "name": "satis2020/account-type",
+  "description": "satis2020/account-type est un module qui va permettre la gestion des types de comptes",
   "license": "DMD",
   "version" : "1.0.0",
   "authors": [
@@ -20,14 +20,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Satis2020\\TypeClient\\": "src/",
-      "Satis2020\\TypeClient\\Database\\Seeds\\": "database/seeds/"
+      "Satis2020\\AccountType\\": "src/",
+      "Satis2020\\AccountType\\Database\\Seeds\\": "database/seeds/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\TypeClient\\Providers\\TypeClientServiceProvider"
+        "Satis2020\\AccountType\\Providers\\AccountTypeServiceProvider"
       ]
     }
   }

@@ -12,9 +12,5 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-/*
- *
- * Type clients et Catégory clients
- * Clients
- */
-Route::apiResource('type-clients', 'TypeClients\TypeClientController');
+
+Route::apiResource('account-types', 'AccountType\AccountTypeController');

@@ -23,9 +23,21 @@ use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
 use Faker\Factory as Faker;
 
+/**
+ * Trait CreateClaim
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait CreateClaim
 {
 
+    /**
+     * @param $request
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
+     * @param bool $update
+     * @return array
+     */
     protected function rules($request, $with_client = true, $with_relationship = false, $with_unit = true, $update = false)
     {
         $data = [

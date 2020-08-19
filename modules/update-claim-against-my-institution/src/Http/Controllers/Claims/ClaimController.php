@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UpdateClaim;
 use Illuminate\Support\Arr;
+use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 /**
  * Class ClaimController
@@ -16,7 +17,7 @@ use Illuminate\Support\Arr;
  */
 class ClaimController extends ApiController
 {
-    use  CreateClaim, UpdateClaim;
+    use  CreateClaim, UpdateClaim, VerifyUnicity;
     public function __construct()
     {
         parent::__construct();
@@ -74,9 +75,13 @@ class ClaimController extends ApiController
      */
     public function update(Request $request, $claimId)
     {
-        $this->validate($request, $this->rules($request, true, false , true , true ));
-
         $claim = $this->getClaimUpdateForMyInstitution($this->institution()->id, $claimId, 'incomplete');
+
+        $request->merge(['claimer_id' => $claim->claimer_id]);
+
+        $this->validate($request, $this->rulesCompletion($request));
+
+        $this->validateUnicityIdentiteCompletion($request, $claim);
 
         $request->merge(['status' => $this->getStatus($request, true, false, true, true)]);
 
