@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -67,42 +68,58 @@ trait UpdateClaim
 
     /**
      * @param $request
+     * @param bool $with_client
      * @param bool $with_relationship
      * @param bool $with_unit
+     * @param bool $update
      * @return array
      */
-    protected function rulesCompletion($request, $with_relationship = false, $with_unit = true)
+    protected function rulesCompletion($request, $claim, $with_client = false, $with_relationship = false, $with_unit = true, $update = true)
     {
-        $data = [
-            'description' => 'required|string',
-            'claim_object_id' => 'required|exists:claim_objects,id',
-            'institution_targeted_id' => 'required|exists:institutions,id',
-            'request_channel_slug' => 'required|exists:channels,slug',
-            'response_channel_slug' => ['exists:channels,slug', new ChannelIsForResponseRules],
-            'event_occured_at' => 'date_format:Y-m-d H:i',
-            'amount_disputed' => 'nullable|integer',
-            'amount_currency_slug' => [Rule::requiredIf(!is_null($request->amount_disputed)),'exists:currencies,slug'],
-            'is_revival' => 'required|boolean',
-            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
-        ];
 
-        $data['firstname'] = 'required|string';
-        $data['lastname'] = 'required|string';
-        $data['sexe'] = ['required', Rule::in(['M', 'F', 'A'])];
-        $data['telephone'] = ['required', 'array', new TelephoneArray];
-        $data['email'] = ['array', new EmailArray, new IdentiteBelongsToStaffRules($request->claimer_id)];
-        $data['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
+        $data = $this->rules($request, $with_client, $with_relationship , $with_unit , $update);
+
+        $rules = Arr::only($data, [
+            'description','claim_object_id','institution_targeted_id', 'request_channel_slug',
+            'response_channel_slug', 'event_occured_at','amount_disputed', 'amount_currency_slug',
+            'is_revival','is_revival', 'file.*','firstname', 'lastname', 'sexe', 'telephone', 'email'
+        ]);
+
+        $rules['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
 
         if ($with_relationship) {
-            $data['relationship_id'] = 'required|exists:relationships,id';
+
+            $rules['relationship_id'] = $data['relationship_id'];
         }
 
         if ($with_unit) {
-            $data['unit_targeted_id'] = ['exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+
+            $rules['unit_targeted_id'] = $data['unit_targeted_id'];
         }
 
-        return $data;
+        try {
+
+            $requirements = ClaimObject::with('requirements')
+                ->where('id', $claim->claim_object_id)
+                ->firstOrFail()
+                ->requirements
+                ->pluck('name');
+
+            foreach ($requirements as $requirement) {
+
+                 $rules[$requirement] = 'required';
+            }
+
+        } catch (\Exception $exception) {
+
+            throw new CustomException("Can't retrieve the claimObject requirements");
+
+        }
+
+        return $rules;
     }
+
+
     /**
      * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $institutionId | Id institution
@@ -364,7 +381,7 @@ trait UpdateClaim
 
         }
 
-        $claim->status = $request->status;
+        $claim->status = 'full';
         $claim->completed_by = $userId;
         $claim->completed_at = Carbon::now();
         $claim->save();

@@ -122,11 +122,9 @@ trait CreateClaim
      * @param bool $with_client
      * @param bool $with_relationship
      * @param bool $with_unit
-     * @param bool $completion
      * @return string
-     * @throws CustomException
      */
-    protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true, $completion = false)
+    protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
         try {
             $requirements = ClaimObject::with('requirements')
@@ -153,12 +151,6 @@ trait CreateClaim
         if ($validator->fails()) {
 
             $status = 'incomplete';
-
-            if ($completion) {
-
-                throw new CustomException($validator->errors());
-
-            }
 
         } else {
             // status = full so the claim is complete
