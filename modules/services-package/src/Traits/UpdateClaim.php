@@ -68,6 +68,7 @@ trait UpdateClaim
 
     /**
      * @param $request
+     * @param $claim
      * @param bool $with_client
      * @param bool $with_relationship
      * @param bool $with_unit
