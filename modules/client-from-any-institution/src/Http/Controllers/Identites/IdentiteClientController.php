@@ -11,6 +11,10 @@ use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 
+/**
+ * Class IdentiteClientController
+ * @package Satis2020\ClientFromAnyInstitution\Http\Controllers\Identites
+ */
 class IdentiteClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait;

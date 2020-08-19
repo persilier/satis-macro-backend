@@ -7,7 +7,9 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\UpdateClaim;
+use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 /**
  * Class ClaimController
@@ -15,7 +17,7 @@ use Satis2020\ServicePackage\Traits\UpdateClaim;
  */
 class ClaimController extends ApiController
 {
-    use  CreateClaim, UpdateClaim;
+    use  CreateClaim, UpdateClaim, VerifyUnicity;
     public function __construct()
     {
         parent::__construct();
@@ -25,12 +27,9 @@ class ClaimController extends ApiController
         $this->middleware('permission:update-claim-incomplete-against-any-institution')->only(['update']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
      * @return JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -43,8 +42,6 @@ class ClaimController extends ApiController
     /**
      * @param $claimId
      * @return JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws RetrieveDataUserNatureException
      */
     public function show($claimId)
     {
@@ -53,13 +50,10 @@ class ClaimController extends ApiController
         200);
     }
 
+
     /**
-     * Display the specified resource.
-     *
      * @param $claimId
      * @return JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws RetrieveDataUserNatureException
      */
     public function edit($claimId)
     {
@@ -71,21 +65,20 @@ class ClaimController extends ApiController
 
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param Request $request
-     * @param  $claimId
+     * @param $claimId
      * @return JsonResponse
      * @throws ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request, $claimId)
     {
-
-        $this->validate($request, $this->rules($request, true, false , true , true ));
-
         $claim = $this->getClaimUpdate($this->institution()->id, $claimId, 'incomplete');
+
+        $request->merge(['claimer_id' => $claim->claimer_id]);
+
+        $this->validate($request, $this->rulesCompletion($request));
+
+        $this->validateUnicityIdentiteCompletion($request, $claim);
 
         $request->merge(['status' => $this->getStatus($request, true, false, true, true)]);
 
