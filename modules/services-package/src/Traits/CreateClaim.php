@@ -47,7 +47,7 @@ trait CreateClaim
             'request_channel_slug' => 'required|exists:channels,slug',
             'response_channel_slug' => ['nullable', 'exists:channels,slug', new ChannelIsForResponseRules],
             'event_occured_at' => [
-                'nullable',
+                'required',
                 'date_format:Y-m-d H:i',
                 function ($attribute, $value, $fail) {
                     if (Carbon::parse($value)->gt(Carbon::now())) {
