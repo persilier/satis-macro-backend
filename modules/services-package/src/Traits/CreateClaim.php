@@ -46,7 +46,15 @@ trait CreateClaim
             'institution_targeted_id' => 'required|exists:institutions,id',
             'request_channel_slug' => 'required|exists:channels,slug',
             'response_channel_slug' => ['nullable', 'exists:channels,slug', new ChannelIsForResponseRules],
-            'event_occured_at' => 'nullable|date_format:Y-m-d H:i',
+            'event_occured_at' => [
+                'nullable',
+                'date_format:Y-m-d H:i',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->gt(Carbon::now())) {
+                        $fail($attribute . ' is invalid! The value is greater than now');
+                    }
+                }
+            ],
             'amount_disputed' => 'nullable|integer|min:1',
             'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
             'is_revival' => 'required|boolean',
