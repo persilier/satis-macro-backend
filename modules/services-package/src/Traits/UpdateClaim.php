@@ -49,20 +49,15 @@ trait UpdateClaim
             throw new CustomException("We can't perform your request. The phone number  belongs to someone else");
 
         }
+        
 
-        // Client Email Unicity Verification
-        if($request->has('email')){
+        $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id);
 
-            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id);
+        if (!$verifyEmail['status']) {
 
-            if (!$verifyEmail['status']) {
-
-                throw new CustomException("We can't perform your request. The email address  belongs to someone else");
-
-            }
+            throw new CustomException("We can't perform your request. The email address  belongs to someone else");
 
         }
-
 
     }
 
