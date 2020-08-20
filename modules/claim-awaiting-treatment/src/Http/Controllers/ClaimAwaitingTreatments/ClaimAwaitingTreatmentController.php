@@ -29,10 +29,10 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-claim-awaiting-treatment')->only(['index']);
+       /* $this->middleware('permission:list-claim-awaiting-treatment')->only(['index']);
         $this->middleware('permission:show-claim-awaiting-treatment')->only(['show']);
         $this->middleware('permission:rejected-claim-awaiting-treatment')->only(['show', 'rejectedClaim']);
-        $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);
+        $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);*/
         //$this->middleware('permission:assignment-claim-awaiting-treatment')->only(['edit', 'assignmentClaimStaff']);
         //$this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['unfoundedClaim']);
     }
@@ -65,10 +65,9 @@ class ClaimAwaitingTreatmentController extends ApiController
      */
     public function show($claim)
     {
-        $institution = $this->institution();
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
         return response()->json(Claim::with($this->getRelationsAwitingTreatment())->findOrFail($claim->id), 200);
     }
 
@@ -83,11 +82,9 @@ class ClaimAwaitingTreatmentController extends ApiController
      */
     public function edit($claim)
     {
-        $institution = $this->institution();
-
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
         return response()->json([
             'claim' => $claim,
@@ -124,12 +121,11 @@ class ClaimAwaitingTreatmentController extends ApiController
      */
     public function rejectedClaim(Request $request, $claim)
     {
-        $institution = $this->institution();
         $staff = $this->staff();
 
         $this->validate($request, $this->rules($staff, 'rejected'));
 
-        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
         $claim = $this->rejectedClaimUpdate($claim, $request);
 
@@ -147,11 +143,9 @@ class ClaimAwaitingTreatmentController extends ApiController
     protected function selfAssignmentClaim($claim)
     {
 
-        $institution = $this->institution();
-
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $staff->id);
 
@@ -170,7 +164,6 @@ class ClaimAwaitingTreatmentController extends ApiController
     protected function assignmentClaimStaff(Request $request, $claim)
     {
 
-        $institution = $this->institution();
         $staff = $this->staff();
 
         if (!$this->checkLead($staff)) {
@@ -179,7 +172,7 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->validate($request, $this->rules($staff));
 
-        $claim = $this->getOneClaimQuery($institution->id, $staff->unit_id, $claim);
+        $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $request->staff_id);
 
