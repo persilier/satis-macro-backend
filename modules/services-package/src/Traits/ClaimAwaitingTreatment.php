@@ -52,18 +52,25 @@ trait ClaimAwaitingTreatment
     }
 
     /**
-     * @param $institutionId
      * @param $unitId
      * @param $claim
      * @return Builder|Builder[]|Collection|Model|null
-     * @throws CustomException
      */
-    protected function getOneClaimQuery($institutionId, $unitId, $claim)
+    protected function getOneClaimQuery($unitId, $claim)
     {
         $claim = Claim::with($this->getRelationsAwitingTreatment())->findOrFail($claim);
 
-        if($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit"){
-            throw new CustomException("Impossible de traiter cette réclammation");
+        try {
+
+            if($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit"){
+
+                throw new CustomException("Impossible de traiter cette réclammation");
+            }
+
+        } catch (\Exception $exception) {
+
+            throw new CustomException("Imposible de récupérer cette réclammation.");
+
         }
 
         return $claim;
