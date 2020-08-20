@@ -411,10 +411,9 @@ trait UpdateClaim
 
         $claim->claimer->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email']));
         // send notification to pilot
-//        try {
-//            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-//        } catch (\Exception $exception) {
-//        }
+        if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
+            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+        }
 
         return $claim;
     }
