@@ -41,14 +41,16 @@ class TransferToInstitutionController extends ApiController
     {
         $claim->load('activeTreatment');
         $activeTreatment = $claim->activeTreatment;
-        if(is_null($activeTreatment)){
+        if (is_null($activeTreatment)) {
             $activeTreatment = Treatment::create(['claim_id' => $claim->id]);
         }
         $activeTreatment->update(['transferred_to_targeted_institution_at' => Carbon::now()]);
         $claim->update(['status' => 'transferred_to_targeted_institution']);
 
         // send notification to pilot
-        $this->getInstitutionPilot(Institution::find($claim->institution_targeted_id))->notify(new TransferredToTargetedInstitution($claim));
+        try {
+            $this->getInstitutionPilot(Institution::find($claim->institution_targeted_id))->notify(new TransferredToTargetedInstitution($claim));
+        } catch (\Exception $exception) {}
 
         return response()->json($claim, 201);
     }

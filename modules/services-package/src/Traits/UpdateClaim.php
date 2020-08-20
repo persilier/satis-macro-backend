@@ -38,7 +38,8 @@ trait UpdateClaim
      * @param $claim
      * @return void
      */
-    protected function validateUnicityIdentiteCompletion($request, $claim){
+    protected function validateUnicityIdentiteCompletion($request, $claim)
+    {
 
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $claim->claimer_id);
@@ -50,7 +51,7 @@ trait UpdateClaim
         }
 
         // Client Email Unicity Verification
-        if($request->has('email')){
+        if ($request->has('email')) {
 
             $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id);
 
@@ -81,7 +82,7 @@ trait UpdateClaim
             'response_channel_slug' => ['exists:channels,slug', new ChannelIsForResponseRules],
             'event_occured_at' => 'date_format:Y-m-d H:i',
             'amount_disputed' => 'nullable|integer',
-            'amount_currency_slug' => [Rule::requiredIf(!is_null($request->amount_disputed)),'exists:currencies,slug'],
+            'amount_currency_slug' => [Rule::requiredIf(!is_null($request->amount_disputed)), 'exists:currencies,slug'],
             'is_revival' => 'required|boolean',
             'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png,mp3,mp4'
         ];
@@ -103,13 +104,14 @@ trait UpdateClaim
 
         return $data;
     }
+
     /**
-     * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
+     * @param $status | Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $institutionId | Id institution
      * @return array
      * @throws CustomException
      */
-    protected function getAllClaimCompleteOrIncomplete($institutionId, $status ='full')
+    protected function getAllClaimCompleteOrIncomplete($institutionId, $status = 'full')
     {
         try {
             $claims = Claim::with([
@@ -125,8 +127,8 @@ trait UpdateClaim
                 'createdBy.identite',
                 'completedBy.identite',
                 'files'
-            ])->where(function ($query) use ($institutionId){
-                $query->whereHas('createdBy', function ($q) use ($institutionId){
+            ])->where(function ($query) use ($institutionId) {
+                $query->whereHas('createdBy', function ($q) use ($institutionId) {
                     $q->where('institution_id', $institutionId);
                 });
             })->where('status', $status)->get();
@@ -139,12 +141,12 @@ trait UpdateClaim
 
 
     /**
-     * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
+     * @param $status | Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $institutionId | Id institution
      * @return array
      * @throws CustomException
      */
-    protected function getAllClaimCompleteOrIncompleteForMyInstitution($institutionId, $status='full')
+    protected function getAllClaimCompleteOrIncompleteForMyInstitution($institutionId, $status = 'full')
     {
         try {
             $claims = Claim::with([
@@ -160,7 +162,7 @@ trait UpdateClaim
                 'createdBy.identite',
                 'completedBy.identite',
                 'files'
-            ])->where('institution_targeted_id',$institutionId)->where('status', $status)->get();
+            ])->where('institution_targeted_id', $institutionId)->where('status', $status)->get();
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
         }
@@ -168,13 +170,13 @@ trait UpdateClaim
     }
 
     /**
-     * @param $status| Claim complete - status=full | Claim incomplete - status=incomplete
+     * @param $status | Claim complete - status=full | Claim incomplete - status=incomplete
      * @param $claimId | Id claim
      * @param $institution_id | Id institution
      * @return array
      * @throws CustomException
      */
-    protected function getOneClaimCompleteOrIncomplete($institution_id, $claimId, $status='full')
+    protected function getOneClaimCompleteOrIncomplete($institution_id, $claimId, $status = 'full')
     {
         try {
             $claim = Claim::with([
@@ -190,8 +192,8 @@ trait UpdateClaim
                 'createdBy.identite',
                 'completedBy.identite',
                 'files'
-            ])->where(function ($query) use ($institution_id){
-                $query->whereHas('createdBy', function ($q) use ($institution_id){
+            ])->where(function ($query) use ($institution_id) {
+                $query->whereHas('createdBy', function ($q) use ($institution_id) {
                     $q->where('institution_id', $institution_id);
                 });
             })->where('status', $status)->findOrFail($claimId);
@@ -208,7 +210,7 @@ trait UpdateClaim
      * @return array
      * @throws CustomException
      */
-    protected function getOneClaimCompleteOrIncompleteForMyInstitution($institutionId, $claimId, $status='full')
+    protected function getOneClaimCompleteOrIncompleteForMyInstitution($institutionId, $claimId, $status = 'full')
     {
         try {
             $claim = Claim::with([
@@ -231,7 +233,8 @@ trait UpdateClaim
         return $claim;
     }
 
-    protected function getAllRequirements($claimObject){
+    protected function getAllRequirements($claimObject)
+    {
 
         $requirements = $claimObject->requirements->pluck('name');
         $rules = collect([]);
@@ -249,7 +252,8 @@ trait UpdateClaim
      * @return array
      * @throws CustomException
      */
-    protected function getDataEdit($claim){
+    protected function getDataEdit($claim)
+    {
 
         $datas = [
             'claim' => $claim,
@@ -267,12 +271,12 @@ trait UpdateClaim
             $identiteId = $claim->claimer_id;
             $accounts = Account::with([
                 'accountType',
-            ])->where(function ($query) use ($institutionId, $identiteId){
-                $query->whereHas('client_institution', function ($q) use ($institutionId, $identiteId){
+            ])->where(function ($query) use ($institutionId, $identiteId) {
+                $query->whereHas('client_institution', function ($q) use ($institutionId, $identiteId) {
                     $q->where('institution_id', $institutionId)
-                     ->whereHas('client', function ($p) use ($identiteId){
-                         $p->where('identites_id', $identiteId);
-                    });
+                        ->whereHas('client', function ($p) use ($identiteId) {
+                            $p->where('identites_id', $identiteId);
+                        });
                 });
             })->get();
 
@@ -280,7 +284,7 @@ trait UpdateClaim
             throw new CustomException("Impossible de récupérer les informations nécessaires à la modification d'une réclamation.");
         }
 
-        if(!is_null($accounts))
+        if (!is_null($accounts))
             $datas['accounts'] = $accounts;
 
         return $datas;
@@ -292,7 +296,8 @@ trait UpdateClaim
      * @return array
      * @throws CustomException
      */
-    protected function getDataEditWithoutClient($claim){
+    protected function getDataEditWithoutClient($claim)
+    {
         $datas = [
             'claim' => $claim,
             'claimCategories' => ClaimCategory::all(),
@@ -314,10 +319,11 @@ trait UpdateClaim
      * @return mixed
      * @throws CustomException
      */
-    protected function getClaimUpdate($institutionId, $claimId, $status = 'full'){
+    protected function getClaimUpdate($institutionId, $claimId, $status = 'full')
+    {
         try {
-            $claim = Claim::where(function ($query) use ($institutionId){
-                $query->whereHas('createdBy', function ($q) use ($institutionId){
+            $claim = Claim::where(function ($query) use ($institutionId) {
+                $query->whereHas('createdBy', function ($q) use ($institutionId) {
                     $q->where('institution_id', $institutionId);
                 });
             })->where('status', $status)->findOrFail($claimId);
@@ -334,9 +340,10 @@ trait UpdateClaim
      * @param string $status
      * @return mixed
      */
-    protected function getClaimUpdateForMyInstitution($institutionId, $claimId, $status = 'full'){
+    protected function getClaimUpdateForMyInstitution($institutionId, $claimId, $status = 'full')
+    {
         try {
-            $claim = Claim::where('institution_targeted_id',$institutionId)->where('status', $status)->findOrFail($claimId);
+            $claim = Claim::where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
         }
@@ -349,17 +356,18 @@ trait UpdateClaim
      * @param $userId
      * @return mixed $request
      */
-    protected function updateClaim($request, $claim, $userId){
+    protected function updateClaim($request, $claim, $userId)
+    {
 
-        if($request->status === 'incomplete'){
+        if ($request->status === 'incomplete') {
 
             throw new CustomException("Toutes les exigeances pour cet objet de plainte ne sont pas renseignées.");
 
         }
 
-        foreach($request->all() as $key => $value){
+        foreach ($request->all() as $key => $value) {
 
-            if(($claim->{$key}) && (!empty($claim->{$key})))
+            if (($claim->{$key}) && (!empty($claim->{$key})))
                 $claim->{$key} = $value;
 
         }
@@ -371,11 +379,13 @@ trait UpdateClaim
 
         $claim->claimer->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email']));
         // send notification to pilot
-        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+        try {
+            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+        } catch (\Exception $exception) {
+        }
 
         return $claim;
     }
-
 
 
 }

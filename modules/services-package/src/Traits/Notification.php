@@ -46,24 +46,33 @@ trait Notification
             }
         }
 
-        return User::with('identite.staff')
-            ->get()
-            ->first(function ($value, $key) use ($institution, $roleName) {
-                return is_null($institution)
-                    ? $value->hasRole($roleName)
-                    : $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName);
-            })->identite;
+        try {
+            return User::with('identite.staff')
+                ->get()
+                ->first(function ($value, $key) use ($institution, $roleName) {
+                    return is_null($institution)
+                        ? $value->hasRole($roleName)
+                        : $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName);
+                })->identite;
+        } catch (\Exception $exception) {
+            return null;
+        }
     }
 
     protected function getStaffInstitutionMessageApi($institution)
     {
-        return $institution->institutionType->name == 'membre'
-            ? Institution::with('institutionMessageApi', 'institutionType')
-                ->get()
-                ->first(function ($value, $key) {
-                    return $value->institutionType->name == 'observatory';
-                })->institutionMessageApi
-            : $institution->institutionMessageApi;
+        try{
+            return $institution->institutionType->name == 'membre'
+                ? Institution::with('institutionMessageApi', 'institutionType')
+                    ->get()
+                    ->first(function ($value, $key) {
+                        return $value->institutionType->name == 'observatory';
+                    })->institutionMessageApi
+                : $institution->institutionMessageApi;
+        }catch (\Exception $exception){
+            return null;
+        }
+
     }
 
     protected function getUnitStaffIdentities($unitId)
@@ -72,11 +81,11 @@ trait Notification
             ->get()
             ->filter(function ($value, $key) use ($unitId) {
 
-                if(is_null($value->unit) || is_null($value->identite)) {
+                if (is_null($value->unit) || is_null($value->identite)) {
                     return false;
                 }
 
-                if (is_null($value->identite->user)){
+                if (is_null($value->identite->user)) {
                     return false;
                 }
 

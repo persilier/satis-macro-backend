@@ -33,7 +33,7 @@ trait MonitoringClaim
      * @param bool $treatment
      * @return mixed
      */
-    protected function getAllClaim($request , $status, $treatment = false)
+    protected function getAllClaim($request, $status, $treatment = false)
     {
         try {
 
@@ -56,11 +56,12 @@ trait MonitoringClaim
      * @param $timeLimit
      * @return mixed
      */
-    protected function timeExpire($createdDate = false , $timeLimit = false){
+    protected function timeExpire($createdDate = false, $timeLimit = false)
+    {
 
         $diff = null;
 
-        if($timeLimit && $createdDate){
+        if ($timeLimit && $createdDate) {
 
             $dateExpire = $createdDate->addWeekdays($timeLimit);
             $diff = now()->diffInDays(($dateExpire), false);
@@ -76,18 +77,18 @@ trait MonitoringClaim
      * @param bool $treatment
      * @return Builder
      */
-    protected function getAllDataFilter($request , $status, $treatment)
+    protected function getAllDataFilter($request, $status, $treatment)
     {
         $claims = Claim::with($this->getRelations());
 
-        if($request->has('institution_id')){
+        if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
 
         }
 
 
-        if($treatment){
+        if ($treatment) {
 
             $claims->join('treatments', function ($join) {
 
@@ -97,11 +98,11 @@ trait MonitoringClaim
         }
 
 
-        if($status === 'transferred_to_targeted_institution'){
+        if ($status === 'transferred_to_targeted_institution') {
 
             $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
 
-        }else{
+        } else {
 
             $claims->where('status', $status);
         }
@@ -121,12 +122,12 @@ trait MonitoringClaim
 
         $claim = Claim::with($this->getRelations())->findOrFail($claimId);
 
-        if($institutionId){
-            if($institutionId != $claim->institution_targeted_id)
+        if ($institutionId) {
+            if ($institutionId != $claim->institution_targeted_id)
                 throw new CustomException("Impossible de récupérer des réclamations.");
         }
 
-        $time_limit =  $this->timeExpire($claim->created_at, $claim->claimObject->time_limit);
+        $time_limit = $this->timeExpire($claim->created_at, $claim->claimObject->time_limit);
 
         $claim = collect($claim)->toArray();
 
@@ -144,7 +145,7 @@ trait MonitoringClaim
         $relations = [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.responsibleStaff',
-             'activeTreatment.responsibleUnit'
+            'activeTreatment.responsibleUnit'
         ];
 
         return $relations;
@@ -187,10 +188,11 @@ trait MonitoringClaim
      * @param bool $institutionId
      * @return array
      */
-    protected function metaData($incompletes , $toAssignedToUnit , $toAssignedToUStaff,$awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institutionId = false){
+    protected function metaData($incompletes, $toAssignedToUnit, $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institutionId = false)
+    {
 
         $data = [
-            'incompletes' =>  $incompletes,
+            'incompletes' => $incompletes,
             'toAssignementToUnit' => $toAssignedToUnit,
             'toAssignementToStaff' => $toAssignedToUStaff,
             'awaitingTreatment' => $awaitingTreatment,
@@ -200,12 +202,12 @@ trait MonitoringClaim
             'claimObjects' => ClaimObject::all(),
         ];
 
-        if($institutionId){
+        if ($institutionId) {
 
-            $data['units'] = Unit::where('institution_id',$institutionId)->get();
-            $data['staffs'] = Staff::with('identite')->where('institution_id',$institutionId)->get();
+            $data['units'] = Unit::where('institution_id', $institutionId)->get();
+            $data['staffs'] = Staff::with('identite')->where('institution_id', $institutionId)->get();
 
-        }else{
+        } else {
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
@@ -220,9 +222,10 @@ trait MonitoringClaim
      * @param $unit
      * @return mixed
      */
-    protected function getIdentitesResponsibleUnit($unit){
+    protected function getIdentitesResponsibleUnit($unit)
+    {
 
-        return Identite::whereHas('staff', function($query) use ($unit){
+        return Identite::whereHas('staff', function ($query) use ($unit) {
             $query->where('unit_id', $unit->id);
         })->get();
     }
@@ -231,17 +234,18 @@ trait MonitoringClaim
      * @param $staff
      * @return mixed
      */
-    protected function getIdentitesResponsibleStaff($staff){
+    protected function getIdentitesResponsibleStaff($staff)
+    {
 
         $lead = NULL;
 
-        if($staff->unit->lead){
+        if ($staff->unit->lead) {
 
             $lead = $staff->unit->lead->id;
 
         }
 
-        return Identite::whereHas('staff', function($query) use ($staff, $lead){
+        return Identite::whereHas('staff', function ($query) use ($staff, $lead) {
 
             $query->where('id', $staff->id)->orWhere('id', $lead);
 
@@ -258,7 +262,7 @@ trait MonitoringClaim
     {
         $claims = Claim::with($this->getRelations());
 
-        if($treatment){
+        if ($treatment) {
 
             $claims->join('treatments', function ($join) {
 
@@ -267,14 +271,14 @@ trait MonitoringClaim
             })->select('claims.*');
         }
 
-         return $claims->where('status','!=', 'archived')
-            ->orWhere('status','!=', 'unfounded')
-             ->get()->filter(function ($item) use ($coef) {
+        return $claims->where('status', '!=', 'archived')
+            ->orWhere('status', '!=', 'unfounded')
+            ->get()->filter(function ($item) use ($coef) {
 
-                 if(now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
-                     return $item;
+                if (now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+                    return $item;
 
-             })->all();
+            })->all();
 
     }
 
@@ -283,48 +287,55 @@ trait MonitoringClaim
      * @param bool $treatment
      * @return void
      */
-    protected function treatmentRelance($treatment = false){
+    protected function treatmentRelance($treatment = false)
+    {
 
         $coef = 100;
 
-        if($taux = Metadata::where('name', 'coef-relance')->first()){
+        if ($taux = Metadata::where('name', 'coef-relance')->first()) {
 
             $coef = json_decode($taux->data);
         }
 
         $claims = $this->getAllClaimRelance($treatment, $coef);
 
-        foreach($claims as $claim){
+        foreach ($claims as $claim) {
 
             $identite = null;
 
-            if($claim->status === 'incomplete' || $claim->status === 'full' || $claim->status === 'transferred_to_targeted_institution'){
-
-                $identite = $this->getInstitutionPilot($claim->createdBy->identite->staff->institution);
-
+            if ($claim->status === 'incomplete' || $claim->status === 'full' || $claim->status === 'transferred_to_targeted_institution') {
+                try {
+                    $identite = $this->getInstitutionPilot($claim->createdBy->identite->staff->institution);
+                } catch (\Exception $exception) {
+                    $identite = null;
+                }
             }
 
-            if($claim->status === 'transferred_to_unit'){
-
-                $identite = $this->getIdentitesResponsibleUnit($claim->activeTreatment->responsibleUnit);
-
+            if ($claim->status === 'transferred_to_unit') {
+                try {
+                    $identite = $this->getIdentitesResponsibleUnit($claim->activeTreatment->responsibleUnit);
+                } catch (\Exception $exception) {
+                    $identite = null;
+                }
             }
 
-            if($claim->status === 'assigned_to_staff'){
+            if ($claim->status === 'assigned_to_staff') {
 
                 $identite = $this->getIdentitesResponsibleStaff($claim->activeTreatment->responsibleStaff);
 
             }
 
-            if($claim->status === 'treated' || $claim->status === 'validated'){
-
-                $identite = $this->getInstitutionPilot($claim->activeTreatment->responsibleStaff->institution);
-
+            if ($claim->status === 'treated' || $claim->status === 'validated') {
+                try {
+                    $identite = $this->getInstitutionPilot($claim->activeTreatment->responsibleStaff->institution);
+                } catch (\Exception $exception) {
+                    $identite = null;
+                }
             }
 
-            if(!is_null($identite)){
+            if (!is_null($identite)) {
 
-                $interval = $this->timeExpireRelance($claim->created_at , $claim->claimObject->time_limit);
+                $interval = $this->timeExpireRelance($claim->created_at, $claim->claimObject->time_limit);
                 $this->sendNotificationRelance($interval, $identite, $claim);
 
             }
@@ -340,15 +351,16 @@ trait MonitoringClaim
      * @param $claim
      * @return mixed
      */
-    protected function sendNotificationRelance($interval, $identite, $claim){
+    protected function sendNotificationRelance($interval, $identite, $claim)
+    {
 
         $time = $this->stringDateInterval($interval);
 
-        if($interval->invert === 1){
+        if ($interval->invert === 1) {
 
             $notif = new ReminderAfterDeadline($claim, $time);
 
-        }else{
+        } else {
 
             $notif = new ReminderBeforeDeadline($claim, $time);
         }
@@ -362,13 +374,14 @@ trait MonitoringClaim
      * @param $identite
      * @param $notif
      */
-    protected function notificationRelance($identite, $notif){
+    protected function notificationRelance($identite, $notif)
+    {
 
-        if($identite instanceof Collection){
+        if ($identite instanceof Collection) {
 
             \Illuminate\Support\Facades\Notification::send($identite, $notif);
 
-        }else{
+        } else {
 
             $identite->notify($notif);
 
@@ -381,28 +394,29 @@ trait MonitoringClaim
      * @param $interval
      * @return string
      */
-    protected function stringDateInterval($interval){
+    protected function stringDateInterval($interval)
+    {
 
         $message = '';
 
-        if($interval->y > 0){
-            $message .= $interval->y. 'an(s) ';
+        if ($interval->y > 0) {
+            $message .= $interval->y . 'an(s) ';
         }
 
-        if($interval->m > 0){
-            $message .= $interval->m. 'moi(s) ';
+        if ($interval->m > 0) {
+            $message .= $interval->m . 'moi(s) ';
         }
 
-        if($interval->d > 0){
-            $message .= $interval->d. 'jour(s) ';
+        if ($interval->d > 0) {
+            $message .= $interval->d . 'jour(s) ';
         }
 
-        if($interval->h > 0){
-            $message .= $interval->h. 'heure(s) ';
+        if ($interval->h > 0) {
+            $message .= $interval->h . 'heure(s) ';
         }
 
-        if($interval->i > 0){
-            $message .= $interval->i. 'minute(s) ';
+        if ($interval->i > 0) {
+            $message .= $interval->i . 'minute(s) ';
         }
 
         return $message;
@@ -414,7 +428,8 @@ trait MonitoringClaim
      * @param $coef
      * @return mixed
      */
-    protected function echeanceNotif($createdDate, $timeLimit, $coef){
+    protected function echeanceNotif($createdDate, $timeLimit, $coef)
+    {
 
         $timeNotif = (($timeLimit * 86400) * $coef) / 100;
 
@@ -431,7 +446,8 @@ trait MonitoringClaim
      * @param $timeLimit
      * @return null
      */
-    protected function timeExpireRelance($createdDate , $timeLimit){
+    protected function timeExpireRelance($createdDate, $timeLimit)
+    {
 
         $echeance = $createdDate->copy()->addWeekdays($timeLimit);
 
@@ -445,19 +461,23 @@ trait MonitoringClaim
      * @param $seconde
      * @return array
      */
-    protected function convertSecondeJHMS($seconde){
+    protected function convertSecondeJHMS($seconde)
+    {
         $jour = 0;
         $heure = 0;
         $minute = 0;
 
-        while ($seconde >= 86400){
-            $jour = $jour + 1; $seconde = $seconde - 86400;
+        while ($seconde >= 86400) {
+            $jour = $jour + 1;
+            $seconde = $seconde - 86400;
         }
-        while ($seconde >= 3600){
-            $heure = $heure + 1; $seconde = $seconde - 3600;
+        while ($seconde >= 3600) {
+            $heure = $heure + 1;
+            $seconde = $seconde - 3600;
         }
-        while ($seconde >= 60){
-            $minute = $minute + 1; $seconde = $seconde - 60;
+        while ($seconde >= 60) {
+            $minute = $minute + 1;
+            $seconde = $seconde - 60;
         }
 
         return [
