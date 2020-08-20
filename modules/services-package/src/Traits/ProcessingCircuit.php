@@ -31,21 +31,20 @@ trait ProcessingCircuit
      */
     protected function getAllProcessingCircuits($institutionId = null)
     {
-        try {
+       // try {
 
             $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
-                $item['claim_objects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
-                    $query->where('claim_object_unit.institution_id', '=', $institutionId);
-                }])->get();
+
+                $item['claim_objects']  = ClaimObject::with(['units'])->get();
 
                 return $item;
             });
 
-        } catch (\Exception $exception) {
+       /* } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de récupérer les circuits de traitements");
 
-        }
+        }*/
 
         return $circuits;
     }
