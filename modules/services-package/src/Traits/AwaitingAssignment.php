@@ -46,7 +46,14 @@ trait AwaitingAssignment
     {
         return [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files'
+            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
+        ];
+    }
+
+    protected function getActiveTreatmentRelationsAwaitingAssignment()
+    {
+        return [
+            'responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite'
         ];
     }
 
@@ -81,6 +88,10 @@ trait AwaitingAssignment
         $claim->load($this->getRelations());
 
         $claim->duplicates = $this->getDuplicates($claim);
+
+        if (!is_null($claim->activeTreatment)) {
+            $claim->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
+        }
 
         return $claim;
     }
