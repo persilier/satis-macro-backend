@@ -81,9 +81,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetProcessSeeder::class);
 //        $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\ReportingClaimMyInstitution\Database\Seeds\RolesTableSeeder::class);
-//        $this->call(\Satis2020\ClaimSatisfactionMeasured\Database\Seeds\RolesTableSeeder::class);
         //$this->call(\Satis2020\Dashboard\Database\Seeds\RolesTableSeeder::class);
-//       $this->call(\Satis2020\ClaimSatisfactionMeasured\Database\Seeds\ArchivedRolesTableSeeder::class);
 //        $this->call(\Satis2020\Discussion\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\AssignClaimToStaffSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\NotificationsTableSeeder::class);
@@ -105,7 +103,11 @@ class DatabaseSeeder extends Seeder
 
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsHoldingSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsFilialSeeder::class);
-        $this->call(\Satis2020\AccountType\Database\Seeds\RolesTableSeeder::class);
+        //$this->call(\Satis2020\AccountType\Database\Seeds\RolesTableSeeder::class);
+       // $this->call(\Satis2020\SatisfactionMeasuredAnyClaim\Database\Seeds\RolesTableSeeder::class);
+       // $this->call(\Satis2020\SatisfactionMeasuredMyClaim\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\AnyClaimArchived\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\MyClaimArchived\Database\Seeds\RolesTableSeeder::class);
 
     }
 

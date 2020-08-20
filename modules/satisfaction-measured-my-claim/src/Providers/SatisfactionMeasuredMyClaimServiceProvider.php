@@ -1,16 +1,17 @@
 <?php
 
 
-namespace Satis2020\ClaimSatisfactionMeasured\Providers;
+namespace Satis2020\SatisfactionMeasuredMyClaim\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
+
 /**
- * Class ClaimSatisfactionMeasuredServiceProvider
- * @package Satis2020\ClaimSatisfactionMeasured\Providers
+ * Class SatisfactionMeasuredMyClaimServiceProvider
+ * @package Satis2020\SatisfactionMeasuredMyClaim\Providers
  */
-class ClaimSatisfactionMeasuredServiceProvider extends ServiceProvider
+class SatisfactionMeasuredMyClaimServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -62,7 +63,7 @@ class ClaimSatisfactionMeasuredServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\ClaimSatisfactionMeasured\Http\Controllers',
+            'namespace' => 'Satis2020\SatisfactionMeasuredMyClaim\Http\Controllers',
             'middleware' => ['api']
         ];
     }

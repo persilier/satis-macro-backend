@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ClaimSatisfactionMeasured\Http\Controllers\ClaimSatisfactionMeasured;
+namespace Satis2020\SatisfactionMeasuredAnyClaim\Http\Controllers\ClaimSatisfactionMeasured;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,9 +10,10 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 
+
 /**
- * Class ClaimAwaitingTreatmentController
- * @package Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAwaitingTreatments
+ * Class ClaimSatisfactionMeasuredController
+ * @package Satis2020\SatisfactionMeasuredAnyClaim\Http\Controllers\ClaimSatisfactionMeasured
  */
 class ClaimSatisfactionMeasuredController extends ApiController
 {
@@ -24,8 +25,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-claim-satisfaction-measured')->only(['index']);
-        $this->middleware('permission:update-claim-satisfaction-measured')->only(['show', 'satisfactionMeasured']);
+        $this->middleware('permission:list-satisfaction-measured-any-claim')->only(['index']);
+        $this->middleware('permission:update-satisfaction-measured-any-claim')->only(['show', 'satisfactionMeasured']);
     }
 
     /**
@@ -36,8 +37,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function index()
     {
-        $institution = $this->institution();
-        $claims = $this->getClaim($institution->id)->get();
+        $claims = $this->getClaim()->get();
         return response()->json($claims, 200);
     }
 
@@ -48,8 +48,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function show($claim)
     {
-        $institution = $this->institution();
-        $claim = $this->getClaim($institution->id)->findOrFail($claim);
+        $claim = $this->getClaim()->findOrFail($claim);
         return response()->json($claim, 200);
     }
 
@@ -67,7 +66,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->validate($request, $this->rules());
 
-        $claim = $this->getClaim($institution->id)->findOrFail($claim);
+        $claim = $this->getClaim()->findOrFail($claim);
 
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,

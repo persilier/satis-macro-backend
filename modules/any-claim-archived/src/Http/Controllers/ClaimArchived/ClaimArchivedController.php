@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ClaimSatisfactionMeasured\Http\Controllers\ClaimArchived;
+namespace Satis2020\AnyClaimArchived\Http\Controllers\ClaimArchived;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 
 /**
  * Class ClaimArchivedController
- * @package Satis2020\ClaimSatisfactionMeasured\Http\Controllers\ClaimArchived
+ * @package Satis2020\AnyClaimArchived\Http\Controllers\ClaimArchived
  */
 class ClaimArchivedController extends ApiController
 {
@@ -25,20 +25,17 @@ class ClaimArchivedController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-claim-archived')->only(['index']);
-        $this->middleware('permission:show-claim-archived')->only(['show']);
+        $this->middleware('permission:list-any-claim-archived')->only(['index']);
+        $this->middleware('permission:show-any-claim-archived')->only(['show']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
      * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
-        $institution = $this->institution();
-        $claims = $this->getClaim($institution->id, 'archived')->get();
+        $claims = $this->getClaim('archived')->get();
         return response()->json($claims, 200);
     }
 
@@ -49,8 +46,7 @@ class ClaimArchivedController extends ApiController
      */
     public function show($claim)
     {
-        $institution = $this->institution();
-        $claim = $this->getClaim($institution->id, 'archived')->findOrFail($claim);
+        $claim = $this->getClaim('archived')->findOrFail($claim);
         return response()->json($claim, 200);
     }
 

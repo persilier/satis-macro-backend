@@ -34,7 +34,7 @@ trait ReportingClaim
      */
     protected function getAllCategoryClaim()
     {
-        $categories =  ClaimCategory::all();
+        $categories =  ClaimCategory::has('claimObjects')->get();
 
         return $categories;
 
@@ -108,8 +108,9 @@ trait ReportingClaim
 
         $claims = $this->queryNumberObject($request, $institutionId);
 
-        $objects = ClaimObject::has('claims')->where('claim_category_id', $claimCategoryId)->get()->map(function ($item) use ($claims){
-            $claimsResolue = $this->statistique($claims, $item->id, 'validated');
+        $objects = ClaimObject::has('claims')->where('claim_category_id', $claimCategoryId)->get()->map(function ($item) use ($request, $claims, $institutionId){
+            $claimsResolue = $this->claimResolueStatistique($request, $institutionId);
+            $totalArchived = $this->statistique($claims, $item->id, 'validated');
             $item['total'] = $this->statistique($claims, $item->id, false, true);
             $item['incomplete'] = $this->statistique($claims, $item->id, 'incomplete');
             $item['toAssignementToUnit'] = $this->statistique($claims, $item->id, 'transferred_to_targeted_institution');
@@ -117,11 +118,28 @@ trait ReportingClaim
             $item['awaitingTreatment'] = $this->statistique($claims, $item->id, 'assigned_to_staff');
             $item['toValidate'] = $this->statistique($claims, $item->id, 'treated');
             $item['toMeasureSatisfaction'] = $this->statistique($claims, $item->id, 'validated');
-            $item['percentage'] = (($claimsResolue !== 0) && ($item['total']!==0)) ? round((($claimsResolue/$item['total']) * 100),2) : 0;
+            $item['percentage'] = (($claimsResolue !== 0) && ($totalArchived!==0)) ? round((($claimsResolue/$totalArchived) * 100),2) : 0;
             return $item;
         });
 
         return $objects;
+    }
+
+
+    /**
+     * @param $request
+     * @param $institutionId
+     * @return int
+     */
+    protected function claimResolueStatistique($request, $institutionId){
+
+        return $claims = $this->numberClaimByPeriod($request, $institutionId, 'satisfaction_measured_at', 'satisfaction_measured_at')->filter( function ($item){
+
+            return ($item->is_claimer_satisfied === 1);
+
+        })->count();
+
+
     }
 
 
@@ -143,11 +161,6 @@ trait ReportingClaim
         }else{
 
             switch ($status){
-                case 'resolue':
-
-                    return $claims->filter(function ($item) use ($objectClaimId , $status){
-                        return (($item->claim_object_id === $objectClaimId) && ($item->satisfaction_measured_by !== null));
-                    })->count();
 
                 case 'transferred_to_targeted_institution':
 
@@ -209,10 +222,13 @@ trait ReportingClaim
                 ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
 
         }else{
+
             $claims = Claim::where('request_channel_slug', $slug);
+
         }
 
         if($institutionId){
+
             $claims->where('institution_targeted_id', $institutionId);
         }
 
@@ -404,7 +420,7 @@ trait ReportingClaim
      */
     protected  function numberClaimByPeriod($request, $institutionId, $condition = 'transferred_to_unit_at', $orderBy = 'completed_at'){
 
-        $claims = $this-> queryClaimByPeriod($institutionId, $orderBy);
+        $claims = $this->queryClaimByPeriod($institutionId, $orderBy);
 
         if($request->has('date_start') && $request->has('date_end')){
             $claims->where('claims.created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
@@ -474,6 +490,11 @@ trait ReportingClaim
     }
 
 
+    /**
+     * @param $request
+     * @param $institutionId
+     * @return Claim
+     */
     protected function queryClaimByDayOrMonthOrYear($request, $institutionId){
 
         if($request->has('date_start') && $request->has('date_end')){
@@ -493,6 +514,11 @@ trait ReportingClaim
     }
 
 
+    /**
+     * @param $request
+     * @param $institutionId
+     * @return Builder
+     */
     protected function queryClaimByDayOrMonthOrYearResolue($request, $institutionId){
 
         $claims = $this->queryClaimByTreatmentPeriod($institutionId);
@@ -1042,7 +1068,7 @@ trait ReportingClaim
 
     /**
      * @param $request
-     * @return array
+     * @return void
      */
     protected function verifiedStaffsExist($request){
 
