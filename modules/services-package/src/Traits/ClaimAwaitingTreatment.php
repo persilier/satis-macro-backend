@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
@@ -59,11 +60,13 @@ trait ClaimAwaitingTreatment
      */
     protected function getOneClaimQuery($institutionId, $unitId, $claim)
     {
+        $claim = Claim::with($this->getRelationsAwitingTreatment())->findOrFail($claim);
 
-        if (!$claim = $this->getClaimsQuery($institutionId, $unitId)->where('claims.id', $claim)->first())
-            throw new CustomException("Impossible de récupérer cette réclammation");
-        else
-            return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
+        if($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit"){
+            throw new CustomException("Impossible de traiter cette réclammation");
+        }
+
+        return $claim;
     }
 
     /**
@@ -101,14 +104,18 @@ trait ClaimAwaitingTreatment
      */
     protected function rejectedClaimUpdate($claim, $request)
     {
-
-        $claim->activeTreatment->update(['transferred_to_unit_at' => null, 'rejected_reason' => $request->rejected_reason, 'rejected_at' => Carbon::now()]);
+        
+        $claim->activeTreatment->update([
+            'transferred_to_unit_at' => NULL,
+            'rejected_reason' => $request->rejected_reason,
+            'rejected_at' => Carbon::now()
+          ]);
 
         if (!is_null($claim->transfered_to_targeted_institution_at)) {
-            $claim->update(['status', 'transferred_to_targeted_institution']);
+            $claim->update(['status' => 'transferred_to_targeted_institution']);
             $institution = Institution::find($claim->institution_targeted_id);
         } else {
-            $claim->update(['status', 'full']);
+            $claim->update(['status' => 'full']);
             $institution = $claim->createdBy->institution;
         }
 
@@ -118,8 +125,7 @@ trait ClaimAwaitingTreatment
 
         try {
             \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($claim->activeTreatment->responsible_unit_id), new RejectAClaim($claim));
-        } catch (\Exception $exception) {
-        }
+        } catch (\Exception $exception) {}
 
         return $claim;
     }

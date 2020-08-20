@@ -45,7 +45,7 @@ class Treatment extends Model
         'claim_id', 'responsible_unit_id', 'assigned_to_staff_by', 'responsible_staff_id', 'unfounded_reason',
         'solution', 'preventive_measures', 'solution_communicated', 'is_claimer_satisfied', 'amount_returned',
         'unsatisfied_reason', 'transferred_to_targeted_institution_at', 'transferred_to_unit_at','satisfaction_measured_by',
-        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at', 'assigned_to_staff_at'
+        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at', 'assigned_to_staff_at', 'rejected_at', 'rejected_reason'
     ];
 
     /**
