@@ -30,6 +30,8 @@ class ClaimController extends ApiController
 
     /**
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function index()
     {
@@ -54,6 +56,8 @@ class ClaimController extends ApiController
     /**
      * @param $claimId
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function edit($claimId)
     {
@@ -68,7 +72,9 @@ class ClaimController extends ApiController
      * @param Request $request
      * @param $claimId
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function update(Request $request, $claimId)
     {

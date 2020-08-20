@@ -65,9 +65,9 @@ class RolesTableSeeder extends Seeder
 
         if ($nature === 'HUB') {
 
-            $role_admin = Role::where('name', 'admin-observatory')->where('guard_name', 'api')->firstOrFail();
+            $role_pilot = Role::where('name', 'pilot')->where('guard_name', 'api')->firstOrFail();
 
-            $role_admin->givePermissionTo([
+            $role_pilot->givePermissionTo([
                 $permission_archived_list, $permission_archived_show
             ]);
         }

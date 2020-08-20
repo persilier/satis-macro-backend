@@ -106,7 +106,9 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
-        $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        if(!is_null($this->getInstitutionPilot($institution))){
+            $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        }
 
         return response()->json($claim, 200);
 
@@ -135,7 +137,9 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
-        $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        if(!is_null($this->getInstitutionPilot($institution))){
+            $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        }
 
         return response()->json($claim, 200);
 

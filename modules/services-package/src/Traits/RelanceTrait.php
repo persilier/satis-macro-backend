@@ -29,7 +29,7 @@ trait RelanceTrait
 
         $claim = Claim::with($this->getRelations());
 
-        if($treatment){
+        if ($treatment) {
 
             $claim->join('treatments', function ($join) {
 
@@ -38,11 +38,11 @@ trait RelanceTrait
             })->select('claims.*');
         }
 
-        if($my){
+        if ($my) {
 
             $claim->where('institution_targeted_id', $this->institution()->id);
         }
-        
+
         return $claim->findOrFail($claimId);
 
     }
@@ -53,44 +53,54 @@ trait RelanceTrait
      * @param bool $my
      * @return array
      */
-    protected function treatmentAnyMyRelances($claimId, $status, $my = false){
+    protected function treatmentAnyMyRelances($claimId, $status, $my = false)
+    {
 
-            $identite = null;
+        $identite = null;
 
-            if($status === 'incomplete' || $status === 'full' || $status === 'transferred_to_targeted_institution'){
+        if ($status === 'incomplete' || $status === 'full' || $status === 'transferred_to_targeted_institution') {
 
-                $claim = $this->getOneRelance($claimId, false, $my);
+            $claim = $this->getOneRelance($claimId, false, $my);
+            try {
                 $identite = $this->getInstitutionPilot($claim->createdBy->identite->staff->institution);
-
+            } catch (\Exception $exception) {
+                $identite = null;
             }
+        }
 
-            if($status === 'transferred_to_unit'){
+        if ($status === 'transferred_to_unit') {
 
-                $claim = $this->getOneRelance($claimId, false, $my);
+            $claim = $this->getOneRelance($claimId, false, $my);
+            try {
                 $identite = $this->getIdentitesResponsibleUnit($claim->activeTreatment->responsibleUnit);
-
+            } catch (\Exception $exception) {
+                $identite = null;
             }
+        }
 
-            if($status=== 'assigned_to_staff'){
+        if ($status === 'assigned_to_staff') {
 
-                $claim = $this->getOneRelance($claimId, false, $my);
-                $identite = $this->getIdentitesResponsibleStaff($claim->activeTreatment->responsibleStaff);
+            $claim = $this->getOneRelance($claimId, false, $my);
+            $identite = $this->getIdentitesResponsibleStaff($claim->activeTreatment->responsibleStaff);
 
-            }
+        }
 
-            if($status === 'treated' || $status === 'validated'){
+        if ($status === 'treated' || $status === 'validated') {
 
-                $claim = $this->getOneRelance($claimId, false, $my);
+            $claim = $this->getOneRelance($claimId, false, $my);
+            try {
                 $identite = $this->getInstitutionPilot($claim->activeTreatment->responsibleStaff->institution);
-
+            } catch (\Exception $exception) {
+                $identite = null;
             }
+        }
 
-            return [
+        return [
 
-                'identite' => $identite,
-                'claim' => $claim
+            'identite' => $identite,
+            'claim' => $claim
 
-            ];
+        ];
 
     }
 
@@ -99,17 +109,18 @@ trait RelanceTrait
      * @param $identite
      * @param $claim
      */
-    protected function notifMailSendDispach($identite, $claim){
+    protected function notifMailSendDispach($identite, $claim)
+    {
 
-        if($identite instanceof Collection){
+        if ($identite instanceof Collection) {
 
-            $identite->each(function ($item) use ($claim){
+            $identite->each(function ($item) use ($claim) {
 
                 $this->dispatchRelance($item, $claim);
 
             });
 
-        }else{
+        } else {
 
             $this->dispatchRelance($identite, $claim);
 
@@ -118,19 +129,21 @@ trait RelanceTrait
     }
 
 
-
-    protected function dispatchRelance($identite, $claim){
+    protected function dispatchRelance($identite, $claim)
+    {
 
         $mail = new RelanceMail($identite, $claim);
 
         return Mail::to($identite->email[0])->send($mail);
     }
+
     /**
      * @return array
      */
-    protected function rulesAnyMyRelanceSend(){
+    protected function rulesAnyMyRelanceSend()
+    {
 
-        return  [
+        return [
             'comment' => 'required|string',
         ];
 

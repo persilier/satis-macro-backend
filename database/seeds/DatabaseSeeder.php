@@ -106,8 +106,11 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\AccountType\Database\Seeds\RolesTableSeeder::class);
        // $this->call(\Satis2020\SatisfactionMeasuredAnyClaim\Database\Seeds\RolesTableSeeder::class);
        // $this->call(\Satis2020\SatisfactionMeasuredMyClaim\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\AnyClaimArchived\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\MyClaimArchived\Database\Seeds\RolesTableSeeder::class);
+        //$this->call(\Satis2020\AnyClaimArchived\Database\Seeds\RolesTableSeeder::class);
+        //$this->call(\Satis2020\MyClaimArchived\Database\Seeds\RolesTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsMembreSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
 
     }
 
