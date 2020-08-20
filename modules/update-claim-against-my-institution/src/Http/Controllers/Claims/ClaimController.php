@@ -79,11 +79,9 @@ class ClaimController extends ApiController
 
         $request->merge(['claimer_id' => $claim->claimer_id]);
 
-        $this->validate($request, $this->rulesCompletion($request));
+        $this->validate($request, $this->rulesCompletion($request, $claim));
 
         $this->validateUnicityIdentiteCompletion($request, $claim);
-
-        $request->merge(['status' => $this->getStatus($request, true, false, true, true)]);
 
         $claim = $this->updateClaim($request, $claim, $this->staff()->id);
 

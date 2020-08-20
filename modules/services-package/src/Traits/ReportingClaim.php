@@ -179,7 +179,7 @@ trait ReportingClaim
      */
     protected function numberChannels($request, $institutionId =  false){
 
-        $channels = Channel::all();
+        $channels = Channel::has('claims')->get();
 
         $channels->map(function ($item) use ($request,$institutionId){
             $result = $this->countClaimByChannel($request,$item->slug, $institutionId);
@@ -288,7 +288,7 @@ trait ReportingClaim
             '2-4' => $this->countFilterBetweenDatePeriod($datas, 2, 4, $finish = false, $totalCalim),
             '4-6' => $this->countFilterBetweenDatePeriod($datas, 4, 6, $finish = false, $totalCalim),
             '6-10' => $this->countFilterBetweenDatePeriod($datas, 6, 10, $finish = false, $totalCalim),
-            '+10' => $this->countFilterBetweenDatePeriod($datas, false, 10, $finish = true, $totalCalim),
+            '+10' => $this->countFilterBetweenDatePeriod($datas, 10, 10, $finish = true, $totalCalim),
         ];
 
     }
@@ -301,16 +301,16 @@ trait ReportingClaim
      */
     protected function treatmentPeriod($request, $institutionId = false){
 
-        $totalClaim = $this->numberClaimByTreatmentPeriod($request,$institutionId)->count();
+        $totalClaim = $this->numberClaimByTreatmentPeriod($request, $institutionId)->count();
 
-        $datas = $this->numberClaimByTreatmentPeriod($request,$institutionId);
+        $datas = $this->numberClaimByTreatmentPeriod($request, $institutionId);
 
         return [
             '0-2' => $this->countFilterBetweenDateTreatmentPeriod($datas, 0, 2, $finish = false, $totalClaim),
             '2-4' => $this->countFilterBetweenDateTreatmentPeriod($datas, 2, 4, $finish = false, $totalClaim),
             '4-6' => $this->countFilterBetweenDateTreatmentPeriod($datas, 4, 6, $finish = false, $totalClaim),
             '6-10' => $this->countFilterBetweenDateTreatmentPeriod($datas, 6, 10, $finish = false, $totalClaim),
-            '+10' => $this->countFilterBetweenDateTreatmentPeriod($datas, false, 10, $finish = true, $totalClaim),
+            '+10' => $this->countFilterBetweenDateTreatmentPeriod($datas, 10, 10, $finish = true, $totalClaim),
         ];
 
     }
@@ -327,12 +327,27 @@ trait ReportingClaim
     protected  function countFilterBetweenDatePeriod($datas, $valStart, $valEnd, $finish, $total){
 
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
-            $nbre = $item->activeTreatment->assigned_to_staff_at->diffInDays($item->completed_at, true);
+
+            $begin = $item->completed_at->copy()->addDays($valStart);
+            $end = $item->completed_at->copy()->addDays($valEnd);
+
             if($finish){
-               return (($nbre >= $valStart) || ($nbre < $valEnd)) ;
+
+                if(($begin >= $item->completed_at) && ($end > $item->activeTreatment->transferred_to_unit_at)){
+
+                    return $item;
+
+                }
+
             }else{
-                return ($nbre > $valEnd);
+
+                if(($begin >= $item->completed_at) && ($end < $item->activeTreatment->transferred_to_unit_at)){
+
+                    return $item;
+
+                }
             }
+
         })->count();
 
         $data['pourcentage'] = (($data['total'] !== 0) && ($total !==0)) ? round((( $data['total']/$total) * 100),2) : 0;
@@ -352,12 +367,27 @@ trait ReportingClaim
     protected  function countFilterBetweenDateTreatmentPeriod($datas, $valStart, $valEnd, $finish, $total){
 
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
-            $nbre = $item->activeTreatment->validated_at->diffInDays($item->activeTreatment->assigned_to_staff_at, true);
+
+            $begin = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valStart);
+            $end = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valEnd);
+
             if($finish){
-                return (($nbre >= $valStart) || ($nbre < $valEnd)) ;
+
+                if(($begin >= $item->activeTreatment->transferred_to_unit_at) && ($end < $item->activeTreatment->satisfaction_measured_at)){
+
+                    return $item;
+
+                }
+
             }else{
-                return ($nbre > $valEnd);
+
+                if(($begin >= $item->activeTreatment->transferred_to_unit_at) && ($end > $item->activeTreatment->satisfaction_measured_at)){
+
+                    return $item;
+
+                }
             }
+
         })->count();
 
         $data['pourcentage'] = ( ($data['total'] !== 0) && ($total !==0)) ? round((( $data['total']/$total) * 100),2) : 0;
@@ -372,7 +402,7 @@ trait ReportingClaim
      * @param string $orderBy
      * @return Builder[]|Collection
      */
-    protected  function numberClaimByPeriod($request, $institutionId, $condition = 'assigned_to_staff_at', $orderBy = 'completed_at'){
+    protected  function numberClaimByPeriod($request, $institutionId, $condition = 'transferred_to_unit_at', $orderBy = 'completed_at'){
 
         $claims = $this-> queryClaimByPeriod($institutionId, $orderBy);
 
@@ -412,7 +442,7 @@ trait ReportingClaim
      * @param string $orderBy
      * @return Builder[]|Collection
      */
-    protected  function numberClaimByTreatmentPeriod($request, $institutionId, $condition = 'validated_at', $orderBy = 'assigned_to_staff_at'){
+    protected  function numberClaimByTreatmentPeriod($request, $institutionId, $condition = 'satisfaction_measured_at', $orderBy = 'satisfaction_measured_at'){
 
         $claims = $this->queryClaimByTreatmentPeriod($institutionId);
 

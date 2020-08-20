@@ -67,7 +67,6 @@ class InstitutionController extends ApiController
         $datas['acronyme'] = $request->acronyme;
         $datas['iso_code'] = $request->iso_code;
         $datas['other_attributes'] = $request->other_attributes;
-        $datas['institution_type_id'] = $request->institution_type_id;
 
         if(isset($filePath))
             $datas['logo'] = $filePath;
