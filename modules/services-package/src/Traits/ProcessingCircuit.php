@@ -29,12 +29,12 @@ trait ProcessingCircuit
      * @param $institutionId | Id institution
      * @return array
      */
-    protected function getAllProcessingCircuits($institutionId=null)
+    protected function getAllProcessingCircuits($institutionId = null)
     {
         try {
 
             $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
-                $item['claimObjects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
+                $item['claim_objects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
                     $query->where('claim_object_unit.institution_id', '=', $institutionId);
                 }])->get();
 
