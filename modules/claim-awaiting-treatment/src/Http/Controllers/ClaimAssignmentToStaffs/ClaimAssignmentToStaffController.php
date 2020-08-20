@@ -88,7 +88,11 @@ class ClaimAssignmentToStaffController extends ApiController
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'amount_returned' => ['integer', Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug))],
+            'amount_returned' => [
+                'integer',
+                Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug)),
+                'min:1'
+            ],
             'solution' => ['required', 'string'],
             'comments' => ['nullable', 'string'],
             'preventive_measures' => ['nullable', 'string']
