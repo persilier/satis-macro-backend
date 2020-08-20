@@ -74,7 +74,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-category-client-from-my-institution', 'store-category-client-from-my-institution', 'update-category-client-from-my-institution', 'destroy-category-client-from-my-institution', 'show-category-client-from-my-institution',
             'update-notifications',
             'list-performance-indicator', 'store-performance-indicator', 'update-performance-indicator', 'destroy-performance-indicator', 'show-performance-indicator', 'edit-performance-indicator',
-            'update-processiong-circuit-any-institution',
+            'update-processing-circuit-any-institution',
             'list-reporting-claim-any-institution',
             'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
             'list-staff-from-any-unit', 'store-staff-from-any-unit', 'update-staff-from-any-unit', 'destroy-staff-from-any-unit', 'show-staff-from-any-unit', 'edit-staff-from-any-unit',
