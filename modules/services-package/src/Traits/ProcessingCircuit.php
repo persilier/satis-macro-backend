@@ -33,7 +33,7 @@ trait ProcessingCircuit
     {
         try {
 
-            $circuits =   ClaimCategory::has('claimObjects')->get()->map(function ($item) use ($institutionId){
+            $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
                 $item['claimObjects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
                     $query->where('claim_object_unit.institution_id', '=', $institutionId);
                 }])->get();
