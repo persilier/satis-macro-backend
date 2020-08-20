@@ -111,10 +111,11 @@ trait ClaimAwaitingTreatment
             $claim->update(['status', 'full']);
             $institution = $claim->createdBy->institution;
         }
-        try {
+
+        if(!is_null($this->getInstitutionPilot($institution))){
             $this->getInstitutionPilot($institution)->notify(new RejectAClaim($claim));
-        } catch (\Exception $exception) {
         }
+
         try {
             \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($claim->activeTreatment->responsible_unit_id), new RejectAClaim($claim));
         } catch (\Exception $exception) {

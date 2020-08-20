@@ -217,9 +217,9 @@ trait CreateClaim
         $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
 
         // send notification to pilot
-        try {
+        if(!is_null($this->getInstitutionPilot($claim->createdBy->institution))){
             $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-        }catch (\Exception $exception){}
+        }
 
         return $claim;
     }

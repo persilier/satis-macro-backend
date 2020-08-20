@@ -48,9 +48,9 @@ class TransferToInstitutionController extends ApiController
         $claim->update(['status' => 'transferred_to_targeted_institution']);
 
         // send notification to pilot
-        try {
+        if(!is_null($this->getInstitutionPilot(Institution::find($claim->institution_targeted_id)))){
             $this->getInstitutionPilot(Institution::find($claim->institution_targeted_id))->notify(new TransferredToTargetedInstitution($claim));
-        } catch (\Exception $exception) {}
+        }
 
         return response()->json($claim, 201);
     }
