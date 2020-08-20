@@ -17,8 +17,12 @@ class StaffTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Staff::truncate();
-        Staff::flushEventListeners();
-        factory(\Satis2020\ServicePackage\Models\Staff::class, 15)->create();
+        foreach (Staff::with('unit.institution')->get() as $staff) {
+            if (!is_null($staff->unit)) {
+                if (!is_null($staff->unit->institution)) {
+                    $staff->update(['institution_id' => $staff->unit->institution->id]);
+                }
+            }
+        }
     }
 }

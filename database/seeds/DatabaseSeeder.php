@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\AccountTypeTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\AccountTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PositionTableSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\StaffTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\StaffTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\UnitLeadSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\SeverityLevelTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ClaimCategoryTableSeeder::class);
