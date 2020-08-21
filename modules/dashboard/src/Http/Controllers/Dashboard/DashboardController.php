@@ -36,7 +36,7 @@ class DashboardController extends ApiController
         $statistics = $this->getDataCollection($this->getStatisticsKeys(), $permissions);
 
         // initialise total claims registered in last 30 days
-        $totalClaimsRegisteredStatistics = collect(['total'=>0]);
+        $totalClaimsRegisteredStatistics = collect(['total' => 0]);
 
         // initialise channelsUse collection
         $channelsUse = $this->getDataCollection(Channel::all()->pluck('name'),
@@ -78,51 +78,54 @@ class DashboardController extends ApiController
                 if ($claim->created_at->between(Carbon::now()->subDays(30), Carbon::now())) {
 
                     // totalRegistered
-                    $totalClaimsRegisteredStatistics->put('total', ($totalClaimsRegisteredStatistics->get('total') + 1)) ;
+                    $totalClaimsRegisteredStatistics->put('total', ($totalClaimsRegisteredStatistics->get('total') + 1));
                     $statistics->put('totalRegistered', $this->incrementTotalRegistered($claim, $statistics->get('totalRegistered')));
 
-                    // totalIncomplete
-                    if ($claim->status == 'incomplete') {
-                        $statistics->put('totalIncomplete', $this->incrementTotalRegistered($claim, $statistics->get('totalIncomplete')));
-                    }
+                    if (is_null($claim->deleted_at)) { // if claim is not merged
 
-                    // totalComplete
-                    if ($claim->status == 'full' || $claim->status == 'transferred_to_targeted_institution') {
-                        $statistics->put('totalComplete', $this->incrementTotalCompleted($claim, $statistics->get('totalComplete')));
-                    }
-
-                    if (!is_null($claim->activeTreatment)) {
-
-                        $claim->activeTreatment->load($this->getActiveTreatmentRelations());
-
-                        // totalTransferredToUnit
-                        if ($claim->status == 'transferred_to_unit') {
-                            $statistics->put('totalTransferredToUnit',
-                                $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalTransferredToUnit')));
+                        // totalIncomplete
+                        if ($claim->status == 'incomplete') {
+                            $statistics->put('totalIncomplete', $this->incrementTotalRegistered($claim, $statistics->get('totalIncomplete')));
                         }
 
-                        // totalBeingProcess
-                        if ($claim->status == 'assigned_to_staff') {
-                            $statistics->put('totalBeingProcess',
-                                $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalBeingProcess')));
+                        // totalComplete
+                        if ($claim->status == 'full' || $claim->status == 'transferred_to_targeted_institution') {
+                            $statistics->put('totalComplete', $this->incrementTotalCompleted($claim, $statistics->get('totalComplete')));
                         }
 
-                        // totalTreated
-                        if ($claim->status == 'treated') {
-                            $statistics->put('totalTreated',
-                                $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalTreated')));
-                        }
+                        if (!is_null($claim->activeTreatment)) {
 
-                        // totalUnfounded
-                        if ($claim->status == 'archived' && !is_null($claim->activeTreatment->declared_unfounded_at)) {
-                            $statistics->put('totalUnfounded',
-                                $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalUnfounded')));
-                        }
+                            $claim->activeTreatment->load($this->getActiveTreatmentRelations());
 
-                        // totalMeasuredSatisfaction
-                        if ($claim->status == 'archived' && !is_null($claim->activeTreatment->satisfaction_measured_at)) {
-                            $statistics->put('totalMeasuredSatisfaction',
-                                $this->incrementTotalMeasuredSatisfaction($claim, $statistics->get('totalMeasuredSatisfaction')));
+                            // totalTransferredToUnit
+                            if ($claim->status == 'transferred_to_unit') {
+                                $statistics->put('totalTransferredToUnit',
+                                    $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalTransferredToUnit')));
+                            }
+
+                            // totalBeingProcess
+                            if ($claim->status == 'assigned_to_staff') {
+                                $statistics->put('totalBeingProcess',
+                                    $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalBeingProcess')));
+                            }
+
+                            // totalTreated
+                            if ($claim->status == 'treated') {
+                                $statistics->put('totalTreated',
+                                    $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalTreated')));
+                            }
+
+                            // totalUnfounded
+                            if ($claim->status == 'archived' && !is_null($claim->activeTreatment->declared_unfounded_at)) {
+                                $statistics->put('totalUnfounded',
+                                    $this->incrementTotalTransferredToUnit($claim, $statistics->get('totalUnfounded')));
+                            }
+
+                            // totalMeasuredSatisfaction
+                            if ($claim->status == 'archived' && !is_null($claim->activeTreatment->satisfaction_measured_at)) {
+                                $statistics->put('totalMeasuredSatisfaction',
+                                    $this->incrementTotalMeasuredSatisfaction($claim, $statistics->get('totalMeasuredSatisfaction')));
+                            }
                         }
                     }
 

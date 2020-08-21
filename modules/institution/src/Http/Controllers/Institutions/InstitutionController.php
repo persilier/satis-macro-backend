@@ -3,6 +3,7 @@
 namespace Satis2020\Institution\Http\Controllers\Institutions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
@@ -28,6 +29,7 @@ class InstitutionController extends ApiController
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -43,7 +45,9 @@ class InstitutionController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @return InstitutionResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -90,6 +94,7 @@ class InstitutionController extends ApiController
      *
      * @param $institution
      * @return void
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function show($institution)
     {
@@ -106,7 +111,9 @@ class InstitutionController extends ApiController
      * @param \Illuminate\Http\Request $request
      * @param $institution
      * @return InstitutionResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, $institution)
     {
@@ -157,7 +164,8 @@ class InstitutionController extends ApiController
      * @param Request $request
      * @param $institution
      * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function updateLogo(Request $request, $institution){
         $rules = [
@@ -186,6 +194,7 @@ class InstitutionController extends ApiController
      *
      * @param $institution
      * @return InstitutionResource
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function destroy($institution)
     {
