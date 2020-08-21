@@ -60,7 +60,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createInstitution($institutionName, $acronyme, $institutionTypeName)
     {
-        Institution::create([
+        return $institution = Institution::create([
             'name' => $institutionName,
             'acronyme' => $acronyme,
             'iso_code' => '229',
@@ -70,7 +70,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createUnitType($unitTypeName)
     {
-        UnitType::create([
+        return $unitType =  UnitType::create([
             'name' => $unitTypeName,
             'can_be_target' => true,
             'can_treat' => true,
@@ -80,7 +80,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createUnit($unitName, $unitTypeId, $institutionId)
     {
-        Unit::create([
+        return $unit =  Unit::create([
             'name' => $unitName,
             'unit_type_id' => $unitTypeId,
             'institution_id' => $institutionId
@@ -89,7 +89,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createPosition($positionName)
     {
-        Position::create([
+        return $position =  Position::create([
             'name' => $positionName
         ]);
     }
