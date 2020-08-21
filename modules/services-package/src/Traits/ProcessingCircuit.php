@@ -116,7 +116,7 @@ trait ProcessingCircuit
 
             $collection->each(function ($item, $key) use ($institutionId){
 
-                $item['claim_object']->units()->sync($item['units_ids']);
+                $item['claim_object']->units()->wherePivot('institution_id', $institutionId)->sync($item['units_ids']);
 
             });
 
