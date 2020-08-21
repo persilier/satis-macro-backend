@@ -57,14 +57,16 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-processing-circuit-my-institution',
                     'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
                     'list-staff-from-my-unit', 'store-staff-from-my-unit', 'update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
-                    'show-dashboard-data-my-institution'
+                    'show-dashboard-data-my-institution',
+                    'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
+                    'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
                     'store-claim-against-my-institution',
                     'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
                     'list-claim-archived', 'show-claim-archived',
-                    'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+                    'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
                     'list-monitoring-claim-my-institution',
                     'list-reporting-claim-my-institution',
@@ -75,7 +77,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
                     'store-claim-against-my-institution',
-                    'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+                    'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
                     'show-dashboard-data-my-activity'
                 ],
