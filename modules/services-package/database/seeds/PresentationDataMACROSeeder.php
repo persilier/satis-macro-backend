@@ -196,17 +196,17 @@ class PresentationDataMACROSeeder extends Seeder
             $direction = $this->createUnitType('DIRECTION');
 
             // create units
-            $departmentProduction = $this->createUnit('PRODUCTION', "{$department->id}", "{$dmd->id}");
-            $departmentExploitation = $this->createUnit('EXPLOITATION', "{$department->id}", "{$dmd->id}");
-            $directionDmd = $this->createUnit('DIRECTION DMD', "{$direction->id}", "{$dmd->id}");
-            $serviceInformatiqueDmd = $this->createUnit('INFORMATIQUE DMD', "{$service->id}", "{$dmd->id}");
-            $serviceComptabiliteDmd = $this->createUnit('COMPTABILITE DMD', "{$service->id}", "{$dmd->id}");
-            $serviceConsultingDmd = $this->createUnit('CONSULTING', "{$service->id}", "{$dmd->id}");
-            $serviceAdministrationPlateformeDmd = $this->createUnit('ADMINISTRATION PLATEFORME DMD', "{$service->id}", "{$dmd->id}");
+            $departmentProduction = $this->createUnit('PRODUCTION', $department->id, $dmd->id);
+            $departmentExploitation = $this->createUnit('EXPLOITATION', $department->id, $dmd->id);
+            $directionDmd = $this->createUnit('DIRECTION DMD', $direction->id, $dmd->id);
+            $serviceInformatiqueDmd = $this->createUnit('INFORMATIQUE DMD', $service->id, $dmd->id);
+            $serviceComptabiliteDmd = $this->createUnit('COMPTABILITE DMD', $service->id, $dmd->id);
+            $serviceConsultingDmd = $this->createUnit('CONSULTING', $service->id, $dmd->id);
+            $serviceAdministrationPlateformeDmd = $this->createUnit('ADMINISTRATION PLATEFORME DMD', $service->id, $dmd->id);
 
-            $directionSatis = $this->createUnit('DIRECTION SATIS', "{$direction->id}", "{$satis->id}");
-            $departmentCommercial = $this->createUnit('COMMERCIAL', "{$department->id}", "{$satis->id}");
-            $serviceAdministrationPlateformeSatis = $this->createUnit('ADMINISTRATION PLATEFORME SATIS', "{$service->id}", "{$satis->id}");
+            $directionSatis = $this->createUnit('DIRECTION SATIS', $direction->id, $satis->id);
+            $departmentCommercial = $this->createUnit('COMMERCIAL', $department->id, $satis->id);
+            $serviceAdministrationPlateformeSatis = $this->createUnit('ADMINISTRATION PLATEFORME SATIS', $service->id, $satis->id);
 
             //create positions
             $directeur = $this->createPosition('DIRECTEUR');
@@ -221,92 +221,92 @@ class PresentationDataMACROSeeder extends Seeder
             $collecteurPlateforme = $this->createPosition('COLLECTEUR PLATEFORME');
 
             // create staff
-            $nelson = $this->createStaff("{$departmentProduction}", 'staff', 'Nelson', 'AZONHOU', 'M',
-                '67275158', 'ulrich@dmdconsult.com', "{$developpeur}", true);
+            $nelson = $this->createStaff($departmentProduction, 'staff', 'Nelson', 'AZONHOU', 'M',
+                '67275158', 'ulrich@dmdconsult.com', $developpeur, true);
 
-            $christian = $this->createStaff("{$departmentProduction}", 'staff', 'Guy Maurel Christian', 'AWASSI', 'M',
-                '95952727', 'christian@dmdconsult.com', "{$developpeur}");
+            $christian = $this->createStaff($departmentProduction, 'staff', 'Guy Maurel Christian', 'AWASSI', 'M',
+                '95952727', 'christian@dmdconsult.com', $developpeur);
 
-            $onesin = $this->createStaff("{$departmentProduction}", 'staff', 'Onesine', 'LEWHE', 'M',
-                '66766155', 'onesine@dmdconsult.com', "{$developpeur}");
+            $onesin = $this->createStaff($departmentProduction, 'staff', 'Onesine', 'LEWHE', 'M',
+                '66766155', 'onesine@dmdconsult.com', $developpeur);
 
-            $estelle = $this->createStaff("{$departmentProduction}", 'staff', 'Estelle', 'ODJO', 'F',
-                '66844833', 'estelle@dmdconsult.com', "{$developpeur}");
+            $estelle = $this->createStaff($departmentProduction, 'staff', 'Estelle', 'ODJO', 'F',
+                '66844833', 'estelle@dmdconsult.com', $developpeur);
 
-            $denis = $this->createStaff("{$departmentExploitation}", 'staff', 'Denis', 'GNARGO', 'M',
-                '786833134', 'denis@dmdconsult.com', "{$developpeur}", true);
+            $denis = $this->createStaff($departmentExploitation, 'staff', 'Denis', 'GNARGO', 'M',
+                '786833134', 'denis@dmdconsult.com', $developpeur, true);
 
-            $michael = $this->createStaff("{$departmentExploitation}", 'staff', 'Michael', 'HOUANYE', 'M',
-                '96370461', 'michael@dmdconsult.com', "{$analyste}");
+            $michael = $this->createStaff($departmentExploitation, 'staff', 'Michael', 'HOUANYE', 'M',
+                '96370461', 'michael@dmdconsult.com', $analyste);
 
-            $patrick = $this->createStaff("{$directionDmd}", 'staff', 'Patrick', 'DJONDO', 'M',
-                '97124946', 'patrick@dmdconsult.com', "{$directeur}", true);
+            $patrick = $this->createStaff($directionDmd, 'staff', 'Patrick', 'DJONDO', 'M',
+                '97124946', 'patrick@dmdconsult.com', $directeur, true);
 
-            $carine = $this->createStaff("{$directionDmd}", 'staff', 'Carine', 'AKPLOGAN', 'F',
-                '97327593', 'carine@dmdconsult.com', "{$directeurAdjoint}");
+            $carine = $this->createStaff($directionDmd, 'staff', 'Carine', 'AKPLOGAN', 'F',
+                '97327593', 'carine@dmdconsult.com', $directeurAdjoint);
 
-            $edgar = $this->createStaff("{$directionDmd}", 'staff', 'Edgar', 'AYENA', 'M',
-                '96055506', 'edgar@dmdconsult.com', "{$developpeur}");
+            $edgar = $this->createStaff($directionDmd, 'staff', 'Edgar', 'AYENA', 'M',
+                '96055506', 'edgar@dmdconsult.com', $developpeur);
 
-            $immaculee = $this->createStaff("{$directionDmd}", 'staff', 'Immaculée', "d'ALMEIDA", 'F',
-                '97779555', 'contact@dmdconsult.com', "{$assistantDirection}");
+            $immaculee = $this->createStaff($directionDmd, 'staff', 'Immaculée', "d'ALMEIDA", 'F',
+                '97779555', 'contact@dmdconsult.com', $assistantDirection);
 
-            $morel = $this->createStaff("{$serviceInformatiqueDmd}", 'staff', 'Morel', "DECADJEVI", 'M',
-                '66259003', 'morel@dmdconsult.com', "{$informaticien}", true);
+            $morel = $this->createStaff($serviceInformatiqueDmd, 'staff', 'Morel', "DECADJEVI", 'M',
+                '66259003', 'morel@dmdconsult.com', $informaticien, true);
 
-            $nabil = $this->createStaff("{$serviceInformatiqueDmd}", 'staff', 'Nabil', "JOACHIM", 'M',
-                '70555555', 'nabiljoachim@gmail.com', "{$informaticien}");
+            $nabil = $this->createStaff($serviceInformatiqueDmd, 'staff', 'Nabil', "JOACHIM", 'M',
+                '70555555', 'nabiljoachim@gmail.com', $informaticien);
 
-            $armelle = $this->createStaff("{$serviceComptabiliteDmd}", 'staff', 'Armelle', "A RENSEIGNER", 'F',
-                '70555570', 'finance@dmdconsult.com', "{$comptable}", true);
+            $armelle = $this->createStaff($serviceComptabiliteDmd, 'staff', 'Armelle', "A RENSEIGNER", 'F',
+                '70555570', 'finance@dmdconsult.com', $comptable, true);
 
-            $merrith = $this->createStaff("{$serviceConsultingDmd}", 'staff', 'Merrith', "BOKONON", 'M',
-                '97949497', 'merrith@dmdconsult.com', "{$analyste}", true);
+            $merrith = $this->createStaff($serviceConsultingDmd, 'staff', 'Merrith', "BOKONON", 'M',
+                '97949497', 'merrith@dmdconsult.com', $analyste, true);
 
-            $adminHolding = $this->createStaff("{$serviceAdministrationPlateformeDmd}", 'admin-holding', 'ADMINISTRATEUR', "DMD", 'M',
-                '70555571', 'admindmd@dmdconsult.com', "{$administrateurPlateforme}", true);
+            $adminHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'admin-holding', 'ADMINISTRATEUR', "DMD", 'M',
+                '70555571', 'admindmd@dmdconsult.com', $administrateurPlateforme, true);
 
-            $collecteurHolding = $this->createStaff("{$serviceAdministrationPlateformeDmd}", 'collector-holding', 'COLLECTEUR', "DMD", 'M',
-                '70555572', 'collecteurdmd@dmdconsult.com', "{$collecteurPlateforme}");
+            $collecteurHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'collector-holding', 'COLLECTEUR', "DMD", 'M',
+                '70555572', 'collecteurdmd@dmdconsult.com', $collecteurPlateforme);
 
-            $piloteHolding = $this->createStaff("{$serviceAdministrationPlateformeDmd}", 'pilot-holding', 'PILOTE', "DMD", 'M',
-                '70555573', 'pilotdmd@dmdconsult.com', "{$pilotePlateforme}");
-
-
+            $piloteHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'pilot-holding', 'PILOTE', "DMD", 'M',
+                '70555573', 'pilotdmd@dmdconsult.com', $pilotePlateforme);
 
 
-            $gildas = $this->createStaff("{$directionSatis}", 'staff', 'Gildas', 'A RENSEIGNER', 'M',
-                '70555574', 'gildas@dmdsatis.com', "{$directeur}", true);
 
-            $yessidatou = $this->createStaff("{$departmentCommercial}", 'staff', 'Yessidatou', "A RENSEIGNER", 'F',
-                '70555575', 'yessidatou@dmdsatis.com', "{$analyste}", true);
 
-            $adminFilial = $this->createStaff("{$serviceAdministrationPlateformeSatis}", 'admin-filial', 'ADMINISTRATEUR', "SATIS", 'M',
-                '70555576', 'adminsatis@dmdsatis.com', "{$administrateurPlateforme}", true);
+            $gildas = $this->createStaff($directionSatis, 'staff', 'Gildas', 'A RENSEIGNER', 'M',
+                '70555574', 'gildas@dmdsatis.com', $directeur, true);
 
-            $collecteurFilial = $this->createStaff("{$serviceAdministrationPlateformeSatis}", 'collector-filial-pro', 'COLLECTEUR', "SATIS", 'M',
-                '70555577', 'collecteursatis@dmdsatis.com', "{$collecteurPlateforme}");
+            $yessidatou = $this->createStaff($departmentCommercial, 'staff', 'Yessidatou', "A RENSEIGNER", 'F',
+                '70555575', 'yessidatou@dmdsatis.com', $analyste, true);
 
-            $piloteFilial = $this->createStaff("{$serviceAdministrationPlateformeSatis}", 'pilot-filial', 'PILOTE', "SATIS", 'M',
-                '70555578', 'pilotsatis@dmdsatis.com', "{$pilotePlateforme}");
+            $adminFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'admin-filial', 'ADMINISTRATEUR', "SATIS", 'M',
+                '70555576', 'adminsatis@dmdsatis.com', $administrateurPlateforme, true);
+
+            $collecteurFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'collector-filial-pro', 'COLLECTEUR', "SATIS", 'M',
+                '70555577', 'collecteursatis@dmdsatis.com', $collecteurPlateforme);
+
+            $piloteFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'pilot-filial', 'PILOTE', "SATIS", 'M',
+                '70555578', 'pilotsatis@dmdsatis.com', $pilotePlateforme);
 
 
             // create clients
             $bog = $this->createClient('BOG', 'GHANA', 'F', '70555579', 'bogghana@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', "{$dmd->id}", '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $oqsf = $this->createClient('OQSF', 'SENEGAL', 'F', '70555580', 'oqsfsenegal@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', "{$dmd->id}", '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $amir = $this->createClient('AMIR', 'RWANDA', 'F', '70555581', 'amirrwanda@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', "{$dmd->id}", '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $uimcec = $this->createClient('UIMCEC', 'SENEGAL', 'F', '70555582', 'uimcecsenegal@gmail.com',
-                '4e073bfd-9c5a-4596-b2fd-950df61724a0', "{$dmd->id}", '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '4e073bfd-9c5a-4596-b2fd-950df61724a0', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
 
             $abi = $this->createClient('ABI', 'GROUPE', 'M', '70555582', 'abigroup@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', "{$satis->id}", '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
 
         }
