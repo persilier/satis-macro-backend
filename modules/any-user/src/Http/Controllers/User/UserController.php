@@ -78,4 +78,23 @@ class UserController extends ApiController
         return response()->json($user,201);
     }
 
+
+    /**
+     * @param Request $request
+     * @param User $user
+     */
+    protected function changePassword(Request $request, User $user){
+
+        $request->validate([
+
+            'current_password' => ['required'],
+            'new_password' => ['required'],
+            'password_confirmation' => ['same:new_password'],
+
+        ]);
+
+        //User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
+
+    }
+
 }

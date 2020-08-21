@@ -2,6 +2,7 @@
 
 namespace Satis2020\Relance\Http\Controllers\Relance;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class RelanceController extends ApiController
     /**
      * @param Request $request
      * @param Claim $claim
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function sendAnyRelance(Request $request, Claim $claim){
@@ -49,7 +50,7 @@ class RelanceController extends ApiController
     /**
      * @param Request $request
      * @param Claim $claim
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function sendMyRelance(Request $request, Claim $claim){
