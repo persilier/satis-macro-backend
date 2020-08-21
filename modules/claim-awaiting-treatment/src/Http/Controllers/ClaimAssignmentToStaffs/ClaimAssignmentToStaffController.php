@@ -47,6 +47,7 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+            $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
             return $item;
         });
         return response()->json($claims, 200);
