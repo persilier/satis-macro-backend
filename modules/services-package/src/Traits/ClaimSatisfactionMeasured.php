@@ -48,7 +48,7 @@ trait ClaimSatisfactionMeasured
         return [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff'
+            'activeTreatment.responsibleStaff.identite'
         ];
     }
 
