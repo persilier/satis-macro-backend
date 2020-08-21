@@ -72,7 +72,7 @@ trait ProcessingCircuit
      * @param null $institutionId
      * @return mixed
      */
-    protected function rules($request, $collection, $institutionId = null){
+    protected function rules($request, $collection, $institutionId = NULL){
 
         foreach ($request as $claim_object_id => $units_ids) {
             // Check if claim_object_id exists
@@ -110,7 +110,7 @@ trait ProcessingCircuit
      * @param null $institutionId
      * @return bool
      */
-    protected function detachAttachUnits($collection , $institutionId = null){
+    protected function detachAttachUnits($collection , $institutionId = NULL){
 
         try{
 
