@@ -182,6 +182,24 @@ class PresentationDataHUBSeeder extends Seeder
         ]);
     }
 
+    public function attachUnitToClaimObject($claimObject, $unit)
+    {
+        if (!DB::table('claim_object_unit')
+            ->where('claim_object_id', $claimObject->id)
+            ->where('unit_id', $unit->id)
+            ->exists()) {
+            $claimObject->units()->attach($unit->id, ['institution_id' => NULL]);
+        }
+    }
+
+    public function attachUnitToAllClaimObject($unit)
+    {
+        ClaimObject::all()->map(function ($item, $key) use ($unit) {
+            $this->attachUnitToClaimObject($item, $unit);
+            return $item;
+        });
+    }
+
     /**
      * Run the database seeds.
      *
@@ -289,6 +307,15 @@ class PresentationDataHUBSeeder extends Seeder
 
             $yessidatou = $this->createStaff($satis->id, $departmentCommercial, 'staff', 'Yessidatou', "A RENSEIGNER", 'F',
                 '70555575', 'yessidatou@dmdsatis.com', $analyste, true);
+
+
+            $relationshipClient = $this->createRelationship('CLIENT');
+            $relationshipProspect = $this->createRelationship('PROSPECT');
+
+            Unit::all()->map(function ($item, $key) {
+                $this->attachUnitToAllClaimObject($item);
+                return $item;
+            });
 
 
         }

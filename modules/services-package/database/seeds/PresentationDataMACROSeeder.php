@@ -70,7 +70,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createUnitType($unitTypeName)
     {
-        return $unitType =  UnitType::create([
+        return $unitType = UnitType::create([
             'name' => $unitTypeName,
             'can_be_target' => true,
             'can_treat' => true,
@@ -80,7 +80,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createUnit($unitName, $unitTypeId, $institutionId)
     {
-        return $unit =  Unit::create([
+        return $unit = Unit::create([
             'name' => $unitName,
             'unit_type_id' => $unitTypeId,
             'institution_id' => $institutionId
@@ -89,7 +89,7 @@ class PresentationDataMACROSeeder extends Seeder
 
     public function createPosition($positionName)
     {
-        return $position =  Position::create([
+        return $position = Position::create([
             'name' => $positionName
         ]);
     }
@@ -133,7 +133,7 @@ class PresentationDataMACROSeeder extends Seeder
             'id' => (string)Str::uuid(),
             'identite_id' => $identity->id,
             'position_id' => $position->id,
-            'institution_id' => $unit->institutiton_id,
+            'institution_id' => $unit->institution_id,
             'unit_id' => $unit->id
         ]);
 
@@ -171,6 +171,24 @@ class PresentationDataMACROSeeder extends Seeder
         ]);
 
         return $client;
+    }
+
+    public function attachUnitToClaimObject($claimObject, $unit)
+    {
+        if (!DB::table('claim_object_unit')
+            ->where('claim_object_id', $claimObject->id)
+            ->where('unit_id', $unit->id)
+            ->exists()) {
+            $claimObject->units()->attach($unit->id, ['institution_id' => $unit->institution->id]);
+        }
+    }
+
+    public function attachUnitToAllClaimObject($unit)
+    {
+        ClaimObject::all()->map(function ($item, $key) use ($unit) {
+            $this->attachUnitToClaimObject($item, $unit);
+            return $item;
+        });
     }
 
     /**
@@ -273,8 +291,6 @@ class PresentationDataMACROSeeder extends Seeder
                 '70555573', 'pilotdmd@dmdconsult.com', $pilotePlateforme);
 
 
-
-
             $gildas = $this->createStaff($directionSatis, 'staff', 'Gildas', 'A RENSEIGNER', 'M',
                 '70555574', 'gildas@dmdsatis.com', $directeur, true);
 
@@ -307,6 +323,11 @@ class PresentationDataMACROSeeder extends Seeder
 
             $abi = $this->createClient('ABI', 'GROUPE', 'M', '70555582', 'abigroup@gmail.com',
                 '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+
+            Unit::all()->map(function ($item, $key) {
+                $this->attachUnitToAllClaimObject($item);
+                return $item;
+            });
 
 
         }

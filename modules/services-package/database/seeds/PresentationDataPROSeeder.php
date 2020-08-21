@@ -133,7 +133,7 @@ class PresentationDataPROSeeder extends Seeder
             'id' => (string)Str::uuid(),
             'identite_id' => $identity->id,
             'position_id' => $position->id,
-            'institution_id' => $unit->institutiton_id,
+            'institution_id' => $unit->institution_id,
             'unit_id' => $unit->id
         ]);
 
@@ -171,6 +171,24 @@ class PresentationDataPROSeeder extends Seeder
         ]);
 
         return $client;
+    }
+
+    public function attachUnitToClaimObject($claimObject, $unit)
+    {
+        if (!DB::table('claim_object_unit')
+            ->where('claim_object_id', $claimObject->id)
+            ->where('unit_id', $unit->id)
+            ->exists()) {
+            $claimObject->units()->attach($unit->id, ['institution_id' => $unit->institution->id]);
+        }
+    }
+
+    public function attachUnitToAllClaimObject($unit)
+    {
+        ClaimObject::all()->map(function ($item, $key) use ($unit) {
+            $this->attachUnitToClaimObject($item, $unit);
+            return $item;
+        });
     }
 
     /**
@@ -281,6 +299,11 @@ class PresentationDataPROSeeder extends Seeder
 
             $uimcec = $this->createClient('UIMCEC', 'SENEGAL', 'F', '70555582', 'uimcecsenegal@gmail.com',
                 '4e073bfd-9c5a-4596-b2fd-950df61724a0', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+
+            Unit::all()->map(function ($item, $key) {
+                $this->attachUnitToAllClaimObject($item);
+                return $item;
+            });
 
         }
     }

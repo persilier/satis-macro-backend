@@ -55,14 +55,16 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-relationship', 'store-relationship', 'update-relationship', 'destroy-relationship', 'show-relationship',
                     'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
                     'list-staff-from-maybe-no-unit', 'store-staff-from-maybe-no-unit', 'update-staff-from-maybe-no-unit', 'destroy-staff-from-maybe-no-unit', 'show-staff-from-maybe-no-unit',
-                    'show-dashboard-data-all-institution'
+                    'show-dashboard-data-all-institution',
+                    'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
+                    'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
                     'store-claim-without-client',
                     'list-claim-awaiting-validation-any-institution', 'show-claim-awaiting-validation-any-institution', 'validate-treatment-any-institution',
                     'list-claim-archived', 'show-claim-archived',
-                    'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+                    'list-satisfaction-measured-any-claim', 'update-satisfaction-measured-any-claim',
                     'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
                     'list-monitoring-claim-any-institution',
                     'list-reporting-claim-any-institution',
@@ -73,7 +75,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                 "supervisor-observatory" => [],
                 "collector-observatory" => [
                     'store-claim-without-client',
-                    'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+                    'list-satisfaction-measured-any-claim', 'update-satisfaction-measured-any-claim',
                     'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
                     'show-dashboard-data-my-activity'
                 ],

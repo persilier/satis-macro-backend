@@ -57,14 +57,14 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-category', 'store-claim-category', 'update-claim-category', 'destroy-claim-category', 'show-claim-category',
             'list-claim-object', 'store-claim-object', 'update-claim-object', 'destroy-claim-object', 'show-claim-object',
             'update-claim-object-requirement',
-            'list-claim-archived', 'show-claim-archived',
-            'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+            'list-any-claim-archived', 'show-any-claim-archived',
+            'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
             'list-client-from-any-institution', 'store-client-from-any-institution', 'update-client-from-any-institution', 'destroy-client-from-any-institution', 'show-client-from-any-institution',
             'show-mail-parameters', 'update-mail-parameters',
             'show-sms-parameters', 'update-sms-parameters',
             'list-currency', 'store-currency', 'update-currency', 'destroy-currency', 'show-currency',
             'show-dashboard-data-all-institution', 'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
-            'list-my-discussions',  'store-discussion',  'destroy-discussion',  'list-discussion-contributors',  'add-discussion-contributor',  'remove-discussion-contributor',  'contribute-discussion',
+            'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
             'list-faq-category', 'store-faq-category', 'update-faq-category', 'destroy-faq-category', 'show-faq-category',
             'list-message-apis', 'store-message-apis', 'update-message-apis', 'destroy-message-apis', 'update-institution-message-api', 'update-my-institution-message-api',
             'list-monitoring-claim-any-institution',
@@ -81,6 +81,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'transfer-claim-to-circuit-unit',
             'transfer-claim-to-targeted-institution',
             'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
+            'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
+            'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
 
         ];
 
@@ -89,20 +91,21 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'store-claim-against-my-institution',
             'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
             'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
-            'list-claim-archived', 'show-claim-archived',
-            'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+            'list-my-claim-archived', 'show-my-claim-archived',
+            'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
             'list-client-from-my-institution', 'store-client-from-my-institution', 'update-client-from-my-institution', 'destroy-client-from-my-institution', 'show-client-from-my-institution',
             'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
-            'list-my-discussions',  'store-discussion',  'destroy-discussion',  'list-discussion-contributors',  'add-discussion-contributor',  'remove-discussion-contributor',  'contribute-discussion',
+            'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
             'update-my-institution-message-api',
             'list-monitoring-claim-my-institution',
             'update-my-institution',
             'list-my-unit', 'store-my-unit', 'update-my-unit', 'destroy-my-unit', 'show-my-unit',
             'update-processing-circuit-my-institution',
             'list-reporting-claim-my-institution',
-            'list-staff-from-my-unit', 'store-staff-from-my-unit','update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
+            'list-staff-from-my-unit', 'store-staff-from-my-unit', 'update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
             'transfer-claim-to-circuit-unit',
             'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
+            'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
 
         ];
 
@@ -116,13 +119,13 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-category', 'store-claim-category', 'update-claim-category', 'destroy-claim-category', 'show-claim-category',
             'list-claim-object', 'store-claim-object', 'update-claim-object', 'destroy-claim-object', 'show-claim-object',
             'update-claim-object-requirement',
-            'list-claim-archived', 'show-claim-archived',
-            'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+            'list-any-claim-archived', 'show-any-claim-archived',
+            'list-satisfaction-measured-any-claim', 'update-satisfaction-measured-any-claim',
             'show-mail-parameters', 'update-mail-parameters',
             'show-sms-parameters', 'update-sms-parameters',
             'list-currency', 'store-currency', 'update-currency', 'destroy-currency', 'show-currency',
             'show-dashboard-data-all-institution', 'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
-            'list-my-discussions',  'store-discussion',  'destroy-discussion',  'list-discussion-contributors',  'add-discussion-contributor',  'remove-discussion-contributor',  'contribute-discussion',
+            'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
             'list-faq-category', 'store-faq-category', 'update-faq-category', 'destroy-faq-category', 'show-faq-category',
             'list-message-apis', 'store-message-apis', 'update-message-apis', 'destroy-message-apis', 'update-my-institution-message-api',
             'list-monitoring-claim-any-institution',
@@ -138,13 +141,15 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-staff-from-maybe-no-unit', 'store-staff-from-maybe-no-unit', 'update-staff-from-maybe-no-unit', 'destroy-staff-from-maybe-no-unit', 'show-staff-from-maybe-no-unit',
             'transfer-claim-to-unit',
             'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
+            'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
+            'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
 
         ];
 
         $memberPermissions = [
             'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
             'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
-            'list-my-discussions',  'store-discussion',  'destroy-discussion',  'list-discussion-contributors',  'add-discussion-contributor',  'remove-discussion-contributor',  'contribute-discussion',
+            'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
 
         ];
 
@@ -159,14 +164,14 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-category', 'store-claim-category', 'update-claim-category', 'destroy-claim-category', 'show-claim-category',
             'list-claim-object', 'store-claim-object', 'update-claim-object', 'destroy-claim-object', 'show-claim-object',
             'update-claim-object-requirement',
-            'list-claim-archived', 'show-claim-archived',
-            'list-claim-satisfaction-measured', 'update-claim-satisfaction-measured',
+            'list-my-claim-archived', 'show-my-claim-archived',
+            'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
             'list-client-from-my-institution', 'store-client-from-my-institution', 'update-client-from-my-institution', 'destroy-client-from-my-institution', 'show-client-from-my-institution',
             'show-mail-parameters', 'update-mail-parameters',
             'show-sms-parameters', 'update-sms-parameters',
             'list-currency', 'store-currency', 'update-currency', 'destroy-currency', 'show-currency',
             'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
-            'list-my-discussions',  'store-discussion',  'destroy-discussion',  'list-discussion-contributors',  'add-discussion-contributor',  'remove-discussion-contributor',  'contribute-discussion',
+            'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
             'list-faq-category', 'store-faq-category', 'update-faq-category', 'destroy-faq-category', 'show-faq-category',
             'list-message-apis', 'store-message-apis', 'update-message-apis', 'destroy-message-apis', 'update-my-institution-message-api',
             'list-monitoring-claim-my-institution',
@@ -180,9 +185,11 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-processing-circuit-my-institution',
             'list-reporting-claim-my-institution',
             'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
-            'list-staff-from-my-unit', 'store-staff-from-my-unit','update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
+            'list-staff-from-my-unit', 'store-staff-from-my-unit', 'update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
             'transfer-claim-to-circuit-unit',
             'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
+            'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
+            'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
 
         ];
 
