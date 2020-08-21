@@ -309,17 +309,16 @@ class PresentationDataMACROSeeder extends Seeder
 
             // create clients
             $bog = $this->createClient('BOG', 'GHANA', 'F', '70555579', 'bogghana@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $oqsf = $this->createClient('OQSF', 'SENEGAL', 'F', '70555580', 'oqsfsenegal@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $amir = $this->createClient('AMIR', 'RWANDA', 'F', '70555581', 'amirrwanda@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
+                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $uimcec = $this->createClient('UIMCEC', 'SENEGAL', 'F', '70555582', 'uimcecsenegal@gmail.com',
-                '4e073bfd-9c5a-4596-b2fd-950df61724a0', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
-
+                '4e073bfd-9c5a-4596-b2fd-950df61724a0', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
 
             $abi = $this->createClient('ABI', 'GROUPE', 'M', '70555582', 'abigroup@gmail.com',
                 '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
