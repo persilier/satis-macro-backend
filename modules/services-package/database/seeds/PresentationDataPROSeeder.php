@@ -30,7 +30,7 @@ use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\User;
 use Spatie\Permission\Models\Role;
 
-class PresentationDataMACROSeeder extends Seeder
+class PresentationDataPROSeeder extends Seeder
 {
 
     public function truncateSomeTables()
@@ -181,14 +181,13 @@ class PresentationDataMACROSeeder extends Seeder
     public function run()
     {
         $nature = env('APP_NATURE');
-        if ($nature === 'MACRO') {
+        if ($nature === 'PRO') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
             $this->truncateSomeTables();
 
             // create institutions
-            $dmd = $this->createInstitution('DMD', 'dmd', 'holding');
-            $satis = $this->createInstitution('SATIS', 'satis', 'filiale');
+            $dmd = $this->createInstitution('DMD', 'dmd', 'independant');
 
             // create unit types
             $department = $this->createUnitType('DEPARTEMENT');
@@ -203,10 +202,6 @@ class PresentationDataMACROSeeder extends Seeder
             $serviceComptabiliteDmd = $this->createUnit('COMPTABILITE DMD', $service->id, $dmd->id);
             $serviceConsultingDmd = $this->createUnit('CONSULTING', $service->id, $dmd->id);
             $serviceAdministrationPlateformeDmd = $this->createUnit('ADMINISTRATION PLATEFORME DMD', $service->id, $dmd->id);
-
-            $directionSatis = $this->createUnit('DIRECTION SATIS', $direction->id, $satis->id);
-            $departmentCommercial = $this->createUnit('COMMERCIAL', $department->id, $satis->id);
-            $serviceAdministrationPlateformeSatis = $this->createUnit('ADMINISTRATION PLATEFORME SATIS', $service->id, $satis->id);
 
             //create positions
             $directeur = $this->createPosition('DIRECTEUR');
@@ -263,32 +258,15 @@ class PresentationDataMACROSeeder extends Seeder
             $merrith = $this->createStaff($serviceConsultingDmd, 'staff', 'Merrith', "BOKONON", 'M',
                 '97949497', 'merrith@dmdconsult.com', $analyste, true);
 
-            $adminHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'admin-holding', 'ADMINISTRATEUR', "DMD", 'M',
+            $adminHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'admin-pro', 'ADMINISTRATEUR', "DMD", 'M',
                 '70555571', 'admindmd@dmdconsult.com', $administrateurPlateforme, true);
 
-            $collecteurHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'collector-holding', 'COLLECTEUR', "DMD", 'M',
+            $collecteurHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'collector-filial-pro', 'COLLECTEUR', "DMD", 'M',
                 '70555572', 'collecteurdmd@dmdconsult.com', $collecteurPlateforme);
 
-            $piloteHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'pilot-holding', 'PILOTE', "DMD", 'M',
+            $piloteHolding = $this->createStaff($serviceAdministrationPlateformeDmd, 'pilot', 'PILOTE', "DMD", 'M',
                 '70555573', 'pilotdmd@dmdconsult.com', $pilotePlateforme);
 
-
-
-
-            $gildas = $this->createStaff($directionSatis, 'staff', 'Gildas', 'A RENSEIGNER', 'M',
-                '70555574', 'gildas@dmdsatis.com', $directeur, true);
-
-            $yessidatou = $this->createStaff($departmentCommercial, 'staff', 'Yessidatou', "A RENSEIGNER", 'F',
-                '70555575', 'yessidatou@dmdsatis.com', $analyste, true);
-
-            $adminFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'admin-filial', 'ADMINISTRATEUR', "SATIS", 'M',
-                '70555576', 'adminsatis@dmdsatis.com', $administrateurPlateforme, true);
-
-            $collecteurFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'collector-filial-pro', 'COLLECTEUR', "SATIS", 'M',
-                '70555577', 'collecteursatis@dmdsatis.com', $collecteurPlateforme);
-
-            $piloteFilial = $this->createStaff($serviceAdministrationPlateformeSatis, 'pilot-filial', 'PILOTE', "SATIS", 'M',
-                '70555578', 'pilotsatis@dmdsatis.com', $pilotePlateforme);
 
 
             // create clients
@@ -303,11 +281,6 @@ class PresentationDataMACROSeeder extends Seeder
 
             $uimcec = $this->createClient('UIMCEC', 'SENEGAL', 'F', '70555582', 'uimcecsenegal@gmail.com',
                 '4e073bfd-9c5a-4596-b2fd-950df61724a0', $dmd->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
-
-
-            $abi = $this->createClient('ABI', 'GROUPE', 'M', '70555582', 'abigroup@gmail.com',
-                '5b0ea4eb-f16e-410b-9d67-0479073fd0e3', $satis->id, '2b9b6589-aa59-4ac9-82c2-caf89c2d5d36');
-
 
         }
     }
