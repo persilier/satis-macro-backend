@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
@@ -172,6 +173,77 @@ trait UserTrait
             'identites' => $identites,
             'roles' => $roles
         ];
+    }
+
+    /**
+     * @param bool $myChangePassword
+     * @return array
+     */
+    protected function rulesChangePassword($myChangePassword = false){
+
+        $rules = [
+            'new_password' => ['required'],
+            'password_confirmation' => ['same:new_password'],
+        ];
+
+        if($myChangePassword){
+
+            $rules['current_password'] = ['required'];
+        }
+
+        return $rules;
+
+    }
+
+
+    protected function rulesChangeRole(){
+
+        $rules = [
+            'new_password' => ['required'],
+            'password_confirmation' => ['same:new_password'],
+        ];
+
+        return $rules;
+    }
+
+
+    /**
+     * @param $user
+     * @return mixed
+     */
+    protected function myUser($user){
+
+
+        try{
+
+            if($user->identite->staff->institution->id !== $this->institution()->id){
+
+                throw new CustomException("Impossible de modifier le mot de passe de cet utilisateur.");
+
+            }
+
+        }catch (\Exception $exception){
+
+            throw new CustomException("Impossible de récupérer cet utilisateur.");
+        }
+
+    }
+
+
+
+
+
+    /**
+     * @param $request
+     * @param $user
+     * @return mixed
+     */
+    protected function updatePassword($request, $user){
+
+        $user->update(['password'=> Hash::make($request->new_password)]);
+
+        return $user;
+
     }
 
 }

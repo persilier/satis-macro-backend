@@ -4,6 +4,7 @@ namespace Satis2020\AnyUser\Http\Controllers\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
@@ -23,7 +24,7 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-user-any-institution')->only(['index']);
+        $this->middleware('permission:list-user-any-institution')->only(['index', 'changePassword']);
         $this->middleware('permission:store-user-any-institution')->only(['create','store']);
         $this->middleware('permission:show-user-any-institution')->only(['show']);
     }
@@ -82,19 +83,26 @@ class UserController extends ApiController
     /**
      * @param Request $request
      * @param User $user
+     * @throws ValidationException
+     */
+    protected function changeUserRole(Request $request, User $user){
+
+        $this->validate($request, $this->rulesChangeRole());
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
+     * @throws ValidationException
      */
     protected function changePassword(Request $request, User $user){
 
-        $request->validate([
+        $this->validate($request, $this->rulesChangePassword());
 
-            'current_password' => ['required'],
-            'new_password' => ['required'],
-            'password_confirmation' => ['same:new_password'],
-
-        ]);
-
-        //User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
-
+        return response()->json($this->updatePassword($request, $user),201);
     }
 
 }

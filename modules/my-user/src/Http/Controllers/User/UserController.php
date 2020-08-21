@@ -23,7 +23,7 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-user-my-institution')->only(['index']);
+        $this->middleware('permission:list-user-my-institution')->only(['index', 'changePassword']);
         $this->middleware('permission:store-user-my-institution')->only(['create','store']);
         $this->middleware('permission:show-user-my-institution')->only(['show']);
     }
@@ -77,6 +77,36 @@ class UserController extends ApiController
         $user = $this->storeUser($request, $identiteRole);
 
         return response()->json($user,201);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @throws ValidationException
+     */
+    protected function changeUserRole(Request $request, User $user){
+
+        $this->myUser($user);
+
+        $this->validate($request, $this->rulesChangeRole());
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    protected function changePassword(Request $request, User $user){
+
+        $this->myUser($user);
+
+        $this->validate($request, $this->rulesChangePassword());
+
+        return response()->json($this->updatePassword($request, $user),201);
     }
 
 
