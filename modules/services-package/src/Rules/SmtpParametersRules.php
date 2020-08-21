@@ -52,7 +52,7 @@ class SmtpParametersRules implements Rule
 
             // Create a message
             $message = (new Swift_Message('Wonderful Subject'))
-                ->setFrom(['john@doe.com' => 'John Doe'])
+                ->setFrom([$this->smtp_parameters['username'] => 'John Doe'])
                 ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
                 ->setBody('Here is the message itself');
 
