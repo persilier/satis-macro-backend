@@ -397,19 +397,44 @@ trait UpdateClaim
 
         }
 
-        foreach ($request->all() as $key => $value) {
+        $data = [
+            'description',
+            'claim_object_id',
+            'institution_targeted_id',
+            'request_channel_slug',
+            'response_channel_slug',
+            'event_occured_at',
+            'amount_disputed',
+            'is_revival',
+            'status',
+            'claimer_expectation',
+            'amount_currency_slug',
+            'account_targeted_id',
+            'relationship_id',
+            'unit_targeted_id',
+            'status',
+            'completed_by',
+            'completed_at'
+        ];
 
-            if (($claim->{$key}) && (!empty($claim->{$key})))
-                $claim->{$key} = $value;
+        $request->merge(['status' => 'full', 'completed_by' => $userId, 'completed_at' => Carbon::now()]);
 
+
+        $claim->update($request->only($data));
+
+
+        $dataIdentite = [];
+
+        foreach (['firstname', 'lastname', 'sexe', 'telephone', 'email'] as $value) {
+
+            if(!is_null($request->{$value})){
+                $dataIdentite[] = $value;
+            }
+            
         }
 
-        $claim->status = 'full';
-        $claim->completed_by = $userId;
-        $claim->completed_at = Carbon::now();
-        $claim->save();
+        $claim->claimer->update($request->only($dataIdentite));
 
-        $claim->claimer->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email']));
         // send notification to pilot
         if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
             $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
