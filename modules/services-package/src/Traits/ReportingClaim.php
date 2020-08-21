@@ -171,7 +171,7 @@ trait ReportingClaim
                 case 'archived':
 
                     return $claims->filter(function ($item) use ($objectClaimId , $status){
-                        return (($item->claim_object_id === $objectClaimId) && (($item->status === 'unfounded') || ($item->status === 'validated') || ($item->status === $status)));
+                        return (($item->claim_object_id === $objectClaimId) && (/*($item->status === 'unfounded') || ($item->status === 'validated') ||*/ ($item->status === $status)));
                     })->count();
 
                 default:
@@ -344,25 +344,9 @@ trait ReportingClaim
 
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
 
-            $begin = $item->completed_at->copy()->addDays($valStart);
-            $end = $item->completed_at->copy()->addDays($valEnd);
+            $diff = $item->activeTreatment->transferred_to_unit_at->diffInDays($item->completed_at, false);
 
-            if($finish){
-
-                if(($begin >= $item->completed_at) && ($end > $item->activeTreatment->transferred_to_unit_at)){
-
-                    return $item;
-
-                }
-
-            }else{
-
-                if(($begin >= $item->completed_at) && ($end < $item->activeTreatment->transferred_to_unit_at)){
-
-                    return $item;
-
-                }
-            }
+            return ($valStart <= $diff && $valEnd > $diff);
 
         })->count();
 
@@ -384,25 +368,9 @@ trait ReportingClaim
 
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
 
-            $begin = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valStart);
-            $end = $item->activeTreatment->transferred_to_unit_at->copy()->addDays($valEnd);
+            $diff = $item->activeTreatment->transferred_to_unit_at->diffInDays($item->activeTreatment->satisfaction_measured_at, false);
 
-            if($finish){
-
-                if(($begin >= $item->activeTreatment->transferred_to_unit_at) && ($end < $item->activeTreatment->satisfaction_measured_at)){
-
-                    return $item;
-
-                }
-
-            }else{
-
-                if(($begin >= $item->activeTreatment->transferred_to_unit_at) && ($end > $item->activeTreatment->satisfaction_measured_at)){
-
-                    return $item;
-
-                }
-            }
+            return ($valStart <= $diff && $valEnd > $diff);
 
         })->count();
 

@@ -61,7 +61,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
     public function satisfactionMeasured(Request $request, $claim)
     {
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rules($request));
 
         $claim = $this->getOneMyClaim($claim);
 
