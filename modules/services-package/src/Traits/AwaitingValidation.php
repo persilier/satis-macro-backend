@@ -39,7 +39,11 @@ trait AwaitingValidation
 
     protected function handleValidate($request, $claim)
     {
-        $claim->activeTreatment()->update(['solution_communicated' => $request->solution_communicated, 'validated_at' => Carbon::now()]);
+        $claim->activeTreatment()->update([
+            'solution_communicated' => $request->solution_communicated,
+            'validated_at' => Carbon::now(),
+            'invalidated_reason' => NULL
+        ]);
 
         if (!is_null($claim->activeTreatment->declared_unfounded_at)) { // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
