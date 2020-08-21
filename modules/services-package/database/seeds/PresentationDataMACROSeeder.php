@@ -133,7 +133,7 @@ class PresentationDataMACROSeeder extends Seeder
             'id' => (string)Str::uuid(),
             'identite_id' => $identity->id,
             'position_id' => $position->id,
-            'institution_id' => $unit->institutiton_id,
+            'institution_id' => $unit->institution_id,
             'unit_id' => $unit->id
         ]);
 
