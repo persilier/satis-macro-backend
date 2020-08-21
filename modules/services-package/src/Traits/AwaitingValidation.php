@@ -39,7 +39,7 @@ trait AwaitingValidation
 
     protected function handleValidate($request, $claim)
     {
-        $claim->activeTreatment()->update([
+        $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
             'invalidated_reason' => NULL
@@ -60,7 +60,7 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
-        $claim->activeTreatment()->update([
+        $claim->activeTreatment->update([
             'invalidated_reason' => $request->invalidated_reason,
             'validated_at' => Carbon::now(),
             'solved_at' => null,
