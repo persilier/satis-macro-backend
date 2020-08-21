@@ -112,6 +112,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataMACROSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataHUBSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataPROSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AssignFeedbackPreferredChannelsToStaffSeeder::class);
 
     }
 
