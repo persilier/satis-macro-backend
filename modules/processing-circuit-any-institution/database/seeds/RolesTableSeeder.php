@@ -27,7 +27,7 @@ class RolesTableSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create permissions
-        $permission_update = Permission::create(['name' => 'update-processiong-circuit-any-institution', 'guard_name' => 'api']);
+        $permission_update = Permission::create(['name' => 'update-processing-circuit-any-institution', 'guard_name' => 'api']);
 
         if ($nature === 'DEVELOP') {
             // get role admin

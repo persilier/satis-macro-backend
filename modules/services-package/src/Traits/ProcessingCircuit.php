@@ -29,14 +29,15 @@ trait ProcessingCircuit
      * @param $institutionId | Id institution
      * @return array
      */
-    protected function getAllProcessingCircuits($institutionId=null)
+    protected function getAllProcessingCircuits($institutionId = null)
     {
         try {
 
-            $circuits =   ClaimCategory::has('claimObjects')->get()->map(function ($item) use ($institutionId){
-                $item['claimObjects']  = ClaimObject::with(['units' => function ($query) use ($institutionId){
-                    $query->where('claim_object_unit.institution_id', '=', $institutionId);
-                }])->get();
+            $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
+
+                $item['claim_objects']  = ClaimObject::with(['units' => function($query) use ($institutionId){
+                    $query->where("claim_object_unit.institution_id", "=", $institutionId);
+                }])->where('claim_category_id', $item->id)->get();
 
                 return $item;
             });
@@ -115,7 +116,7 @@ trait ProcessingCircuit
 
             $collection->each(function ($item, $key) use ($institutionId){
 
-                $item['claim_object']->units()->sync($item['units_ids']);
+                $item['claim_object']->units()->wherePivot('institution_id', $institutionId)->sync($item['units_ids']);
 
             });
 
