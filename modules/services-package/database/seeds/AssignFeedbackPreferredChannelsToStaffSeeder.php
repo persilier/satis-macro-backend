@@ -31,7 +31,7 @@ class AssignFeedbackPreferredChannelsToStaffSeeder extends Seeder
      */
     public function run()
     {
-        
+
         Staff::all()->map(function ($item, $key) {
             $item->update(['feedback_preferred_channels' => ['email']]);
             return $item;
