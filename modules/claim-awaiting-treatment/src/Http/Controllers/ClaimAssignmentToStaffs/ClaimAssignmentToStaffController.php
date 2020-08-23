@@ -48,6 +48,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+            $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
             return $item;
         });
         return response()->json($claims, 200);
@@ -67,6 +68,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $staff = $this->staff();
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+        $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
         return response()->json($claim, 200);
     }
 
