@@ -107,7 +107,8 @@ class ClaimAssignmentToStaffController extends ApiController
             'solution' => $request->solution,
             'comments' => $request->comments,
             'preventive_measures' => $request->preventive_measures,
-            'solved_at' => Carbon::now()
+            'solved_at' => Carbon::now(),
+            'unfounded_reason' => NULL
         ]);
 
         $claim->update(['status' => 'treated']);
@@ -139,7 +140,14 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
-        $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
+        $claim->activeTreatment->update([
+            'unfounded_reason' => $request->unfounded_reason,
+            'declared_unfounded_at' => Carbon::now(),
+            'amount_returned' => NULL,
+            'solution' => NULL,
+            'comments' => NULL,
+            'preventive_measures' => NULL,
+        ]);
 
         $claim->update(['status' => 'treated']);
 
