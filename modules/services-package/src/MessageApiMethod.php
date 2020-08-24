@@ -18,6 +18,7 @@ class MessageApiMethod
      * @param $text
      * @param $api
      * @return mixed
+     * @throws \Illuminate\Http\Client\RequestException
      */
     static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
@@ -41,6 +42,7 @@ class MessageApiMethod
      * @param $to
      * @param $text
      * @return mixed
+     * @throws \Illuminate\Http\Client\RequestException
      */
     static public function toMessageApi2($password, $from, $to, $text)
     {
@@ -65,6 +67,7 @@ class MessageApiMethod
      * @param $text
      * @param $apiId
      * @return mixed
+     * @throws \Illuminate\Http\Client\RequestException
      */
     static public function toMessageApi3($username, $senderId, $to, $text, $apiId)
     {
