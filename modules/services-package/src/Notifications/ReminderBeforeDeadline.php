@@ -3,11 +3,12 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ReminderBeforeDeadline extends Notification
+class ReminderBeforeDeadline extends Notification implements ShouldQueue
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
