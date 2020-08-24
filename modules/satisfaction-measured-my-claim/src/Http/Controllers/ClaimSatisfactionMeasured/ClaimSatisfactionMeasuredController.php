@@ -56,7 +56,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function satisfactionMeasured(Request $request, $claim)
     {
