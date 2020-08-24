@@ -108,4 +108,22 @@ trait Notification
             ->values();
     }
 
+    protected function getNotificationStatus($notificationType)
+    {
+        $data = [
+            'RegisterAClaim' => ['incomplete', 'full'],
+            'CompleteAClaim' => ['full'],
+            'TransferredToTargetedInstitution' => ['transferred_to_targeted_institution'],
+            'TransferredToUnit' => ['transferred_to_unit'],
+            'RejectAClaim' => ['transferred_to_targeted_institution', 'full'],
+            'AssignedToStaff' => ['assigned_to_staff'],
+            'TreatAClaim' => ['treated'],
+            'ValidateATreatment' => ['archived', 'validated'],
+            'InvalidateATreatment' => ['assigned_to_staff'],
+            'AddContributorToDiscussion' => ['assigned_to_staff', 'treated', 'validated'],
+        ];
+
+        return $data[$notificationType];
+    }
+
 }
