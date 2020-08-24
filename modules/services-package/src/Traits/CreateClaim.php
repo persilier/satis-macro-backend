@@ -214,12 +214,19 @@ trait CreateClaim
         $this->uploadAttachments($request, $claim);
 
         // send notification to claimer
-        $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+        if(!is_null($claim->claimer)){
+            $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+        }        
 
         // send notification to pilot
-        if(!is_null($this->getInstitutionPilot($claim->createdBy->institution))){
-            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-        }
+        if(!is_null($claim->createdBy)){
+            if(!is_null($claim->createdBy->institution)){
+                if(!is_null($this->getInstitutionPilot($claim->createdBy->institution))){
+                    $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+                }
+            }
+        }  
+        
 
         return $claim;
     }

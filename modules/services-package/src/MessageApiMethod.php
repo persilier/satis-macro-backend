@@ -22,15 +22,25 @@ class MessageApiMethod
     static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
 
-        return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
-            'user' => $user,
-            'password' => $password,
-            'from' => $from,
-            'to' => $to,
-            'text' => $text,
-            'api' => $api
-        ]);
+        try {
 
+            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+                'user' => $user,
+                'password' => $password,
+                'from' => $from,
+                'to' => $to,
+                'text' => $text,
+                'api' => $api
+            ]);
+
+            
+        } catch (Exception $e) {
+
+            return false;   
+
+        }
+
+    
     }
 
     /**
@@ -45,14 +55,24 @@ class MessageApiMethod
     static public function toMessageApi2($password, $from, $to, $text)
     {
 
-        return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
-            'username' => 'satisuimcec',
-            'password' => $password,
-            'from' => $from,
-            'to' => $to,
-            'text' => $text,
-            'api' => "14265"
-        ]);
+        try {
+
+            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+                'username' => 'satisuimcec',
+                'password' => $password,
+                'from' => $from,
+                'to' => $to,
+                'text' => $text,
+                'api' => "14265"
+            ]);
+
+        } catch (Exception $e) {
+
+            return false;
+
+        }
+
+        
 
     }
 
@@ -69,14 +89,23 @@ class MessageApiMethod
     static public function toMessageApi3($username, $senderId, $to, $text, $apiId)
     {
 
-        return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
-            'username' => $username,
-            'password' => 'SatisUimcec',
-            'from' => $senderId,
-            'to' => $to,
-            'text' => $text,
-            'api' => $apiId
-        ]);
+        try {
+
+            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+                'username' => $username,
+                'password' => 'SatisUimcec',
+                'from' => $senderId,
+                'to' => $to,
+                'text' => $text,
+                'api' => $apiId
+            ]);
+
+        } catch (Exception $e) {
+            
+            return false;
+
+        }
+        
 
     }
 
