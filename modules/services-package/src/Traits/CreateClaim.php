@@ -99,6 +99,7 @@ trait CreateClaim
      */
     protected function createReference($institution_targeted_id)
     {
+
         $institutionTargeted = Institution::with('institutionType')->findOrFail($institution_targeted_id);
 
         $appNature = substr($this->getAppNature($institution_targeted_id), 0, 2);
