@@ -56,6 +56,8 @@ class PresentationDataMACROSeeder extends Seeder
         Unit::truncate();
         UnitType::truncate();
         User::truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('notifications')->truncate();
     }
 
     public function createInstitution($institutionName, $acronyme, $institutionTypeName)

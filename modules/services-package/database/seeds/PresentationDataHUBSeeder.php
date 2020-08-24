@@ -58,6 +58,8 @@ class PresentationDataHUBSeeder extends Seeder
         UnitType::truncate();
         User::truncate();
         Relationship::truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('notifications')->truncate();
     }
 
     public function createInstitution($institutionName, $acronyme, $institutionTypeName)
