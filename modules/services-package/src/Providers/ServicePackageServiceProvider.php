@@ -290,13 +290,18 @@ class ServicePackageServiceProvider extends ServiceProvider
 
                 if (property_exists($parameters, 'state')) {
                     if ($parameters->state == 1) {
-                        Config::set('MAIL_HOST', $parameters->server);
-                        Config::set('MAIL_PORT', $parameters->port);
-                        Config::set('MAIL_USERNAME', $parameters->username);
-                        Config::set('MAIL_PASSWORD', $parameters->password);
-                        Config::set('MAIL_ENCRYPTION', $parameters->security);
-                        Config::set('MAIL_FROM_ADDRESS', $parameters->from);
-                        Config::set('MAIL_FROM_NAME', $parameters->senderID);
+
+                        $config = [
+                            'driver' => 'smtp',
+                            'host' => $parameters->server,
+                            'port' => $parameters->port,
+                            'username' => $parameters->username,
+                            'password' => $parameters->password,
+                            'encryption' => $parameters->security,
+                            'from' => $parameters->from,
+                        ];
+
+                        Config::set('mail', $config);
                     }
                 }
 
