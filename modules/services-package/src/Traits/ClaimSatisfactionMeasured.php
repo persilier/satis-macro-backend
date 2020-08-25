@@ -37,7 +37,7 @@ trait ClaimSatisfactionMeasured
      * @return mixed
      */
     protected  function rules($request){
-
+        
         $data['is_claimer_satisfied'] = ['required', 'boolean'];
         $data['unsatisfaction_reason'] = ['nullable', Rule::requiredIf((!$request->is_claimer_satisfied)), 'string'];
 

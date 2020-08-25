@@ -3,9 +3,11 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Identite;
@@ -37,7 +39,7 @@ trait UserTrait
      */
     protected function getAllUser($myInstitution = false){
 
-        $users = User::with(['identite.staff']);
+        $users = User::with(['identite.staff', 'roles']);
 
         if($myInstitution){
 
@@ -50,9 +52,7 @@ trait UserTrait
             });
         }
 
-        return $users->get()->map(function($user){
-            return $this->getUserWithRoleName($user);
-        });
+        return $users->get();
 
     }
 
@@ -66,7 +66,7 @@ trait UserTrait
         $rules = [
             'password' => 'required|min:8|confirmed',
             'identite_id' => 'required|exists:identites,id',
-            'role' => 'required|exists:roles,name',
+            'roles' => 'required|array',
         ];
 
         if($institution){
@@ -89,18 +89,10 @@ trait UserTrait
 
         })->doesntHave('user')->findOrFail($request->identite_id);
 
-        $role = Role::where('name', $request->role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
-
-        if(is_array($role->institution_types) && in_array($identite->staff->institution->institutionType->name, $role->institution_types)){
-
-            return [
-                'identite' => $identite,
-                'role' => $role
-            ];
-
-        }
-
-        throw new CustomException("Ce rôle n'existe pas pour ce type d'institution.");
+        return [
+            'identite' => $identite,
+            'roles' => $this->verifiedRole($request, $identite)
+        ];
     }
 
 
@@ -113,7 +105,7 @@ trait UserTrait
 
         $identite = $identiteRole['identite'];
 
-        $role = $identiteRole['role'];
+        $roles = $identiteRole['roles'];
 
         $user = User::create([
             'username' => $identite->email[0],
@@ -121,7 +113,7 @@ trait UserTrait
             'identite_id' => $identite->id
         ]);
 
-        $user->assignRole($role);
+        $user->assignRole($roles);
 
         return $user;
     }
@@ -134,11 +126,9 @@ trait UserTrait
      */
     protected function getOneUser($user, $myInstitution = false){
 
-        $institution = $this->institution();
-
         if($myInstitution){
 
-            if($user->identite->staff->institution->id !== $institution->id){
+            if($user->identite->staff->institution->id !== $this->institution()->id){
 
                 throw new CustomException("Ce rôle n'existe pas pour ce type d'institution.");
 
@@ -146,7 +136,7 @@ trait UserTrait
 
         }
 
-        return $this->getUserWithRoleName($user);
+        return $user->load('roles');
 
     }
 
@@ -163,15 +153,9 @@ trait UserTrait
 
         })->doesntHave('user')->get();
 
-        $roles = Role::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($role) use ($institution){
-
-            return (is_array($role->institution_types) && in_array($institution->institutionType->name, $role->institution_types));
-
-        })->flatten()->all();
-
         return [
             'identites' => $identites,
-            'roles' => $roles
+            'roles' => $this->getAllRolesInstitutionTypes($institution)
         ];
     }
 
@@ -182,8 +166,7 @@ trait UserTrait
     protected function rulesChangePassword($myChangePassword = false){
 
         $rules = [
-            'new_password' => ['required'],
-            'password_confirmation' => ['same:new_password'],
+            'new_password' => 'required|min:8|confirmed',
         ];
 
         if($myChangePassword){
@@ -193,17 +176,6 @@ trait UserTrait
 
         return $rules;
 
-    }
-
-
-    protected function rulesChangeRole(){
-
-        $rules = [
-            'new_password' => ['required'],
-            'password_confirmation' => ['same:new_password'],
-        ];
-
-        return $rules;
     }
 
 
@@ -239,11 +211,124 @@ trait UserTrait
      * @return mixed
      */
     protected function updatePassword($request, $user){
-
-        $user->update(['password'=> Hash::make($request->new_password)]);
+        //dd($user()->token());
+        $user->update(['password' => Hash::make($request->new_password)]);
 
         return $user;
 
     }
+
+    /**
+     * @param $user
+     * @param bool $my
+     * @return mixed
+     */
+    protected function statusUser($user, $my = false){
+
+        if($my){
+
+            $this->myUser($user);
+        }
+
+        $status = NULL;
+
+        if(is_null($user->disabled_at)){
+
+            $status = Carbon::now();
+        }
+
+        $user->update(['disabled_at' => $status]);
+
+        return $user;
+    }
+
+
+    /**
+     * @param $user
+     * @param bool $my
+     * @return mixed
+     */
+    protected function getAllRolesInstitutionUser($user, $my = false){
+
+        if($my){
+
+            $this->myUser($user);
+        }
+
+        try{
+
+            $roles = $this->getAllRolesInstitutionTypes($user->identite->staff->institution);
+
+        }catch (\Exception $exception){
+
+            throw new CustomException("Impossible de récupérer les rôles de l'institution de cet utilisateur.");
+        }
+
+        return $roles;
+    }
+
+
+    /**
+     * @param $request
+     * @param $identite
+     * @return mixed
+     */
+    protected function verifiedRole($request, $identite){
+
+        $roles = collect([]);
+        foreach ($request->roles as $key => $value){
+
+            $role = Role::where('name', $value)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
+
+            if(in_array($identite->staff->institution->institutionType->name, $role->institution_types)){
+
+                $roles->push($role);
+
+            }else{
+
+                throw new CustomException("Le champ rôle est invalide.");
+            }
+
+        }
+        return $roles;
+
+    }
+
+
+    /**
+     * @param $institution
+     * @return mixed
+     */
+    protected function getAllRolesInstitutionTypes($institution){
+
+        return Role::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($role) use ($institution){
+
+            return (is_array($role->institution_types) && in_array($institution->institutionType->name, $role->institution_types));
+
+        })->flatten()->all();
+
+    }
+
+
+    /**
+     * @param $user
+     * @param $roles
+     * @return mixed
+     */
+    protected function remokeAssigneRole($user, $roles){
+
+        $role_old = $user->load('roles');
+
+        if(!is_null($role_old)){
+
+            DB::table(config('permission.table_names.model_has_roles'))->where(config('permission.column_names.model_morph_key'), $user->id)->delete();
+
+        }
+
+        $user->assignRole($roles);
+
+        return $user;
+    }
+
 
 }

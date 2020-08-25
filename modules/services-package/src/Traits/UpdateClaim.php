@@ -93,7 +93,6 @@ trait UpdateClaim
             'amount_currency_slug',
             'is_revival',
             'file.*',
-            'claimer_id',
             'firstname',
             'lastname',
             'sexe',
@@ -103,8 +102,17 @@ trait UpdateClaim
             'unit_targeted_id'
         ]);
 
-        $rules['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
+        $rules['claimer_id'] = ['required', 'exists:identites,id'];
 
+        if($this->institution()->institutionType->name !== 'observatory'){
+
+            $rules['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
+
+            $rules['claimer_id'] = $data['claimer_id'];
+
+        }
+
+        
         try {
 
             $requirements = ClaimObject::with('requirements')

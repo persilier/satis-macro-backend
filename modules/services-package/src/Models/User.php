@@ -2,6 +2,9 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Hash;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,6 +14,10 @@ use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * Class User
+ * @package Satis2020\ServicePackage\Models
+ */
 class User extends Authenticate
 {
     const VERIFIED_USER = '1';
@@ -58,7 +65,7 @@ class User extends Authenticate
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function identite()
     {
@@ -69,13 +76,21 @@ class User extends Authenticate
     /**
      * Find the user instance for the given username.
      *
-     * @param  string  $username
+     * @param string $username
      * @return User
+     * @throws OAuthServerException
      */
     public function findForPassport($username)
     {
-        return $this->where('username', $username)->first();
+        $user = $this->where('username', $username)->first();
+
+        if($user !== null && $user->disabled_at !== NULL) {
+            throw new OAuthServerException('User account is not activated', 6, 'account_inactive', 401);
+        }
+
+        return $user;
     }
+
 
     /**
      * @return |null

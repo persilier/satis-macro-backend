@@ -2,6 +2,7 @@
 namespace Satis2020\AnyUser\Http\Controllers\User;
 
 use Exception;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -24,9 +25,9 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-user-any-institution')->only(['index', 'changePassword']);
+        $this->middleware('permission:list-user-any-institution')->only(['index']);
         $this->middleware('permission:store-user-any-institution')->only(['create','store']);
-        $this->middleware('permission:show-user-any-institution')->only(['show']);
+        $this->middleware('permission:show-user-any-institution')->only(['show', 'changePassword', 'enabledDesabled', 'updateRoleUser']);
     }
 
 
@@ -81,13 +82,29 @@ class UserController extends ApiController
 
 
     /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    protected function getAllRoles(User $user){
+
+        return response()->json([
+            'user' => $this->getOneUser($user),
+            'roles' => $this->getAllRolesInstitutionUser($user)
+        ]);
+    }
+
+
+    /**
      * @param Request $request
      * @param User $user
+     * @return User
      * @throws ValidationException
      */
     protected function changeUserRole(Request $request, User $user){
 
-        $this->validate($request, $this->rulesChangeRole());
+        $this->validate($request, Arr::only($this->rulesCreateUser(false), 'roles'));
+        $roles = $this->verifiedRole($request, $user->identite);
+        return response()->json($this->remokeAssigneRole($user, $roles), 201);
 
     }
 
@@ -103,6 +120,16 @@ class UserController extends ApiController
         $this->validate($request, $this->rulesChangePassword());
 
         return response()->json($this->updatePassword($request, $user),201);
+    }
+
+
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    protected function enabledDesabled(User $user){
+
+        return response()->json($this->statusUser($user), 201);
     }
 
 }
