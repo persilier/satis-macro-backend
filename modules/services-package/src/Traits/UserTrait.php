@@ -211,7 +211,7 @@ trait UserTrait
      * @return mixed
      */
     protected function updatePassword($request, $user){
-
+        //dd($user()->token());
         $user->update(['password' => Hash::make($request->new_password)]);
 
         return $user;
