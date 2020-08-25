@@ -111,10 +111,13 @@ class DiscussionMessageController extends ApiController
         Notification::send($this->getStaffIdentities($discussion->staff->pluck('id')->all(), [$this->staff()->id])
             , new PostDiscussionMessage($message));
 
-        return response()->json(Message::with('parent.postedBy.identite', 'files', 'postedBy.identite')
-            ->where('discussion_id', $discussion->id)
-            ->orderByDesc('created_at')
-            ->get(), 200);
+        return response()->json([
+            'messages' => Message::with('parent.postedBy.identite', 'files', 'postedBy.identite')
+                ->where('discussion_id', $discussion->id)
+                ->orderByDesc('created_at')
+                ->get(),
+            'message' => $message
+        ], 200);
 
     }
 
