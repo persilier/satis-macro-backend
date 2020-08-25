@@ -14,11 +14,11 @@ use Illuminate\Validation\Rule;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Satis2020\ServicePackage\Rules\SmtpParametersRules;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ServicePackageServiceProvider
@@ -42,7 +42,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        
     }
 
     /**
@@ -103,7 +103,6 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->registerLaravelPassportIssues();
         $this->registerPolicies();
         $this->registerFactories();
-        $this->registerMailSmtpConfigs();
 
     }
 
@@ -280,7 +279,7 @@ class ServicePackageServiceProvider extends ServiceProvider
     protected function registerMailSmtpConfigs()
     {
 
-        $mailSmtpConfigs = Metadata::where('name', 'mail-parameters')->first();
+        $mailSmtpConfigs = DB::table('metadata')->where('name', 'mail-parameters')->first();
 
         if (!is_null($mailSmtpConfigs)) {
 
@@ -292,7 +291,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                     if ($parameters->state == 1) {
 
                         $config = [
-                            'driver' => 'smtp',
+                            'transport' => 'smtp',
                             'host' => $parameters->server,
                             'port' => $parameters->port,
                             'username' => $parameters->username,
@@ -307,7 +306,6 @@ class ServicePackageServiceProvider extends ServiceProvider
 
             }
         }
-
 
     }
 
