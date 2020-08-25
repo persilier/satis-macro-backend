@@ -17,15 +17,19 @@ class PostDiscussionMessage extends Notification implements ShouldQueue
     public $institution;
     public $claim;
     public $message;
+    public $messages;
 
     /**
      * Create a new notification instance.
      *
      * @param $message
+     * @param $messages
      */
-    public function __construct($message)
+    public function __construct($message, $messages)
     {        
         $this->message = $message;
+
+        $this->messages = $messages;
         
         $this->discussion = $message->discussion;
 
@@ -97,7 +101,8 @@ class PostDiscussionMessage extends Notification implements ShouldQueue
             'text' => $this->event->text,
             'claim' => $this->claim,
             'discussion' => $this->discussion,
-            'message' => $this->message
+            'message' => $this->message,
+            'messages' => $this->messages
         ]);
     }
 
