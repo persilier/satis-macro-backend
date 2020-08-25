@@ -35,6 +35,8 @@ class TransferToUnitController extends ApiController
     {
         $claim->load('claimObject.units');
 
+        dd($claim->claimObject);
+
         return response()->json([
             'units' => $claim->claimObject->units
         ], 200);

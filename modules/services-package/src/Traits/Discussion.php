@@ -41,6 +41,18 @@ trait Discussion
 
                 $value->load('unit');
 
+                if(is_null($discussion->createdBy) || is_null($value->identite)){
+
+                    return false;
+
+                }
+
+                if(is_null($discussion->createdBy->unit) || is_null($value->identite->user)){
+
+                    return false;
+
+                }
+
                 return is_null($discussion->createdBy->unit->institution_id) // en gros, si on est dans un hub
 
                     ? (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
