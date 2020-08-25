@@ -47,6 +47,8 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+            $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+            $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
             return $item;
         });
         return response()->json($claims, 200);
@@ -66,6 +68,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $staff = $this->staff();
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+        $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
         return response()->json($claim, 200);
     }
 
@@ -106,7 +109,8 @@ class ClaimAssignmentToStaffController extends ApiController
             'solution' => $request->solution,
             'comments' => $request->comments,
             'preventive_measures' => $request->preventive_measures,
-            'solved_at' => Carbon::now()
+            'solved_at' => Carbon::now(),
+            'unfounded_reason' => NULL
         ]);
 
         $claim->update(['status' => 'treated']);
@@ -138,7 +142,14 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
-        $claim->activeTreatment->update(['unfounded_reason' => $request->unfounded_reason, 'declared_unfounded_at' => Carbon::now()]);
+        $claim->activeTreatment->update([
+            'unfounded_reason' => $request->unfounded_reason,
+            'declared_unfounded_at' => Carbon::now(),
+            'amount_returned' => NULL,
+            'solution' => NULL,
+            'comments' => NULL,
+            'preventive_measures' => NULL,
+        ]);
 
         $claim->update(['status' => 'treated']);
 

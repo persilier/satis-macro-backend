@@ -39,7 +39,7 @@ return [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
 //                'useTLS' => true,
                 'encrypted' => true,
-                'host' => 'satis-macro.local',
+                'host' => 'satis-hub.local',
                 'port' => 6001,
                 'scheme' => 'http'
             ],

@@ -3,13 +3,13 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 
-class AssignedToStaff
-    extends Notification
+class AssignedToStaff extends Notification implements ShouldQueue
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
@@ -112,7 +112,7 @@ class AssignedToStaff
         return [
             'to' => $notifiable->staff->institution->iso_code . $notifiable->telephone[0],
             'text' => $this->event->text,
-            'institutionMessageApi' =>  $this->getStaffInstitutionMessageApi($notifiable->staff->institution)
+            'institutionMessageApi' => $this->getStaffInstitutionMessageApi($notifiable->staff->institution)
         ];
     }
 }

@@ -3,13 +3,13 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 
-class TransferredToUnit
-    extends Notification
+class TransferredToUnit extends Notification implements ShouldQueue
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 

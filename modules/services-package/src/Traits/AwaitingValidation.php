@@ -53,7 +53,12 @@ trait AwaitingValidation
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
         }
 
-        $claim->activeTreatment->responsibleStaff->identite->notify(new \Satis2020\ServicePackage\Notifications\ValidateATreatment($claim));
+        if (!is_null($claim->activeTreatment->responsibleStaff)) {
+            if (!is_null($claim->activeTreatment->responsibleStaff->identite)) {
+                $claim->activeTreatment->responsibleStaff->identite->notify(new \Satis2020\ServicePackage\Notifications\ValidateATreatment($claim));
+            }
+        }
+
 
         return $claim;
     }
@@ -63,13 +68,18 @@ trait AwaitingValidation
         $claim->activeTreatment->update([
             'invalidated_reason' => $request->invalidated_reason,
             'validated_at' => Carbon::now(),
-            'solved_at' => null,
-            'declared_unfounded_at' => null
+            'solved_at' => NULL,
+            'declared_unfounded_at' => NULL,
         ]);
 
         $claim->update(['status' => 'assigned_to_staff']);
 
-        $claim->activeTreatment->responsibleStaff->identite->notify(new \Satis2020\ServicePackage\Notifications\InvalidateATreatment($claim));
+        if (!is_null($claim->activeTreatment->responsibleStaff)) {
+            if (!is_null($claim->activeTreatment->responsibleStaff->identite)) {
+                $claim->activeTreatment->responsibleStaff->identite->notify(new \Satis2020\ServicePackage\Notifications\InvalidateATreatment($claim));
+            }
+        }
+
 
         return $claim;
     }

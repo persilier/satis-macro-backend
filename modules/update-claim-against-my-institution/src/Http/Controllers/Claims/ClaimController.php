@@ -71,7 +71,9 @@ class ClaimController extends ApiController
      * @param Request $request
      * @param  $claimId
      * @return JsonResponse
+     * @throws CustomException
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, $claimId)
     {

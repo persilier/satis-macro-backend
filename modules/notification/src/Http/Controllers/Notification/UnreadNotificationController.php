@@ -7,16 +7,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\Claim;
 
 class UnreadNotificationController extends ApiController
 {
+
+    use \Satis2020\ServicePackage\Traits\Notification;
 
     public function __construct()
     {
         parent::__construct();
         $this->middleware('auth:api');
-
-//        $this->middleware('permission:update-notifications')->only(['edit', 'update']);
     }
 
     /**
@@ -26,7 +27,35 @@ class UnreadNotificationController extends ApiController
      */
     public function index()
     {
-        return response()->json(Auth::user()->identite->unreadNotifications, 200);
+        $unreadNotifications = Auth::user()->identite->unreadNotifications->filter(function ($value, $key) {
+
+            list($empty, $type) = explode("Satis2020\ServicePackage\Notifications\\", $value->type);
+
+            try{
+
+                $claim = Claim::findOrFail(($value->data)['claim']['id']);
+
+            }catch(\Exception $exception){
+                $value->markAsRead();
+                return false;
+            }
+            
+            try{
+
+                if(!in_array($claim->status, $this->getNotificationStatus($type))){
+                    $value->markAsRead();
+                    return false;
+                }
+
+            }catch(\Exception $exception){
+                return true;
+            }
+
+            return true;
+
+        })->values();
+
+        return response()->json($unreadNotifications, 200);
     }
 
 
@@ -46,13 +75,39 @@ class UnreadNotificationController extends ApiController
 
         $this->validate($request, $rules);
 
-        Auth::user()->identite
-            ->notifications()
-            ->whereIn('id', $request->notifications)
-            ->get()
-            ->markAsRead();
+        $canReloadCollection = collect(['canReload' => false]);
 
-        return response()->json(Auth::user()->identite->notifications()->get(), 201);
+        $unreadNotifications = Auth::user()->identite->unreadNotifications->filter(function ($value, $key) use($request, $canReloadCollection) {
+
+            if(in_array($value->id, $request->notifications)){
+
+                if(count($request->notifications) === 1){
+
+                    list($empty, $type) = explode("Satis2020\ServicePackage\Notifications\\", $value->type);
+
+                    try{
+
+                        $claim = Claim::findOrFail(($value->data)['claim']['id']);
+
+                        if(in_array($claim->status, $this->getNotificationStatus($type))){
+                            $canReloadCollection->put('canReload', true);
+                        }                
+
+                    }catch(\Exception $exception){}
+
+                }
+
+                $value->markAsRead();
+
+                return false;
+
+            }
+
+            return true;
+
+        })->values();
+
+        return response()->json(['unreadNotifications' => $unreadNotifications, 'canReload' => $canReloadCollection->get('canReload')], 201);
     }
 
 
