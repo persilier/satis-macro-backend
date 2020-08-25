@@ -116,6 +116,8 @@ class DiscussionMessageController extends ApiController
         Notification::send($this->getStaffIdentities($discussion->staff->pluck('id')->all(), [$this->staff()->id])
             , new PostDiscussionMessage($message, $messages));
 
+        $message->load(['files']);
+
         return response()->json($message, 200);
 
     }
