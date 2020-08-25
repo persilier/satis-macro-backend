@@ -4,6 +4,7 @@ namespace Satis2020\MyUser\Http\Controllers\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\User;
@@ -23,9 +24,9 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-user-my-institution')->only(['index', 'changePassword']);
+        $this->middleware('permission:list-user-my-institution')->only(['index']);
         $this->middleware('permission:store-user-my-institution')->only(['create','store']);
-        $this->middleware('permission:show-user-my-institution')->only(['show']);
+        $this->middleware('permission:show-user-my-institution')->only(['show', 'changePassword', 'enabledDesabled', 'updateRoleUser']);
     }
 
 
@@ -81,15 +82,31 @@ class UserController extends ApiController
 
 
     /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    protected function getAllRoles(User $user){
+
+        return response()->json([
+            'user' => $this->getOneUser($user, true),
+            'roles' => $this->getAllRolesInstitutionUser($user, true)
+        ]);
+    }
+
+
+    /**
      * @param Request $request
      * @param User $user
+     * @return JsonResponse
      * @throws ValidationException
      */
     protected function changeUserRole(Request $request, User $user){
 
         $this->myUser($user);
 
-        $this->validate($request, $this->rulesChangeRole());
+        $this->validate($request, Arr::only($this->rulesCreateUser(false), 'role'));
+        $role = $this->verifiedRole($request, $user->identite);
+        return response()->json($this->remokeAssigneRole($request, $user, $role), 201);
 
     }
 
@@ -107,6 +124,16 @@ class UserController extends ApiController
         $this->validate($request, $this->rulesChangePassword());
 
         return response()->json($this->updatePassword($request, $user),201);
+    }
+
+
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    protected function enabledDesabled(User $user){
+
+        return response()->json($this->statusUser($user), 201);
     }
 
 
