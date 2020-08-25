@@ -41,17 +41,20 @@ class MailController extends ApiController
      */
     public function update(Request $request)
     {
-
         $parameters = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'mail-parameters')->first()->data);
+
+        if (!$request->has('password')) {
+
+            $request->merge(['password' => $parameters->password]);
+
+        }
+
+        $request->merge(['security' => strtolower($request->security)]);
 
         $rules = [
             'senderID' => 'required',
             'username' => 'required',
-            'password' => [
-                'min:2',
-                Rule::requiredIf(function () use ($parameters) {
-                    return !property_exists($parameters, 'password');
-                })],
+            'password' => ['min:2', 'required'],
             'from' => 'required',
             'server' => ['required', new SmtpParametersRules($request->all())],
             'port' => 'integer|required',
@@ -60,7 +63,9 @@ class MailController extends ApiController
 
         $this->validate($request, $rules);
 
-        $new_parameters = $request->only(['senderID', 'username', 'password', 'from', 'server', 'port', 'security']);
+        $request->merge(['state' => 1]);
+
+        $new_parameters = $request->only(['senderID', 'username', 'password', 'from', 'server', 'port', 'security', 'state']);
 
         Metadata::where('name', 'mail-parameters')->first()->update(['data' => json_encode($new_parameters)]);
 

@@ -1,17 +1,24 @@
 <?php
+
 namespace Satis2020\ServicePackage\Providers;
+
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rule;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Satis2020\ServicePackage\Rules\SmtpParametersRules;
 
 /**
  * Class ServicePackageServiceProvider
@@ -45,24 +52,14 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
-        /*Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
-            $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
-            dd($path);
-            if(!File::exists($path)) abort(404);
-            $file = File::get($path);
-            $type = File::mimeType($path);
-            $response = Response::make($file, 200);
-            $response->header("Content-Type", $type);
-            return $response;
-        });*/
         JsonResource::withoutWrapping();
         $this->registerResources();
         $this->registerCommands();
     }
 
 
-    protected function registerCommands(){
+    protected function registerCommands()
+    {
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -79,7 +76,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                 $this->app->make(Schedule::class)->command('service:generate-relance')->twiceDaily(7, 14);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-day')->twiceDaily(0, 13);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-week')->mondays();
-                $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn (1, '01:00')->monthlyOn (1, '13:00');
+                $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn(1, '01:00')->monthlyOn(1, '13:00');
                 $this->app->make(Schedule::class)->command('service:generate-reporting-quarterly')->quarterly()->between(07, 18);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-biannual')->quarterly()->quarterly();
             });
@@ -106,6 +103,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $this->registerLaravelPassportIssues();
         $this->registerPolicies();
         $this->registerFactories();
+        $this->registerMailSmtpConfigs();
 
     }
 
@@ -124,7 +122,7 @@ class ServicePackageServiceProvider extends ServiceProvider
     protected function publishesFactories()
     {
         $this->publishes([
-            __DIR__.'/../../database/factories/' => database_path('factories')
+            __DIR__ . '/../../database/factories/' => database_path('factories')
         ], 'satis2020-factories');
     }
 
@@ -134,7 +132,7 @@ class ServicePackageServiceProvider extends ServiceProvider
     protected function publishesConfigs()
     {
         $this->publishes([
-            __DIR__.'/../../config/' => config_path(''),
+            __DIR__ . '/../../config/' => config_path(''),
         ], 'satis2020-config');
     }
 
@@ -151,7 +149,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerFacades()
     {
-        $this->app->singleton('Handler', function ($app){
+        $this->app->singleton('Handler', function ($app) {
             return new \Satis2020\ServicePackage\Exceptions\Handler();
         });
 
@@ -164,7 +162,6 @@ class ServicePackageServiceProvider extends ServiceProvider
     {
 
     }
-
 
 
     /**
@@ -180,7 +177,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerViews()
     {
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'ServicePackage');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'ServicePackage');
     }
 
     /**
@@ -188,7 +185,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'ServicePackage');
+        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'ServicePackage');
     }
 
     /**
@@ -246,7 +243,7 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerFactories()
     {
-        $this->loadFactoriesFrom(__DIR__.'/../../database/factories');
+        $this->loadFactoriesFrom(__DIR__ . '/../../database/factories');
     }
 
     /**
@@ -264,8 +261,8 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerRoutes()
     {
-        Route::group($this->routeConfiguration(), function (){
-            $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+        Route::group($this->routeConfiguration(), function () {
+            $this->loadRoutesFrom(__DIR__ . '/../../routes/api.php');
         });
     }
 
@@ -278,6 +275,35 @@ class ServicePackageServiceProvider extends ServiceProvider
         return [
             'middleware' => ['api']
         ];
+    }
+
+    protected function registerMailSmtpConfigs()
+    {
+
+        $mailSmtpConfigs = Metadata::where('name', 'mail-parameters')->first();
+
+        if (!is_null($mailSmtpConfigs)) {
+
+            if (!is_null($mailSmtpConfigs->data)) {
+
+                $parameters = json_decode($mailSmtpConfigs->data);
+
+                if (property_exists($parameters, 'state')) {
+                    if ($parameters->state == 1) {
+                        Config::set('MAIL_HOST', $parameters->server);
+                        Config::set('MAIL_PORT', $parameters->port);
+                        Config::set('MAIL_USERNAME', $parameters->username);
+                        Config::set('MAIL_PASSWORD', $parameters->password);
+                        Config::set('MAIL_ENCRYPTION', $parameters->security);
+                        Config::set('MAIL_FROM_ADDRESS', $parameters->from);
+                        Config::set('MAIL_FROM_NAME', $parameters->senderID);
+                    }
+                }
+
+            }
+        }
+
+
     }
 
 }
