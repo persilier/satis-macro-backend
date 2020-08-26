@@ -65,7 +65,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
                     'store-claim-against-my-institution',
                     'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
-                    'list-claim-archived', 'show-claim-archived',
+                    'list-any-claim-archived', 'show-any-claim-archived',
                     'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
                     'list-monitoring-claim-my-institution',
