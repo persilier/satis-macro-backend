@@ -50,7 +50,7 @@ trait Notification
             return User::with('identite.staff')
                 ->get()
                 ->first(function ($value, $key) use ($institution, $roleName) {
-                    return is_null($institution)
+                    return (($institution->institutionType->name == 'observatory' || $institution->institutionType->name == 'membre') && Role::where('name', 'pilot')->where('guard_name', 'api')->exists())
                         ? $value->hasRole($roleName)
                         : $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName);
                 })->identite;
