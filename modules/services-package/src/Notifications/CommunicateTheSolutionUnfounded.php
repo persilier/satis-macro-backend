@@ -27,6 +27,8 @@ class CommunicateTheSolutionUnfounded extends Notification implements ShouldQueu
 
         $this->event = $this->getNotification('communicate-the-solution-unfounded');
 
+        $this->event->text = str_replace('{solution_communicated}', $this->claim->activeTreatment->solution_communicated, $this->event->text);
+
         $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
 
         $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
@@ -56,7 +58,7 @@ class CommunicateTheSolutionUnfounded extends Notification implements ShouldQueu
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Communicate The Solution Unfounded')
+            ->subject('Réclamation traitée')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

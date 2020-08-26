@@ -53,7 +53,7 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Acknowledgment Of Receipt')
+            ->subject('Accusé de reception')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
