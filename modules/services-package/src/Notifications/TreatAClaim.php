@@ -58,7 +58,7 @@ class TreatAClaim extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Treat A Claim')
+            ->subject('Réclamation traitée')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

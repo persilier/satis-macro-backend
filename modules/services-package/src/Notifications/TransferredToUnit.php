@@ -53,7 +53,7 @@ class TransferredToUnit extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Transferred To Unit')
+            ->subject('Réclamation transférée à une unité de traitement')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

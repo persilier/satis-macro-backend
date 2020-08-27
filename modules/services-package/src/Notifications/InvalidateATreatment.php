@@ -53,7 +53,7 @@ class InvalidateATreatment extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Invalidate A Treatment')
+            ->subject('Traitement invalidé')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

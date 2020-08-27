@@ -53,7 +53,7 @@ class TransferredToTargetedInstitution extends Notification implements ShouldQue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Transferred To Targeted Institution')
+            ->subject('Réclamation transférée à une institution')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

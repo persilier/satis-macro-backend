@@ -91,7 +91,7 @@ class DatabaseSeeder extends Seeder
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceSendNotificationSeeder::class);
 //          $this->call(\Satis2020\ServicePackage\Database\Seeds\TauxRelanceRoleSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
-//          $this->call(\Satis2020\ServicePackage\Database\Seeds\RolesInstitutionTypesSeeder::class);
+          $this->call(\Satis2020\ServicePackage\Database\Seeds\RolesInstitutionTypesSeeder::class);
 //        $this->call(\Satis2020\FaqPackage\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyInstitutionsSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyClaimsSeeder::class);
@@ -109,9 +109,9 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsMembreSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataMACROSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataHUBSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataPROSeeder::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataMACROSeeder::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataHUBSeeder::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PresentationDataPROSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\AssignFeedbackPreferredChannelsToStaffSeeder::class);
 
     }

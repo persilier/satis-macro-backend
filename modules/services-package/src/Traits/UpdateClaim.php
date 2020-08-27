@@ -77,7 +77,7 @@ trait UpdateClaim
      * @return array
      * @throws CustomException
      */
-    protected function rulesCompletion($request, $claim, $with_client = false, $with_relationship = false, $with_unit = true, $update = true)
+    protected function rulesCompletion($request, $claim, $with_client = true, $with_relationship = true, $with_unit = true, $update = true)
     {
 
         $data = $this->rules($request, $with_client, $with_relationship, $with_unit, $update);
@@ -93,18 +93,29 @@ trait UpdateClaim
             'amount_currency_slug',
             'is_revival',
             'file.*',
-            'claimer_id',
             'firstname',
             'lastname',
             'sexe',
             'telephone',
             'email',
-            'relationship_id',
-            'unit_targeted_id'
+            'unit_targeted_id',
         ]);
 
-        $rules['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
+        if($this->institution()->institutionType->name === 'observatory'){
 
+            $rules['claimer_id'] = ['required', 'exists:identites,id'];
+
+            $data['relationship_id'] = 'required|exists:relationships,id';
+
+        }else{
+
+            $data['claimer_id'] = ['required', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
+
+            $rules['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
+
+        }
+
+        
         try {
 
             $requirements = ClaimObject::with('requirements')

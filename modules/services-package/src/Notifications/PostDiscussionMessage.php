@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Satis2020\ServicePackage\Models\Message;
 
 class PostDiscussionMessage extends Notification implements ShouldQueue
 {
@@ -22,11 +23,13 @@ class PostDiscussionMessage extends Notification implements ShouldQueue
      * Create a new notification instance.
      *
      * @param $message
+     * @param $messages
      */
     public function __construct($message)
-    {        
+    {
+
         $this->message = $message;
-        
+
         $this->discussion = $message->discussion;
 
         $this->claim = $message->discussion->claim;
@@ -93,11 +96,16 @@ class PostDiscussionMessage extends Notification implements ShouldQueue
      */
     public function toBroadcast($notifiable)
     {
+
         return new BroadcastMessage([
             'text' => $this->event->text,
             'claim' => $this->claim,
             'discussion' => $this->discussion,
-            'message' => $this->message
+            'message' => $this->message,
+            'messages' => Message::with('parent.postedBy.identite', 'files', 'postedBy.identite')
+                ->where('discussion_id', $this->discussion->id)
+                ->orderByDesc('created_at')
+                ->get()
         ]);
     }
 

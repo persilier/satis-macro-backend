@@ -51,9 +51,9 @@ class DiscussionStaffController extends ApiController
 
         $this->validate($request, $rules);
 
-        $discussion->load('staff.identite');
+        $discussion->load(['staff.identite', 'createdBy.identite']);
 
-        return response()->json($discussion->staff, 200);
+        return response()->json($discussion, 200);
     }
 
     /**

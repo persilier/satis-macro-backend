@@ -8,6 +8,9 @@ use Satis2020\ServicePackage\MessageApiMethod;
 
 class MessageChannel
 {
+
+    use \Satis2020\ServicePackage\Traits\Notification;
+
     /**
      * Send the given notification.
      *
@@ -22,7 +25,7 @@ class MessageChannel
         try {
             $params = $data['institutionMessageApi']->params;
             $params['to'] = $data['to'];
-            $params['text'] = $data['text'];
+            $params['text'] = $this->remove_accent($data['text']);
 
             $messageApi = $data['institutionMessageApi']->messageApi;
 
@@ -38,4 +41,5 @@ class MessageChannel
             return $exception->getMessage();
         }
     }
+
 }

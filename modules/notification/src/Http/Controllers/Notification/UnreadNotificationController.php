@@ -47,6 +47,11 @@ class UnreadNotificationController extends ApiController
                     return false;
                 }
 
+                if($type == 'RegisterAClaim' && ($value->data)['claim']['status'] === 'incomplete' && $claim->status !== 'incomplete'){
+                    $value->markAsRead();
+                    return false;
+                }
+
             }catch(\Exception $exception){
                 return true;
             }
@@ -91,7 +96,11 @@ class UnreadNotificationController extends ApiController
 
                         if(in_array($claim->status, $this->getNotificationStatus($type))){
                             $canReloadCollection->put('canReload', true);
-                        }                
+                        }
+
+                        if($type == 'RegisterAClaim' && ($value->data)['claim']['status'] === 'incomplete' && $claim->status !== 'incomplete'){
+                            $canReloadCollection->put('canReload', false);
+                        }
 
                     }catch(\Exception $exception){}
 
