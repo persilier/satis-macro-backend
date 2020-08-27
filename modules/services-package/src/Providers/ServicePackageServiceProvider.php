@@ -46,16 +46,6 @@ class ServicePackageServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        /*Route::get('storage/assets/images/institutions/{filename}', function ($filename) {
-            $path = storage_path() . '/storage/assets/images/institutions/' . $filename;
-            dd($path);
-            if(!File::exists($path)) abort(404);
-            $file = File::get($path);
-            $type = File::mimeType($path);
-            $response = Response::make($file, 200);
-            $response->header("Content-Type", $type);
-            return $response;
-        });*/
         JsonResource::withoutWrapping();
         $this->registerResources();
         $this->registerCommands();
@@ -82,6 +72,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                 $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn (1, '01:00')->monthlyOn (1, '13:00');
                 $this->app->make(Schedule::class)->command('service:generate-reporting-quarterly')->quarterly()->between(07, 18);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-biannual')->quarterly()->quarterly();
+
             });
         }
     }
@@ -272,6 +263,7 @@ class ServicePackageServiceProvider extends ServiceProvider
 
     /**
      * Routes configurations
+     * @return array
      */
     protected function routeConfiguration()
     {

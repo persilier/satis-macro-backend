@@ -25,8 +25,8 @@ class RelanceController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:any-send-relance')->only(['sendAnyRelance']);
-        $this->middleware('permission:my-send-relance')->only(['sendMyRelance']);
+        /*$this->middleware('permission:any-send-relance')->only(['sendAnyRelance']);
+        $this->middleware('permission:my-send-relance')->only(['sendMyRelance']);*/
 
     }
 

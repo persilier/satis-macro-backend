@@ -541,7 +541,7 @@ trait ReportingClaim
 
         foreach ($ranger as  $value){
 
-             $nbre[$value['text']] = $this->graphes($claims, $value);
+            $nbre[$value['text']] = $this->graphes($claims, $value);
 
         }
 
@@ -807,16 +807,16 @@ trait ReportingClaim
         }
 
         return  [
-             'statistiqueObject' => $data['statistiqueObject'],
-             'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
-             'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
-             'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
-             'chanelGraph' => $this->chanelGraphExport($data),
-             'evolutionClaim' => $this->evolutionClaimExport($data),
-             'periode' => $this->periodeFormat($data['filter']),
-             'logo' => $logo,
-             'color_table_header' => $data['headeBackground'],
-             'lang' => $lang
+            'statistiqueObject' => $data['statistiqueObject'],
+            'statistiqueQualificationPeriod' => $data['statistiqueQualificationPeriod'],
+            'statistiqueTreatmentPeriod' => $data['statistiqueTreatmentPeriod'],
+            'statistiqueChannel' => $this->statistiqueChannelExport($data, $lang),
+            'chanelGraph' => $this->chanelGraphExport($data),
+            'evolutionClaim' => $this->evolutionClaimExport($data),
+            'periode' => $this->periodeFormat($data['filter']),
+            'logo' => $logo,
+            'color_table_header' => $data['headeBackground'],
+            'lang' => $lang
         ];
     }
 
@@ -842,8 +842,8 @@ trait ReportingClaim
 
         $reportinTasks = ReportingTask::with(['institution', 'institutionTargeted'])->whereDoesntHave(
             'cronTasks',  function($query) use ($dateCron){
-                $query->where('created_at', '>=', Carbon::parse($dateCron->copy())->startOfDay())
-                    ->where('created_at', '<=',Carbon::parse($dateCron->copy())->endOfDay());
+            $query->where('created_at', '>=', Carbon::parse($dateCron->copy())->startOfDay())
+                ->where('created_at', '<=',Carbon::parse($dateCron->copy())->endOfDay());
         })->where('period', $value)->get();
 
         return $reportinTasks;

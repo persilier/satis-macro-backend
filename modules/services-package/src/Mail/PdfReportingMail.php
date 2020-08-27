@@ -30,11 +30,10 @@ class PdfReportingMail extends Mailable
      */
     public function build()
     {
-        return $this->from('satisfintech@example.com', 'Satis Fintech')
+        return $this->subject('Reporting')
                     ->attach($this->data['file'], [
                         'mime' => 'application/pdf',
-                    ])->subject('Reporting du periode du '.$this->data['dateStart'].' au '.$this->data['dateEnd'])
-                    ->view('ServicePackage::mails.pdf-reporting')
+                    ])->markdown('ServicePackage::mails.pdf-reporting')
                     ->with(['data' => $this->data]);
     }
 }
