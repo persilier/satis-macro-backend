@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
  * channels
  */
 Route::apiResource('channels', 'Channels\ChannelController');
+Route::get('response-channels', 'Channels\ResponseChannelController@index')->name('response.channel.index');
+Route::get('mobile-channel', 'Channels\MobileChannelController@index')->name('mobile.channel.index');

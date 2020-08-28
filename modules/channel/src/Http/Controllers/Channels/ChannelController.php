@@ -100,6 +100,7 @@ class ChannelController extends ApiController
      *
      * @param Channel $channel
      * @return $channel
+     * @throws \Exception
      */
     public function destroy(Channel $channel)
     {
