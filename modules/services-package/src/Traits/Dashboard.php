@@ -4,6 +4,8 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimObject;
 
@@ -30,8 +32,13 @@ trait Dashboard
         $months = [];
         $statisticsCollection = collect([]);
 
+        $date = Carbon::now()->subMonths(12);
+
+        $date->settings(['monthOverflow' => false,]);
+
         for ($i = 1; $i <= 12; $i++) {
-            $statisticsCollection->put($i, $subKeys);
+            $date->addMonths(1);
+            $statisticsCollection->put($this->formatMontWithYear($date), $subKeys);
         }
 
         return $statisticsCollection;
@@ -335,6 +342,31 @@ trait Dashboard
         }
 
         return $subKeys;
+    }
+
+    public function incrementTotalUnitsTargeted($claim, $subKeys)
+    {
+        // allInstitution
+        if (array_key_exists('allInstitution', $subKeys)) {
+            $subKeys['allInstitution']++;
+        }
+
+        // myInstitution
+        try {
+            if (array_key_exists('myInstitution', $subKeys) && $claim->unitTargeted->institution_id == $this->institution()->id) {
+                $subKeys['myInstitution']++;
+            }
+        } catch (\Exception $exception) {
+        }
+
+        return $subKeys;
+
+    }
+
+    protected function formatMontWithYear($date)
+    {
+        list($shortMontName) = explode('.', $date->locale(App::getLocale())->shortMonthName);
+        return $shortMontName . ' ' . $date->year;
     }
 
 
