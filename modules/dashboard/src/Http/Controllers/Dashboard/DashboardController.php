@@ -8,6 +8,8 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\Dashboard;
 
 class DashboardController extends ApiController
@@ -26,6 +28,7 @@ class DashboardController extends ApiController
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
 
     public function index()
@@ -42,6 +45,25 @@ class DashboardController extends ApiController
         $channelsUse = $this->getDataCollection(Channel::all()->pluck('name'),
             $permissions->filter(function ($value, $key) {
                 return $value->name != 'show-dashboard-data-my-unit' && $value->name != 'show-dashboard-data-my-activity';
+            })
+        );
+
+        // initialise pointOfServicesTargeted collection
+        $pointOfServicesTargeted = $this->getDataCollection($this->institution()
+            ->units()
+            ->whereHas('unitType', function ($q) {
+                $q->where('can_be_target', true);
+            })->get()
+            ->pluck('name'),
+            $permissions->filter(function ($value, $key) {
+                return $value->name != 'show-dashboard-data-all-institution' && $value->name != 'show-dashboard-data-my-unit' && $value->name != 'show-dashboard-data-my-activity';
+            })
+        );
+
+        // initialise institutionsTargeted collection
+        $institutionsTargeted = $this->getDataCollection(Institution::all()->pluck('name'),
+            $permissions->filter(function ($value, $key) {
+                return $value->name != 'show-dashboard-data-my-institution' && $value->name != 'show-dashboard-data-my-unit' && $value->name != 'show-dashboard-data-my-activity';
             })
         );
 
@@ -69,11 +91,11 @@ class DashboardController extends ApiController
         Claim::withTrashed()
             ->with($this->getRelations())
             ->whereBetween('created_at', [
-                Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
-                Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
+                Carbon::now()->subMonths(11)->format('Y-m-d H:i:s'),
+                Carbon::now()->format('Y-m-d H:i:s')
             ])
             ->get()
-            ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics) {
+            ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics, $pointOfServicesTargeted, $institutionsTargeted) {
 
                 if ($claim->created_at->between(Carbon::now()->subDays(30), Carbon::now())) {
 
@@ -136,35 +158,44 @@ class DashboardController extends ApiController
                     // channelsUse
                     $claimObjectsUse->put($claim->claimObject->name,
                         $this->incrementTotalRegistered($claim, $claimObjectsUse->get($claim->claimObject->name)));
+
+                    // pointOfServicesTargeted
+                    if (!is_null($claim->unitTargeted)) {
+                        $pointOfServicesTargeted->put($claim->unitTargeted->name,
+                            $this->incrementTotalUnitsTargeted($claim, $pointOfServicesTargeted->get($claim->unitTargeted->name)));
+                    }
+
+                    $institutionsTargeted->put($claim->institutionTargeted->name,
+                        $this->incrementTotalRegistered($claim, $institutionsTargeted->get($claim->institutionTargeted->name)));
                 }
 
-                $claimerProcessEvolution->put($claim->created_at->month,
-                    $this->incrementRegisteredEvolution($claim, $claimerProcessEvolution->get($claim->created_at->month)));
+                $claimerProcessEvolution->put($this->formatMontWithYear($claim->created_at),
+                    $this->incrementRegisteredEvolution($claim, $claimerProcessEvolution->get($this->formatMontWithYear($claim->created_at))));
 
                 if (!is_null($claim->activeTreatment)) {
 
                     $claim->activeTreatment->load($this->getActiveTreatmentRelations());
 
                     if (!is_null($claim->activeTreatment->transferred_to_unit_at)) {
-                        $claimerProcessEvolution->put($claim->activeTreatment->transferred_to_unit_at->month,
+                        $claimerProcessEvolution->put($this->formatMontWithYear($claim->activeTreatment->transferred_to_unit_at),
                             $this->incrementProcessEvolution($claim
-                                , $claimerProcessEvolution->get($claim->activeTreatment->transferred_to_unit_at->month)
+                                , $claimerProcessEvolution->get($this->formatMontWithYear($claim->activeTreatment->transferred_to_unit_at))
                                 , 'transferred_to_unit'
                             ));
                     }
 
                     if (!is_null($claim->activeTreatment->declared_unfounded_at)) {
-                        $claimerProcessEvolution->put($claim->activeTreatment->declared_unfounded_at->month,
+                        $claimerProcessEvolution->put($this->formatMontWithYear($claim->activeTreatment->declared_unfounded_at),
                             $this->incrementProcessEvolution($claim
-                                , $claimerProcessEvolution->get($claim->activeTreatment->declared_unfounded_at->month)
+                                , $claimerProcessEvolution->get($this->formatMontWithYear($claim->activeTreatment->declared_unfounded_at))
                                 , 'unfounded'
                             ));
                     }
 
                     if (!is_null($claim->activeTreatment->solved_at)) {
-                        $claimerProcessEvolution->put($claim->activeTreatment->solved_at->month,
+                        $claimerProcessEvolution->put($this->formatMontWithYear($claim->activeTreatment->solved_at),
                             $this->incrementProcessEvolution($claim
-                                , $claimerProcessEvolution->get($claim->activeTreatment->solved_at->month)
+                                , $claimerProcessEvolution->get($this->formatMontWithYear($claim->activeTreatment->solved_at))
                                 , 'treated'
                             ));
                     }
@@ -172,14 +203,14 @@ class DashboardController extends ApiController
                     // claimerSatisfactionEvolution
                     if (!is_null($claim->activeTreatment->satisfaction_measured_at)) {
 
-                        $claimerProcessEvolution->put($claim->activeTreatment->satisfaction_measured_at->month,
+                        $claimerProcessEvolution->put($this->formatMontWithYear($claim->activeTreatment->satisfaction_measured_at),
                             $this->incrementProcessEvolution($claim
-                                , $claimerProcessEvolution->get($claim->activeTreatment->satisfaction_measured_at->month)
+                                , $claimerProcessEvolution->get($this->formatMontWithYear($claim->activeTreatment->satisfaction_measured_at))
                                 , 'measured'
                             ));
 
-                        $claimerSatisfactionEvolution->put($claim->activeTreatment->satisfaction_measured_at->month,
-                            $this->incrementClaimerSatisfactionEvolution($claim, $claimerSatisfactionEvolution->get($claim->activeTreatment->satisfaction_measured_at->month)));
+                        $claimerSatisfactionEvolution->put($this->formatMontWithYear($claim->activeTreatment->satisfaction_measured_at),
+                            $this->incrementClaimerSatisfactionEvolution($claim, $claimerSatisfactionEvolution->get($this->formatMontWithYear($claim->activeTreatment->satisfaction_measured_at))));
                     }
 
                 }
@@ -193,7 +224,9 @@ class DashboardController extends ApiController
             'claimObjectsUse' => $claimObjectsUse,
             'claimerSatisfactionEvolution' => $claimerSatisfactionEvolution,
             'claimerProcessEvolution' => $claimerProcessEvolution,
-            'totalClaimsRegisteredStatistics' => $totalClaimsRegisteredStatistics->get('total')
+            'totalClaimsRegisteredStatistics' => $totalClaimsRegisteredStatistics->get('total'),
+            'institutionsTargeted' => $institutionsTargeted,
+            'pointOfServicesTargeted' => $pointOfServicesTargeted
         ], 200);
     }
 
