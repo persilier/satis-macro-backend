@@ -347,9 +347,13 @@ trait Dashboard
     public function incrementTotalUnitsTargeted($claim, $subKeys)
     {
         // allInstitution
-        if (array_key_exists('allInstitution', $subKeys)) {
-            $subKeys['allInstitution']++;
+        try {
+            if (array_key_exists('allInstitution', $subKeys)) {
+                $subKeys['allInstitution']++;
+            }
+        } catch (\Exception $exception) {
         }
+
 
         // myInstitution
         try {

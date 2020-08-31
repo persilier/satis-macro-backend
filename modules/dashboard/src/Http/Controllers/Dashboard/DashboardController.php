@@ -161,8 +161,11 @@ class DashboardController extends ApiController
 
                     // pointOfServicesTargeted
                     if (!is_null($claim->unitTargeted)) {
-                        $pointOfServicesTargeted->put($claim->unitTargeted->name,
+                        if($pointOfServicesTargeted->has($claim->unitTargeted->name)){
+                            $pointOfServicesTargeted->put($claim->unitTargeted->name,
                             $this->incrementTotalUnitsTargeted($claim, $pointOfServicesTargeted->get($claim->unitTargeted->name)));
+                        }
+                        
                     }
 
                     $institutionsTargeted->put($claim->institutionTargeted->name,
