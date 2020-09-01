@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Metadata;
 
 trait AwaitingAssignment
 {
@@ -37,7 +38,14 @@ trait AwaitingAssignment
             ->get()
             ->map(function ($item, $key) use ($claim) {
                 $item = Claim::with($this->getRelations())->find($item->id);
-                $item->duplicate_percent = $this->getPercent($claim, $item);
+                $item->duplicate_percent = intval($this->getPercent($claim, $item));
+                try {
+                    $item->is_mergeable = intval(Metadata::ofName('min-fusion-percent')->firstOrFail()->data) > $item->duplicate_percent
+                        ? false
+                        : true;
+                } catch (\Exception $exception) {
+                    $item->is_mergeable = true;
+                }
                 return $item;
             });
     }

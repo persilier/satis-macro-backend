@@ -84,14 +84,27 @@ class AwaitingAssignmentController extends ApiController
      */
     public function merge(Request $request, Claim $claim, Claim $duplicate)
     {
+        $duplicates = $this->getDuplicates($claim);
 
-        if ($this->getDuplicates($claim)->search(function ($item, $key) use ($duplicate) {
-                return $item->id == $duplicate->id;
-            }) === false) {
+        $duplicateKey = $duplicates->search(function ($item, $key) use ($duplicate) {
+            return $item->id == $duplicate->id;
+        });
+
+        if ($duplicateKey === false) {
             throw new CustomException("Can't merge these claims. No compatibility");
         }
 
-        if ($claim->created_at >= $duplicate->created_at) {
+        $duplicate = $duplicates->get($duplicateKey);
+
+        if (!$duplicate->is_mergeable) {
+            throw new CustomException("Can't merge these claims. The required minimum probability is not reached");
+        }
+
+        $rules = ['keep_claim' => 'required|boolean'];
+
+        $this->validate($request, $rules);
+
+        if ($request->keep_claim) {
             $duplicate->delete();
             $redirect = $claim;
         } else {
