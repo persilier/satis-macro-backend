@@ -65,7 +65,7 @@ trait ReportingClaim
 
             $claims->whereHas('activeTreatment', function ($o) use ($request){
 
-                $o->whereHas('responsibleStaff', function ($r) use ($request){
+                $o->whereHas('responsibleUnit', function ($r) use ($request){
 
                     $r->where('institution_id', $request->institution_id);
                 });
@@ -94,7 +94,7 @@ trait ReportingClaim
 
             if($institution){
 
-                $o->whereHas('responsibleStaff' , function ($p) use ($request, $institution){
+                $o->whereHas('responsibleUnit' , function ($p) use ($request, $institution){
 
                     $p->where('institution_id', $institution);
 
@@ -128,7 +128,7 @@ trait ReportingClaim
 
                     $qp->whereHas('activeTreatment', function ($o) use ($request){
 
-                        $o->whereHas('responsibleStaff', function ($r) use ($request){
+                        $o->whereHas('responsibleUnit', function ($r) use ($request){
 
                             $r->where('institution_id', $request->institution_id);
                         });
@@ -857,7 +857,7 @@ trait ReportingClaim
 
             if($institution){
 
-                $o->whereHas('responsibleStaff' , function ($p) use ($request, $institution){
+                $o->whereHas('responsibleUnit' , function ($p) use ($request, $institution){
 
                     $p->where('institution_id', $institution);
 
@@ -1033,14 +1033,14 @@ trait ReportingClaim
 
     /**
      * @param $request
-     * @param $institutionId
+     * @param $institution
      * @return mixed
      */
-    /*protected  function numberClaimByDayOrMonthOrYear($request, $institutionId){
+    protected  function statistiqueEvolutions($request, $institution){
 
-        $claims_requests = $this->queryClaimByDayOrMonthOrYear($request, $institutionId)->get();
+        $claims_requests = $this->getAllClaims($request, $institution)->get();
 
-        $claims_resolues = $this->queryClaimByDayOrMonthOrYearResolue($request, $institutionId)->get();
+        $claims_resolues = $this->qualificationTreatmentQuery($request, $institution, 'satisfaction_measured_at')->where('status', 'archived')->get();
 
         $date_start = Carbon::parse($request->date_start)->startOfDay();
         $date_end = Carbon::parse($request->date_end)->endOfDay();
@@ -1056,14 +1056,14 @@ trait ReportingClaim
 
         return $results;
 
-    }*/
+    }
 
     /**
      * @param $claims
      * @param $ranger
      * @return mixed
      */
-   /* protected function rangerDate($claims, $ranger){
+    protected function rangerDate($claims, $ranger){
 
         foreach ($ranger as  $value){
 
@@ -1072,7 +1072,7 @@ trait ReportingClaim
         }
 
         return $nbre;
-    }*/
+    }
 
 
     /**
@@ -1080,7 +1080,7 @@ trait ReportingClaim
      * @param $value
      * @return mixed
      */
-    /*protected function graphes($claims, $value){
+    protected function graphes($claims, $value){
 
         return $claims->filter(function ($item) use ($value){
 
@@ -1088,15 +1088,14 @@ trait ReportingClaim
                 return $item;
 
         })->count();
-    }*/
+    }
 
     /**
-     * @param $nbreDay
      * @param $date_start
      * @param $date_end
      * @return array
      */
-    /*protected function rangerPerDays($date_start, $date_end){
+    protected function rangerPerDays($date_start, $date_end){
 
         $nbreDays = $date_start->copy()->startOfDay()->diffInDays($date_end->copy()->endOfDay());
 
@@ -1111,14 +1110,14 @@ trait ReportingClaim
         }
 
         return $rangerDays;
-    }*/
+    }
 
     /**
      * @param $date_start
      * @param $date_end
      * @return array
      */
-    /*protected function rangerPerWeeks($date_start, $date_end){
+    protected function rangerPerWeeks($date_start, $date_end){
 
         $diffFirstDayWeek = $date_start->copy()->startOfDay()->diffInDays($date_start->copy()->startOfWeek());
         $diffEndDayWeek = $date_end->copy()->endOfWeek()->diffInDays($date_end->copy()->endOfDay());
@@ -1161,7 +1160,7 @@ trait ReportingClaim
         }
 
         return $rangerWeeks;
-    }*/
+    }
 
 
     /**
@@ -1169,7 +1168,7 @@ trait ReportingClaim
      * @param $date_end
      * @return array
      */
-    /*protected function rangerPerMonths($date_start, $date_end){
+    protected function rangerPerMonths($date_start, $date_end){
 
         $diffFirstDayMonth = $date_start->copy()->startOfDay()->diffInDays($date_start->copy()->startOfMonth());
         $diffEndDayMonth = $date_end->copy()->endOfMonth()->diffInDays($date_end->copy()->endOfDay());
@@ -1209,7 +1208,7 @@ trait ReportingClaim
         }
 
         return $rangerMonths;
-    }*/
+    }
 
 
 
@@ -1221,7 +1220,7 @@ trait ReportingClaim
      * @param $image
      * @return string
      */
-    /*protected function getFileImage($image){
+    protected function getFileImage($image){
 
         $fileName = $image->file->extension();
 
@@ -1229,7 +1228,7 @@ trait ReportingClaim
 
         return asset('assets/reporting/images/'.$fileName);
 
-    }*/
+    }
 
 
 

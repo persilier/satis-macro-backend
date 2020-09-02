@@ -50,7 +50,7 @@ class ClaimController extends ApiController
             'statistiqueChannel' => $this->statistiqueChannels($request, true),
             'statistiqueQualificationPeriod'  => $this->statistiqueQualifications($request, true),
             'statistiqueTreatmentPeriod'  => $this->statistiqueTreatments($request, true),
-            /*'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institution->id)*/
+            'statistiqueGraphePeriod' => $this->statistiqueEvolutions($request, true),
         ];
 
         return response()->json($statistiques, 200);

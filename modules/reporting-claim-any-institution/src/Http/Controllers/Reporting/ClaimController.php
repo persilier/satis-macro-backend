@@ -57,7 +57,7 @@ class ClaimController extends ApiController
             'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
             'statistiqueQualificationPeriod' => $this->statistiqueQualifications($request, $institution),
             'statistiqueTreatmentPeriod' => $this->statistiqueTreatments($request, $institution),
-            /*'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institutionId),*/
+            'statistiqueGraphePeriod' => $this->statistiqueEvolutions($request, $institution),
             'institutions' => Institution::all()
         ];
 
