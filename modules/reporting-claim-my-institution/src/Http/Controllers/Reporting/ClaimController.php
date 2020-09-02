@@ -43,12 +43,14 @@ class ClaimController extends ApiController
             $request->merge(['date_start' => now()->startOfYear(), 'date_end' =>now()->endOfYear()]);
         }
 
+        $request->merge(['institution_id' => $institution->id]);
+
         $statistiques = [
-            'statistiqueObject' => $this->numberClaimByObject($request, $institution->id),
-            'statistiqueChannel' => $this->numberChannels($request, $institution->id),
-            'statistiqueQualificationPeriod'  => $this->qualificationPeriod($request, $institution->id),
-            'statistiqueTreatmentPeriod'  => $this->treatmentPeriod($request, $institution->id),
-            'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institution->id)
+            'statistiqueObject' => $this->statistiqueObjectsClaims($request, true),
+            'statistiqueChannel' => $this->statistiqueChannels($request, true),
+            'statistiqueQualificationPeriod'  => $this->statistiqueQualifications($request, true),
+            'statistiqueTreatmentPeriod'  => $this->statistiqueTreatments($request, true),
+            /*'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institution->id)*/
         ];
 
         return response()->json($statistiques, 200);

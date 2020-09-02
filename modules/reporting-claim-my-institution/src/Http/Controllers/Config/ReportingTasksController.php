@@ -58,6 +58,11 @@ class ReportingTasksController extends ApiController
     }
 
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function store(Request $request)
     {
         $this->validate($request, $this->rulesTasksConfig(false));

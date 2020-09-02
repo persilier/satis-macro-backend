@@ -27,3 +27,8 @@ Route::put("/configurations/mail", "Mail\MailController@update")->name("configur
 // Update Coef send relance
 Route::get("/configurations/relance", "Relance\RelanceController@show")->name("configurations.relance.show");
 Route::put("/configurations/relance", "Relance\RelanceController@update")->name("configurations.relance.update");
+
+// Qualifications parameters
+Route::resource('delai-qualification-parameters', 'DelaiParameters\QualificationController')->except(['edit', 'update']);
+// Treatments parameters
+Route::resource('delai-treatment-parameters', 'DelaiParameters\TreatmentController')->except(['edit', 'update']);
