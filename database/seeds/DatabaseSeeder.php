@@ -115,6 +115,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\AssignFeedbackPreferredChannelsToStaffSeeder::class);
         //$this->call(\Satis2020\Configuration\Database\Seeds\DelaiQualificationRoleSeeder::class);
         //$this->call(\Satis2020\Configuration\Database\Seeds\DelaiTreatmentRoleSeeder::class);
+        //$this->call(\Satis2020\ServicePackage\Database\Seeds\MinFusionPercentSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
 
     }
