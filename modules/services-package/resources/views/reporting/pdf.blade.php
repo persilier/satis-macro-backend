@@ -150,64 +150,23 @@
                 <thead style="background: {{ $color_table_header }};font-size: 0.4em">
                     <tr>
                         <th>DÉLAI QUALIFICATION (EN JOURS)</th>
-                        <th>0-2 JOURS</th>
-                        <th>2-4 JOURS</th>
-                        <th>4-6 JOURS</th>
-                        <th>6-10 JOURS</th>
-                        <th>PLUS DE 10 JOURS</th>
+                        @foreach($statistiqueQualificationPeriod as $delaiValue)
+                            <th>{{  $delaiValue->libelle }}</th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody class="tbody_claim_object tbtable">
                     <tr>
                         <td>Nombre</td>
-                        <td>{{ $statistiqueQualificationPeriod['0-2']['total'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['2-4']['total'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['4-6']['total'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['6-10']['total'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['+10']['total'] }}</td>
+                        @foreach($statistiqueQualificationPeriod as $delaiValue)
+                            <td>{{  $delaiValue->total }}</td>
+                        @endforeach
                     </tr>
                     <tr>
                         <td>Taux (%)</td>
-                        <td>{{ $statistiqueQualificationPeriod['0-2']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['2-4']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['4-6']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['6-10']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueQualificationPeriod['+10']['pourcentage'] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        @endif
-
-        @if($statistiqueTreatmentPeriod)
-            <div style="margin-top: 1em">&nbsp;</div>
-            <div class="title_tableau title-center">Délai de traitement des réclamations </div>
-            <table class="table">
-                <thead style="background: {{ $color_table_header }};font-size: 0.4em">
-                    <tr>
-                        <th>DÉLAI TRAITEMENT (EN JOURS)</th>
-                        <th>0-2 JOURS</th>
-                        <th>2-4 JOURS</th>
-                        <th>4-6 JOURS</th>
-                        <th>6-10 JOURS</th>
-                        <th>PLUS DE 10 JOURS</th>
-                    </tr>
-                </thead>
-                <tbody class="tbody_claim_object tbtable">
-                    <tr>
-                        <td>Nombre</td>
-                        <td>{{ $statistiqueTreatmentPeriod['0-2']['total'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['2-4']['total'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['4-6']['total'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['6-10']['total'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['+10']['total'] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Taux (%)</td>
-                        <td>{{ $statistiqueTreatmentPeriod['0-2']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['2-4']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['4-6']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['6-10']['pourcentage'] }}</td>
-                        <td>{{ $statistiqueTreatmentPeriod['+10']['pourcentage'] }}</td>
+                        @foreach($statistiqueQualificationPeriod as $delaiValue)
+                            <td>{{  $delaiValue->total }}</td>
+                        @endforeach
                     </tr>
                 </tbody>
             </table>
