@@ -65,7 +65,6 @@
                 font-weight: bold;
             }
 
-
         </style>
 
     </head>
@@ -75,7 +74,7 @@
             <img src="{{ $logo }}" alt="logo" style="height: 4em">
         </div>
         <div class="text-center" style="font-size: 12px;font-weight: bold">Rapport périodique de gestion des réclamations </div>
-        <div class="text-center" style="font-size: 10px">Période : {{ $periode['startDate'] }} au {{ $periode['endDate'] }}</div>
+        <div class="text-center" style="font-size: 10px">Période : {{ $periode['libellePeriode'] }}</div>
         <div style="margin-bottom: .3em;border-bottom: 1px solid #F3F3F3 ">&nbsp;</div>
 
         @if($statistiqueObject['data'])
@@ -285,7 +284,7 @@
         @endif
     </main>
     <footer style="text-align: center; font-size: 6px;bottom: 0;position:fixed">
-        Powered By Satis FinTech S.A
+        <a href='#' target='_blank'>Copyright 2020, Satis. <img src="{{ $logo }}" alt="logo" style="height: 1em"></a>
     </footer>
     </body>
 </html>

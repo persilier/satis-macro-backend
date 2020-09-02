@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\Currency\Http\Controllers\Currencies;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -36,7 +37,7 @@ class CurrencyController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function store(Request $request)
@@ -55,7 +56,7 @@ class CurrencyController extends ApiController
      * Display the specified resource.
      *
      * @param Currency $currency
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(Currency $currency)
     {
@@ -68,7 +69,7 @@ class CurrencyController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param Currency $currency
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function update(Request $request, Currency $currency)
@@ -87,7 +88,8 @@ class CurrencyController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param Currency $currency
-     * @return $currency
+     * @return JsonResponse $currency
+     * @throws \Exception
      */
     public function destroy(Currency $currency)
     {

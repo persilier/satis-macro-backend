@@ -36,7 +36,7 @@ class ClaimController extends ApiController
      */
     public function index(Request $request)
     {
-        $institutionId = false;
+        $institution = false;
 
         $this->validate($request, $this->rules());
 
@@ -47,15 +47,17 @@ class ClaimController extends ApiController
         }
 
         if($request->has('institution_id')){
-            $institutionId = $request->institution_id;
+
+            $institution = true;
+
         }
 
         $statistiques = [
-            'statistiqueObject' => $this->numberClaimByObject($request, $institutionId),
-            'statistiqueChannel' => $this->numberChannels($request, $institutionId),
-            'statistiqueQualificationPeriod'  => $this->qualificationPeriod($request, $institutionId),
-            'statistiqueTreatmentPeriod'  => $this->treatmentPeriod($request, $institutionId),
-            'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institutionId),
+            'statistiqueObject' => $this->statistiqueObjectsClaims($request, $institution),
+            'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
+            'statistiqueQualificationPeriod' => $this->statistiqueQualifications($request, $institution),
+            'statistiqueTreatmentPeriod' => $this->statistiqueTreatments($request, $institution),
+            /*'statistiqueGraphePeriod' => $this->numberClaimByDayOrMonthOrYear($request, $institutionId),*/
             'institutions' => Institution::all()
         ];
 

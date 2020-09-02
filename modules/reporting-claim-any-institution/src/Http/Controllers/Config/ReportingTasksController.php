@@ -32,6 +32,9 @@ class ReportingTasksController extends ApiController
     }
 
 
+    /**
+     * @return JsonResponse
+     */
     public function index()
     {
         $institution = $this->institution();
