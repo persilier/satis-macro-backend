@@ -19,7 +19,7 @@ class MinFusionPercentSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Metadata::truncate();
+        //Metadata::truncate();
         Metadata::flushEventListeners();
 
         Metadata::create([
