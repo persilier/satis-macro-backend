@@ -151,7 +151,7 @@
                     <tr>
                         <th>DÉLAI QUALIFICATION (EN JOURS)</th>
                         @foreach($statistiqueQualificationPeriod as $delaiValue)
-                            <th>{{  $delaiValue->libelle }}</th>
+                            <th>{{  $delaiValue['libelle'] }}</th>
                         @endforeach
                     </tr>
                 </thead>
@@ -159,15 +159,45 @@
                     <tr>
                         <td>Nombre</td>
                         @foreach($statistiqueQualificationPeriod as $delaiValue)
-                            <td>{{  $delaiValue->total }}</td>
+                            <td>{{  $delaiValue['total'] }}</td>
                         @endforeach
                     </tr>
                     <tr>
                         <td>Taux (%)</td>
                         @foreach($statistiqueQualificationPeriod as $delaiValue)
-                            <td>{{  $delaiValue->total }}</td>
+                            <td>{{  $delaiValue['pourcentage'] }}</td>
                         @endforeach
                     </tr>
+                </tbody>
+            </table>
+        @endif
+
+
+        @if($statistiqueTreatmentPeriod)
+            <div style="margin-top: 1em">&nbsp;</div>
+            <div class="title_tableau title-center">Délai de traitement des réclamations </div>
+            <table class="table">
+                <thead style="background: {{ $color_table_header }};font-size: 0.4em">
+                <tr>
+                    <th>DÉLAI TRAITEMENT (EN JOURS)</th>
+                    @foreach($statistiqueTreatmentPeriod as $delaiValue)
+                        <th>{{  $delaiValue['libelle'] }}</th>
+                    @endforeach
+                </tr>
+                </thead>
+                <tbody class="tbody_claim_object tbtable">
+                <tr>
+                    <td>Nombre</td>
+                    @foreach($statistiqueTreatmentPeriod as $delaiValue)
+                        <td>{{  $delaiValue['total'] }}</td>
+                    @endforeach
+                </tr>
+                <tr>
+                    <td>Taux (%)</td>
+                    @foreach($statistiqueTreatmentPeriod as $delaiValue)
+                        <td>{{  $delaiValue['pourcentage'] }}</td>
+                    @endforeach
+                </tr>
                 </tbody>
             </table>
         @endif
@@ -243,7 +273,7 @@
         @endif
     </main>
     <footer style="text-align: center; font-size: 6px;bottom: 0;position:fixed">
-        <a href='#' target='_blank'>Copyright 2020, Satis. <img src="{{ $logo }}" alt="logo" style="height: 1em"></a>
+        Copyright 2020, Satis. <img src="{{ $logo }}" alt="logo" style="height: 0.5em">
     </footer>
     </body>
 </html>
