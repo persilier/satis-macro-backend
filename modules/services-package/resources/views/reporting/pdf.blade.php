@@ -71,7 +71,7 @@
     <body style="background: white">
     <main>
         <div  class="text-center">
-            <img src="{{ $logo }}" alt="logo" style="height: 4em">
+            <img src="{{ $logo }}" alt="logo" style="height: 3.5em; border-radius: .1em; border:1px solid #F3F3F3;">
         </div>
         <div class="text-center" style="font-size: 12px;font-weight: bold">Rapport périodique de gestion des réclamations </div>
         <div class="text-center" style="font-size: 10px">Période : {{ $periode['libellePeriode'] }}</div>
@@ -273,7 +273,7 @@
         @endif
     </main>
     <footer style="text-align: center; font-size: 6px;bottom: 0;position:fixed">
-        Copyright 2020, Satis. <img src="{{ $logo }}" alt="logo" style="height: 0.5em">
+        Copyright {{ env('APP_YEAR_INSTALLATION') }}, <img src="{{ $logoSatis }}" alt="logo" style="height: 0.4em">.
     </footer>
     </body>
 </html>

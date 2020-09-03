@@ -595,6 +595,7 @@ trait ReportingClaim
             'evolutionClaim' => $this->evolutionClaimExport($data),
             'periode' => $this->periodeFormat($data['filter']),
             'logo' => $logo,
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
             'color_table_header' => $data['headeBackground'],
             'lang' => $lang
         ];
