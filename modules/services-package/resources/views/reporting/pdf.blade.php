@@ -229,17 +229,18 @@
         @endif
 
         @if($chanelGraph)
-            <div style="display: block">
+            <div>
                 <div style="margin-bottom: 1em">&nbsp;</div>
                 <div class="title_tableau title-center" >Utilisation des canaux de déclaration des réclamations </div>
-                <div class="row" style="padding-top: 1em">
-                    <div class="col-xs-7">
-                        <img src="{{ $chanelGraph['image'] }}" alt="logo" style="margin-left: 10em">
+                <div style="padding-top: 1em ; display: block;">
+                    <div style="padding-top: 1em; width: 70%; display: inline-block; vertical-align:top;">
+                        <img src="{{ $chanelGraph['image'] }}" alt="logo" style="display: block; height: 90%; border: 1px solid #fef">
                     </div>
 
-                    <div class="col-xs-4" style="padding-top: 1em">
+                    <div style="padding-top: 1em; width: 30%; display: inline-block; vertical-align:top;">
                         @for($n = 0; $n < count($chanelGraph['libelle']); $n++)
-                            <div> <span style="background-color:{{ $chanelGraph['color'][$n] }}" class="dot"></span>
+                            <div> 
+                                <span style="background-color:{{ $chanelGraph['color'][$n] }}" class="dot"></span>
                                 <span style="font-size: 8px; font-weight: bold;">{{ $chanelGraph['libelle'][$n] }}</span>
                             </div>
                         @endfor
@@ -255,10 +256,10 @@
             <div style="border-bottom: 1px solid #F3F3F3; padding-bottom: 2em">
                 <div style="margin-bottom: 1em">&nbsp;</div>
                 <div class="title_tableau title-center">Evolution des réclamations par @if($evolutionClaim['type_graphe']==='months') mois @elseif($evolutionClaim['type_graphe']==='weeks') semaines @else jours @endif </div>
-                <div class="row" style="padding-top: 1em">
-                    <div class="col-xs-12">
-                        <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="width: 100%">
-                    </div>
+                <div style="padding-top: 1em">
+                    
+                    <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="width: 100%; border: 0.05em solid #F3F3F3;">
+                    
                 </div>
                 <div style="margin-left: 15em; margin-right: 15em">
                     <span style="background-color:{{ $evolutionClaim['legend']['claims_received'] }}" class="dot"></span>
@@ -273,7 +274,7 @@
         @endif
     </main>
     <footer style="text-align: center; font-size: 6px;bottom: 0;position:fixed">
-        Copyright {{ env('APP_YEAR_INSTALLATION') }}, <img src="{{ $logoSatis }}" alt="logo" style="height: 0.4em">.
+        Copyright {{ env('APP_YEAR_INSTALLATION') }}, <img src="{{ $logoSatis }}" alt="logo" style="height: 0.5em; padding-bottom:0.05em">.
     </footer>
     </body>
 </html>
