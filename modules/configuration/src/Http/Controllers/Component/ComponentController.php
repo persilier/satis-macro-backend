@@ -112,6 +112,18 @@ class ComponentController extends ApiController
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param $componentName
+     * @return \Illuminate\Http\Response
+     */
+    public function showByName($componentName)
+    {
+        $component = \Satis2020\ServicePackage\Models\Component::with('files')->where('name', $componentName)->firstOrFail();
+        return response()->json($this->formatComponent($component), 200);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
