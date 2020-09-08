@@ -32,3 +32,6 @@ Route::put("/configurations/relance", "Relance\RelanceController@update")->name(
 Route::resource('delai-qualification-parameters', 'DelaiParameters\QualificationController')->except(['edit', 'update']);
 // Treatments parameters
 Route::resource('delai-treatment-parameters', 'DelaiParameters\TreatmentController')->except(['edit', 'update']);
+
+// Component configurations
+Route::resource('components', 'Component\ComponentController')->except(['create', 'edit']);

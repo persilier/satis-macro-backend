@@ -83,7 +83,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
             'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
             'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
-
+            'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
+            'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
+            'update-components-parameters',
         ];
 
         $filialPermissions = [
@@ -143,6 +145,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
             'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
             'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
+            'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
+            'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
+            'update-components-parameters',
 
         ];
 
@@ -190,6 +195,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
             'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
             'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
+            'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
+            'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
+            'update-components-parameters',
 
         ];
 

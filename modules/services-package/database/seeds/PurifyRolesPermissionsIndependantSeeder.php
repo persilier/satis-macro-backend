@@ -60,6 +60,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-institution',
                     'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
                     'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
+                    'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
+                    'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
+                    'update-components-parameters',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

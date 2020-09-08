@@ -8,23 +8,20 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 
-class File extends Model
+class Component extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
-
     /**
      * The attributes that are translatable
      *
      * @var array
      */
-    public $translatable = [];
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [];
+    public $translatable = ['params', 'description'];
 
+    protected $casts = [
+        'params' => 'json',
+        'description' => 'json',
+    ];
     /**
      * The attributes that should be mutated to dates.
      *
@@ -37,32 +34,21 @@ class File extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'url'];
+    protected $fillable = ['name', 'description', 'params'];
 
     /**
-     * Get the lead flag for the staff.
-     *
-     * @return bool
-     */
-    public function getBase64Attribute()
-    {
-        return base64_encode(file_get_contents(public_path($this->attributes['url'])));
-    }
-
-    /**
-     * The accessors to append to the model's array form.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $appends = [];
+    protected $hidden = [];
 
     /**
-     * Get the owning attachmentable model.
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * Get all of the message's files.
      */
-    public function attachmentable()
+    public function files()
     {
-        return $this->morphTo();
+        return $this->morphMany(File::class, 'attachmentable');
     }
-    
+
 }

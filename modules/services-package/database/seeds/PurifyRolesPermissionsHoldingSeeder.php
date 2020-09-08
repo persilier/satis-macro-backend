@@ -60,7 +60,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-staff-from-any-unit', 'store-staff-from-any-unit', 'update-staff-from-any-unit', 'destroy-staff-from-any-unit', 'show-staff-from-any-unit', 'edit-staff-from-any-unit',
                     'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
                     'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',
-
+                    'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
+                    'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
+                    'update-components-parameters',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
