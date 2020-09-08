@@ -17,7 +17,7 @@ class ComponentController extends ApiController
     {
         parent::__construct();
 
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->only(['update', 'store']);
 
         $this->middleware('permission:update-components-parameters')->only(['update', 'store']);
     }
