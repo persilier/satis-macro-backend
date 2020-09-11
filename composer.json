@@ -61,6 +61,7 @@
     "satis2020/reporting-claim-my-institution": "^1.0",
     "satis2020/satisfaction-measured-any-claim": "^1.0",
     "satis2020/satisfaction-measured-my-claim": "^1.0",
+    "satis2020/search": "^1.0",
     "satis2020/services-package": "^1.0",
     "satis2020/severity-level": "^1.0",
     "satis2020/staff-feedback-channel": "^1.0",
@@ -560,6 +561,13 @@
     {
       "type": "path",
       "url": "modules/my-claim-archived/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/search/",
       "options": {
         "symlink": true
       }

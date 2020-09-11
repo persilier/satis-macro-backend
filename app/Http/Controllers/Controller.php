@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\File;
@@ -29,7 +31,7 @@ class Controller extends BaseController
 
         dd($this->getStaffIdentities(["3b4bcea9-ea57-4e29-956c-5c2702a1c04c", "343c2188-32e6-44b6-a090-6045f9b4b86d", "7d2c8ca6-bd0d-49f6-a238-34608d02dee4"], ["7d2c8ca6-bd0d-49f6-a238-34608d02dee4"]));
 
-        return $identity->notify(new \Satis2020\ServicePackage\Notifications\ReminderAfterDeadline($claim, '2h'));
+        return $claim;
     }
 
     public function download(File $file)
