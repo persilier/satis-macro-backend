@@ -114,10 +114,22 @@ trait ReportingClaim
      */
     protected function getAllCategoryObjectsClaim($request, $institution)
     {
-        return ClaimCategory::with(['claimObjects.claims' => function ($m) use ($request){
+        return ClaimCategory::with(['claimObjects.claims' => function ($m) use ($request, $institution){
 
             $m->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
                 ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
+
+            if($institution){
+
+                $m->whereHas('activeTreatment', function ($o) use ($request){
+
+                    $o->whereHas('responsibleUnit', function ($r) use ($request){
+
+                        $r->where('institution_id', $request->institution_id);
+                    });
+
+                })->has('treatments');
+            }
 
         }])->whereHas('claimObjects.claims', function ($p) use ($request, $institution){
 
