@@ -4,23 +4,17 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ReportingTask;
 use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Models\Metadata;
 
 
@@ -120,29 +114,43 @@ trait ReportingClaim
      */
     protected function getAllCategoryObjectsClaim($request, $institution)
     {
-        $categories =  ClaimCategory::with(['claimObjects'])->whereHas('claimObjects', function ($p) use ($request, $institution){
+        return ClaimCategory::with(['claimObjects.claims' => function ($m) use ($request, $institution){
 
-            $p->whereHas('claims', function ($qp) use ($request, $institution){
+            $m->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
+                ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
 
-                if($institution){
+            if($institution){
 
-                    $qp->whereHas('activeTreatment', function ($o) use ($request){
+                $m->whereHas('activeTreatment', function ($o) use ($request){
 
-                        $o->whereHas('responsibleUnit', function ($r) use ($request){
+                    $o->whereHas('responsibleUnit', function ($r) use ($request){
 
-                            $r->where('institution_id', $request->institution_id);
-                        });
+                        $r->where('institution_id', $request->institution_id);
+                    });
 
-                    })->has('treatments');
-                }
+                })->has('treatments');
+            }
 
-                $qp->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
+        }])->whereHas('claimObjects.claims', function ($p) use ($request, $institution){
+
+            if($institution){
+
+                $p->whereHas('activeTreatment', function ($o) use ($request){
+
+                    $o->whereHas('responsibleUnit', function ($r) use ($request){
+
+                        $r->where('institution_id', $request->institution_id);
+                    });
+
+                })->has('treatments');
+            }
+
+            $p->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
                     ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
 
-            });
-        });
+        })->get();
 
-        return $categories->get();
+        //return $categories
 
     }
 
@@ -167,6 +175,8 @@ trait ReportingClaim
                 $object['toValidate'] = $stats['toValidate'];
                 $object['toMeasureSatisfaction'] = $stats['toMeasureSatisfaction'];
                 $object['percentage'] = $stats['percentage'];
+
+                return $object;
             });
 
             return $item;
@@ -264,17 +274,36 @@ trait ReportingClaim
 
     protected function statistiqueChannels($request, $institution =  false){
 
-        $claimsQuery = $this->getAllClaims($request, $institution)->get();
+        $claimsQuery = $this->getAllClaims($request, $institution)->where('request_channel_slug', '!=', NULL)->get();
 
         $total = $claimsQuery->count();
 
-        $claims = $claimsQuery->pluck('request_channel_slug')->toArray();
+        $claims = $claimsQuery->pluck('id')->toArray();
 
-        $claims = array_unique($claims);
+        $channels = Channel::with(['claims' => function ($q) use ($request, $institution){
 
-        $channels = Channel::withCount('claims')->whereIn('slug', $claims)->get()->map(function ($item) use ($total){
+            $q->where('created_at', '>=',Carbon::parse($request->date_start)->startOfDay())
+                ->where('created_at', '<=',Carbon::parse($request->date_end)->endOfDay());
 
-            $nbre = $item->claims_count;
+            if($institution){
+
+                $q->whereHas('activeTreatment', function ($o) use ($request){
+
+                    $o->whereHas('responsibleUnit', function ($r) use ($request){
+
+                        $r->where('institution_id', $request->institution_id);
+                    });
+
+                })->has('treatments');
+            }
+
+        }])->whereHas('claims', function ($c) use ($request, $claims){
+
+            $c->whereIn('id', $claims);
+
+        })->get()->map(function ($item) use ($total){
+
+            $nbre = $item->claims->count();
             $item['total_claim'] = $nbre;
             $item['pourcentage'] = (($nbre !== 0) && ($total!==0)) ? round((($nbre/$total) * 100),2) : 0;
 
@@ -671,10 +700,10 @@ trait ReportingClaim
      * @param $data
      * @return mixed
      */
-     protected function periodeFormat($data){
+    protected function periodeFormat($data){
 
-        $data['startDate'] = !empty($data['startDate']) ? Carbon::parse($data['startDate'])->startOfDay() : now()->startOfYear();
-        $data['endDate'] = !empty($data['endDate']) ? Carbon::parse($data['endDate'])->endOfDay()  : now()->endOfYear();
+        $data['startDate'] = !empty($data['startDate']) ? Carbon::parse($data['startDate'])->startOfDay() :  now()->startOfMonth()->subMonths(11);
+        $data['endDate'] = !empty($data['endDate']) ? Carbon::parse($data['endDate'])->endOfDay()  : now()->endOfMonth();
         $data['libellePeriode'] = $this->libellePeriode($data);
 
         return $data;
