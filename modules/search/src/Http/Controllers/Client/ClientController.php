@@ -47,7 +47,7 @@ class ClientController extends ApiController
                 'client' => $item->client,
                 'accounts' => $item->accounts,
                 'fullName' => $fullName,
-                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower(request()->r))
+                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
             ]);
 
             return $item;
