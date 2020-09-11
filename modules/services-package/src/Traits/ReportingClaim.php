@@ -700,10 +700,10 @@ trait ReportingClaim
      * @param $data
      * @return mixed
      */
-     protected function periodeFormat($data){
+    protected function periodeFormat($data){
 
-        $data['startDate'] = !empty($data['startDate']) ? Carbon::parse($data['startDate'])->startOfDay() : now()->startOfYear();
-        $data['endDate'] = !empty($data['endDate']) ? Carbon::parse($data['endDate'])->endOfDay()  : now()->endOfYear();
+        $data['startDate'] = !empty($data['startDate']) ? Carbon::parse($data['startDate'])->startOfDay() :  now()->startOfMonth()->subMonths(11);
+        $data['endDate'] = !empty($data['endDate']) ? Carbon::parse($data['endDate'])->endOfDay()  : now()->endOfMonth();
         $data['libellePeriode'] = $this->libellePeriode($data);
 
         return $data;
