@@ -7,9 +7,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
@@ -597,7 +599,6 @@ trait ReportingClaim
      */
     protected function dataPdf($data, $lang, $institution, $myInstitution = false){
 
-
         if($myInstitution){
 
             if($institution->id !== $data['filter']['institution']){
@@ -627,6 +628,52 @@ trait ReportingClaim
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
             'color_table_header' => $data['headeBackground'],
             'lang' => $lang
+        ];
+    }
+
+
+    /**
+     * @param $request
+     * @param $reportinTask
+     * @return array
+     */
+    protected function dataPdfAuto($request, $reportinTask){
+
+        $logo = asset('assets/reporting/images/satisLogo.png');
+
+        $recepient = $reportinTask->institution;
+
+        $institution = false;
+
+        if(!is_null($reportinTask->institutionTargeted)){
+
+            $request->merge(['institution_id' => $reportinTask->institutionTargeted->id]);
+
+           if(!is_null($reportinTask->institutionTargeted->logo)){
+               $logo = $reportinTask->institutionTargeted->logo;
+           };
+
+            $institution = true;
+
+        }else{
+
+            if(!is_null($recepient->logo)){
+                $logo = $recepient->logo;
+            }
+
+        }
+
+        return [
+
+            'statistiqueObject' => $this->statistiqueObjectsClaims($request, $institution),
+            //'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
+            'statistiqueQualificationPeriod' => $this->statistiqueQualifications($request, $institution),
+            'statistiqueTreatmentPeriod' => $this->statistiqueTreatments($request, $institution),
+            //'statistiqueGraphePeriod' => $this->statistiqueEvolutions($request, $institution),
+            'logo' => $logo,
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+            'periode' => $this->periodeFormat(['startDate' => $request->date_start->format('Y-m-d'), 'endDate' => $request->date_end->format('Y-m-d')]),
+            'color_table_header' => '#7F9CF5',
         ];
     }
 
@@ -720,19 +767,27 @@ trait ReportingClaim
         $start = $data['startDate'];
         $end = $data['endDate'];
 
-        if($start->year !== $end->year){
+        if($start === $end){
 
-            $libelle = $start->day." ".$start->shortMonthName." ".$start->year." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+            $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
 
         }else{
 
-            if($start->month !== $end->month){
+            if($start->year !== $end->year){
 
-                $libelle = $start->day." ".$start->shortMonthName." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                $libelle = $start->day." ".$start->shortMonthName." ".$start->year." au ".$end->day." ".$end->shortMonthName." ".$end->year;
 
             }else{
 
-                $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                if($start->month !== $end->month){
+
+                    $libelle = $start->day." ".$start->shortMonthName." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+                }else{
+
+                    $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+                }
             }
         }
 
@@ -1261,29 +1316,20 @@ trait ReportingClaim
     }
 
 
-
-
-
-
-
-
-
-
     /**
      * @param $value
-     * @param $date
+     * @param $dateCron
      * @return Builder[]|Collection
      */
-    /*protected function getAllReportingTasks($value, $dateCron){
+    protected function getAllReportingTasks($value, $dateCron){
 
-        $reportinTasks = ReportingTask::with(['institution', 'institutionTargeted'])->whereDoesntHave(
+        return ReportingTask::with(['institution', 'institutionTargeted'])->whereDoesntHave(
             'cronTasks',  function($query) use ($dateCron){
             $query->where('created_at', '>=', Carbon::parse($dateCron->copy())->startOfDay())
                 ->where('created_at', '<=',Carbon::parse($dateCron->copy())->endOfDay());
         })->where('period', $value)->get();
 
-        return $reportinTasks;
-    }*/
+    }
 
     /**
      * @param $request
@@ -1291,10 +1337,42 @@ trait ReportingClaim
      * @param $institutionId
      * @return array
      */
-    /*protected function generateReportingAuto($request, $institution, $institutionId){
+    protected function generateReportingAuto($request, $institution){
 
+        $statistiques = [
 
-        if($request->has('institution_id')){
+            'statistiqueObject' => $this->statistiqueObjectsClaims($request, $institution),
+            'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
+            'statistiqueQualificationPeriod' => $this->statistiqueQualifications($request, $institution),
+            'statistiqueTreatmentPeriod' => $this->statistiqueTreatments($request, $institution),
+            'statistiqueGraphePeriod' => $this->statistiqueEvolutions($request, $institution),
+
+        ];
+
+        $datas = [
+            'filter' => [
+                'institution' => $request->institution_id,
+                'startDate' => $request->date_start->format('Y-m-d'),
+                'endtDate' => $request->date_end->format('Y-m-d'),
+            ],
+            'statistiqueObject' => [
+                'data' => $statistiques['statistiqueObject']
+            ],
+            'statistiqueQualificationPeriod' => $statistiques['statistiqueQualificationPeriod'],
+            'statistiqueTreatmentPeriod' => $statistiques['statistiqueTreatmentPeriod'],
+            /*'statistiqueChannel' => $statistiques['statistiqueChannel'],
+            'chanelGraph' => [
+                'image' => ''
+            ],
+            'evolutionClaim' => [
+                'image' => ''
+            ],*/
+            "headeBackground" => "#7F9CF5"
+        ];
+
+        return $datas;
+
+        /*if($request->has('institution_id')){
             $institutionId = $request->institution_id;
         }
 
@@ -1326,9 +1404,9 @@ trait ReportingClaim
             'lang' => $lang
         ];
 
-        return $statistiques;
+        return $statistiques;*/
 
-    }*/
+    }
 
     /**
      * @param $request
@@ -1383,47 +1461,31 @@ trait ReportingClaim
      * @param $reportinTask
      * @throws \Throwable
      */
-    /*protected function TreatmentReportingTasks($request, $reportinTask){
+    protected function TreatmentReportingTasks($request, $reportinTask){
 
-        $institutionId = false;
-
-        if(!is_null($reportinTask->institutionTargeted)){
-
-            $request->merge(['institution_id' => $reportinTask->institutionTargeted->id]);
-
-        }
-
-        $institution = $reportinTask->institution;
-
-        $rapportData = $this->generateReportingAuto($request, $institution, $institutionId);
-
-        $data = view('ServicePackage::reporting.pdf-auto', $rapportData)->render();
+        $data = view('ServicePackage::reporting.pdf-auto', $this->dataPdfAuto($request, $reportinTask))->render();
 
         $file = public_path().'/temp/Reporting_'.time().'.pdf';
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
         $pdf->save($file);
 
-        $dd = $request->date_start;
-        $df = $request->date_end;
-
         $details = [
             'file' => $file,
             'email' => $this->emailDestinatairesReportingTasks($reportinTask),
             'reportingTask' => $reportinTask,
-            'dateStart' => $dd->format('Y-m-d'),
-            'dateEnd' => $df->format('Y-m-d'),
+            'period' =>  $this->periodeFormat(['startDate' => $request->date_start->format('Y-m-d'), 'endDate' => $request->date_end->format('Y-m-d')])['libellePeriode'],
         ];
 
         PdfReportingSendMail::dispatch($details);
-    }*/
+    }
 
 
     /**
-     * @param $typeParameters
+     * @param $reportingTask
      * @return array
      */
-    /*protected function emailDestinatairesReportingTasks($reportingTask){
+    protected function emailDestinatairesReportingTasks($reportingTask){
 
         $emails = [];
 
@@ -1444,7 +1506,7 @@ trait ReportingClaim
 
         return $emails;
 
-    }*/
+    }
 
 
 

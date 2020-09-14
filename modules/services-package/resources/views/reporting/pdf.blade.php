@@ -105,7 +105,7 @@
     </div>
 
 
-    @if($statistiqueObject['data'])
+    @if(!empty($statistiqueObject['data']))
         <div style="width: 100%;margin-top: 30px">
             <div class="titre-stat">Statistiques des types de réclamations collectées</div>
             <div style="font-size: 7px">Légende: R. = RÉCLAMATIONS</div>
@@ -173,7 +173,7 @@
             </table>
         </div>
     @endif
-    @if($statistiqueQualificationPeriod)
+    @if(!empty($statistiqueQualificationPeriod))
         <div style="margin-top: 20px; width: 100%">
             <div class="titre-stat">Délai de qualification des réclamations </div>
             <table class="table">
@@ -203,7 +203,7 @@
         </div>
     @endif
 
-    @if($statistiqueTreatmentPeriod)
+    @if(!empty($statistiqueTreatmentPeriod))
         <div style="width: 100%;margin-top: 20px">
             <div class="titre-stat">Délai de traitement des réclamations </div>
             <table class="table">
@@ -233,7 +233,7 @@
         </div>
     @endif
 
-    @if($statistiqueChannel)
+    @if(!empty($statistiqueChannel))
         <div style="margin-bottom: 1em; width: 100%">
             <div class="titre-stat">Utilisation des canaux de déclaration des réclamations </div>
             <table class="table">

@@ -40,7 +40,7 @@ class ClaimController extends ApiController
 
         if((!$request->has('date_start')) || (!$request->has('date_end'))){
 
-            $request->merge(['date_start' => now()->startOfYear(), 'date_end' =>now()->endOfYear()]);
+            $request->merge(['date_start' => now()->startOfMonth()->subMonths(11), 'date_end' => now()->endOfMonth()]);
         }
 
         $request->merge(['institution_id' => $institution->id]);
