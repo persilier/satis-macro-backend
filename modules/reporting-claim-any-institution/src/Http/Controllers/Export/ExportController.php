@@ -55,10 +55,12 @@ class ExportController extends ApiController
         $lang = app()->getLocale();
 
         $data = view('ServicePackage::reporting.pdf',$this->dataPdf($data, $lang, $institution))->render();
-
+        
         $file = 'Reporting_'.time().'.pdf';
+
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($data);
+
         return $pdf->download($file);
     }
 
