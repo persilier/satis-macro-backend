@@ -60,7 +60,7 @@ class CurrencyController extends ApiController
      */
     public function show(Currency $currency)
     {
-        return response()->json($currency, 200);
+        return response()->json(['currency' => $currency, 'currencies' => Currency::all()], 200);
     }
 
 
