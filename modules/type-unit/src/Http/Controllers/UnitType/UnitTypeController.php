@@ -10,6 +10,10 @@ use Satis2020\ServicePackage\Rules\FieldUnicityRules;
 use Satis2020\ServicePackage\Rules\IsEditableRules;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
+/**
+ * Class UnitTypeController
+ * @package Satis2020\TypeUnit\Http\Controllers\UnitType
+ */
 class UnitTypeController extends ApiController
 {
     public function __construct()
@@ -59,8 +63,8 @@ class UnitTypeController extends ApiController
             'description' => 'nullable',
             'parent_id' => 'exists:unit_types,id',
             'is_editable' => ['required', Rule::in([true])],
-            'can_be_target' => ['required', Rule::in([true, false])],
-            'can_treat' => ['required', Rule::in([true, false])],
+            'can_be_target' => ['required', 'boolean'],
+            'can_treat' => ['required', 'boolean'],
         ];
 
         $this->validate($request, $rules);
@@ -110,8 +114,8 @@ class UnitTypeController extends ApiController
             'description' => 'nullable',
             'parent_id' => 'exists:unit_types,id',
             'is_editable' => ['required', Rule::in([$unitType->is_editable]), new IsEditableRules],
-            'can_be_target' => ['required', Rule::in([true, false])],
-            'can_treat' => ['required', Rule::in([true, false])]
+            'can_be_target' => ['required', 'boolean'],
+            'can_treat' => ['required', 'boolean']
         ];
 
         $this->validate($request, $rules);
