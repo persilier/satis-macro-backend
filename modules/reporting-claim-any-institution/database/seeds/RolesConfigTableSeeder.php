@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\ReportingClaimMyInstitution\Database\Seeds;
+namespace Satis2020\ReportingClaimAnyInstitution\Database\Seeds;
 
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
@@ -20,9 +20,9 @@ use Spatie\Permission\Models\Role;
 
 /**
  * Class RolesTableSeeder
- * @package Satis2020\ReportingClaimMyInstitution\Database\Seeds
+ * @package Satis2020\ReportingClaimAnyInstitution\Database\Seeds
  */
-class RolesTableSeeder extends Seeder
+class RolesConfigTableSeeder extends Seeder
 {
 
 
@@ -39,7 +39,7 @@ class RolesTableSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create permissions
-        $permission_list = Permission::create(['name' => 'config-reporting-claim-my-institution', 'guard_name' => 'api']);
+        $permission_list = Permission::create(['name' => 'config-reporting-claim-any-institution', 'guard_name' => 'api', 'institution_types' =>json_encode(["holding","observatory"])]);
 
         if ($nature === 'DEVELOP') {
             // create admin roles
@@ -52,32 +52,20 @@ class RolesTableSeeder extends Seeder
 
         if ($nature === 'MACRO') {
             // create admin roles
-            $role_admin_filial = Role::where('name', 'admin-filial')->where('guard_name', 'api')->firstOrFail();
+            $role_admin_holding = Role::where('name', 'admin-holding')->where('guard_name', 'api')->firstOrFail();
 
-            $role_pilot_filial= Role::where('name', 'pilot-filial')->where('guard_name', 'api')->firstOrFail();
-            // associate permissions to roles
-            $role_admin_filial->givePermissionTo([
-                $permission_list
-            ]);
-
-            $role_pilot_filial->givePermissionTo([
+             $role_admin_holding->givePermissionTo([
                 $permission_list
             ]);
         }
 
-        if ($nature === 'PRO') {
+        if ($nature === 'HUB') {
 
-            $role_admin = Role::where('name', 'admin-pro')->where('guard_name', 'api')->firstOrFail();
+           $role_admin = Role::where('name', 'admin-observatory')->where('guard_name', 'api')->firstOrFail();
 
-            $role_pilot = Role::where('name', 'pilot')->where('guard_name', 'api')->firstOrFail();
-
-            $role_admin->givePermissionTo([
+           $role_admin->givePermissionTo([
                 $permission_list
-            ]);
-
-            $role_pilot->givePermissionTo([
-                $permission_list
-            ]);
+           ]);
         }
     }
 

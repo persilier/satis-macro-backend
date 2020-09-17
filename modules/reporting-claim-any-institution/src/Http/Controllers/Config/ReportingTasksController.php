@@ -28,7 +28,7 @@ class ReportingTasksController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:list-reporting-claim-any-institution')->except(['show']);
+        $this->middleware('permission:config-reporting-claim-any-institution')->except(['show']);
     }
 
 
