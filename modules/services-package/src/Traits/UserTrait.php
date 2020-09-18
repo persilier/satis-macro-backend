@@ -66,7 +66,7 @@ trait UserTrait
         if($update){
 
             $rules = [
-                'password' => 'nullable|min:8|confirmed',
+                'new_password' => 'nullable|min:8|confirmed',
                 'roles' => 'required|array',
             ];
 
