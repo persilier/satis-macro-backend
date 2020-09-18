@@ -25,9 +25,9 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        /*$this->middleware('permission:list-user-any-institution')->only(['index']);
+        $this->middleware('permission:list-user-any-institution')->only(['index']);
         $this->middleware('permission:store-user-any-institution')->only(['create','store']);
-        $this->middleware('permission:show-user-any-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);*/
+        $this->middleware('permission:show-user-any-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);
     }
 
 
