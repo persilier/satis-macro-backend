@@ -4,6 +4,10 @@ use Satis2020\ServicePackage\Traits\ApiResponser;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification;
 
+/**
+ * Class ApiController
+ * @package Satis2020\ServicePackage\Http\Controllers
+ */
 class ApiController extends Controller
 {
     use ApiResponser, DataUserNature, Notification;
@@ -13,5 +17,6 @@ class ApiController extends Controller
     public function __construct()
     {
         $this->middleware('set.language');
+        $this->middleware('status.account');
     }
 }

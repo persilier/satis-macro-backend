@@ -9,9 +9,11 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Satis2020\ServicePackage\Traits\UnitTrait;
 
 class UnitController extends ApiController
 {
+    use UnitTrait;
     public function __construct()
     {
         parent::__construct();
@@ -127,6 +129,9 @@ class UnitController extends ApiController
         ];
 
         $this->validate($request, $rules);
+
+        $this->UnitHasAnStaff($request, $unit);
+
         if(!$request->has('parent_id'))
             $unit->parent_id = null;
         if(!$request->has('lead_id'))

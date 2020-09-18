@@ -61,6 +61,7 @@ class UnitController extends ApiController
             'unit_type_id' => 'required|exists:unit_types,id',
             'parent_id' => 'exists:units,id'
         ];
+
         $this->validate($request, $rules);
 
         $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'parent_id', 'others']));

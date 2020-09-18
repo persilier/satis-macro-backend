@@ -198,6 +198,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router->aliasMiddleware('set.language', \Satis2020\ServicePackage\Http\Middleware\SetLanguage::class);
         $router->aliasMiddleware('client-from-my-institution.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
         $router->aliasMiddleware('auth', \Satis2020\ServicePackage\Http\Middleware\Authenticate::class);
+        $router->aliasMiddleware('status.account', \Satis2020\ServicePackage\Http\Middleware\CheckStatusAccountUser::class);
         $router->aliasMiddleware('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
         $router->aliasMiddleware('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
         $router->aliasMiddleware('permission', \Satis2020\ServicePackage\Http\Middleware\Permission::class);

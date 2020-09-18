@@ -48,7 +48,6 @@ trait StaffManagement
     /**
      * @param $request
      * @param $identite
-     * @param bool $with_unit
      * @return array
      */
     protected function createStaff($request, $identite)
@@ -97,12 +96,24 @@ trait StaffManagement
 
         }
 
+        if($request->has('unit_id')){
+
+            $unitStaff = $staff->unit;
+
+            if($request->unit_id != $unitStaff->id && $unitStaff->lead_id == $staff->id){
+
+                $unitStaff->update(['unit_id' => NULL]);
+
+            }
+
+        }
+
         return $staff->update($data);
     }
 
     /**
      * @param $staff
-     * @throws CustomException
+     * @param $institution_id
      */
     protected function checkIfStaffBelongsToMyInstitution($staff, $institution_id)
     {
