@@ -4,9 +4,11 @@ namespace Satis2020\AnyInstitution\Http\Controllers\Institutions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\InstitutionType;
 use Satis2020\ServicePackage\Rules\FieldUnicityRules;
@@ -35,7 +37,7 @@ class InstitutionController extends ApiController
      */
     public function index()
     {
-        $institutions = Institution::with('institutionType')->get();
+        $institutions = Institution::with('institutionType', 'defaultCurrency')->get();
         return response()->json($institutions, 200);
     }
 
@@ -48,6 +50,7 @@ class InstitutionController extends ApiController
     public function create()
     {
         return response()->json([
+            'currencies' => Currency::all(),
             'institutionTypes' => null
         ], 200);
     }
@@ -62,12 +65,18 @@ class InstitutionController extends ApiController
     public function edit(Institution $institution)
     {
         return response()->json([
-            'institution' => $institution->load('InstitutionType'),
+            'institution' => $institution->load('InstitutionType', 'defaultCurrency'),
+            'currencies' => Currency::all(),
             'institutionTypes' => null
         ], 200);
     }
 
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store(Request $request)
     {
 
@@ -83,6 +92,7 @@ class InstitutionController extends ApiController
             'name' => ['required', new FieldUnicityRules('institutions', 'name')],
             'acronyme' => ['required', new FieldUnicityRules('institutions', 'acronyme')],
             'iso_code' => 'required|string|max:50',
+            'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
             'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'institution_type_id' => 'required|exists:institution_types,id',
             'orther_attributes' => 'array',
@@ -107,6 +117,7 @@ class InstitutionController extends ApiController
         $datas['name'] = $request->name;
         $datas['acronyme'] = $request->acronyme;
         $datas['iso_code'] = $request->iso_code;
+        $datas['default_currency_slug'] = $request->default_currency_slug;
         $datas['other_attributes'] = $request->other_attributes;
         $datas['institution_type_id'] = $request->institution_type_id;
 
@@ -125,7 +136,7 @@ class InstitutionController extends ApiController
      */
     public function show(Institution $institution)
     {
-        return response()->json($institution->load('institutionType'), 200);
+        return response()->json($institution->load('institutionType', 'defaultCurrency'), 200);
     }
 
 
@@ -154,6 +165,7 @@ class InstitutionController extends ApiController
             'name' => ['required', new FieldUnicityRules('institutions', 'name', 'id', "{$institution->id}")],
             'acronyme' => ['required', new FieldUnicityRules('institutions', 'acronyme', 'id', "{$institution->id}")],
             'iso_code' => 'required|string|max:50',
+            'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
             'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'institution_type_id' => 'required|exists:institution_types,id',
             'orther_attributes' => 'array',
@@ -175,6 +187,7 @@ class InstitutionController extends ApiController
         $datas['name'] = $request->name;
         $datas['acronyme'] = $request->acronyme;
         $datas['iso_code'] = $request->iso_code;
+        $datas['default_currency_slug'] = $request->default_currency_slug;
         $datas['other_attributes'] = $request->other_attributes;
         $datas['institution_type_id'] = $request->institution_type_id;
 

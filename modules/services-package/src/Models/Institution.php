@@ -33,7 +33,7 @@ class Institution extends Model
      * @var array
      */
     protected $fillable = [
-        'slug', 'name', 'acronyme', 'iso_code', 'logo', 'institution_type_id', 'orther_attributes'
+        'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id', 'orther_attributes'
     ];
 
     /**
@@ -68,6 +68,15 @@ class Institution extends Model
     public function units()
     {
         return $this->hasMany(Unit::class);
+    }
+
+    /**
+     * Get the amountCurrency associated with the claim
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function defaultCurrency()
+    {
+        return $this->belongsTo(Currency::class, 'default_currency_slug', 'slug');
     }
 
     /**

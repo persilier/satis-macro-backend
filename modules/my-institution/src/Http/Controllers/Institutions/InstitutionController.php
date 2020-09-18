@@ -30,7 +30,7 @@ class InstitutionController extends ApiController
      * @throws RetrieveDataUserNatureException
      */
     public function getMyInstitution(){
-        return response()->json($this->institution(), 200);
+        return response()->json($this->institution()->load('defaultCurrency'), 200);
     }
 
     /**
@@ -49,6 +49,7 @@ class InstitutionController extends ApiController
             'name' => 'required|string|max:100',
             'acronyme' => 'required|string|max:255',
             'iso_code' => 'required|string|max:50',
+            'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
             'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orther_attributes' => 'array',
         ];
@@ -66,6 +67,7 @@ class InstitutionController extends ApiController
         $datas['name'] = $request->name;
         $datas['acronyme'] = $request->acronyme;
         $datas['iso_code'] = $request->iso_code;
+        $datas['default_currency_slug'] = $request->default_currency_slug;
         $datas['other_attributes'] = $request->other_attributes;
 
         if(isset($filePath))
