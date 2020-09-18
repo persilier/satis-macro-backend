@@ -13,7 +13,7 @@ Route::prefix('/my')->name('my.')->group(function () {
     /**
      * change password user
      */
-    Route::put('/users/{user}/change-password', 'User\UserController@changePassword')->name('user.changePassword');
+    //Route::put('/users/{user}/change-password', 'User\UserController@changePassword')->name('user.changePassword');
 
     /**
      * enabled | desabled user account
@@ -22,6 +22,6 @@ Route::prefix('/my')->name('my.')->group(function () {
     /**
      * Change user role
      */
-    Route::get('/users/{user}/change-role', 'User\UserController@getAllRoles')->name('user.getAllRoles');
-    Route::put('/users/{user}/change-role', 'User\UserController@changeUserRole')->name('user.changeUserRole');
+    Route::get('/users/{user}/change-role-password', 'User\UserController@getUserUpdate')->name('user.getUserUpdate');
+    Route::put('/users/{user}/change-role-password', 'User\UserController@userUpdate')->name('user.userUpdate');
 });

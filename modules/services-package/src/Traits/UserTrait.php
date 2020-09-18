@@ -56,18 +56,28 @@ trait UserTrait
 
     }
 
-
     /**
      * @param bool $institution
+     * @param bool $update
      * @return array
      */
-    protected function rulesCreateUser($institution = true){
+    protected function rulesCreateUser($institution = true, $update = false){
 
-        $rules = [
-            'password' => 'required|min:8|confirmed',
-            'identite_id' => 'required|exists:identites,id',
-            'roles' => 'required|array',
-        ];
+        if($update){
+
+            $rules = [
+                'password' => 'nullable|min:8|confirmed',
+                'roles' => 'required|array',
+            ];
+
+        }else{
+
+            $rules = [
+                'password' => 'required|min:8|confirmed',
+                'identite_id' => 'required|exists:identites,id',
+                'roles' => 'required|array',
+            ];
+        }
 
         if($institution){
 

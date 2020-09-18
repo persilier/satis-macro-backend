@@ -18,6 +18,7 @@ class ClientInstitutionController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param $institutionId
      * @return \Illuminate\Http\JsonResponse
      */
     public function index($institutionId)

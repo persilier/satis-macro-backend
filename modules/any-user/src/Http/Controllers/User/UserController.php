@@ -25,9 +25,9 @@ class UserController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-user-any-institution')->only(['index']);
+        /*$this->middleware('permission:list-user-any-institution')->only(['index']);
         $this->middleware('permission:store-user-any-institution')->only(['create','store']);
-        $this->middleware('permission:show-user-any-institution')->only(['show', 'changePassword', 'enabledDesabled', 'updateRoleUser']);
+        $this->middleware('permission:show-user-any-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);*/
     }
 
 
@@ -85,7 +85,7 @@ class UserController extends ApiController
      * @param User $user
      * @return JsonResponse
      */
-    protected function getAllRoles(User $user){
+    protected function getUserUpdate(User $user){
 
         return response()->json([
             'user' => $this->getOneUser($user),
@@ -100,11 +100,19 @@ class UserController extends ApiController
      * @return User
      * @throws ValidationException
      */
-    protected function changeUserRole(Request $request, User $user){
+    protected function userUpdate(Request $request, User $user){
 
-        $this->validate($request, Arr::only($this->rulesCreateUser(false), 'roles'));
+        $this->validate($request, $this->rulesCreateUser(false, true));
+
         $roles = $this->verifiedRole($request, $user->identite);
-        return response()->json($this->remokeAssigneRole($user, $roles), 201);
+        $user = $this->remokeAssigneRole($user, $roles);
+
+        if($request->filled('new_password')){
+
+            $user = $this->updatePassword($request, $user);
+        }
+
+        return response()->json($user, 201);
 
     }
 

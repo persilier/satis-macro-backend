@@ -16,6 +16,10 @@ use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
+/**
+ * Class ClientController
+ * @package Satis2020\ClientFromAnyInstitution\Http\Controllers\Clients
+ */
 class ClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
