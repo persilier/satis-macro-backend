@@ -36,7 +36,7 @@
     "satis2020/currency": "^1.0",
     "satis2020/dashboard": "^1.0",
     "satis2020/discussion": "^1.0",
-    "satis2020/faq-package": "^1.0",
+    "satis2020/faq": "^1.0",
     "satis2020/institution": "^1.0",
     "satis2020/message-api": "^1.0",
     "satis2020/metadata-package": "^1.0",
@@ -161,7 +161,7 @@
     },
     {
       "type": "path",
-      "url": "modules/faq-package/",
+      "url": "modules/faq/",
       "options": {
         "symlink": true
       }

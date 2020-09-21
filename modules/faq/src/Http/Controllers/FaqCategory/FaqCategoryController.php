@@ -1,20 +1,25 @@
 <?php
 
-namespace Satis2020\FaqPackage\Http\Controllers\FaqCategory;
+namespace Satis2020\Faq\Http\Controllers\FaqCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\FaqCategory;
-use Satis2020\FaqPackage\Http\Resources\FaqCategory as FaqCategoryResource;
-use Satis2020\FaqPackage\Http\Resources\FaqCategoryCollection;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
+/**
+ * Class FaqCategoryController
+ * @package Satis2020\Faq\Http\Controllers\FaqCategory
+ */
 class FaqCategoryController extends ApiController
 {
 
     public function __construct()
     {
         parent::__construct();
+
+        $this->middleware('auth:api');
 
         $this->middleware('permission:list-faq-category')->only(['index']);
         $this->middleware('permission:store-faq-category')->only(['store']);
@@ -23,55 +28,50 @@ class FaqCategoryController extends ApiController
         $this->middleware('permission:destroy-faq-category')->only(['destroy']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return FaqCategoryCollection
+     * @return JsonResponse
      */
     public function index()
     {
-        return new FaqCategoryCollection(FaqCategory::all());
+        return response()->json(FaqCategory::all(), 200);
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return FaqCategoryResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('faq_categories', 'name')],
         ];
+
         $this->validate($request, $rules);
 
-        $faqCategory = FaqCategory::create(['name' => $request->name]);
-        return new FaqCategoryResource($faqCategory);
+        $faqCategory = FaqCategory::create($request->only('name'));
+
+        return response()->json($faqCategory, 201);
     }
 
+
     /**
-     * Display the specified resource.
-     *
      * @param FaqCategory $faqCategory
-     * @return FaqCategoryResource
+     * @return JsonResponse
      */
     public function show(FaqCategory $faqCategory)
     {
-        return new FaqCategoryResource(
-            $faqCategory
-        );
+        return response()->json($faqCategory, 200);
     }
 
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string $faqCategory
-     * @return FaqCategoryResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @param FaqCategory $faqCategory
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function update(Request $request, FaqCategory $faqCategory)
     {
@@ -79,24 +79,23 @@ class FaqCategoryController extends ApiController
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('faq_categories', 'name', 'id', "{$faqCategory->id}")],
         ];
+
         $this->validate($request, $rules);
 
         $faqCategory->slug = null;
         $faqCategory->name = $request->name;
         $faqCategory->save();
-        return new FaqCategoryResource($faqCategory);
+        return response()->json($faqCategory, 201);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
      * @param FaqCategory $faqCategory
-     * @return FaqCategoryResource
-     * @throws \Exception
+     * @return JsonResponse
      */
     public function destroy(FaqCategory $faqCategory)
     {
         $faqCategory->secureDelete('faqs');
-        return new FaqCategoryResource($faqCategory);
+        return response()->json($faqCategory, 200);
     }
 }

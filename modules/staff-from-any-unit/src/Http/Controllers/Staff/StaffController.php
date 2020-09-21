@@ -110,7 +110,7 @@ class StaffController extends ApiController
      */
     public function edit(Staff $staff)
     {
-        $staff->load('identite', 'position', 'unit.lead.identite', 'institution.units.lead');
+        $staff->load('identite', 'position', 'unit.lead.identite', 'institution.units.lead.identite');
         return response()->json([
             'staff' => $staff,
             'institutions' => Institution::all(),

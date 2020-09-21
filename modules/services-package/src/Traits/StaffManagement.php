@@ -102,7 +102,7 @@ trait StaffManagement
 
             if($request->unit_id != $unitStaff->id && $unitStaff->lead_id == $staff->id){
 
-                $unitStaff->update(['unit_id' => NULL]);
+                $unitStaff->update(['lead_id' => NULL]);
 
             }
 

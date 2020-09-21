@@ -2,6 +2,8 @@
 
 namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Accounts;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Account;
@@ -23,7 +25,10 @@ class AccountClientController extends ApiController
 
     /**
      * Store a newly created resource in storage
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @param $clientId
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function store(Request $request, $clientId)
     {
