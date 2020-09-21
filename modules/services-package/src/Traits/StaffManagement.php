@@ -69,7 +69,7 @@ trait StaffManagement
 
             $unit = Unit::find($request->unit_id);
 
-            $unit->update(['lead_id', $staff->id]);
+            $unit->update(['lead_id' => $staff->id]);
 
         }
 
@@ -90,9 +90,11 @@ trait StaffManagement
 
         if ($request->has('unit_id') && $request->has('is_lead') && $request->is_lead) {
 
+
             $unit = Unit::find($request->unit_id);
 
-            $unit->update(['lead_id', $staff->id]);
+
+            $unit->update(['lead_id' => $staff->id]);
 
         }
 
@@ -101,6 +103,7 @@ trait StaffManagement
             $unitStaff = $staff->unit;
 
             if($request->unit_id != $unitStaff->id && $unitStaff->lead_id == $staff->id){
+
 
                 $unitStaff->update(['lead_id' => NULL]);
 
