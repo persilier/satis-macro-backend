@@ -1,10 +1,14 @@
 <?php
-namespace Satis2020\FaqPackage\Providers;
+namespace Satis2020\Faq\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 
-class FaqPackageServiceProvider extends ServiceProvider
+/**
+ * Class FaqServiceProvider
+ * @package Satis2020\FaqPackage\Providers
+ */
+class FaqServiceProvider extends ServiceProvider
 {
     use ApiResponser;
     /**
@@ -56,7 +60,7 @@ class FaqPackageServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\FaqPackage\Http\Controllers',
+            'namespace' => 'Satis2020\Faq\Http\Controllers',
             'middleware' => ['api']
         ];
     }

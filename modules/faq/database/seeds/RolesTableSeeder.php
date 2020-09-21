@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\FaqPackage\Database\Seeds;
+namespace Satis2020\Faq\Database\Seeds;
 
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+/**
+ * Class RolesTableSeeder
+ * @package Satis2020\Faq\Database\Seeds
+ */
 class RolesTableSeeder extends Seeder
 {
     /**
