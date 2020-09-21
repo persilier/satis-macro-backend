@@ -39,7 +39,11 @@ class RolesConfigTableSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create permissions
-        $permission_list = Permission::create(['name' => 'config-reporting-claim-any-institution', 'guard_name' => 'api', 'institution_types' =>json_encode(["holding","observatory"])]);
+        if($nature === 'MACRO' || $nature === 'HUB' || $nature === 'DEVELOP'){
+
+            $permission_list = Permission::create(['name' => 'config-reporting-claim-any-institution', 'guard_name' => 'api', 'institution_types' =>json_encode(["holding","observatory"])]);
+
+        }
 
         if ($nature === 'DEVELOP') {
             // create admin roles

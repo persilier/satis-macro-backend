@@ -44,7 +44,7 @@ class SmtpParametersRules implements Rule
 
         try {
             $transport = (new Swift_SmtpTransport("{$this->smtp_parameters['server']}", "{$this->smtp_parameters['port']}", "{$this->smtp_parameters['security']}"))
-                ->setUsername("{$this->smtp_parameters['username']}")
+                ->setUsername("{$this->smtp_parameters['from']}")
                 ->setPassword("{$this->smtp_parameters['password']}");
 
             // Create the Mailer using your created Transport
