@@ -117,8 +117,9 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\Configuration\Database\Seeds\DelaiTreatmentRoleSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\MinFusionPercentSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
-         $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesConfigTableSeeder::class);
+        $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesConfigTableSeeder::class);
         $this->call(\Satis2020\ReportingClaimMyInstitution\Database\Seeds\RolesConfigTableSeeder::class);
+        $this->call(\Satis2020\Faq\Database\Seeds\RolesTableFaqSeeder::class);
 
     }
 
