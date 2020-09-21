@@ -15,7 +15,8 @@ class ComponentController extends ApiController
 
     public function __construct()
     {
-        parent::__construct();
+        //parent::__construct();
+        $this->middleware('set.language');
 
         $this->middleware('auth:api')->only(['update', 'store']);
 
