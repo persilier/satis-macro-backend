@@ -97,11 +97,12 @@ trait ProcessingCircuit
 
                 }
 
-                $collection->push([
-                    'claim_object' => $claim_object,
-                    'units_ids' => $unitsSync,
-                ]);
             }
+
+            $collection->push([
+                'claim_object' => $claim_object,
+                'units_ids' => $unitsSync,
+            ]);
 
         }
 
