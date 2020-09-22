@@ -80,25 +80,28 @@ trait ProcessingCircuit
             // Check if requirement_ids don't contain same values and exist
             $unit_ids_collection = collect([]);
             $unitsSync = [];
-            foreach ($units_ids as $unit_id) {
 
-                if ($unit_ids_collection->search($unit_id, true) !== false) {
-                    throw new RetrieveDataUserNatureException($unit_id . " is sent more than once");
+            if(!is_null($units_ids)){
+
+                foreach ($units_ids as $unit_id) {
+
+                    if ($unit_ids_collection->search($unit_id, true) !== false) {
+                        throw new RetrieveDataUserNatureException($unit_id . " is sent more than once");
+                    }
+
+                    Unit::where('institution_id',$institutionId)->findOrFail($unit_id);
+
+                    $unit_ids_collection->push($unit_id);
+
+                    $unitsSync[$unit_id] = ['institution_id' => $institutionId];
+
                 }
 
-                Unit::where('institution_id',$institutionId)->findOrFail($unit_id);
-
-                $unit_ids_collection->push($unit_id);
-
-                $unitsSync[$unit_id] = ['institution_id' => $institutionId];
-
+                $collection->push([
+                    'claim_object' => $claim_object,
+                    'units_ids' => $unitsSync,
+                ]);
             }
-
-
-            $collection->push([
-                'claim_object' => $claim_object,
-                'units_ids' => $unitsSync,
-            ]);
 
         }
 
