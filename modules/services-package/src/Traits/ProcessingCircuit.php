@@ -97,7 +97,11 @@ trait ProcessingCircuit
                         throw new RetrieveDataUserNatureException($unit_id . " is sent more than once");
                     }
 
-                    Unit::where('institution_id',$institutionId)->findOrFail($unit_id);
+                    Unit::where('institution_id', $institutionId)->whereHas('unitType', function ($q){
+
+                        $q->where('can_treat', 1);
+
+                    })->findOrFail($unit_id);
 
                     $unit_ids_collection->push($unit_id);
 
