@@ -36,7 +36,9 @@ trait ProcessingCircuit
             $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
 
                 $item['claim_objects']  = ClaimObject::with(['units' => function($query) use ($institutionId){
+
                     $query->where("claim_object_unit.institution_id", "=", $institutionId);
+
                 }])->where('claim_category_id', $item->id)->get();
 
                 return $item;
