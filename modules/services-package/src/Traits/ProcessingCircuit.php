@@ -56,13 +56,21 @@ trait ProcessingCircuit
      * @return mixed
      */
     protected function getAllUnits($institutionId = null){
+
         try {
 
-            $units = Unit::where('institution_id', $institutionId)->get();
+            $units = Unit::where('institution_id', $institutionId)->whereHas('unitType', function ($q){
+
+                $q->where('can_treat', 1);
+
+            })->get();
 
         } catch (\Exception $exception) {
+
             throw new CustomException("Impossible de récupérer la liste des unités.");
+
         }
+
         return $units;
     }
 

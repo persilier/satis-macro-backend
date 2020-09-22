@@ -2,11 +2,18 @@
 
 namespace Satis2020\ProcessingCircuitMyInstitution\Http\Controllers\ProcessingCircuitMyInstitutions;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
+
+/**
+ * Class ProcessingCircuitMyInstitutionController
+ * @package Satis2020\ProcessingCircuitMyInstitution\Http\Controllers\ProcessingCircuitMyInstitutions
+ */
 class ProcessingCircuitMyInstitutionController extends ApiController
 {
     use ProcessingCircuit;
@@ -21,7 +28,7 @@ class ProcessingCircuitMyInstitutionController extends ApiController
 
     /**
      * Edit the form for creating a new resource.
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit()
     {
@@ -32,13 +39,10 @@ class ProcessingCircuitMyInstitutionController extends ApiController
         ], 200);
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
      * @param Request $request
      * @return JsonResponse
-     * @throws ValidationException
-     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request)
     {

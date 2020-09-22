@@ -2,11 +2,17 @@
 
 namespace Satis2020\ProcessingCircuitWithoutInstitution\Http\Controllers\ProcessingCircuitWithoutInstitutions;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
+
+/**
+ * Class ProcessingCircuitWithoutInstitutionController
+ * @package Satis2020\ProcessingCircuitWithoutInstitution\Http\Controllers\ProcessingCircuitWithoutInstitutions
+ */
 class ProcessingCircuitWithoutInstitutionController extends ApiController
 {
     use ProcessingCircuit;
@@ -30,13 +36,10 @@ class ProcessingCircuitWithoutInstitutionController extends ApiController
         ], 200);
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
      * @param Request $request
      * @return JsonResponse
-     * @throws ValidationException
-     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request){
 

@@ -51,15 +51,23 @@ class ClaimObjectRequirementController extends ApiController
 
             // Check if requirement_ids don't contain same values and exist
             $requirement_ids_collection = collect([]);
-            foreach ($requirement_ids as $requirement_id) {
 
-                if ($requirement_ids_collection->search($requirement_id, true) !== false) {
-                    throw new RetrieveDataUserNatureException($requirement_id . " is sent more than once");
+            if(!is_null($requirement_ids)){
+
+                foreach ($requirement_ids as $requirement_id) {
+
+                    if ($requirement_ids_collection->search($requirement_id, true) !== false) {
+                        throw new RetrieveDataUserNatureException($requirement_id . " is sent more than once");
+                    }
+
+                    Requirement::findOrFail($requirement_id);
+
+                    $requirement_ids_collection->push($requirement_id);
                 }
 
-                Requirement::findOrFail($requirement_id);
+            }else{
 
-                $requirement_ids_collection->push($requirement_id);
+                $requirement_ids = [];
             }
 
             $collection->push([
