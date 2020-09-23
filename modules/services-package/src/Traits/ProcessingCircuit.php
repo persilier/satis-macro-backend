@@ -33,16 +33,12 @@ trait ProcessingCircuit
     {
         try {
 
-            $circuits =   ClaimCategory::all()->map(function ($item) use ($institutionId){
+            $circuits =   ClaimCategory::with(['claimObjects.units' => function ($rel) use ($institutionId){
 
-                $item['claim_objects']  = ClaimObject::with(['units' => function($query) use ($institutionId){
+                $rel->wherePivot('institution_id', $institutionId);
 
-                    $query->where("claim_object_unit.institution_id", "=", $institutionId);
+            }])->has('claimObjects')->get();
 
-                }])->where('claim_category_id', $item->id)->get();
-
-                return $item;
-            });
 
         } catch (\Exception $exception) {
 
