@@ -132,7 +132,7 @@ trait ProcessingCircuit
 
         try{
 
-            $collection->each(function ($item, $key) use ($institutionId){
+            foreach ($collection as $key => $item) {
 
                 $item['claim_object']->units()->whereHas('unitType', function ($q){
 
@@ -140,9 +140,11 @@ trait ProcessingCircuit
 
                 })->wherePivot('institution_id', $institutionId)->sync($item['units_ids']);
 
-            });
+            }
+
 
         } catch (\Exception $exception) {
+
             throw new CustomException("Impossible de mettre à jour les circuits de traitements.");
         }
 
