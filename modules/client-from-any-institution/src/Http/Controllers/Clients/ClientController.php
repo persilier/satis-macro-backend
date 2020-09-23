@@ -34,9 +34,9 @@ class ClientController extends ApiController
         $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
+     * @return JsonResponse
      */
     public function index()
     {
@@ -80,22 +80,28 @@ class ClientController extends ApiController
     public function store(Request $request)
     {
         $this->validate($request, $this->rulesClient(true));
+
+        // Account Number Verification
+        $verifyAccount = $this->handleAccountVerification($request->number);
+
+        if (!$verifyAccount['status']) {
+
+            return response()->json($verifyAccount, 409);
+        }
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id);
+
         if (!$verifyPhone['status']) {
+
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id);
-        if (!$verifyEmail['status']) {
-            return response()->json($verifyEmail, 409);
-        }
 
-        // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id);
-        if (!$verifyAccount['status']) {
-            return response()->json($verifyAccount, 409);
+        if (!$verifyEmail['status']) {
+
+            return response()->json($verifyEmail, 409);
         }
 
         $identite = $this->storeIdentite($request);
@@ -158,25 +164,30 @@ class ClientController extends ApiController
 
         $client = $this->getOneAccountClient($accountId);
 
+        // Account Number Verification
+        $verifyAccount = $this->handleAccountVerification($request->number, $client->accounts[0]->id);
+
+        if (!$verifyAccount['status']) {
+
+            return response()->json($verifyAccount, 409);
+        }
+
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id,'id', $client->client->identite->id);
+
         if (!$verifyPhone['status']) {
+
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id, 'id', $client->client->identite->id);
+
         if (!$verifyEmail['status']) {
+            
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyEmail, 409);
-        }
-
-
-        // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id, $client->accounts[0]->id);
-        if (!$verifyAccount['status']) {
-            return response()->json($verifyAccount, 409);
         }
 
         $client->accounts[0]->update($request->only(['number', 'account_type_id']));

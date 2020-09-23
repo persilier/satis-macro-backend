@@ -38,7 +38,9 @@ class AccountClientController extends ApiController
 
         // Account Number Verification
         $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
+
         if (!$verifyAccount['status']) {
+
             return response()->json($verifyAccount, 409);
         }
 

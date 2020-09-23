@@ -111,15 +111,18 @@ trait ClientTrait
 
     /**
      * @param $request
+     * @param $clientInstitutionId
      * @return array
      */
     protected function storeAccount($request, $clientInstitutionId)
     {
         $store = [
+
             'client_institution_id' => $clientInstitutionId,
             'account_type_id'  => $request->account_type_id,
             'number'  => $request->number
         ];
+
         return $account = Account::create($store);
     }
 
@@ -219,13 +222,19 @@ trait ClientTrait
     protected function handleAccountClient($number, $clientInstitutionId)
     {
         try{
+
             $account = Account::where('client_institution_id', $clientInstitutionId)->where('number', $number)->first();
 
         }catch (\Exception $exception){
+
             throw new CustomException("Impossible de retrouver ce compte client.");
         }
-        if (!is_null($account))
-            return ['code' => 409,'status' => false, 'message' => 'Impossible d\'enregistrer deux fois le même numéro de compte pour une institution donnée.'];
+
+        if (!is_null($account)){
+
+            return ['code' => 409,'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
+        }
+
         return ['status' => true];
     }
 

@@ -2,6 +2,8 @@
 
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Accounts;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Illuminate\Http\Request;
@@ -20,9 +22,12 @@ class AccountClientController extends ApiController
         $this->middleware('permission:store-client-from-my-institution')->only(['store']);
     }
 
+
     /**
-     * Store a newly created resource in storage
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @param $clientId
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function store(Request $request, $clientId)
     {
@@ -35,7 +40,9 @@ class AccountClientController extends ApiController
 
         // Account Number Verification
         $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
+
         if (!$verifyAccount['status']) {
+
             return response()->json($verifyAccount, 409);
         }
 

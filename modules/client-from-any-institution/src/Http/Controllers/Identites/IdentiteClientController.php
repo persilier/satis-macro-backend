@@ -2,7 +2,9 @@
 
 namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Identites;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
@@ -28,36 +30,41 @@ class IdentiteClientController extends ApiController
         $this->middleware('permission:store-client-from-any-institution')->only(['store']);
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param Identite $identite
-     * @return ClientResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function store(Request $request, Identite $identite)
     {
         $this->validate($request, $this->rulesClient(true));
 
+        // Account Number Verification
+        $verifyAccount = $this->handleAccountVerification($request->number);
+
+        if (!$verifyAccount['status']) {
+
+            return response()->json($verifyAccount, 409);
+        }
+
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id,'id', $identite->id);
+
         if (!$verifyPhone['status']) {
+
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id, 'id', $identite->id);
+
         if (!$verifyEmail['status']) {
+
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyEmail, 409);
-        }
-
-        // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $request->institution_id);
-        if (!$verifyAccount['status']) {
-            return response()->json($verifyAccount, 409);
         }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));

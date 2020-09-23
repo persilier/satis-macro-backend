@@ -1,8 +1,10 @@
 <?php
 
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Clients;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
@@ -27,10 +29,9 @@ class ClientController extends ApiController
         $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function index()
     {
@@ -39,11 +40,9 @@ class ClientController extends ApiController
         return response()->json($clients, 200);
     }
 
+
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function create(){
         $institution = $this->institution();
@@ -56,12 +55,9 @@ class ClientController extends ApiController
 
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws RetrieveDataUserNatureException
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -69,22 +65,28 @@ class ClientController extends ApiController
 
         $institution = $this->institution();
 
+        // Account Number Verification
+        $verifyAccount = $this->handleAccountVerification($request->number);
+
+        if (!$verifyAccount['status']) {
+
+            return response()->json($verifyAccount, 409);
+        }
+
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id);
+
         if (!$verifyPhone['status']) {
+
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id);
-        if (!$verifyEmail['status']) {
-            return response()->json($verifyEmail, 409);
-        }
 
-        // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $institution->id);
-        if (!$verifyAccount['status']) {
-            return response()->json($verifyAccount, 409);
+        if (!$verifyEmail['status']) {
+
+            return response()->json($verifyEmail, 409);
         }
 
         $identite = $this->storeIdentite($request);
@@ -98,11 +100,10 @@ class ClientController extends ApiController
         return response()->json($account, 201);
     }
 
+
     /**
-     * Display the specified resource.
      * @param $clientId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function show($clientId)
     {
@@ -113,11 +114,8 @@ class ClientController extends ApiController
 
 
     /**
-     * Show the form for editing the specified resource.
-     *
      * @param $accountId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function edit($accountId)
     {
@@ -135,13 +133,10 @@ class ClientController extends ApiController
 
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param $accountId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function update(Request $request, $accountId)
     {
@@ -151,24 +146,29 @@ class ClientController extends ApiController
 
         $client = $this->getOneAccountClientByInstitution($institution->id, $accountId);
 
+        // Account Number Verification
+        $verifyAccount = $this->handleAccountVerification($request->number, $client->accounts[0]->id);
+
+        if (!$verifyAccount['status']) {
+            return response()->json($verifyAccount, 409);
+        }
+
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id, 'id', $client->client->identite->id);
+
         if (!$verifyPhone['status']) {
+
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id,'id', $client->client->identite->id);
+
         if (!$verifyEmail['status']) {
+
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             return response()->json($verifyEmail, 409);
-        }
-
-        // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $institution->id, $client->accounts[0]->id);
-        if (!$verifyAccount['status']) {
-            return response()->json($verifyAccount, 409);
         }
 
         $client->accounts[0]->update($request->only(['number', 'account_type_id']));
@@ -178,11 +178,10 @@ class ClientController extends ApiController
         return response()->json($client, 201);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param $client
-     * @return \Illuminate\Http\JsonResponse
+     * @param Account $account
+     * @return JsonResponse
      * @throws \Exception
      */
     public function destroy(Account $account)

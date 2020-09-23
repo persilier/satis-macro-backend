@@ -13,6 +13,10 @@ use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 
+/**
+ * Trait VerifyUnicity
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait VerifyUnicity
 {
     /**
@@ -59,8 +63,11 @@ trait VerifyUnicity
     protected function handleStaffIdentityVerification($values, $table, $column, $attribute, $idColumn = null, $idValue = null)
     {
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
+
         if (!$verify['status']) {
+
             $staff = Staff::with('identite')->where('identite_id', '=', $verify['entity']->id)->first();
+
             if (!is_null($staff)) {
                 return [
                     'status' => false,
@@ -69,6 +76,7 @@ trait VerifyUnicity
                     'verify' => $verify
                 ];
             }
+
             return [
                 'status' => false,
                 'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Staff',
@@ -76,6 +84,7 @@ trait VerifyUnicity
                 'verify' => $verify
             ];
         }
+
         return ['status' => true];
     }
 
@@ -197,15 +206,19 @@ trait VerifyUnicity
         $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
 
         if (!$verify['status']) {
-            $client = Client::with([
-                    'identite', 'client_institutions'
-                ])->where(function ($query) use ($idInstitution){
-                    $query->whereHas('client_institutions', function ($q) use ($idInstitution){
-                        $q->where('institution_id', $idInstitution);
-                    });
-                })->where('identites_id', '=', $verify['entity']->id)
-                ->first();
+
+            $client = Client::with(['identite', 'client_institutions'])->where(function ($query) use ($idInstitution){
+
+                $query->whereHas('client_institutions', function ($q) use ($idInstitution){
+
+                    $q->where('institution_id', $idInstitution);
+
+                });
+
+            })->where('identites_id', '=', $verify['entity']->id)->first();
+
             if (!is_null($client)) {
+
                 return [
                     'status' => false,
                     'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
@@ -213,6 +226,7 @@ trait VerifyUnicity
                     'verify' => $verify
                 ];
             }
+
             return [
                 'status' => false,
                 'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Client',
@@ -220,37 +234,34 @@ trait VerifyUnicity
                 'verify' => $verify
             ];
         }
+
         return ['status' => true];
     }
 
 
     /**
      * @param $number
-     * @param $idInstitution
      * @param null $accountId
      * @return array
      */
-    protected function handleAccountVerification($number, $idInstitution, $accountId = null)
+    protected function handleAccountVerification($number, $accountId = null)
     {
-        $account = Account::with([
-            'client_institution'
-        ])->where(function ($query) use ($idInstitution){
-            $query->whereHas('client_institution', function ($q) use ($idInstitution){
-                $q->where('institution_id', $idInstitution);
-            });
-        })->where('number', $number)->where('id', '!=', $accountId)->first();
-        if (!is_null($account)) {
-            return [
-                'status' => false,
-                'message' => 'A Client already exist with the ',
-                'account' => $account->load(
-                    'AccountType',
-                    'client_institution.category_client',
-                    'client_institution.client.identite'
-                ),
-            ];
+
+        if (!$account = Account::where('number', $number)->where('id', '!=', $accountId)->first()) {
+
+            return ['status' => true];
         }
-        return ['status' => true];
+
+        return [
+            'status' => false,
+            'message' => 'A Client already exist with the account number.',
+            'account' => $account->load(
+                'AccountType',
+                'client_institution.category_client',
+                'client_institution.client.identite'
+            ),
+        ];
+
     }
 
 }
