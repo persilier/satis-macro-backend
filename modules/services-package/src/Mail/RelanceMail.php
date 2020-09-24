@@ -34,8 +34,7 @@ class RelanceMail extends Mailable
      */
     public function build()
     {
-        return $this->from('christian@dmdconsult.com', 'Satis Fintech')
-            ->subject('Relance')
+        return $this->subject('Relance')
             ->markdown('ServicePackage::mails.relance')
             ->with(['claim' => $this->claim, 'identite' => $this->identite]);
     }

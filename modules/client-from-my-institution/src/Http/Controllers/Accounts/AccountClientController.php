@@ -9,6 +9,10 @@ use Satis2020\ServicePackage\Models\ClientInstitution;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 
+/**
+ * Class AccountClientController
+ * @package Satis2020\ClientFromMyInstitution\Http\Controllers\Accounts
+ */
 class AccountClientController extends ApiController
 {
     use ClientTrait;
@@ -42,8 +46,7 @@ class AccountClientController extends ApiController
         $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
 
         if (!$verifyAccount['status']) {
-
-            return response()->json($verifyAccount, 409);
+            throw new CustomException($verifyAccount, 409);
         }
 
         $account = $this->storeAccount($request, $clientInstitution->id);

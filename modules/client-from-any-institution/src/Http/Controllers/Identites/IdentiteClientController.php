@@ -5,6 +5,7 @@ namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Identites;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class IdentiteClientController extends ApiController
 
         if (!$verifyAccount['status']) {
 
-            return response()->json($verifyAccount, 409);
+            throw new CustomException($verifyAccount, 409);
         }
 
         // Client PhoneNumber Unicity Verification
@@ -55,7 +56,7 @@ class IdentiteClientController extends ApiController
         if (!$verifyPhone['status']) {
 
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyPhone, 409);
+            throw new CustomException($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
@@ -64,7 +65,7 @@ class IdentiteClientController extends ApiController
         if (!$verifyEmail['status']) {
 
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyEmail, 409);
+            throw new CustomException($verifyEmail, 409);
         }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));

@@ -5,6 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Institution;
@@ -169,7 +170,7 @@ class ClientController extends ApiController
 
         if (!$verifyAccount['status']) {
 
-            return response()->json($verifyAccount, 409);
+            throw new CustomException($verifyAccount, 409);
         }
 
         // Client PhoneNumber Unicity Verification
@@ -178,7 +179,7 @@ class ClientController extends ApiController
         if (!$verifyPhone['status']) {
 
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyPhone, 409);
+            throw new CustomException($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
@@ -187,7 +188,7 @@ class ClientController extends ApiController
         if (!$verifyEmail['status']) {
             
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
-            return response()->json($verifyEmail, 409);
+            throw new CustomException($verifyEmail, 409);
         }
 
         $client->accounts[0]->update($request->only(['number', 'account_type_id']));

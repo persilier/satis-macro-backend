@@ -29,8 +29,7 @@ class RelanceController extends ApiController
      */
     public function show()
     {
-        $coef = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance')->first()->data);
-        return response()->json(['coef' => $coef], 200);
+        return response()->json(["coef" => json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance')->firstOrFail()->data)], 200);
     }
 
 
@@ -41,18 +40,15 @@ class RelanceController extends ApiController
      */
     public function update(Request $request)
     {
-
-        $coef = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance')->first()->data);
-
         $rules = [
             'coef' => 'required|integer',
         ];
 
         $this->validate($request, $rules);
 
-        Metadata::where('name', 'coef-relance')->first()->update(['data'=> $request->coef]);
+        Metadata::where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode($request->coef)]);
 
-        return response()->json(['coef' => $request->coef], 200);
+        return response()->json($request->only('coef'), 200);
     }
 
 }

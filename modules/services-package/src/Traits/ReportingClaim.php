@@ -785,7 +785,14 @@ trait ReportingClaim
 
                 }else{
 
-                    $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                    if($start->day !== $end->day){
+
+                        $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+                    }else{
+
+                        $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
+                    }
 
                 }
             }

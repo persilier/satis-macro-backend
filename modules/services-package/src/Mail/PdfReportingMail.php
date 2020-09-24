@@ -12,15 +12,15 @@ class PdfReportingMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $data = [];
+    protected $details = [];
 
     /**
      * PdfReportingSend constructor.
-     * @param $data
+     * @param $details
      */
-    public function __construct($data)
+    public function __construct($details)
     {
-        $this->data = $data;
+        $this->details = $details;
     }
 
     /**
@@ -31,9 +31,10 @@ class PdfReportingMail extends Mailable
     public function build()
     {
         return $this->subject('Reporting')
-                    ->attach($this->data['file'], [
+                    ->attach($this->details['file'], [
                         'mime' => 'application/pdf',
-                    ])->markdown('ServicePackage::mails.pdf-reporting')
-                    ->with(['data' => $this->data]);
+                    ])
+                    ->markdown('ServicePackage::mails.pdf-reporting')
+                    ->with(['details' => $this->details]);
     }
 }

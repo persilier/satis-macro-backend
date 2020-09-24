@@ -4,6 +4,7 @@ namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Accounts;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Account;
@@ -41,7 +42,7 @@ class AccountClientController extends ApiController
 
         if (!$verifyAccount['status']) {
 
-            return response()->json($verifyAccount, 409);
+            throw new CustomException($verifyAccount, 409);
         }
 
 

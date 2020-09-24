@@ -38,20 +38,14 @@ class PdfReportingSendMail implements ShouldQueue
      */
     public function handle()
     {
-        $data['file'] = $this->details['file'];
-        $data['email'] = $this->details['email'];
-        $data['dateStart'] = $this->details['dateStart'];
-        $data['dateEnd'] = $this->details['dateEnd'];
-        $data['reportingTask'] = $this->details['reportingTask'];
-        $mail = new PdfReportingMail($data);
-        foreach ($data['email'] as $recipient) {
 
-            Mail::to($recipient)->send($mail);
+        foreach ($this->details['email'] as $recipient) {
+
+            Mail::to($recipient)->send(new PdfReportingMail($this->details));
 
         }
 
-        $reporting = $this->details['reportingTask'];
-        $cron = $reporting->cronTasks()->create();
+        $this->details['reportingTask']->cronTasks()->create();
     }
 
     /**
