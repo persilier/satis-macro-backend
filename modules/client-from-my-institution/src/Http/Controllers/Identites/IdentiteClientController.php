@@ -62,9 +62,9 @@ class IdentiteClientController extends ApiController
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $client = $this->storeClient($request, $identite->id);
+        $client = $this->storeClient($request, $identite->id, true);
 
-        $clientInstitution = $this->storeClientInstitution($request, $client->id, $institution->id);
+        $clientInstitution = $this->storeClientInstitution($request, $client->id, $institution->id, true);
 
         $account = $this->storeAccount($request, $clientInstitution->id);
 

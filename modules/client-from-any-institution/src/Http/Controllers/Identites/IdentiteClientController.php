@@ -56,6 +56,7 @@ class IdentiteClientController extends ApiController
         if (!$verifyPhone['status']) {
 
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
+
             throw new CustomException($verifyPhone, 409);
         }
 
@@ -65,14 +66,15 @@ class IdentiteClientController extends ApiController
         if (!$verifyEmail['status']) {
 
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
+
             throw new CustomException($verifyEmail, 409);
         }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $client = $this->storeClient($request, $identite->id);
+        $client = $this->storeClient($request, $identite->id, true);
 
-        $clientInstitution = $this->storeClientInstitution($request, $client->id, $request->institution_id);
+        $clientInstitution = $this->storeClientInstitution($request, $client->id, $request->institution_id, true);
 
         $account = $this->storeAccount($request, $clientInstitution->id);
 

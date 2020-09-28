@@ -1,9 +1,15 @@
 <?php
 
 namespace Satis2020\ServicePackage\Traits;
+use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\TypeClient;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Unit;
+
+/**
+ * Trait IdentiteVerifiedTrait
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait IdentiteVerifiedTrait
 {
 

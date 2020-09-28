@@ -13,6 +13,11 @@ use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Account;
+
+/**
+ * Trait ClientTrait
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait ClientTrait
 {
     /**
@@ -78,35 +83,69 @@ trait ClientTrait
             'ville'     => $request->ville,
             'other_attributes' => $request->other_attributes
         ];
+
         return $identite = Identite::create($store);
     }
 
     /**
      * @param $request
+     * @param $identiteId
+     * @param bool $identityConfirm
      * @return array
      */
-    protected function storeClient($request, $identiteId)
+    protected function storeClient($request, $identiteId, $identityConfirm = false)
     {
         $store = [
             'identites_id' => $identiteId,
             'others'  => $request->others
         ];
-        return $client = Client::create($store);
+
+
+        if($identityConfirm){
+
+            if(!$client = Client::where('identites_id', $identiteId)->first()){
+
+                $client = Client::create($store);
+            }
+
+        }else{
+
+            $client = Client::create($store);
+        }
+
+        return $client;
     }
 
 
     /**
      * @param $request
+     * @param $clientId
+     * @param $institutionId
+     * @param bool $identityConfirm
      * @return array
      */
-    protected function storeClientInstitution($request, $clientId, $institutionId)
+    protected function storeClientInstitution($request, $clientId, $institutionId, $identityConfirm = false)
     {
         $store = [
             'category_client_id'  => $request->category_client_id,
             'client_id' => $clientId,
             'institution_id'  => $institutionId
         ];
-        return $clientInstitution = ClientInstitution::create($store);
+
+        if($identityConfirm){
+
+            if(!$clientInstitution = ClientInstitution::where('client_id', $clientId)->where('institution_id', $institutionId)->first()){
+
+                $clientInstitution = ClientInstitution::create($store);
+
+            }
+
+        }else{
+
+            $clientInstitution = ClientInstitution::create($store);
+        }
+
+        return $clientInstitution;
     }
 
     /**
@@ -133,13 +172,13 @@ trait ClientTrait
      */
     protected  function getOneClientByInstitution($institutionId, $clientId){
 
-        $client = ClientInstitution::with(
+        return ClientInstitution::with(
             'client.identite',
             'category_client',
             'institution',
             'accounts.accountType'
-        )->where('institution_id',$institutionId)->where('client_id',$clientId)->firstOrFail();
-        return $client;
+        )->where('institution_id', $institutionId)->where('client_id',$clientId)->firstOrFail();
+
     }
 
     /**
