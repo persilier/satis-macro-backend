@@ -147,6 +147,7 @@ class ClientController extends ApiController
         $client = $this->getOneAccountClient($accountId);
         return response()->json([
             'client_institution' => $client,
+            'account' => Account::with('AccountType')->find($accountId),
             'clients' => $this->getAllClientByInstitution($client->institution_id),
             'institutions' => Institution::all(),
             'accountTypes' => AccountType::all(),

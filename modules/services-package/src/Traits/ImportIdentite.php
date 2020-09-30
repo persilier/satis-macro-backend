@@ -60,7 +60,6 @@ trait ImportIdentite
                 'required', new ExplodeEmailRules,
             ],
             'ville' => 'required|string',
-            //'other_attributes_identites' => 'array',
         ];
 
         return $rules;
@@ -137,7 +136,9 @@ trait ImportIdentite
                     $name = json_decode($item->{$column})->{$lang};
 
                     if($name === $row[$keyRow])
+
                         return $item;
+
                 })->first()->id;
 
             } catch (\Exception $exception) {
@@ -163,7 +164,9 @@ trait ImportIdentite
         $identite = $this->handleInArrayUnicityVerification($row['email'], 'identites', 'email');
 
         if(!$identite['status']){
+
             $identite = $identite['entity'];
+
         }
 
         return $identite;
@@ -177,7 +180,7 @@ trait ImportIdentite
     protected function storeIdentite($row)
     {
         $store = $this->fillableIdentite($row);
-        return $identite = Identite::create($store);
+        return Identite::create($store);
     }
 
 

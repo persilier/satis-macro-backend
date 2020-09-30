@@ -22,16 +22,24 @@ class Client implements ToCollection, WithHeadingRow
     private $etat; // action for
     private $errors; // array to accumulate errors
     private $myInstitution;
+    private $stop_identite_exist;
 
-    public function __construct($etat, $myInstitution)
+    /**
+     * Client constructor.
+     * @param $etat
+     * @param $myInstitution
+     * @param $stop_identite_exist
+     */
+    public function __construct($etat, $myInstitution, $stop_identite_exist)
     {
         $this->etat = $etat;
         $this->myInstitution = $myInstitution;
+        $this->stop_identite_exist = $stop_identite_exist;
     }
 
     /**
      * @param Collection $collection
-     * @return Collection
+     * @return void
      */
     public function collection(Collection $collection)
     {
@@ -48,14 +56,20 @@ class Client implements ToCollection, WithHeadingRow
 
             // fields validations
             if ($validator->fails()) {
+
                 $errors_validations = [];
+
                 foreach ($validator->errors()->messages() as $messages) {
+
                     foreach ($messages as $error) {
+
                         $errors_validations[] = $error;
+
                     }
                 }
 
                 $this->errors[$key] = [
+
                     'error' => $errors_validations,
                     'data' => $row
                 ];
@@ -74,9 +88,12 @@ class Client implements ToCollection, WithHeadingRow
 
                 $verifyEmail = $this->handleClientIdentityVerification($data['email'], 'identites', 'email', 'email', $data['institution']);
 
+                // Client Phone Unicity Verification
+
                 if (!$verifyPhone['status']) {
 
                     if($this->etat === 0){
+
                         $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                         $this->errors[$key]['conflits']['telephone'] = $verifyPhone['message'];
                     }
@@ -87,14 +104,17 @@ class Client implements ToCollection, WithHeadingRow
 
                 if (!$verifyEmail['status']) {
 
-                    if($this->etat === 0)
+                    if($this->etat === 0){
+
                         $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                         $this->errors[$key]['conflits']['email'] = $verifyEmail['message'];
+
+                    }
 
                 }
 
                 // Account Number Verification
-                $verifyAccount = $this->handleAccountVerification($data['account_number'], $data['institution']);
+                $verifyAccount = $this->handleAccountVerification($data['account_number']);
 
                 if (!$verifyAccount['status']) {
 
@@ -107,23 +127,31 @@ class Client implements ToCollection, WithHeadingRow
 
                         $identite = $this->getIdentite($data);
 
-                        if($this->etat === 1){
+                        if($this->stop_identite_exist === 0){
 
-                            $identite->update($this->fillableIdentite($data));
+                            if($this->etat === 1){
 
-                            $client = $this->storeClient($data, $identite->id);
+                                $identite->update($this->fillableIdentite($data));
 
-                            $clientInstitution = $this->storeClientInstitution($data, $client->id);
+                                $client = $this->storeClient($data, $identite->id);
 
-                            $account = $this->storeAccount($data, $clientInstitution->id);
+                                $clientInstitution = $this->storeClientInstitution($data, $client->id);
+
+                                $account = $this->storeAccount($data, $clientInstitution->id);
+
+                            }else{
+
+                                $client = $this->storeClient($data, $identite->id);
+
+                                $clientInstitution = $this->storeClientInstitution($data, $client->id);
+
+                                $account = $this->storeAccount($data, $clientInstitution->id);
+
+                            }
 
                         }else{
 
-                            $client = $this->storeClient($data, $identite->id);
-
-                            $clientInstitution = $this->storeClientInstitution($data, $client->id);
-
-                            $account = $this->storeAccount($data, $clientInstitution->id);
+                            $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
 
                         }
 

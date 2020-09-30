@@ -49,7 +49,7 @@ class ClientController extends ApiController
         $institution = $this->institution();
         return response()->json([
             'client_institutions' => $this->getAllClientByInstitution($institution->id),
-            'AccountTypes' => AccountType::all(),
+            'accountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
     }
@@ -71,7 +71,8 @@ class ClientController extends ApiController
 
         if (!$verifyAccount['status']) {
 
-            return response()->json($verifyAccount, 409);
+            throw new CustomException($verifyAccount, 409);
+
         }
 
         // Client PhoneNumber Unicity Verification
@@ -79,7 +80,8 @@ class ClientController extends ApiController
 
         if (!$verifyPhone['status']) {
 
-            return response()->json($verifyPhone, 409);
+            throw new CustomException($verifyPhone, 409);
+
         }
 
         // Client Email Unicity Verification
@@ -87,7 +89,7 @@ class ClientController extends ApiController
 
         if (!$verifyEmail['status']) {
 
-            return response()->json($verifyEmail, 409);
+            throw new CustomException($verifyEmail, 409);
         }
 
         $identite = $this->storeIdentite($request);
@@ -151,6 +153,7 @@ class ClientController extends ApiController
         $verifyAccount = $this->handleAccountVerification($request->number, $client->accounts[0]->id);
 
         if (!$verifyAccount['status']) {
+
             throw new CustomException($verifyAccount, 409);
         }
 

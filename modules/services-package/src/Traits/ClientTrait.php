@@ -43,8 +43,11 @@ trait ClientTrait
             'other_attributes' => 'array',
         ];
 
-        if ($requestInstitution)
+        if ($requestInstitution){
+
             $rules['institution_id'] = 'required|exists:institutions,id';
+
+        }
 
         return $rules;
     }
@@ -61,8 +64,11 @@ trait ClientTrait
             'account_type_id' => 'required|exists:account_types,id',
         ];
 
-        if ($requestInstitution)
+        if ($requestInstitution){
+
             $rules['institution_id'] = 'required|exists:institutions,id';
+
+        }
 
         return $rules;
     }
@@ -75,6 +81,7 @@ trait ClientTrait
     protected function storeIdentite($request)
     {
         $store = [
+
             'firstname' => $request->firstname,
             'lastname'  => $request->lastname,
             'sexe'      => $request->sexe,
@@ -106,11 +113,13 @@ trait ClientTrait
             if(!$client = Client::where('identites_id', $identiteId)->first()){
 
                 $client = Client::create($store);
+
             }
 
         }else{
 
             $client = Client::create($store);
+
         }
 
         return $client;
@@ -187,14 +196,18 @@ trait ClientTrait
      */
     protected  function getAllClientByInstitution($institutionId){
         try{
+
             $clients = ClientInstitution::with(
                 'client.identite',
                 'category_client',
                 'institution',
                 'accounts.accountType'
             )->where('institution_id',$institutionId)->get();
+
         }catch (\Exception $exception){
+
             throw new CustomException("Impossible de retrouver une liste de clients.");
+
         }
 
         return $clients;
@@ -213,13 +226,17 @@ trait ClientTrait
                 'category_client',
                 'institution',
                 'accounts.accountType'
+
             ])->where(function ($query) use ($accountId){
+
                 $query->whereHas('accounts', function ($q) use ($accountId){
                     $q->where('id', $accountId);
                 });
+
             })->where('institution_id',$institutionId)->firstOrFail();
 
         }catch (\Exception $exception){
+
             throw new CustomException("Impossible de retrouver ce compte client.");
         }
 
@@ -234,6 +251,7 @@ trait ClientTrait
     protected  function getOneAccountClient($accountId){
 
         try{
+
             $client = ClientInstitution::with([
                 'client.identite',
                 'category_client',
@@ -246,7 +264,9 @@ trait ClientTrait
             })->firstOrFail();
 
         }catch (\Exception $exception){
+
             throw new CustomException("Impossible de retrouver ce compte client.");
+
         }
 
         return $client;
@@ -267,11 +287,13 @@ trait ClientTrait
         }catch (\Exception $exception){
 
             throw new CustomException("Impossible de retrouver ce compte client.");
+
         }
 
         if (!is_null($account)){
 
-            return ['code' => 409,'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
+            return ['code' => 409, 'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
+
         }
 
         return ['status' => true];

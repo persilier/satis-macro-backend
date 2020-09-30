@@ -42,6 +42,7 @@ class IdentiteClientController extends ApiController
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id,'id', $identite->id);
         if (!$verifyPhone['status']) {
+
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             throw new CustomException($verifyPhone, 409);
         }
@@ -49,6 +50,7 @@ class IdentiteClientController extends ApiController
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id,'id', $identite->id);
         if (!$verifyEmail['status']) {
+            
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             throw new CustomException($verifyEmail, 409);
         }
