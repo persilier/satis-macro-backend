@@ -35,7 +35,7 @@ class ImportController extends ApiController
         ]);
 
         $datas = [
-            'status' => false,
+            'status' => true,
             'staffs' => ''
         ];
 
@@ -56,7 +56,7 @@ class ImportController extends ApiController
         if($imports->getErrors()){
             $datas = [
 
-                'status' => true,
+                'status' => false,
                 'staffs' => $imports->getErrors()
             ];
         }

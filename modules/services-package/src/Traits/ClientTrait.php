@@ -275,14 +275,13 @@ trait ClientTrait
 
     /**
      * @param $number
-     * @param $clientInstitutionId
      * @return array
      */
-    protected function handleAccountClient($number, $clientInstitutionId)
+    protected function handleAccountClient($number)
     {
         try{
 
-            $account = Account::where('client_institution_id', $clientInstitutionId)->where('number', $number)->first();
+            $account = Account::where('number', $number)->first();
 
         }catch (\Exception $exception){
 

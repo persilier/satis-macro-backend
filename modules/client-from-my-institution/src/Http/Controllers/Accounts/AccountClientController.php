@@ -4,6 +4,7 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Accounts;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Illuminate\Http\Request;
@@ -22,7 +23,6 @@ class AccountClientController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-
         $this->middleware('permission:store-client-from-my-institution')->only(['store']);
     }
 
@@ -43,9 +43,10 @@ class AccountClientController extends ApiController
         $clientInstitution = ClientInstitution::where('institution_id', $institution->id)->where('client_id', $clientId)->firstOrFail();
 
         // Account Number Verification
-        $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
+        $verifyAccount = $this->handleAccountClient($request->number);
 
         if (!$verifyAccount['status']) {
+
             throw new CustomException($verifyAccount, 409);
         }
 

@@ -169,8 +169,10 @@ class ClientController extends ApiController
 
         $client = $this->getOneAccountClient($accountId);
 
+        $account = Account::findOrFail($accountId);
+
         // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $client->accounts[0]->id);
+        $verifyAccount = $this->handleAccountVerification($request->number, $account->id);
 
         if (!$verifyAccount['status']) {
 
@@ -195,7 +197,7 @@ class ClientController extends ApiController
             throw new CustomException($verifyEmail, 409);
         }
 
-        $client->accounts[0]->update($request->only(['number', 'account_type_id']));
+        $account->update($request->only(['number', 'account_type_id']));
 
         $client->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 

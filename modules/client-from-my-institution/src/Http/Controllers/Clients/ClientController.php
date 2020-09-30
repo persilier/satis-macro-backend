@@ -128,6 +128,7 @@ class ClientController extends ApiController
         $client = $this->getOneAccountClientByInstitution($institution->id, $accountId);
         return response()->json([
             'client_institution' => $client,
+            'account' => Account::with('AccountType')->find($accountId),
             'AccountTypes' => AccountType::all(),
             'clientCategories'=> CategoryClient::all()
         ],200);
@@ -149,8 +150,11 @@ class ClientController extends ApiController
 
         $client = $this->getOneAccountClientByInstitution($institution->id, $accountId);
 
+
+        $account = Account::findOrFail($accountId);
+
         // Account Number Verification
-        $verifyAccount = $this->handleAccountVerification($request->number, $client->accounts[0]->id);
+        $verifyAccount = $this->handleAccountVerification($request->number, $account->id);
 
         if (!$verifyAccount['status']) {
 
@@ -164,6 +168,7 @@ class ClientController extends ApiController
 
             $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
             throw new CustomException($verifyPhone, 409);
+
         }
 
         // Client Email Unicity Verification
@@ -173,9 +178,10 @@ class ClientController extends ApiController
 
             $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
             throw new CustomException($verifyEmail, 409);
+
         }
 
-        $client->accounts[0]->update($request->only(['number', 'account_type_id']));
+        $account->update($request->only(['number', 'account_type_id']));
 
         $client->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 

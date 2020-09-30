@@ -11,6 +11,10 @@ use Satis2020\ServicePackage\Models\Account;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 
+/**
+ * Class AccountClientController
+ * @package Satis2020\ClientFromAnyInstitution\Http\Controllers\Accounts
+ */
 class AccountClientController extends ApiController
 {
     use ClientTrait;
@@ -38,7 +42,7 @@ class AccountClientController extends ApiController
         $clientInstitution = ClientInstitution::where('institution_id', $request->institution_id)->where('client_id', $clientId)->firstOrFail();
 
         // Account Number Verification
-        $verifyAccount = $this->handleAccountClient($request->number, $clientInstitution->id);
+        $verifyAccount = $this->handleAccountClient($request->number);
 
         if (!$verifyAccount['status']) {
 
