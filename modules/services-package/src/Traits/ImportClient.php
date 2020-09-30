@@ -30,16 +30,24 @@ trait ImportClient
         $rules = $this->rulesIdentite();
 
         $rules['account_number'] = 'required|string';
+
         $rules['account_type'] = ['required',
+
             new NameModelRules(['table' => 'account_types', 'column'=> 'name']),
         ];
+
         $rules['category_client'] = ['required',
+
             new NameModelRules(['table' => 'category_clients', 'column'=> 'name']),
         ];
+
         $rules['other_attributes_clients'] = 'array';
 
-        if (!$this->myInstitution)
+        if (!$this->myInstitution){
+
             $rules['institution'] = 'required|exists:institutions,name';
+
+        }
 
         return $rules;
     }
@@ -76,10 +84,13 @@ trait ImportClient
     protected function storeClientInstitution($row, $clientId)
     {
         if(!$clientInstitution = ClientInstitution::where('institution_id', $row['institution'])
+
             ->where('client_id', $clientId)
             ->first()
         ){
+
             $store = [
+
                 'category_client_id'  => $row['category_client'],
                 'client_id' => $clientId,
                 'institution_id'  => $row['institution']
@@ -99,10 +110,12 @@ trait ImportClient
     protected function storeAccount($row, $clientInstitutionId)
     {
         $store = [
+
             'client_institution_id' => $clientInstitutionId,
             'account_type_id'  => $row['account_type'],
             'number'  => $row['account_number']
         ];
+
         return $account = Account::create($store);
     }
 

@@ -23,6 +23,7 @@ Route::prefix('/any')->name('any.')->group(function () {
     Route::resource('identites.clients', 'Identites\IdentiteClientController', ['only' => ['store']]);
     Route::resource('accounts.clients', 'Accounts\AccountClientController', ['only' => ['store']]);
     // Route for import excel data to database.
+    Route::get('import-clients', 'ImportExport\ImportController@downloadFile');
     Route::post('import-clients', 'ImportExport\ImportController@importClients');
 });
 

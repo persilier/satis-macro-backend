@@ -362,9 +362,10 @@ trait ReportingClaim
     protected  function countFilterQualificationPeriod($datas, $valStart, $valEnd, $finish, $total, $libelle){
 
         $data['libelle'] = $libelle;
+
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
 
-            $diff = $item->activeTreatment->transferred_to_unit_at->diffInDays($item->completed_at, false);
+            $diff = $item->completed_at->diffInDays($item->activeTreatment->transferred_to_unit_at, false);
 
             return ($valStart <= $diff && $valEnd > $diff);
 
@@ -378,6 +379,11 @@ trait ReportingClaim
 
     /*     Traitements       */
 
+    /**
+     * @param $request
+     * @param $institution
+     * @return array
+     */
     protected function statistiqueTreatments($request, $institution){
 
         $datas = $this->qualificationTreatmentQuery($request, $institution, 'satisfaction_measured_at')->get();
@@ -424,6 +430,7 @@ trait ReportingClaim
     protected  function countFilterTreatmentPeriod($datas, $valStart, $valEnd, $finish, $total, $libelle){
 
         $data['libelle'] = $libelle;
+
         $data['total'] = $datas->filter(function ($item) use ($valStart, $valEnd, $finish){
 
             $diff = $item->activeTreatment->transferred_to_unit_at->diffInDays($item->activeTreatment->satisfaction_measured_at, false);
@@ -468,7 +475,9 @@ trait ReportingClaim
         $reportingTask->load('institutionTargeted', 'staffs.identite');
 
         $reportingTask['period_tag'] = Arr::first($this->periodList(), function ($value) use ($reportingTask){
+
             return $value['value'] === $reportingTask->period;
+
         });
 
         return $reportingTask;
@@ -522,6 +531,7 @@ trait ReportingClaim
     protected function rulesTasksConfig($institution = true)
     {
         $data = [
+
             'period' => ['required', Rule::in(['days', 'weeks', 'months', 'quarterly', 'biannual'])],
             'staffs' => [
                 'required', 'array',
