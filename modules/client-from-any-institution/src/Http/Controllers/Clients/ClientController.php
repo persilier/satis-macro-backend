@@ -86,23 +86,26 @@ class ClientController extends ApiController
         $verifyAccount = $this->handleAccountVerification($request->number);
 
         if (!$verifyAccount['status']) {
+            throw new CustomException($verifyAccount, 409);
 
-            return response()->json($verifyAccount, 409);
+            //return response()->json($verifyAccount, 409);
         }
         // Client PhoneNumber Unicity Verification
         $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id);
 
         if (!$verifyPhone['status']) {
+            throw new CustomException($verifyPhone, 409);
 
-            return response()->json($verifyPhone, 409);
+            //return response()->json($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
         $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id);
 
         if (!$verifyEmail['status']) {
+            throw new CustomException($verifyEmail, 409);
 
-            return response()->json($verifyEmail, 409);
+            //return response()->json($verifyEmail, 409);
         }
 
         $identite = $this->storeIdentite($request);
