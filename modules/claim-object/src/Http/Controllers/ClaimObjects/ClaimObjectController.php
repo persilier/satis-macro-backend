@@ -1,6 +1,8 @@
 <?php
 
 namespace Satis2020\ClaimObject\Http\Controllers\ClaimObjects;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
@@ -9,8 +11,14 @@ use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\SeverityLevel;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
+/**
+ * Class ClaimObjectController
+ * @package Satis2020\ClaimObject\Http\Controllers\ClaimObjects
+ */
 class ClaimObjectController extends ApiController
 {
+    use \Satis2020\ServicePackage\Traits\ClaimObject;
+
     public function __construct()
     {
         parent::__construct();
@@ -21,9 +29,10 @@ class ClaimObjectController extends ApiController
         $this->middleware('permission:show-claim-object')->only(['show']);
         $this->middleware('permission:destroy-claim-object')->only(['destroy']);
     }
+
+
     /**
-     * Display a listing of the resource.
-     *
+     * @return JsonResponse
      */
     public function index()
     {
@@ -33,7 +42,7 @@ class ClaimObjectController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -54,15 +63,8 @@ class ClaimObjectController extends ApiController
      */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
-            'description' => 'nullable',
-            'claim_category_id' => 'required|exists:claim_categories,id',
-            'severity_levels_id' => 'exists:severity_levels,id',
-            'time_limit' => 'required|integer',
-            'others' => 'array',
-        ];
-        $this->validate($request, $rules);
+
+        $this->validate($request, $this->rules());
         $claimObject = ClaimObject::create($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
         return response()->json($claimObject, 201);
 
@@ -82,7 +84,7 @@ class ClaimObjectController extends ApiController
     /**
      * Edit the form for creating a new resource.
      * @param ClaimObject $claimObject
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(ClaimObject $claimObject)
     {
@@ -103,15 +105,7 @@ class ClaimObjectController extends ApiController
      */
     public function update(Request $request, ClaimObject $claimObject)
     {
-        $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name', 'id', "{$claimObject->id}")],
-            'description' => 'nullable',
-            'claim_category_id' => 'required|exists:claim_categories,id',
-            'severity_levels_id' => 'exists:severity_levels,id',
-            'time_limit' => 'required|integer',
-            'others' => 'array',
-        ];
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rules($claimObject));
         $claimObject->update($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
         return response()->json($claimObject, 201);
     }

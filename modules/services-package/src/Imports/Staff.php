@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -16,7 +17,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class Staff implements ToCollection, WithHeadingRow
 {
-    use Importable, SkipsFailures, ImportIdentite, ImportStaff, VerifyUnicity;
+    use Importable, SkipsFailures, DataUserNature, ImportIdentite, ImportStaff, VerifyUnicity;
 
     private $errors; // array to accumulate errors
     private $etat;

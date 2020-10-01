@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Route;
 |
 
 /*
- * ClaimObjects
+ * ClaimCategories
  */
 Route::resource('claim-categories', 'ClaimCategories\ClaimCategoryController')->except(['create', 'edit']);
 Route::resource('claim-categories.claim-objects', 'ClaimCategories\ClaimCategoryObjectController')->only(['index']);
+// Route for import excel data to database.
+Route::get('import-claim-categories', 'ImportExport\ImportController@downloadFile');
+Route::post('import-claim-categories', 'ImportExport\ImportController@importClaimCategories');

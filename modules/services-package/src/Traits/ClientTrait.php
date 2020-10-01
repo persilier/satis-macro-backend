@@ -221,19 +221,16 @@ trait ClientTrait
     protected  function getOneAccountClientByInstitution($institutionId, $accountId){
 
         try{
+
             $client = ClientInstitution::with([
                 'client.identite',
                 'category_client',
                 'institution',
-                'accounts.accountType'
+                'accounts.accountType' => function($query) use ($accountId){
+                    $query->where('id', $accountId);
+                }
 
-            ])->where(function ($query) use ($accountId){
-
-                $query->whereHas('accounts', function ($q) use ($accountId){
-                    $q->where('id', $accountId);
-                });
-
-            })->where('institution_id',$institutionId)->firstOrFail();
+            ])->where('institution_id',$institutionId)->firstOrFail();
 
         }catch (\Exception $exception){
 

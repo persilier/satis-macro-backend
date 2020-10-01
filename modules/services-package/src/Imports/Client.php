@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\ImportClient;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
@@ -17,7 +18,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class Client implements ToCollection, WithHeadingRow
 {
-    use Importable, SkipsFailures, ImportClient, ImportIdentite, IdentiteVerifiedTrait, VerifyUnicity;
+    use Importable, SkipsFailures,DataUserNature, ImportClient, ImportIdentite, IdentiteVerifiedTrait, VerifyUnicity;
 
     private $etat; // action for
     private $errors; // array to accumulate errors

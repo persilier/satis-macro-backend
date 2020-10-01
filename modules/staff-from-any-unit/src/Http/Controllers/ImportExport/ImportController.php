@@ -44,7 +44,7 @@ class ImportController extends ApiController
 
         $stop_identite_exist = $request->stop_identite_exist;
 
-        $etat = $request->etat;
+        $etat = $request->etat_update;
 
         $imports = new Staff($etat, $unitRequired, $myInstitution, $stop_identite_exist);
 

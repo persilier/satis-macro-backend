@@ -15,3 +15,6 @@ use Illuminate\Support\Facades\Route;
  * ClaimObjects
  */
 Route::resource('claim-objects', 'ClaimObjects\ClaimObjectController');
+// Route for import excel data to database.
+Route::get('import-claim-objects', 'ImportExport\ImportController@downloadFile');
+Route::post('import-claim-objects', 'ImportExport\ImportController@importClaimCategories');

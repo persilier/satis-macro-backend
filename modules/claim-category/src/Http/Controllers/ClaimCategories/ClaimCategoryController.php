@@ -1,14 +1,20 @@
 <?php
 
 namespace Satis2020\ClaimCategory\Http\Controllers\ClaimCategories;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
+/**
+ * Class ClaimCategoryController
+ * @package Satis2020\ClaimCategory\Http\Controllers\ClaimCategories
+ */
 class ClaimCategoryController extends ApiController
 {
+    use \Satis2020\ServicePackage\Traits\ClaimCategory;
     public function __construct()
     {
         parent::__construct();
@@ -19,9 +25,9 @@ class ClaimCategoryController extends ApiController
         $this->middleware('permission:show-claim-category')->only(['show']);
         $this->middleware('permission:destroy-claim-category')->only(['destroy']);
     }
+
     /**
-     * Display a listing of the resource.
-     *
+     * @return JsonResponse
      */
     public function index()
     {
@@ -30,29 +36,21 @@ class ClaimCategoryController extends ApiController
 
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('claim_categories', 'name')],
-            'description' => 'nullable',
-            'others' => 'array',
-        ];
-        $this->validate($request, $rules);
+
+        $this->validate($request, $this->rules());
         $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'others']));
         return response()->json($claimCategory, 201);
 
     }
 
+
     /**
-     * Display the specified resource.
-     *
      * @param ClaimCategory $claimCategory
      * @return JsonResponse
      */
@@ -61,32 +59,25 @@ class ClaimCategoryController extends ApiController
         return response()->json($claimCategory, 200);
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
      * @param Request $request
      * @param ClaimCategory $claimCategory
      * @return JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function update(Request $request, ClaimCategory $claimCategory)
     {
-        $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('claim_categories', 'name', 'id', "{$claimCategory->id}")],
-            'description' => 'nullable',
-            'others' => 'array',
-        ];
-        $this->validate($request, $rules);
+
+        $this->validate($request, $this->rules($claimCategory));
         $claimCategory->update($request->only(['name', 'description', 'others']));
         return response()->json($claimCategory, 201);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
      * @param ClaimCategory $claimCategory
      * @return JsonResponse
-     * @throws SecureDeleteException
      */
     public function destroy(ClaimCategory $claimCategory)
     {

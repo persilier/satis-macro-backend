@@ -116,47 +116,6 @@ trait ImportIdentite
 
     /**
      * @param $row
-     * @param $table
-     * @param $keyRow
-     * @param $column
-     * @return mixed
-     */
-    public function getIds($row, $table, $keyRow, $column)
-    {
-        if(array_key_exists($keyRow, $row)) {
-            // put keywords into array
-            try {
-
-                $lang = app()->getLocale();
-
-                $data = DB::table($table)->whereNull('deleted_at')->get();
-
-                $data = $data->filter(function ($item) use ($row, $column, $keyRow, $lang) {
-
-                    $name = json_decode($item->{$column})->{$lang};
-
-                    if($name === $row[$keyRow])
-
-                        return $item;
-
-                })->first()->id;
-
-            } catch (\Exception $exception) {
-
-                $data = null;
-
-            }
-
-            $row[$keyRow] = $data;
-        }
-
-        return $row;
-
-    }
-
-
-    /**
-     * @param $row
      * @return mixed
      */
     protected function getIdentite($row){
