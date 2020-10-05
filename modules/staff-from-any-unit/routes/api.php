@@ -22,6 +22,7 @@ Route::prefix('any')->group(function () {
         Route::resource('identites.staff', 'Identite\IdentiteStaffController', ['only' => ['store']]);
 
         // Route for import excel data to database.
+        Route::get('import-staffs', 'ImportExport\ImportController@downloadFile');
         Route::post('import-staffs', 'ImportExport\ImportController@importStaffs');
     });
 });

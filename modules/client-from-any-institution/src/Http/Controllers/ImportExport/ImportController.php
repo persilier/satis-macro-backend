@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\ImportExport;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -38,6 +39,7 @@ class ImportController extends ApiController
 
             'status' => true,
             'clients' => ''
+
         ];
 
         $file = $request->file('file');
@@ -71,15 +73,13 @@ class ImportController extends ApiController
      */
     public function downloadFile(){
 
-        $filename = "FORMAT_EXCEL_CLIENT.xlsx";
-        // Get path from storage directory
-        $path = storage_path('app/excels/' . $filename);
-
+        return response()->download(public_path('/excels/FORMAT_EXCEL_CLIENT.xlsx'));
+        //return response()->download(public_path()."/excels/FORMAT_EXCEL_CLIENT.xlsx");
         // Download file with custom headers
-        return response()->download($path, $filename, [
+        /*return response()->download(public_path('excels/FORMAT_EXCEL_CLIENT.xlsx'),'fferf.xlsx',[
             'Content-Type' => 'application/vnd.ms-excel',
             'Content-Disposition' => 'inline; filename="' . $filename . '"'
-        ]);
+        ]);*/
     }
 
 

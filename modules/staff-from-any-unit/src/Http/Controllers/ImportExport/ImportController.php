@@ -5,6 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Staff;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Class ImportExportController
@@ -61,6 +62,15 @@ class ImportController extends ApiController
 
         return response()->json($datas,201);
 
+    }
+
+
+    /**
+     * @return BinaryFileResponse
+     */
+    public function downloadFile(){
+
+        return response()->download(public_path('excels/FORMAT_EXCEL_CLIENT.xlsx'));
     }
 
 
