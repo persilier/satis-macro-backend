@@ -265,7 +265,7 @@
             <div class="titre-stat" >Utilisation des canaux de déclaration des réclamations </div>
             <div style="padding-top: 1em; text-align: center">
 
-                <img src="{{ $chanelGraph['image'] }}" alt="logo" style="height: 125px;">
+                <img src="{{ $chanelGraph }}" alt="logo" style="height: 125px;">
 
             </div>
             <div style="text-align: center; font-size: 8px; margin-top: 2em; text-decoration: underline">
@@ -277,11 +277,11 @@
     @if(!empty($evolutionClaim))
 
         <div style="margin-bottom: 1em; width: 100%">
-            <div class="titre-stat">Evolution des réclamations par @if($evolutionClaim['type_graphe']==='months') mois @elseif($evolutionClaim['type_graphe']==='weeks') semaines @else jours @endif </div>
+            <div class="titre-stat">Evolution des réclamations</div>
 
             <div style="padding-top: 1em; text-align: center;margin: auto;">
 
-                <img src="{{ $evolutionClaim['image'] }}" alt="logo" style="height: 175px;">
+                <img src="{{ $evolutionClaim }}" alt="logo" style="height: 175px;">
 
             </div>
             <div style="text-align: center; font-size: 8px; margin-top: 2em; text-decoration: underline">

@@ -39,7 +39,7 @@ class ImportController extends ApiController
             'staffs' => ''
         ];
 
-        $file = $request->file('file')->store('import');
+        $file = $request->file('file');
 
         $myInstitution = $institution->name;
 

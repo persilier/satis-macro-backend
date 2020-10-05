@@ -636,7 +636,7 @@ trait ReportingClaim
             'periode' => $this->periodeFormat($data['filter']),
             'logo' => $logo,
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
-            'color_table_header' => $data['headeBackground'],
+            'color_table_header' => "#7F9CF5",
             'lang' => $lang
         ];
     }
@@ -660,7 +660,9 @@ trait ReportingClaim
             $request->merge(['institution_id' => $reportinTask->institutionTargeted->id]);
 
            if(!is_null($reportinTask->institutionTargeted->logo)){
+
                $logo = $reportinTask->institutionTargeted->logo;
+
            };
 
             $institution = true;
@@ -668,7 +670,9 @@ trait ReportingClaim
         }else{
 
             if(!is_null($recepient->logo)){
+
                 $logo = $recepient->logo;
+
             }
 
         }
@@ -676,9 +680,9 @@ trait ReportingClaim
         return [
 
             'statistiqueObject' => $this->statistiqueObjectsClaims($request, $institution),
-            //'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
             'statistiqueQualificationPeriod' => $this->statistiqueQualifications($request, $institution),
             'statistiqueTreatmentPeriod' => $this->statistiqueTreatments($request, $institution),
+            //'statistiqueChannel' => $this->statistiqueChannels($request, $institution),
             //'statistiqueGraphePeriod' => $this->statistiqueEvolutions($request, $institution),
             'logo' => $logo,
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
@@ -706,6 +710,7 @@ trait ReportingClaim
         }
 
         return [
+
             'name' => $libelle,
             'total_claim' => $total_claim,
             'total_pourcentage' => $total_pourcentage
@@ -718,21 +723,8 @@ trait ReportingClaim
      */
     protected function chanelGraphExport($data){
 
-       $legend = $data['chanelGraph']['legend'];
-       $image = $data['chanelGraph']['image'];
+       return $data['chanelGraph']['image'];
 
-       foreach ($legend as $key => $value){
-
-           $libelle[] = $key;
-           $color[] = $value;
-
-       }
-
-       return [
-           'libelle' => $libelle,
-           'color' => $color,
-           'image' => $image
-       ];
     }
 
 
@@ -741,15 +733,9 @@ trait ReportingClaim
      * @return array
      */
     protected function evolutionClaimExport($data){
-        $legend = $data['evolutionClaim']['legend'];
-        $image = $data['evolutionClaim']['image'];
-        $type = $data['evolutionClaim']['filter'];
 
-        return [
-            'legend' => $legend,
-            'image' => $image,
-            'type_graphe' => $type
-        ];
+        return $data['evolutionClaim']['image'];
+
     }
 
 
