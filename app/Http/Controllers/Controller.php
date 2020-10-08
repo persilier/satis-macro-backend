@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use http\Env\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -42,5 +43,19 @@ class Controller extends BaseController
     public function claimReference(Institution $institution)
     {
         return response()->json($this->createReference($institution->id), 200);
+    }
+
+
+    /**
+     * @param $file
+     * @return BinaryFileResponse
+     */
+    public function downloadExcels($file){
+
+        $files = [
+            'clients' => ['url' => "/storage/excels/clients.xlsx" , 'name' => 'clients.xlsx'],
+            'staffs' => ['url' => "/storage/excels/staffs.xlsx" , 'name' => 'staffs.xlsx']
+        ];
+        return response()->download(public_path($files[$file]['url']), $files[$file]['name']);
     }
 }

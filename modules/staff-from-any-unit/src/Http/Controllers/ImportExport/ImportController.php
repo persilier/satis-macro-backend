@@ -65,14 +65,5 @@ class ImportController extends ApiController
     }
 
 
-    /**
-     * @return BinaryFileResponse
-     */
-    public function downloadFile(){
-
-        return response()->download(public_path('excels/FORMAT_EXCEL_CLIENT.xlsx'));
-    }
-
-
 }
 

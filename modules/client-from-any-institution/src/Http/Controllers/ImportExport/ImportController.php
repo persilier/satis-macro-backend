@@ -68,20 +68,5 @@ class ImportController extends ApiController
     }
 
 
-    /**
-     * @return BinaryFileResponse
-     */
-    public function downloadFile(){
-
-        return response()->download(public_path('/excels/FORMAT_EXCEL_CLIENT.xlsx'));
-        //return response()->download(public_path()."/excels/FORMAT_EXCEL_CLIENT.xlsx");
-        // Download file with custom headers
-        /*return response()->download(public_path('excels/FORMAT_EXCEL_CLIENT.xlsx'),'fferf.xlsx',[
-            'Content-Type' => 'application/vnd.ms-excel',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"'
-        ]);*/
-    }
-
-
 }
 
