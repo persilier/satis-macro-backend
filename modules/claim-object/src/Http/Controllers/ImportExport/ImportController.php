@@ -58,23 +58,5 @@ class ImportController extends ApiController
 
     }
 
-
-    /**
-     * @return BinaryFileResponse
-     */
-    public function downloadFile(){
-
-        $filename = "FORMAT_EXCEL_CLIENT.xlsx";
-        // Get path from storage directory
-        $path = storage_path('app/excels/' . $filename);
-
-        // Download file with custom headers
-        return response()->download($path, $filename, [
-            'Content-Type' => 'application/vnd.ms-excel',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"'
-        ]);
-    }
-
-
 }
 

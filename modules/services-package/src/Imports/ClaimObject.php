@@ -16,7 +16,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
 {
     use Importable, SkipsFailures, DataUserNature, \Satis2020\ServicePackage\Traits\ClaimObject;
 
-
+    private $errors; // array to accumulate errors
 
     public function __construct()
     {

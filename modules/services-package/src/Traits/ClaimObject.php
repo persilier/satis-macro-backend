@@ -57,10 +57,9 @@ trait ClaimObject
 
             'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
             'description' => 'nullable',
-            'claim_category_id' => ['required', new NameModelRules(['table' => 'claim_categories', 'column'=> 'name'])],
-            'severity_levels_id' => ['required', new NameModelRules(['table' => 'severity_levels', 'column'=> 'name'])],
+            'claim_category' => ['required', new NameModelRules(['table' => 'claim_categories', 'column'=> 'name'])],
+            'severity_level' => ['required', new NameModelRules(['table' => 'severity_levels', 'column'=> 'name'])],
             'time_limit' => 'required|integer',
-            'others' => 'array',
         ];
     }
 
@@ -77,8 +76,7 @@ trait ClaimObject
             'description' => $row['description'],
             'claim_category_id' => $row['claim_category'],
             'severity_levels_id' => $row['severity_level'],
-            'time_limit' => $row['time_limit'],
-            'others'  => $row['others']
+            'time_limit' => $row['time_limit']
         ]);
     }
 

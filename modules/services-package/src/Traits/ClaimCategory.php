@@ -51,8 +51,7 @@ trait ClaimCategory
         return \Satis2020\ServicePackage\Models\ClaimCategory::create([
 
             'name' => $row['name'],
-            'description' => $row['description'],
-            'others'  => $row['others']
+            'description' => $row['description']
         ]);
     }
 
