@@ -45,7 +45,6 @@ trait Component
     {
 
         $rules = [
-            'params' => 'required|array',
             'description' => 'nullable|string'
         ];
 
@@ -56,11 +55,11 @@ trait Component
             foreach ($params as $attr => $value) {
 
                 if ($value->type == 'image') {
-                    $rules["params.$attr"] = 'mimes:jpeg,bmp,png,jpg,gif';
+                    $rules["params_$attr"] = 'mimes:jpeg,bmp,png,jpg,gif';
                 }
 
                 if ($value->type == 'text') {
-                    $rules["params.$attr"] = 'required|string';
+                    $rules["params_$attr"] = 'required|string';
                 }
 
             }

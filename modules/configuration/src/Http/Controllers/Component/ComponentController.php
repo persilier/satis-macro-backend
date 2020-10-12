@@ -157,7 +157,7 @@ class ComponentController extends ApiController
 
             foreach ($componentParams as $attr => $value) {
                 try {
-                    if ($value->type == 'image' && $request->hasfile("params.$attr")) {
+                    if ($value->type == 'image' && $request->hasfile("params_$attr")) {
 
                         // replace the property value of the stdObject by the file corresponding to the image
                         $value->value = $component->files->first(function ($file, $fileKey) use ($value) {
@@ -175,8 +175,8 @@ class ComponentController extends ApiController
                             Storage::disk('public')->delete($pathToImage);
                         }
 
-                        $title = $request->file("params.$attr")->getClientOriginalName();
-                        $path = $request->file("params.$attr")->store('components', 'public');
+                        $title = $request->file("params_$attr")->getClientOriginalName();
+                        $path = $request->file("params_$attr")->store('components', 'public');
                         $url = Storage::url("$path");
 
                         $file = $component->files()->create(['title' => $title, 'url' => $url]);
@@ -194,7 +194,7 @@ class ComponentController extends ApiController
                 }
 
                 if ($value->type == 'text') {
-                    $params[$attr]['value'] = $request->{"params.$attr"};
+                    $params[$attr]['value'] = $request->{"params_$attr"};
                 }
 
                 $params[$attr]['type'] = $value->type;

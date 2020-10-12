@@ -27,7 +27,9 @@ class ComponentSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create staff from any unit permissions
-        Permission::create(['name' => 'update-components-parameters', 'guard_name' => 'api']);
+        if (is_null(Permission::where('name', 'update-components-parameters')->where('guard_name', 'api')->first())) {
+            Permission::create(['name' => 'update-components-parameters', 'guard_name' => 'api']);
+        }
 
         if ($nature === 'MACRO') {
             // create admin roles
