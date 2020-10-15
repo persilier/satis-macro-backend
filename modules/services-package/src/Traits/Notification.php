@@ -14,6 +14,8 @@ use Spatie\Permission\Models\Role;
 trait Notification
 {
 
+    use ActivePilot;
+
     protected function getNotification($event)
     {
         return collect(json_decode(Metadata::ofName('notifications')->firstOrFail()->data))
@@ -36,23 +38,23 @@ trait Notification
     protected function getInstitutionPilot($institution = null)
     {
 
-        $roleName = 'pilot';
+        $roleName = null;
 
         if (!is_null($institution)) {
-            if ($institution->institutionType->name == 'holding' && Role::where('name', 'pilot-holding')->where('guard_name', 'api')->exists()) {
-                $roleName = 'pilot-holding';
-            } elseif ($institution->institutionType->name == 'filiale' && Role::where('name', 'pilot-filial')->where('guard_name', 'api')->exists()) {
-                $roleName = 'pilot-filial';
-            }
+            $roleName = $this->getPilotRoleNameByInstitution($institution);
+        }
+
+        if (is_null($roleName)) {
+            return null;
         }
 
         try {
             return User::with('identite.staff')
                 ->get()
                 ->first(function ($value, $key) use ($institution, $roleName) {
-                    return (($institution->institutionType->name == 'observatory' || $institution->institutionType->name == 'membre') && Role::where('name', $roleName)->where('guard_name', 'api')->exists())
-                        ? $value->hasRole($roleName)
-                        : $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName);
+                    return ($institution->institutionType->name == 'observatory' || $institution->institutionType->name == 'membre')
+                        ? $value->hasRole($roleName) && $value->identite->staff->is_active_pilot
+                        : $value->identite->staff->institution_id == $institution->id && $value->hasRole($roleName) && $value->identite->staff->is_active_pilot;
                 })->identite;
         } catch (\Exception $exception) {
             return null;

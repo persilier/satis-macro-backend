@@ -6,13 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
+use Spatie\Permission\Models\Role;
 use Spatie\Translatable\HasTranslations;
 
 class Staff extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, ActivePilot;
 
     /**
      * The attributes that are translatable
@@ -56,11 +59,22 @@ class Staff extends Model
     }
 
     /**
+     * Get the activePilot flag for the staff.
+     *
+     * @return bool
+     */
+    public function getIsActivePilotAttribute()
+    {
+        // return true if the user corresponding to the staff has the role pilot and he is the active one in this institution
+        return $this->institution->active_pilot_id === $this->attributes['id'] && $this->checkIfStaffIsPilot($this);
+    }
+
+    /**
      * The accessors to append to the model's array form.
      *
      * @var array
      */
-    protected $appends = ['is_lead'];
+    protected $appends = ['is_lead', 'is_active_pilot'];
 
     /**
      * Get the identite associated with the staff

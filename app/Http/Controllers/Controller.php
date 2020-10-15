@@ -25,14 +25,7 @@ class Controller extends BaseController
 
     public function index()
     {
-        $claim = \Satis2020\ServicePackage\Models\Claim::find("a9a79643-cffc-443f-a7d9-df53e1fb8f81");
-        $identity = \Satis2020\ServicePackage\Models\Identite::find("ed2f15a9-2b1b-4549-b48f-65fcf50d8cd9");
-        //$discussion = Discussion::findOrFail("54ca6988-7139-4042-ada2-bb1af8a13af2");
-        //$message = Message::findOrFail("bc3e54ba-d377-4486-b1d7-10158cc2b881");
-
-        dd($this->getStaffIdentities(["3b4bcea9-ea57-4e29-956c-5c2702a1c04c", "343c2188-32e6-44b6-a090-6045f9b4b86d", "7d2c8ca6-bd0d-49f6-a238-34608d02dee4"], ["7d2c8ca6-bd0d-49f6-a238-34608d02dee4"]));
-
-        return $claim;
+        return response()->json($this->getInstitutionPilot(Institution::findOrFail("137579d2-8181-4774-9701-d8054c873c65")));
     }
 
     public function download(File $file)
@@ -50,13 +43,14 @@ class Controller extends BaseController
      * @param $file
      * @return BinaryFileResponse
      */
-    public function downloadExcels($file){
+    public function downloadExcels($file)
+    {
 
         $files = [
-            'clients' => ['url' => "/storage/excels/clients.xlsx" , 'name' => 'clients.xlsx'],
-            'staffs' => ['url' => "/storage/excels/staffs.xlsx" , 'name' => 'staffs.xlsx'],
-            'categories' => ['url' => "/storage/excels/categories.xlsx" , 'name' => 'categories.xlsx'],
-            'objects' => ['url' => "/storage/excels/objects.xlsx" , 'name' => 'objects.xlsx']
+            'clients' => ['url' => "/storage/excels/clients.xlsx", 'name' => 'clients.xlsx'],
+            'staffs' => ['url' => "/storage/excels/staffs.xlsx", 'name' => 'staffs.xlsx'],
+            'categories' => ['url' => "/storage/excels/categories.xlsx", 'name' => 'categories.xlsx'],
+            'objects' => ['url' => "/storage/excels/objects.xlsx", 'name' => 'objects.xlsx']
         ];
         return response()->download(public_path($files[$file]['url']), $files[$file]['name']);
     }

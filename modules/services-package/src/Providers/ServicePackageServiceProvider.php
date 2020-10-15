@@ -204,6 +204,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router->aliasMiddleware('permission', \Satis2020\ServicePackage\Http\Middleware\Permission::class);
         $router->aliasMiddleware('verification', \Satis2020\ServicePackage\Http\Middleware\Verification::class);
         $router->aliasMiddleware('mystaff', \Satis2020\ServicePackage\Http\Middleware\MyStaff::class);
+        $router->aliasMiddleware('active.pilot', \Satis2020\ServicePackage\Http\Middleware\ActivePilot::class);
     }
 
     /**

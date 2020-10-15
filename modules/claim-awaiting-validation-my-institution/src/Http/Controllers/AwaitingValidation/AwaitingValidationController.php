@@ -24,6 +24,8 @@ class AwaitingValidationController extends ApiController
         $this->middleware('permission:list-claim-awaiting-validation-my-institution')->only(['index']);
         $this->middleware('permission:show-claim-awaiting-validation-my-institution')->only(['show']);
         $this->middleware('permission:validate-treatment-my-institution')->only(['validate', 'invalidate']);
+
+        $this->middleware('active.pilot')->only(['index', 'show', 'validate', 'invalidate']);
     }
 
     /**

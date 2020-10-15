@@ -33,7 +33,8 @@ class Institution extends Model
      * @var array
      */
     protected $fillable = [
-        'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id', 'orther_attributes'
+        'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id',
+        'orther_attributes', 'active_pilot_id'
     ];
 
     /**
@@ -77,6 +78,15 @@ class Institution extends Model
     public function defaultCurrency()
     {
         return $this->belongsTo(Currency::class, 'default_currency_slug', 'slug');
+    }
+
+    /**
+     * Get the activePilot associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function activePilot()
+    {
+        return $this->belongsTo(Staff::class);
     }
 
     /**

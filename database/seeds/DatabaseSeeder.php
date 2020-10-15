@@ -120,7 +120,8 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ReportingClaimAnyInstitution\Database\Seeds\RolesConfigTableSeeder::class);
 //        $this->call(\Satis2020\ReportingClaimMyInstitution\Database\Seeds\RolesConfigTableSeeder::class);
 //        $this->call(\Satis2020\Faq\Database\Seeds\RolesTableFaqSeeder::class);
-        $this->call(\Satis2020\Configuration\Database\Seeds\ComponentSeeder::class);
+//        $this->call(\Satis2020\Configuration\Database\Seeds\ComponentSeeder::class);
+        $this->call(\Satis2020\ActivePilot\Database\Seeds\RolesTableSeeder::class);
 
     }
 

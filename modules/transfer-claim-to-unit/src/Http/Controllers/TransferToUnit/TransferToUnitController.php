@@ -23,6 +23,8 @@ class TransferToUnitController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:transfer-claim-to-unit')->only(['update', 'edit']);
+
+        $this->middleware('active.pilot')->only(['update', 'edit']);
     }
 
     /**

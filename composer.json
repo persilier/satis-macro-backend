@@ -17,6 +17,7 @@
     "laravel/framework": "^7.0",
     "laravel/tinker": "^2.0",
     "satis2020/account-type": "^1.0",
+    "satis2020/active-pilot": "^1.0",
     "satis2020/any-claim-archived": "^1.0",
     "satis2020/any-institution": "^1.0",
     "satis2020/any-institution-unit": "^1.0",
@@ -568,6 +569,13 @@
     {
       "type": "path",
       "url": "modules/search/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/active-pilot/",
       "options": {
         "symlink": true
       }

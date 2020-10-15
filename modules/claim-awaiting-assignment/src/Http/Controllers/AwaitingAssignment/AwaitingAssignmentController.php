@@ -24,6 +24,8 @@ class AwaitingAssignmentController extends ApiController
         $this->middleware('permission:list-claim-awaiting-assignment')->only(['index']);
         $this->middleware('permission:show-claim-awaiting-assignment')->only(['show']);
         $this->middleware('permission:merge-claim-awaiting-assignment')->only(['merge']);
+
+        $this->middleware('active.pilot')->only(['index', 'show', 'merge']);
     }
 
     /**

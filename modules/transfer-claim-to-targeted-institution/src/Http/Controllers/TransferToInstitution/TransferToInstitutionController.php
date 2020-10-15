@@ -27,6 +27,8 @@ class TransferToInstitutionController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:transfer-claim-to-targeted-institution')->only(['update']);
+
+        $this->middleware('active.pilot')->only(['update']);
     }
 
     /**

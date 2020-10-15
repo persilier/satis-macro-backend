@@ -23,6 +23,8 @@ class TransferToCircuitUnitController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:transfer-claim-to-circuit-unit')->only(['update', 'edit']);
+
+        $this->middleware('active.pilot')->only(['update', 'edit']);
     }
 
     /**

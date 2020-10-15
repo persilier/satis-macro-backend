@@ -3936,6 +3936,7 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/claim-awaiting-validation-my-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/claim-awaiting-validation-any-institution" />
       <path value="$PROJECT_DIR$/vendor/satis2020/claim-awaiting-validation-any-institution" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/active-pilot" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
