@@ -38,6 +38,7 @@ trait UnitTrait
             ])->where('institution_id', $institution)->findOrFail($id);
 
             return $unit;
+
         }catch (\Exception $exception){
             throw new CustomException("Can't retrieve the staff institution");
         }
