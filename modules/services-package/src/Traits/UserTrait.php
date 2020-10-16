@@ -82,6 +82,7 @@ trait UserTrait
         if($institution){
 
             $rules[ 'institution_id'] = 'required|exists:institutions,id';
+
         }
 
         return $rules;

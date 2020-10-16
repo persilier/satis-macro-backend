@@ -40,3 +40,5 @@ Route::name('resend')->get('users/{user}/resend', 'User\UserController@resend');
  */
 Route::name('login')->get('login', 'Auth\AuthController@login');
 Route::name('logout')->get('logout', 'Auth\AuthController@logout');
+Route::name('edit-profil')->get('edit-profil', 'Auth\AuthController@edit');
+Route::name('update-profil')->put('update-profil', 'Auth\AuthController@update');

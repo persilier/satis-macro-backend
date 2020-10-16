@@ -72,6 +72,7 @@ class ClaimCategoryController extends ApiController
         $this->validate($request, $this->rules($claimCategory));
         $claimCategory->update($request->only(['name', 'description', 'others']));
         return response()->json($claimCategory, 201);
+
     }
 
 
