@@ -48,7 +48,7 @@ class CategoryClient extends Model
      */
     public function clients()
     {
-        return $this->hasMany(Client::class, 'category_clients_id');
+        return $this->hasMany(ClientInstitution::class, 'category_client_id');
     }
 
 }

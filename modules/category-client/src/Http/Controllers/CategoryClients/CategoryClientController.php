@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\CategoryClient\Http\Controllers\CategoryClients;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -37,7 +38,7 @@ class CategoryClientController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function store(Request $request)
@@ -56,7 +57,7 @@ class CategoryClientController extends ApiController
      * Display the specified resource.
      *
      * @param CategoryClient $category_client
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(CategoryClient $category_client)
     {
@@ -65,11 +66,9 @@ class CategoryClientController extends ApiController
 
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param CategoryClient $category_client
-     * @return \Illuminate\Http\JsonResponse|TypeClientResource
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function update(Request $request, CategoryClient $category_client)
@@ -83,12 +82,10 @@ class CategoryClientController extends ApiController
         return response()->json($category_client, 201);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
      * @param CategoryClient $category_client
-     * @return TypeClientResource
-     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
+     * @return JsonResponse
      */
     public function destroy(CategoryClient $category_client)
     {
