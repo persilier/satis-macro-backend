@@ -22,7 +22,7 @@ trait IdentityManagement
     /**
      * @return array
      */
-    protected function rules(){
+    protected function rulesProfile(){
 
         return [
             'firstname' => 'required|string',

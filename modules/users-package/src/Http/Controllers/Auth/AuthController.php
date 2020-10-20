@@ -60,7 +60,7 @@ class AuthController extends ApiController
      */
     public function update(Request $request){
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rulesProfile());
 
         $identite = $this->user()->identite;
 
