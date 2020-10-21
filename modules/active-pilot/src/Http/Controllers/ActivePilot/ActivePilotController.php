@@ -55,7 +55,15 @@ class ActivePilotController extends ApiController
                 if ($checkIfStaffIsPilot && $staff->is_active_pilot && $staff->id == $value->id) {
                     return false;
                 }
-                return $value->identite->user->hasRole($roleName);
+
+
+                if(!is_null($value->identite)){
+                    if(!is_null($value->identite->user)){
+                        return $value->identite->user->hasRole($roleName);
+                    }
+                }
+
+                return false;
             })
             ->values(), 200);
     }
