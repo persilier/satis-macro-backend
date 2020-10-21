@@ -170,25 +170,6 @@ trait UserTrait
         ];
     }
 
-    /**
-     * @param bool $myChangePassword
-     * @return array
-     */
-    protected function rulesChangePassword($myChangePassword = false){
-
-        $rules = [
-            'new_password' => 'required|min:8|confirmed',
-        ];
-
-        if($myChangePassword){
-
-            $rules['current_password'] = ['required'];
-        }
-
-        return $rules;
-
-    }
-
 
     /**
      * @param $user

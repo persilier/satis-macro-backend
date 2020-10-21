@@ -20,4 +20,6 @@ Route::prefix('/any')->name('any.')->group(function () {
     Route::resource('institutions', 'Institutions\InstitutionController');
     Route::name('institutions.update.logo')->post('institutions/{institution}/update-logo', 'Institutions\InstitutionController@updateLogo');
     Route::resource('institutions.units', 'Institutions\InstitutionUnitController')->only(['index']);
+
+    Route::post('import-institutions', 'ImportExport\ImportController@importInstitutions');
 });

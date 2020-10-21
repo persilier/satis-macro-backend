@@ -118,20 +118,6 @@ class UserController extends ApiController
 
 
     /**
-     * @param Request $request
-     * @param User $user
-     * @return JsonResponse
-     * @throws ValidationException
-     */
-    protected function changePassword(Request $request, User $user){
-
-        $this->validate($request, $this->rulesChangePassword());
-
-        return response()->json($this->updatePassword($request, $user),201);
-    }
-
-
-    /**
      * @param User $user
      * @return JsonResponse
      */

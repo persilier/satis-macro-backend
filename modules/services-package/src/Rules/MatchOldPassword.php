@@ -2,10 +2,7 @@
 
 namespace Satis2020\ServicePackage\Rules;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Models\Institution;
 
 /**
  * Class MatchOldPassword

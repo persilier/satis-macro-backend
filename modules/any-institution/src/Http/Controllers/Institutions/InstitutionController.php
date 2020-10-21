@@ -15,6 +15,10 @@ use Satis2020\ServicePackage\Rules\FieldUnicityRules;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\UploadFile;
 
+/**
+ * Class InstitutionController
+ * @package Satis2020\AnyInstitution\Http\Controllers\Institutions
+ */
 class InstitutionController extends ApiController
 {
     use UploadFile, InstitutionTrait;
@@ -88,17 +92,7 @@ class InstitutionController extends ApiController
             ]);
         }
 
-        $rules = [
-            'name' => ['required', new FieldUnicityRules('institutions', 'name')],
-            'acronyme' => ['required', new FieldUnicityRules('institutions', 'acronyme')],
-            'iso_code' => 'required|string|max:50',
-            'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
-            'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'institution_type_id' => 'required|exists:institution_types,id',
-            'orther_attributes' => 'array',
-        ];
-
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rules());
 
         if (false === $this->getVerifiedStore($request->institution_type_id, $this->nature()))
             return response()->json(['error' => "Impossible d'enregistrer une autre institution du type sélectionné.", 'code' => 400], 400);
@@ -161,16 +155,7 @@ class InstitutionController extends ApiController
             ]);
         }
 
-        $rules = [
-            'name' => ['required', new FieldUnicityRules('institutions', 'name', 'id', "{$institution->id}")],
-            'acronyme' => ['required', new FieldUnicityRules('institutions', 'acronyme', 'id', "{$institution->id}")],
-            'iso_code' => 'required|string|max:50',
-            'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
-            'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'institution_type_id' => 'required|exists:institution_types,id',
-            'orther_attributes' => 'array',
-        ];
-        $this->validate($request, $rules);
+        $this->validate($request, $this->rules());
 
         if (false === $this->getVerifiedStore($request->institution_type_id, $this->nature()))
             return response()->json(['error' => "Impossible d'enregistrer une autre institution du type sélectionné.", 'code' => 400], 400);
