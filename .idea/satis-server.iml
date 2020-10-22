@@ -106,6 +106,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ringcentral/psr7" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/active-pilot" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/any-institution-type-role" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-history" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/comparator" />

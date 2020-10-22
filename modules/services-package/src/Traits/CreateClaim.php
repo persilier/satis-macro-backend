@@ -14,6 +14,7 @@ use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
@@ -124,6 +125,7 @@ trait CreateClaim
      * @param bool $with_relationship
      * @param bool $with_unit
      * @return string
+     * @throws CustomException
      */
     protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
@@ -215,19 +217,28 @@ trait CreateClaim
         $this->uploadAttachments($request, $claim);
 
         // send notification to claimer
-        if(!is_null($claim->claimer)){
+        if (!is_null($claim->claimer)) {
             $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
-        }        
+        }
 
         // send notification to pilot
-        if(!is_null($claim->createdBy)){
-            if(!is_null($claim->createdBy->institution)){
-                if(!is_null($this->getInstitutionPilot($claim->createdBy->institution))){
+        if (!is_null($claim->createdBy)) {
+
+            if (!is_null($claim->createdBy->institution)) {
+
+                if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
+
                     $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+
+                    // check if the claimObject related to the claim have a time_limit = 1 and send a notification
+                    $this->closeTimeLimitNotification($claim);
+
                 }
+
             }
-        }  
-        
+
+        }
+
 
         return $claim;
     }
@@ -255,6 +266,16 @@ trait CreateClaim
                 return $value->institutionType->name != 'holding' && $value->institutionType->name != 'observatory';
             })
             ->values();
+    }
+
+    protected function closeTimeLimitNotification($claim)
+    {
+        // check if the claimObject related to the claim have a time_limit = 1 and send a notification to the active pilot
+        if (!is_null($claim->claimObject)) {
+            if ($claim->claimObject->time_limit == 1) {
+                $this->getInstitutionPilot($claim->createdBy->institution)->notify(new ReminderBeforeDeadline($claim, $claim->claimObject->time_limit));
+            }
+        }
     }
 
 }
