@@ -46,6 +46,7 @@
     "satis2020/monitoring-claim-my-institution": "^1.0",
     "satis2020/my-claim-archived": "^1.0",
     "satis2020/my-institution": "^1.0",
+    "satis2020/my-institution-type-role": "^1.0",
     "satis2020/my-institution-unit": "^1.0",
     "satis2020/my-user": "^1.0",
     "satis2020/notification": "^1.0",
@@ -592,6 +593,13 @@
     {
       "type": "path",
       "url": "modules/any-institution-type-role/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/my-institution-type-role/",
       "options": {
         "symlink": true
       }
