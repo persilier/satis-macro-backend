@@ -50,7 +50,8 @@ class Controller extends BaseController
             'clients' => ['url' => "/storage/excels/clients.xlsx", 'name' => 'clients.xlsx'],
             'staffs' => ['url' => "/storage/excels/staffs.xlsx", 'name' => 'staffs.xlsx'],
             'categories' => ['url' => "/storage/excels/categories.xlsx", 'name' => 'categories.xlsx'],
-            'objects' => ['url' => "/storage/excels/objects.xlsx", 'name' => 'objects.xlsx']
+            'objects' => ['url' => "/storage/excels/objects.xlsx", 'name' => 'objects.xlsx'],
+            'institutions' => ['url' => "/storage/excels/institutions.xlsx", 'name' => 'institutions.xlsx']
         ];
         return response()->download(public_path($files[$file]['url']), $files[$file]['name']);
     }
