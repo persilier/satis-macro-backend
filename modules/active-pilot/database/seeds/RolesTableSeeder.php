@@ -23,7 +23,12 @@ class RolesTableSeeder extends Seeder
         $nature = env('APP_NATURE');
 
         // create staff from any unit permissions
-        $permission_update = Permission::create(['name' => 'update-active-pilot', 'guard_name' => 'api']);
+        $permission_update = Permission::where('name', 'update-active-pilot')->where('guard_name', 'api')->first();
+        
+        if(is_null($permission_update)){
+            $permission_update = Permission::create(['name' => 'update-active-pilot', 'guard_name' => 'api']);
+        }
+        
 
         if ($nature === 'MACRO') {
             // create admin roles
