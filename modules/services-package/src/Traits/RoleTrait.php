@@ -126,6 +126,7 @@ trait RoleTrait
                 if(!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType)){
 
                     throw new CustomException("Impossible d'attribuer la permission  {$permission} à ce rôle.");
+
                 }
 
             }

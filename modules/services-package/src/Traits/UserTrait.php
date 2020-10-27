@@ -46,9 +46,13 @@ trait UserTrait
             $institution = $this->institution();
 
             $users = $users->whereHas('identite', function($query) use ($institution){
+
                 $query->whereHas('staff', function($q) use ($institution){
+
                     $q->where('institution_id', $institution->id);
+
                 });
+
             });
         }
 
@@ -119,9 +123,11 @@ trait UserTrait
         $roles = $identiteRole['roles'];
 
         $user = User::create([
+
             'username' => $identite->email[0],
             'password' => bcrypt($request->password),
             'identite_id' => $identite->id
+
         ]);
 
         $user->assignRole($roles);
@@ -165,8 +171,10 @@ trait UserTrait
         })->doesntHave('user')->get();
 
         return [
+
             'identites' => $identites,
             'roles' => $this->getAllRolesInstitutionTypes($institution)
+
         ];
     }
 
