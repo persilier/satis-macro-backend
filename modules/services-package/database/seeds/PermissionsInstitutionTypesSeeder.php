@@ -86,6 +86,10 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
             'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
             'update-components-parameters',
+            'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
+            'history-list-create-claim',
+            'history-list-treat-claim',
+            'update-active-pilot',
         ];
 
         $filialPermissions = [
@@ -108,7 +112,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'transfer-claim-to-circuit-unit',
             'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
             'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
-
+            'history-list-create-claim',
+            'history-list-treat-claim',
+            'update-active-pilot',
         ];
 
         $observatoryPermissions = [
@@ -148,14 +154,17 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
             'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
             'update-components-parameters',
-
+            'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
+            'history-list-create-claim',
+            'history-list-treat-claim',
+            'update-active-pilot',
         ];
 
         $memberPermissions = [
             'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
             'show-dashboard-data-my-institution', 'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
             'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
-
+            'history-list-treat-claim',
         ];
 
         $independantPermissions = [
@@ -198,7 +207,10 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
             'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
             'update-components-parameters',
-
+            'list-my-institution-type-role', 'show-my-institution-type-role', 'store-my-institution-type-role', 'update-my-institution-type-role', 'delete-my-institution-type-role',
+            'history-list-create-claim',
+            'history-list-treat-claim',
+            'update-active-pilot',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {

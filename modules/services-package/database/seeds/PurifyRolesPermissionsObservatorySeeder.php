@@ -61,6 +61,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
                     'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
                     'update-components-parameters',
+                    'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
+                    'update-active-pilot',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -73,19 +75,23 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-reporting-claim-any-institution',
                     'transfer-claim-to-unit',
                     'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
-                    'show-dashboard-data-all-institution'
+                    'show-dashboard-data-all-institution',
+                    'history-list-create-claim',
+                    'update-active-pilot',
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [
                     'store-claim-without-client',
                     'list-satisfaction-measured-any-claim', 'update-satisfaction-measured-any-claim',
                     'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
-                    'show-dashboard-data-my-activity'
+                    'show-dashboard-data-my-activity',
+                    'history-list-create-claim',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
-                    'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity'
+                    'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
+                    'history-list-treat-claim',
                 ]
             ];
 

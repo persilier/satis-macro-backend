@@ -63,6 +63,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
                     'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
                     'update-components-parameters',
+                    'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
+                    'update-active-pilot',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -78,6 +80,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'transfer-claim-to-targeted-institution',
                     'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
                     'list-any-claim-archived', 'show-any-claim-archived',
+                    'history-list-create-claim',
+                    'update-active-pilot'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -85,11 +89,14 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'show-dashboard-data-my-activity',
                     'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
+                    'history-list-create-claim',
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
+                    'history-list-treat-claim',
+
                 ]
             ];
 

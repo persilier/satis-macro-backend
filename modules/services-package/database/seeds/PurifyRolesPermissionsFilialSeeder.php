@@ -44,6 +44,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-staff-from-my-unit', 'store-staff-from-my-unit', 'update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
                     'show-dashboard-data-my-institution',
                     'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
+                    'update-active-pilot',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -57,6 +58,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'transfer-claim-to-circuit-unit',
                     'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
                     'show-dashboard-data-my-institution',
+                    'history-list-create-claim',
+                    'update-active-pilot',
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -64,11 +67,13 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
                     'show-dashboard-data-my-activity',
+                    'history-list-create-claim',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
+                    'history-list-treat-claim',
                 ]
             ];
 

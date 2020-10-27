@@ -40,6 +40,7 @@ class PurifyRolesPermissionsMembreSeeder extends Seeder
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
+                    'history-list-treat-claim',
                 ]
             ];
 
