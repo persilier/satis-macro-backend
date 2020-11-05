@@ -20,5 +20,6 @@ Route::prefix('my')->group(function () {
     Route::name('my.')->group(function () {
         Route::resource('claims', 'Claim\ClaimController')->only(['create', 'store']);
         Route::resource('identites.claims', 'Identite\IdentiteClaimController', ['only' => ['store']]);
+        Route::post('import-claim', 'ImportExport\ImportController@importClaims');
     });
 });
