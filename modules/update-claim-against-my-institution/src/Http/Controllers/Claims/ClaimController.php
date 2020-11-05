@@ -4,6 +4,7 @@ namespace Satis2020\UpdateClaimAgainstMyInstitution\Http\Controllers\Claims;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -73,7 +74,7 @@ class ClaimController extends ApiController
      * @return JsonResponse
      * @throws CustomException
      * @throws ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request, $claimId)
     {
