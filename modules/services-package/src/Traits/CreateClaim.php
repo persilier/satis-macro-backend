@@ -13,6 +13,7 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Notifications\Recurrence;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
@@ -232,6 +233,9 @@ trait CreateClaim
 
                     // check if the claimObject related to the claim have a time_limit = 1 and send a notification
                     $this->closeTimeLimitNotification($claim);
+
+                    // send recurrence notification to the pilot
+                    $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
 
                 }
 

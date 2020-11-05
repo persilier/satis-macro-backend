@@ -3,7 +3,9 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Carbon\Carbon;
 use Satis2020\ServicePackage\Channels\MessageChannel;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -120,7 +122,7 @@ trait Notification
             'RejectAClaim' => ['transferred_to_targeted_institution', 'full'],
             'AssignedToStaff' => ['assigned_to_staff'],
             'TreatAClaim' => ['treated'],
-            'ValidateATreatment' => ['archived', 'validated'],
+            //'ValidateATreatment' => ['archived', 'validated'],
             'InvalidateATreatment' => ['assigned_to_staff'],
             'AddContributorToDiscussion' => ['assigned_to_staff', 'treated', 'validated'],
         ];
@@ -137,6 +139,25 @@ trait Notification
             'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y');
 
         return strtr($string, $unwanted_array);
+    }
+
+    protected function canSendRecurrenceNotification($institutionId)
+    {
+        $recurrenceAlertSettings = json_decode(Metadata::ofName('recurrence-alert-settings')->firstOrFail()->data);
+
+        $numberOfClaims = Claim::with(['createdBy'])
+            ->whereBetween('created_at', [
+                Carbon::now()->subDays($recurrenceAlertSettings->recurrence_period)->format('Y-m-d H:i:s'),
+                Carbon::now()->format('Y-m-d H:i:s')
+            ])
+            ->get()
+            ->filter(function ($claim, $key) use ($institutionId) {
+                return $claim->createdBy->institution_id == $institutionId;
+            })
+            ->count();
+
+        return $numberOfClaims >= $recurrenceAlertSettings->max;
+
     }
 
 }

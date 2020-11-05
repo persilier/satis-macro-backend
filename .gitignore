@@ -17,3 +17,4 @@ composer.lock
 package-lock.json
 package.json
 /config/broadcasting.php
+/tests
