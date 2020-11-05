@@ -4,6 +4,8 @@ namespace Satis2020\UserPackage\Http\Controllers\Identite;
 
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Client;
@@ -11,6 +13,10 @@ use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
+/**
+ * Class IdentiteClientController
+ * @package Satis2020\UserPackage\Http\Controllers\Identite
+ */
 class IdentiteClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity;

@@ -28,7 +28,7 @@ class RoleController extends ApiController
         $this->middleware('permission:show-any-institution-type-role')->only(['show']);
         $this->middleware('permission:store-any-institution-type-role')->only(['create', 'store']);
         $this->middleware('permission:update-any-institution-type-role')->only(['edit', 'update']);
-        $this->middleware('permission:delete-any-institution-type-role')->only(['destroy']);
+        $this->middleware('permission:destroy-any-institution-type-role')->only(['destroy']);
     }
 
 
