@@ -35,15 +35,6 @@ class AuthController extends ApiController
             "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
             'institution'=> $this->institution()
         ],200);
-
-        //return response()->json(,200);
-
-        /*return (new UserResource($user))->additional([
-            'staff' => $this->staff(),
-            "app-nature" => $this->nature(),
-            "permissions" => $user->getPermissionsViaRoles()->pluck('name'),
-            'institution'=> $this->institution()
-        ]);*/
     }
 
     /**
