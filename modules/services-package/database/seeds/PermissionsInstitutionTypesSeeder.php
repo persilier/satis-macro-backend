@@ -92,6 +92,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
             'update-recurrence-alert-settings',
+            'update-reject-unit-transfer-parameters',
+            'update-min-fusion-percent-parameters',
         ];
 
         $filialPermissions = [
@@ -163,6 +165,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
             'update-recurrence-alert-settings',
+            'update-reject-unit-transfer-parameters',
+            'update-min-fusion-percent-parameters',
         ];
 
         $memberPermissions = [
@@ -218,6 +222,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
             'update-recurrence-alert-settings',
+            'update-reject-unit-transfer-parameters',
+            'update-min-fusion-percent-parameters',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {

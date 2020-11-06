@@ -40,3 +40,11 @@ Route::get('components/retrieve-by-name/{componentName}', 'Component\ComponentCo
 // Recurrence Alert configurations
 Route::get("/configurations/recurrence-alert", "RecurrenceAlert\RecurrenceAlertController@show")->name("configurations.recurrence.alert.show");
 Route::put("/configurations/recurrence-alert", "RecurrenceAlert\RecurrenceAlertController@update")->name("configurations.recurrence.alert.update");
+
+// Reject Unit Transfer Limitation configurations
+Route::get("/configurations/reject-unit-transfer-limitation", "RejectUnitTransferLimitation\RejectUnitTransferLimitationController@show")->name("configurations.reject.unit.transfer.limitation.show");
+Route::put("/configurations/reject-unit-transfer-limitation", "RejectUnitTransferLimitation\RejectUnitTransferLimitationController@update")->name("configurations.reject.unit.transfer.limitation.update");
+
+// Min Fusion Percent configurations
+Route::get("/configurations/min-fusion-percent", "MinFusionPercent\MinFusionPercentController@show")->name("configurations.min.fusion.percent.limitation.show");
+Route::put("/configurations/min-fusion-percent", "MinFusionPercent\MinFusionPercentController@update")->name("configurations.min.fusion.percent.limitation.update");
