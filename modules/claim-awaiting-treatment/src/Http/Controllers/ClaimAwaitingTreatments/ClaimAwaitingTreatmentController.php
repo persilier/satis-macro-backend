@@ -127,6 +127,10 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
+        if(!$this->canRejectClaim($claim)){
+            return $this->errorResponse('Can not reject this claim', 403);
+        }
+
         $claim = $this->rejectedClaimUpdate($claim, $request);
 
         return response()->json($claim, 200);

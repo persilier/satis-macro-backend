@@ -63,6 +63,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'update-components-parameters',
                     'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
                     'update-active-pilot',
+                    'update-recurrence-alert-settings',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
