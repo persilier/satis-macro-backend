@@ -122,8 +122,9 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\Faq\Database\Seeds\RolesTableFaqSeeder::class);
 //        $this->call(\Satis2020\Configuration\Database\Seeds\ComponentSeeder::class);
 //        $this->call(\Satis2020\ActivePilot\Database\Seeds\RolesTableSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\RecurrenceReclamationSeeder::class);
-        $this->call(\Satis2020\Notification\Database\Seeds\RecurrenceNotificationsTableSeeder::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\RecurrenceReclamationSeeder::class);
+//        $this->call(\Satis2020\Notification\Database\Seeds\RecurrenceNotificationsTableSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\RejectUnitTransferLimitationSeeder::class);
 
     }
 

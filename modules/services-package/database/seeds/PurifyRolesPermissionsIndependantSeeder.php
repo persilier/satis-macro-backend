@@ -65,7 +65,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-components-parameters',
                     'list-my-institution-type-role', 'show-my-institution-type-role', 'store-my-institution-type-role', 'update-my-institution-type-role', 'delete-my-institution-type-role',
                     'update-active-pilot',
-
+                    'update-recurrence-alert-settings',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

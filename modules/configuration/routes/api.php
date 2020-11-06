@@ -36,3 +36,7 @@ Route::resource('delai-treatment-parameters', 'DelaiParameters\TreatmentControll
 // Component configurations
 Route::resource('components', 'Component\ComponentController')->except(['create', 'edit']);
 Route::get('components/retrieve-by-name/{componentName}', 'Component\ComponentController@showByName')->name('components.show.by.name');
+
+// Recurrence Alert configurations
+Route::get("/configurations/recurrence-alert", "RecurrenceAlert\RecurrenceAlertController@show")->name("configurations.recurrence.alert.show");
+Route::put("/configurations/recurrence-alert", "RecurrenceAlert\RecurrenceAlertController@update")->name("configurations.recurrence.alert.update");

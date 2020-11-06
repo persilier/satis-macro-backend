@@ -91,6 +91,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-treat-claim',
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
+            'update-recurrence-alert-settings',
         ];
 
         $filialPermissions = [
@@ -161,6 +162,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-treat-claim',
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
+            'update-recurrence-alert-settings',
         ];
 
         $memberPermissions = [
@@ -215,6 +217,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-treat-claim',
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
+            'update-recurrence-alert-settings',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {
