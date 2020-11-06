@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Rules\AccountValidationForImportClaimRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
+use Satis2020\ServicePackage\Rules\InstitutionValidationForImportRules;
 use Satis2020\ServicePackage\Rules\NameModelRules;
 use Satis2020\ServicePackage\Rules\UnitValidationForImportClaimRules;
 
@@ -47,10 +49,16 @@ trait ImportClaim
     public function rules($request, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $rules = $this->rulesIdentite();
-        $rules['institution_concernee'] = 'required|exists:institutions,acronyme';
+        $rules['institution_concernee'] = ['required','exists:institutions,acronyme', new InstitutionValidationForImportRules($this->myInstitution, $this->institution()->id)];
         $rules['objet_reclamation'] = ['required', new NameModelRules(['table' => 'claim_objects', 'column' => 'name'])];
         $rules['canal_reception_slug'] = 'required|exists:channels,slug';
-        $rules['canal_reponse_slug'] = ['required', 'exists:channels,slug', new ChannelIsForResponseRules];
+        $rules['canal_reponse_slug'] = ['required', 'exists:channels,slug', function($attribute, $value, $fail){
+
+            $channel = Channel::where('slug', $value)->first();
+            if (empty($channel) || ($channel->is_response != '1')) {
+                $fail($attribute . ' attribute is not a response channel');
+            }
+        }];
         $rules['montant_reclame'] = 'nullable|integer|min:1';
         $rules['devise_slug'] = ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request['montant_reclame']))];
         $rules['date_evenement'] = [
@@ -77,7 +85,7 @@ trait ImportClaim
         }
 
         if ($with_relationship) {
-            $rules['relationship'] = 'required|exists:relationships,id';
+            $rules['relationship'] =  ['required', new NameModelRules(['table' => 'relationships', 'column' => 'name'])];
         }
 
         if ($with_unit) {
@@ -166,6 +174,8 @@ trait ImportClaim
         }
 
         if($with_relationship){
+
+            $data['relationship_id'] = $row['relationship'];
 
         }
 
@@ -271,12 +281,12 @@ trait ImportClaim
 
         if ($with_client) {
 
-            $data['account_targeted_id'] = 'numero_compte_concerne';
+            $data['account_targeted_id'] = $request['numero_compte_concerne'];
         }
 
         if ($with_relationship) {
 
-
+            $data['relationship_id'] = $request['relationship'];
         }
 
         if($with_unit){
@@ -289,10 +299,12 @@ trait ImportClaim
 
     /**
      * @param $data
+     * @param bool $with_client
+     * @param bool $with_relationship
      * @param bool $with_unit
      * @return
      */
-    protected function recupIdsData($data, $with_client = true , $with_unit = true){
+    protected function recupIdsData($data, $with_client = true ,$with_relationship = false, $with_unit = true){
 
         $data = $this->getIdInstitution($data, 'institution_concernee', 'acronyme');
 
@@ -300,6 +312,11 @@ trait ImportClaim
 
             $data = $this->getIds($data, 'units', 'unite_concernee', 'name');
 
+        }
+
+        if($with_relationship){
+
+            $data = $this->getIds($data, 'relationships', 'relationship', 'name');
         }
 
         $data = $this->getIds($data, 'claim_objects', 'objet_reclamation', 'name');
