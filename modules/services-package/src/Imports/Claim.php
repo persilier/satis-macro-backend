@@ -24,16 +24,25 @@ class Claim implements ToCollection, WithHeadingRow
     private $etat; // action for
     private $errors; // array to accumulate errors
     private $myInstitution;
+    private $with_client;
+    private $with_relationship;
+    private $with_unit;
 
     /**
      * Client constructor.
      * @param $etat
      * @param $myInstitution
+     * @param $with_client
+     * @param $with_relationship
+     * @param $with_unit
      */
-    public function __construct($etat, $myInstitution)
+    public function __construct($etat, $myInstitution, $with_client, $with_relationship, $with_unit)
     {
         $this->etat = $etat;
         $this->myInstitution = $myInstitution;
+        $this->with_client = $with_client;
+        $this->with_relationship = $with_relationship;
+        $this->with_unit = $with_unit;
     }
 
     /**
@@ -56,7 +65,7 @@ class Claim implements ToCollection, WithHeadingRow
             $data = $this->explodeValueRow($data, 'telephone', $separator = ' ');
             //$data = $this->formatDateEvent($data, 'date_evenement');
 
-            $validator = Validator::make($row, $this->rules($row));
+            $validator = Validator::make($row, $this->rules($row, $this->with_client, $this->with_relationship, $this->with_unit));
             // fields validations
             if ($validator->fails()) {
 
@@ -79,7 +88,7 @@ class Claim implements ToCollection, WithHeadingRow
 
             }else {
 
-                $data = $this->recupIdsData($data);
+                $data = $this->recupIdsData($data, $this->with_client, $this->with_relationship, $this->with_unit);
 
                 if(!$identite = $this->identiteVerifiedImport($data)){
 
@@ -94,9 +103,9 @@ class Claim implements ToCollection, WithHeadingRow
 
                 }
 
-                $status = $this->getStatus($data);
+                $status = $this->getStatus($data, $this->with_client, $this->with_relationship, $this->with_unit);
 
-                $this->storeClaim($data, $identite, $status);
+                $this->storeClaim($data, $identite, $status, $this->with_client, $this->with_relationship, $this->with_unit);
 
             }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\RegisterClaimAgainstAnyInstitution\Http\Controllers\ImportExport;
+namespace Satis2020\RegisterClaimWithoutClient\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -15,7 +15,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-client-from-any-institution')->only(['importClaims']);
+        $this->middleware('permission:store-claim-without-client')->only(['importClaims']);
     }
 
     /**
@@ -37,11 +37,13 @@ class ImportController extends ApiController
 
         $file = $request->file('file');
 
+        $institution = $this->institution();
+
         $etat = $request->etat_update;
 
-        $myInstitution = false;
+        $myInstitution = $institution->acronyme;
 
-        $imports = new Claim($etat, $myInstitution, true, false, true);
+        $imports = new Claim($etat, $myInstitution, false, true, false);
 
         $imports->import($file);
 

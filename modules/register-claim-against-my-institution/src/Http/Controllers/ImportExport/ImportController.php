@@ -15,7 +15,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-client-from-any-institution')->only(['importClaims']);
+        $this->middleware('permission:store-client-from-my-institution')->only(['importClaims']);
     }
 
     /**
@@ -37,11 +37,13 @@ class ImportController extends ApiController
 
         $file = $request->file('file');
 
+        $institution = $this->institution();
+
         $etat = $request->etat_update;
 
-        $myInstitution = false;
+        $myInstitution = $institution->acronyme;
 
-        $imports = new Claim($etat, $myInstitution);
+        $imports = new Claim($etat, $myInstitution, true, false, true);
 
         $imports->import($file);
 
