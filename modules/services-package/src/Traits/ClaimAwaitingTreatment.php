@@ -55,6 +55,7 @@ trait ClaimAwaitingTreatment
      * @param $unitId
      * @param $claim
      * @return Builder|Builder[]|Collection|Model|null
+     * @throws CustomException
      */
     protected function getOneClaimQuery($unitId, $claim)
     {

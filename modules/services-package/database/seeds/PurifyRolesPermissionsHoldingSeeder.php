@@ -81,7 +81,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
                     'list-any-claim-archived', 'show-any-claim-archived',
                     'history-list-create-claim',
-                    'update-active-pilot'
+                    'update-active-pilot',
+                    'unfounded-claim-awaiting-assignment',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [

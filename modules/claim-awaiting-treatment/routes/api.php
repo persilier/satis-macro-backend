@@ -28,3 +28,8 @@ Route::get('/claim-assignment-staff', 'ClaimAssignmentToStaffs\ClaimAssignmentTo
 Route::get('/claim-assignment-staff/{claim}', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffController@show')->name('claim.assignment.staff.show');
 Route::put('/claim-assignment-staff/{claim}/treatment', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffController@treatmentClaim')->name('claim.assignment.staff.treatment');
 Route::put('/claim-assignment-staff/{claim}/unfounded', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffController@unfoundedClaim')->name('claim.assignment.staff.unfounded');
+
+/*
+ * PilotTreatment
+ */
+Route::put('/claim-awaiting-assignment/{claim}/unfounded', 'PilotTreatment\UnfoundedClaimController@update')->name('claim.awaiting.assignment.unfounded');

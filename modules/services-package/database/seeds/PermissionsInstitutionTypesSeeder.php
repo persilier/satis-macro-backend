@@ -90,6 +90,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-create-claim',
             'history-list-treat-claim',
             'update-active-pilot',
+            'unfounded-claim-awaiting-assignment',
         ];
 
         $filialPermissions = [
@@ -115,6 +116,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-create-claim',
             'history-list-treat-claim',
             'update-active-pilot',
+            'unfounded-claim-awaiting-assignment',
         ];
 
         $observatoryPermissions = [
@@ -158,6 +160,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-create-claim',
             'history-list-treat-claim',
             'update-active-pilot',
+            'unfounded-claim-awaiting-assignment',
         ];
 
         $memberPermissions = [
@@ -211,6 +214,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-create-claim',
             'history-list-treat-claim',
             'update-active-pilot',
+            'unfounded-claim-awaiting-assignment',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {

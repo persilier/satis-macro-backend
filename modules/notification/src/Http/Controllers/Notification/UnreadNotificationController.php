@@ -102,7 +102,9 @@ class UnreadNotificationController extends ApiController
                             $canReloadCollection->put('canReload', false);
                         }
 
-                    }catch(\Exception $exception){}
+                    }catch(\Exception $exception){
+                        $canReloadCollection->put('canReload', false);
+                    }
 
                 }
 

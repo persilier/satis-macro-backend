@@ -60,6 +60,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-institution',
                     'history-list-create-claim',
                     'update-active-pilot',
+                    'unfounded-claim-awaiting-assignment',
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
