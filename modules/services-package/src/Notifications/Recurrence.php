@@ -41,6 +41,7 @@ class Recurrence extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         $preferredChannels = $this->getFeedBackChannels($notifiable->staff);
+        
         return $this->canSendRecurrenceNotification($notifiable->staff->institution_id)
             ? collect([$preferredChannels, ['database', 'broadcast']])->collapse()->all()
             : [];
@@ -55,7 +56,7 @@ class Recurrence extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Réclamation complétée')
+            ->subject('Dépassement du seuil de récurrence tolérable')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

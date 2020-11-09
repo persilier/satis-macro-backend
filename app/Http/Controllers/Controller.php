@@ -18,6 +18,8 @@ use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Notifications\Recurrence;
 
 class Controller extends BaseController
 {
@@ -25,7 +27,9 @@ class Controller extends BaseController
 
     public function index()
     {
-        return response()->json($this->getInstitutionPilot(Institution::findOrFail("137579d2-8181-4774-9701-d8054c873c65")));
+        $claim = Claim::findOrFail("c6f96a96-48c2-4470-8337-ef7c45cb7c9a");
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
+        return response()->json('Hello', 200);
     }
 
     public function download(File $file)
