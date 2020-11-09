@@ -25,13 +25,21 @@ trait HandleTreatment
     protected function transferToUnit($request, $claim)
     {
         $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
-        $activeTreatment->update([
+
+        $updateData = [
             'transferred_to_unit_at' => Carbon::now(),
             'responsible_unit_id' => $request->unit_id,
             'rejected_reason' => NULL,
             'rejected_at' => NULL,
-            'number_reject' => NULL
-        ]);
+        ];
+
+        // set number reject to NULL if and only if the activeTreatment's responsible_unit_id is not equal to the request's unit_id
+        if ($activeTreatment->responsible_unit_id != $request->unit_id) {
+            $updateData['number_reject'] = NULL;
+        }
+
+        $activeTreatment->update($updateData);
+
         $claim->update(['status' => 'transferred_to_unit']);
 
         \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
