@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -18,6 +17,8 @@ use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Notifications\Recurrence;
 
 class Controller extends BaseController
 {
@@ -25,7 +26,9 @@ class Controller extends BaseController
 
     public function index()
     {
-        return response()->json($this->getInstitutionPilot(Institution::findOrFail("137579d2-8181-4774-9701-d8054c873c65")));
+        $claim = Claim::findOrFail("e74c2f16-a603-4147-8489-78d485a23a11");
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
+        return response()->json('Hello', 200);
     }
 
     public function download(File $file)

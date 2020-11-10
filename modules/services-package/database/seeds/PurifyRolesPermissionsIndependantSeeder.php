@@ -68,6 +68,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-recurrence-alert-settings',
                     'update-reject-unit-transfer-parameters',
                     'update-min-fusion-percent-parameters',
+                    'update-relance-parameters',
+                    'list-faq',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

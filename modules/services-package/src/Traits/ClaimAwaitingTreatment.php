@@ -258,7 +258,7 @@ trait ClaimAwaitingTreatment
 
         $nombreRejectMax = (int)$settings->number_reject_max;
 
-        return $nombreReject <= $nombreRejectMax;
+        return $nombreReject < $nombreRejectMax;
     }
 
 }

@@ -235,7 +235,7 @@ trait CreateClaim
                     $this->closeTimeLimitNotification($claim);
 
                     // send recurrence notification to the pilot
-                    $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
+                    $this->recurrenceNotification($claim);
 
                 }
 
@@ -279,6 +279,13 @@ trait CreateClaim
             if ($claim->claimObject->time_limit == 1) {
                 $this->getInstitutionPilot($claim->createdBy->institution)->notify(new ReminderBeforeDeadline($claim, $claim->claimObject->time_limit));
             }
+        }
+    }
+
+    protected function recurrenceNotification($claim)
+    {
+        if($this->canSendRecurrenceNotification($claim->createdBy->institution_id)){
+            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
         }
     }
 
