@@ -41,10 +41,7 @@ class Recurrence extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         $preferredChannels = $this->getFeedBackChannels($notifiable->staff);
-        
-        return $this->canSendRecurrenceNotification($notifiable->staff->institution_id)
-            ? collect([$preferredChannels, ['database', 'broadcast']])->collapse()->all()
-            : [];
+        return collect([$preferredChannels, ['database', 'broadcast']])->collapse()->all();
     }
 
     /**

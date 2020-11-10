@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -27,7 +26,7 @@ class Controller extends BaseController
 
     public function index()
     {
-        $claim = Claim::findOrFail("c6f96a96-48c2-4470-8337-ef7c45cb7c9a");
+        $claim = Claim::findOrFail("e74c2f16-a603-4147-8489-78d485a23a11");
         $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
         return response()->json('Hello', 200);
     }
