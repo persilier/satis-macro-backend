@@ -94,6 +94,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-recurrence-alert-settings',
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
+            'update-relance-parameters',
+            'list-faq',
         ];
 
         $filialPermissions = [
@@ -167,6 +169,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-recurrence-alert-settings',
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
+            'update-relance-parameters',
+            'list-faq',
         ];
 
         $memberPermissions = [
@@ -224,6 +228,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-recurrence-alert-settings',
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
+            'update-relance-parameters',
+            'list-faq',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {
