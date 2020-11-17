@@ -8,6 +8,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Models\InstitutionType;
+use Satis2020\ServicePackage\Models\Module;
 use Satis2020\ServicePackage\Traits\RoleTrait;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -37,7 +38,7 @@ class RoleController extends ApiController
      */
     public function index()
     {
-        return response()->json(Role::all(),200);
+        return response()->json(Role::where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->get(),200);
     }
 
 
@@ -62,7 +63,7 @@ class RoleController extends ApiController
 
         $this->verifiedStore($request);
 
-        return response()->json($this->createRole($request), 200);
+        return response()->json($this->createRole($request), 201);
 
     }
 
@@ -73,8 +74,7 @@ class RoleController extends ApiController
      */
     public function show($role)
     {
-
-        return response()->json(Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->with('permissions')->firstOrFail(),200);
+        return response()->json($this->getRole($role),200);
 
     }
 
@@ -87,7 +87,6 @@ class RoleController extends ApiController
     public function edit(Request $request, $role)
     {
         return response()->json($this->editRole($request, $role),200);
-
     }
 
 
@@ -105,7 +104,7 @@ class RoleController extends ApiController
 
         $this->verifiedStore($request);
 
-        return response()->json($this->updateRole($request, $role), 200);
+        return response()->json($this->updateRole($request, $role), 201);
 
     }
 

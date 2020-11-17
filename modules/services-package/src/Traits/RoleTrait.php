@@ -3,9 +3,12 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\InstitutionType;
+use Satis2020\ServicePackage\Models\Module;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -52,7 +55,7 @@ trait RoleTrait
      */
     protected function editRole($request, $role){
 
-        $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->with('permissions')->firstOrFail();
+        $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
         $types = $role->institution_types;
 
@@ -60,7 +63,8 @@ trait RoleTrait
 
         return [
             "role" => $role,
-            "permissions" => $this->getAllPermissions($request),
+            "module" => $this->getModulesPermissionsForRole($role),
+            "modules" => $this->getAllPermissions($request),
             "institutionType" => $types,
             "institutionTypes" => InstitutionType::all()
         ];
@@ -73,19 +77,68 @@ trait RoleTrait
      */
     protected function getAllPermissions($request){
 
-        return Permission::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($permission) use ($request){
+        return Module::all()->map(function ($item) use ($request){
 
-            if(count($request->institutionTypes) == 1){
+            $item['permissions'] = Permission::where('guard_name', 'api')->where('module_id', $item->id)->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($permission) use ($request){
 
-                return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types));
+                if(count($request->institutionTypes) == 1){
 
-            }else{
+                    return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types));
 
-                return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types)  && in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $permission->institution_types));
-            }
+                }else{
 
-        })->flatten()->all();
+                    return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types)
+                        && in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $permission->institution_types));
+                }
 
+            })->flatten()->all();
+
+            return $item;
+
+        });
+
+    }
+
+
+    /**
+     * @param $role
+     * @return Builder[]|Collection
+     */
+    protected function getModulesPermissionsForRole($role){
+
+        return Module::with(['permissions' => function ($w){
+
+            $w->withCasts(['institution_types' => 'array'])->with(['roles' => function($wr){
+
+                $wr->withCasts(['institution_types' => 'array']);
+
+            }]);
+
+        }])->whereHas('permissions', function ($q) use ($role){
+
+            $q->where('guard_name', 'api')->whereNotNull('institution_types')->whereHas('roles', function ($r)  use ($role){
+
+                $r->where('guard_name', 'api')->whereNotNull('institution_types')->where('id', $role->id);
+
+            });
+
+        })->get();
+
+    }
+
+
+    /**
+     * @param $role
+     * @return array
+     */
+    protected function getRole($role){
+
+        $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
+
+        return [
+            'role' => $role,
+            'module' => $this->getModulesPermissionsForRole($role),
+        ];
     }
 
 
@@ -112,7 +165,7 @@ trait RoleTrait
 
         foreach ($request->permissions as $permission){
 
-            $institutionType = Permission::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->where('name', $permission)->firstOrFail()->institution_types;
+            $institutionType = Permission::where('guard_name', 'api')->whereNotNull('module_id')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->where('name', $permission)->firstOrFail()->institution_types;
 
             if($nbreType == 2){
 

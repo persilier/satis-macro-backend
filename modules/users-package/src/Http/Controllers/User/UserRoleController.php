@@ -43,6 +43,7 @@ class UserRoleController extends ApiController
         $rules = [
             'role' => 'required',
         ];
+
         $this->validate($request, $rules);
 
         $role = Role::where('name', $request->role)->where('guard_name', 'api')->firstOrFail();

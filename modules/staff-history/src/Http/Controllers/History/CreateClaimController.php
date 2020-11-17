@@ -6,6 +6,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 
 
 /**
@@ -14,6 +15,7 @@ use Satis2020\ServicePackage\Models\Claim;
  */
 class CreateClaimController extends ApiController
 {
+    use DataUserNature;
     public function __construct()
     {
         parent::__construct();
