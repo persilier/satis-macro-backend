@@ -125,6 +125,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\RecurrenceReclamationSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\RecurrenceNotificationsTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\RejectUnitTransferLimitationSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ModulePermissionsSeeder::class);
 
     }
 
