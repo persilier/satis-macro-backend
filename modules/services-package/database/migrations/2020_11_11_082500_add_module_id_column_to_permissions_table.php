@@ -14,8 +14,8 @@ class AddModuleIdColumnToPermissionsTable extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->uuid('module_id')->after('institution_types')->nullable();
-            $table->foreign('module_id')->references('id')->on('permissions');
+            $table->uuid('module_id')->after('institution_types')->nullable()->default(NULL);
+            $table->foreign('module_id')->references('id')->on('modules');
         });
     }
 

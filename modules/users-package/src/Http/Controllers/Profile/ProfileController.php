@@ -7,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
 use Satis2020\ServicePackage\Rules\MatchOldPassword;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -78,7 +79,7 @@ class ProfileController extends ApiController
 
         $request->validate([
             'current_password' => ['required', new MatchOldPassword],
-            'new_password' => 'required|string|min:8|confirmed',
+            'new_password' => ['required','confirmed', new IsValidPasswordRules],
             'new_password_confirmation' => 'required'
         ]);
 

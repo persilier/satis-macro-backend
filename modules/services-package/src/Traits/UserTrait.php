@@ -13,6 +13,7 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -32,6 +33,7 @@ trait UserTrait
          return $user;
 
     }
+
 
     /**
      * @param bool $myInstitution
@@ -70,14 +72,14 @@ trait UserTrait
         if($update){
 
             $rules = [
-                'new_password' => 'nullable|min:8|confirmed',
+                'new_password' => ['nullable','confirmed', new IsValidPasswordRules],
                 'roles' => 'required|array',
             ];
 
         }else{
 
             $rules = [
-                'password' => 'required|min:8|confirmed',
+                'password' => ['required','confirmed', new IsValidPasswordRules],
                 'identite_id' => 'required|exists:identites,id',
                 'roles' => 'required|array',
             ];
