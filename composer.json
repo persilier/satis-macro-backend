@@ -603,13 +603,6 @@
       "options": {
         "symlink": true
       }
-    },
-    {
-      "type": "path",
-      "url": "modules/any-institution-module/",
-      "options": {
-        "symlink": true
-      }
     }
   ]
 }
