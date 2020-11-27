@@ -61,7 +61,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-delai-qualification-parameters', 'show-delai-qualification-parameters', 'store-delai-qualification-parameters', 'destroy-delai-qualification-parameters',
                     'list-delai-treatment-parameters', 'show-delai-treatment-parameters', 'store-delai-treatment-parameters', 'destroy-delai-treatment-parameters',
                     'update-components-parameters',
-                    'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'delete-any-institution-type-role',
+                    'list-any-institution-type-role', 'show-any-institution-type-role', 'store-any-institution-type-role', 'update-any-institution-type-role', 'destroy-any-institution-type-role',
                     'update-active-pilot',
                     'update-recurrence-alert-settings',
                     'update-reject-unit-transfer-parameters',
