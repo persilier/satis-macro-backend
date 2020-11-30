@@ -41,7 +41,7 @@ trait RoleTrait
 
         $role->update([
             'name' => $request->name,
-            'institution_types' => json_encode($request->institutionTypes),
+            'institution_types' => $request->institutionTypes,
         ]);
 
         return $role->syncPermissions($request->permissions);
