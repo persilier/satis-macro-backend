@@ -142,23 +142,7 @@ trait RoleTrait
      */
     protected function getModulesPermissionsForRole($role){
 
-        return Module::with(['permissions' => function ($w){
-
-            $w->withCasts(['institution_types' => 'array'])->with(['roles' => function($wr){
-
-                $wr->withCasts(['institution_types' => 'array']);
-
-            }]);
-
-        }])->whereHas('permissions', function ($q) use ($role){
-
-            $q->where('guard_name', 'api')->whereNotNull('institution_types')->whereHas('roles', function ($r)  use ($role){
-
-                $r->where('guard_name', 'api')->whereNotNull('institution_types')->where('id', $role->id);
-
-            });
-
-        })->get();
+        return $role->load('permissions');
 
     }
 
