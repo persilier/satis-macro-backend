@@ -43,11 +43,12 @@ class RoleController extends ApiController
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function create(){
+    public function create(Request $request){
 
-        return response()->json(InstitutionType::all(),200);
+        return response()->json($this->getAllDatecreateRole($request),200);
 
     }
 

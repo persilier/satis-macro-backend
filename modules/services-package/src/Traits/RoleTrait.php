@@ -61,14 +61,49 @@ trait RoleTrait
 
         $request->merge(['institutionTypes' => $types]);
 
+        $dataCreate = $this->getAllDatecreateRole($request);
+
         return [
             "role" => $role,
-            "module" => $this->getModulesPermissionsForRole($role),
-            "modules" => $this->getAllPermissions($request),
+            "modulesPermissionsRole" => $this->getModulesPermissionsForRole($role),
+            "modulesPermissions" => $dataCreate['modulesPermissions'],
             "institutionType" => $types,
-            "institutionTypes" => InstitutionType::all()
+            "institutionTypes" => $dataCreate['institutionTypes']
         ];
 
+    }
+
+
+    /**
+     * @param $request
+     * @return array
+     */
+    protected function getAllDatecreateRole($request){
+
+        $permissions = [];
+
+        $institutionTypes = InstitutionType::all();
+
+        $institutionTypesNames = InstitutionType::all()->pluck('name');
+
+        foreach ($institutionTypes as $institutionType){
+
+            $request->merge(['institutionTypes' => [$institutionType->name]]);
+            $permissions[$institutionType->name] = $this->getAllPermissions($request);
+
+        }
+
+        if(count($institutionTypes) > 1){
+
+            $request->merge(['institutionTypes' => $institutionTypesNames]);
+            $permissions['all'] = $this->getAllPermissions($request);
+            
+        }
+
+        return [
+            'institutionTypes' => $institutionTypes,
+            'modulesPermissions' => $permissions
+        ];
     }
 
     /**
@@ -98,6 +133,7 @@ trait RoleTrait
         });
 
     }
+
 
 
     /**
