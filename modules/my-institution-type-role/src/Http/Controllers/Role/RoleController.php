@@ -109,6 +109,8 @@ class RoleController extends ApiController
 
         $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
+        $this->checkIsEditableRole($role);
+
         $this->verifiedStore($request);
 
         return response()->json($this->updateRole($request, $role), 201);
@@ -124,8 +126,8 @@ class RoleController extends ApiController
     {
 
         $role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
+        $this->checkIsEditableRole($role);
         $role->delete();
-
         return response()->json($role,200);
 
     }

@@ -122,6 +122,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 }
 
                 $role->syncPermissions($permissions);
+                $role->update(['is_editable' => 0]);
             }
 
         }

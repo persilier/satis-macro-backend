@@ -25,11 +25,11 @@ class RoleController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-any-institution-type-role')->only(['index']);
+        /*$this->middleware('permission:list-any-institution-type-role')->only(['index']);
         $this->middleware('permission:show-any-institution-type-role')->only(['show']);
         $this->middleware('permission:store-any-institution-type-role')->only(['create', 'store']);
         $this->middleware('permission:update-any-institution-type-role')->only(['edit', 'update']);
-        $this->middleware('permission:destroy-any-institution-type-role')->only(['destroy']);
+        $this->middleware('permission:destroy-any-institution-type-role')->only(['destroy']);*/
     }
 
 
@@ -103,6 +103,8 @@ class RoleController extends ApiController
 
         $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
+        $this->checkIsEditableRole($role);
+
         $this->verifiedStore($request);
 
         return response()->json($this->updateRole($request, $role), 201);
@@ -118,8 +120,8 @@ class RoleController extends ApiController
     {
 
         $role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
+        $this->checkIsEditableRole($role);
         $role->delete();
-
         return response()->json($role,200);
 
     }
