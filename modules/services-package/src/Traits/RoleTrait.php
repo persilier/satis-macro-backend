@@ -26,7 +26,7 @@ trait RoleTrait
      */
     protected function createRole($request){
 
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'is_editable' => 0, 'institution_types' => json_encode ($request->institutionTypes)]);
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'is_editable' => 1, 'institution_types' => json_encode ($request->institutionTypes)]);
 
         return $role->syncPermissions($request->permissions);
 
