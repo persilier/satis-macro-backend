@@ -16,9 +16,12 @@ use Illuminate\Support\Facades\Route;
 /*
  * Models
  */
-Route::resource('metadata.data', 'Metadata\MetadataController', ['except' => ['create','edit']]);
-Route::resource('formulaire', 'Formulaire\FormulaireController', ['except' => ['create']]);
-Route::name('formulaire.create')->get('formulaire/{formulaire}/create', 'Formulaire\FormulaireController@create');
-Route::resource('header', 'Header\HeaderController', ['except' => ['create']]);
-Route::name('header.create')->get('header/{header}/create', 'Header\HeaderController@create');
-Route::post('/installation/next', 'Installation\InstallationController@next')->name('installation.next');
+//Route::resource('metadata.data', 'Metadata\MetadataController', ['except' => ['create','edit']]);
+//Route::resource('formulaire', 'Formulaire\FormulaireController', ['except' => ['create']]);
+//Route::name('formulaire.create')->get('formulaire/{formulaire}/create', 'Formulaire\FormulaireController@create');
+//Route::resource('header', 'Header\HeaderController', ['except' => ['create']]);
+//Route::name('header.create')->get('header/{header}/create', 'Header\HeaderController@create');
+//Route::post('/installation/next', 'Installation\InstallationController@next')->name('installation.next');
+
+Route::get('plan', 'Plan\PlanController@show')->name('plan.show');
+Route::put('plan', 'Plan\PlanController@update')->name('plan.update');
