@@ -47,7 +47,7 @@ class RoleController extends ApiController
      */
     public function create(Request $request){
 
-        $request->merge(['institutionTypes' => ['independante']]);
+        $request->merge(['institutionTypes' => ['independant']]);
         return response()->json($this->getAllPermissions($request),200);
 
     }
@@ -60,7 +60,7 @@ class RoleController extends ApiController
      */
     public function store(Request $request)
     {
-        $request->merge(['institutionTypes' => ['independante']]);
+        $request->merge(['institutionTypes' => ['independant']]);
 
         $this->validate($request, $this->rule());
 
@@ -103,7 +103,7 @@ class RoleController extends ApiController
      */
     public function update(Request $request, $role)
     {
-        $request->merge(['institutionTypes' => ['independante']]);
+        $request->merge(['institutionTypes' => ['independant']]);
 
         $this->validate($request, $this->rule($role));
 
