@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\InstitutionType;
 use Satis2020\ServicePackage\Models\Module;
@@ -25,7 +26,7 @@ trait RoleTrait
      */
     protected function createRole($request){
 
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'institution_types' => json_encode ($request->institutionTypes)]);
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'is_editable' => 0, 'institution_types' => json_encode ($request->institutionTypes)]);
 
         return $role->syncPermissions($request->permissions);
 
@@ -56,6 +57,8 @@ trait RoleTrait
     protected function editRole($request, $role){
 
         $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
+
+        $this->checkIsEditableRole($role);
 
         $types = $role->institution_types;
 
@@ -169,7 +172,9 @@ trait RoleTrait
     protected function rule($role = NULL){
 
         return  [
-            'name' => 'required|unique:'.config('permission.table_names.roles').',name,'.$role.',name',
+            'name' => ['required', Rule::unique(config('permission.table_names.roles'))->where(function ($q) use ($role) {
+                return $q->where('name','!=', $role);
+            })],
             'permissions' => 'required|array',
             'institutionTypes' => 'required|array'
         ];
@@ -205,6 +210,20 @@ trait RoleTrait
             }
 
         }
+    }
+
+
+    /**
+     * @param $role
+     */
+    protected function checkIsEditableRole($role){
+
+        if($role->is_editable == 0){
+
+            throw new CustomException("Impossible de modifier ce rôle.");
+
+        }
+
     }
 
 
