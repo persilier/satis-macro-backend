@@ -45,8 +45,8 @@ trait ClaimAwaitingTreatment
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
                 [$institutionId, 'transferred_to_unit', $institutionId, 'transferred_to_unit']
             )->whereRaw(
-                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?)',
-                ['NULL', $unitId]
+                '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?)',
+                [$unitId]
             )
             ->whereNull('claims.deleted_at');
     }
@@ -205,8 +205,8 @@ trait ClaimAwaitingTreatment
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
                 [$institutionId, 'assigned_to_staff', $institutionId, 'assigned_to_staff']
             )->whereRaw(
-                '(`treatments`.`transferred_to_unit_at` != ?) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`assigned_to_staff_at` != ?)',
-                ['NULL', $unitId, $staffId, 'NULL']
+                '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`assigned_to_staff_at` IS NOT NULL)',
+                [$unitId, $staffId]
             )
             ->whereNull('claims.deleted_at');
     }
