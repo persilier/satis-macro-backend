@@ -10,6 +10,7 @@ use Satis2020\ServicePackage\Models\PasswordReset;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Notifications\PasswordResetRequest;
 use Satis2020\ServicePackage\Notifications\PasswordResetSuccess;
+use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 
 /**
@@ -88,7 +89,7 @@ class PasswordResetController extends ApiController{
     {
         $request->validate([
             'email' => 'required|string|email',
-            'password' => 'required|string|confirmed',
+            'password' => ['required','confirmed', 'string', new IsValidPasswordRules],
             'token' => 'required|string'
         ]);
 

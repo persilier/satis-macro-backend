@@ -27,7 +27,10 @@ class PlanController extends ApiController
      */
     public function show()
     {
-        return response()->json(Str::upper(json_decode(Metadata::ofName('app-nature')->firstOrFail()->data)), 200);
+        return response()->json([
+            'plan' => Str::upper(json_decode(Metadata::ofName('app-nature')->firstOrFail()->data)),
+            'year_installation' => env('APP_YEAR_INSTALLATION')
+        ], 200);
     }
 
     /**
