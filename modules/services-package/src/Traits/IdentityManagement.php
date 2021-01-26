@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
+use Satis2020\ServicePackage\Rules\TelephoneArray;
 
 trait IdentityManagement
 {
@@ -28,7 +29,9 @@ trait IdentityManagement
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-            'telephone' => 'required|array',
+            'telephone' => [
+                'required', 'array', new TelephoneArray,
+            ],
             'email' => [
                 'required', 'array', new EmailValidationRules,
             ],
