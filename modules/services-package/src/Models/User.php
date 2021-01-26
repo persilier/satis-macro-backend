@@ -101,4 +101,11 @@ class User extends Authenticate
         return is_null($role) ? null : $role->name;
     }
 
+
+    public function routeNotificationForMail($notification)
+    {
+        // Return name and email address...
+        return $this->username;
+    }
+
 }

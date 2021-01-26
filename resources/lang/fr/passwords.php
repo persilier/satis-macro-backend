@@ -17,4 +17,15 @@ return [
     'throttled' => 'Veuillez patienter avant de réessayer.',
     'token'     => "Ce jeton de réinitialisation du mot de passe n'est pas valide.",
     'user'      => "Aucun utilisateur n'a été trouvé avec cette adresse email.",
+
+
+    'email_password_reset_request_subject' => 'Réinitialiser votre mot de passe',
+    'email_password_reset_request_line1' => 'Vous avez demandé la réinitialisation du mot de passe de votre compte.',
+    'email_password_reset_request_action' => 'Réinitialiser le mot de passe',
+    'email_password_reset_request_line2' => 'Si vous n\'avez pas demandé de réinitialisation de mot de passe, aucune autre action n\'est requise.',
+
+    'email_password_reset_success_subject' => 'Votre mot de passe a été changé',
+    'email_password_reset_success_line1' => 'Votre mot de passe a été modifié pour votre compte.',
+    'email_password_reset_success_line2' => 'Si vous avez changé le mot de passe, aucune autre action n\'est requise.',
+    'email_password_reset_success_line3' => 'Si vous n\'avez pas changé de mot de passe, protégez votre compte.',
 ];

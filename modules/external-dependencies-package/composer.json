@@ -17,6 +17,7 @@
         "spatie/laravel-translatable" : "^4.3",
         "spatie/laravel-permission": "^3.11",
         "laravel/passport": "^8.4",
+        "laravel-lang/lang": "^7.0",
         "lcobucci/jwt": "3.3.3",
         "cviebrock/eloquent-sluggable": "^7.0",
         "maatwebsite/excel": "^3.1",
