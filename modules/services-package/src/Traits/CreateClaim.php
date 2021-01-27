@@ -117,7 +117,7 @@ trait CreateClaim
 
         $formatClaimsNumber = str_pad("{$claimsNumber}", 6, "0", STR_PAD_LEFT);
 
-        return 'SATIS' . $appNature . '-' . date('Y') . date('m') . $formatClaimsNumber . '-' . $institutionTargeted->acronyme;
+        return strtoupper('SATIS' . $appNature . '-' . date('Y') . date('m') . $formatClaimsNumber . '-' . $institutionTargeted->acronyme);
     }
 
     /**
