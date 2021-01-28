@@ -66,6 +66,8 @@
     "satis2020/satisfaction-measured-any-claim": "^1.0",
     "satis2020/satisfaction-measured-my-claim": "^1.0",
     "satis2020/search": "^1.0",
+    "satis2020/search-claim-any-reference": "^1.0",
+    "satis2020/search-claim-my-reference": "^1.0",
     "satis2020/services-package": "^1.0",
     "satis2020/severity-level": "^1.0",
     "satis2020/staff-feedback-channel": "^1.0",
@@ -608,6 +610,20 @@
     {
       "type": "path",
       "url": "modules/mobile-api/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/search-claim-any-reference/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/search-claim-my-reference/",
       "options": {
         "symlink": true
       }

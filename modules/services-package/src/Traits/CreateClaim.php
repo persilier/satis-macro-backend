@@ -61,7 +61,7 @@ trait CreateClaim
             'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
-            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png'
+            'file.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv'
         ];
 
         if ($with_client) {

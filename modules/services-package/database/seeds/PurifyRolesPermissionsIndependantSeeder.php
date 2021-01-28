@@ -70,6 +70,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
                     'list-faq',
+                    'search-claim-my-reference',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -86,6 +87,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'history-list-create-claim',
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
+                    'search-claim-my-reference',
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -94,6 +96,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
                     'show-dashboard-data-my-activity',
                     'history-list-create-claim',
+                    'search-claim-my-reference',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -101,6 +104,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-unit',
                     'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
+                    'search-claim-my-reference',
                 ]
             ];
 

@@ -45,6 +45,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-institution',
                     'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
                     'update-active-pilot',
+                    'search-claim-my-reference',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -61,6 +62,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'history-list-create-claim',
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
+                    'search-claim-my-reference',
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -69,12 +71,14 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
                     'show-dashboard-data-my-activity',
                     'history-list-create-claim',
+                    'search-claim-my-reference',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
+                    'search-claim-my-reference',
                 ]
             ];
 

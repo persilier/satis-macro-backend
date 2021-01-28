@@ -70,6 +70,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
                     'list-faq',
+                    'search-claim-any-reference',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -88,6 +89,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'history-list-create-claim',
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
+                    'search-claim-any-reference',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -96,12 +98,14 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
                     'history-list-create-claim',
+                    'search-claim-any-reference',
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'history-list-treat-claim',
+                    'search-claim-any-reference',
 
                 ]
             ];

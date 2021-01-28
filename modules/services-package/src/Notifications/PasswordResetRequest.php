@@ -46,7 +46,7 @@ class PasswordResetRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = url('/reset-password/'.$this->token);
+        $url = env('URL_FORGOT_PASSWORD_CLIENT', 'http://127.0.0.1:3000/forgot-passwod').'/'.$this->token;
 
         return (new MailMessage)
             ->subject(__('passwords.email_password_reset_request_subject'))

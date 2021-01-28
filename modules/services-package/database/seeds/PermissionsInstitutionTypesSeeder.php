@@ -96,6 +96,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
             'list-faq',
+            'search-claim-any-reference',
         ];
 
         $filialPermissions = [
@@ -122,6 +123,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'history-list-treat-claim',
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
+            'search-claim-my-reference',
         ];
 
         $observatoryPermissions = [
@@ -171,6 +173,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
             'list-faq',
+            'search-claim-any-reference',
         ];
 
         $memberPermissions = [
@@ -230,6 +233,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
             'list-faq',
+            'search-claim-my-reference',
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {
