@@ -57,7 +57,7 @@ trait CreateClaim
                     }
                 }
             ],
-            'amount_disputed' => 'nullable|integer|min:1',
+            'amount_disputed' => ['nullable','integer', 'min:1' , Rule::requiredIf(!is_null($request->amount_currency_slug))],
             'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',

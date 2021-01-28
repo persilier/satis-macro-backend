@@ -8,6 +8,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 
+/**
+ * Class AcknowledgmentOfReceipt
+ * @package Satis2020\ServicePackage\Notifications
+ */
 class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
@@ -29,6 +33,8 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
         $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
 
         $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
+
+        $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
     }
 
     /**

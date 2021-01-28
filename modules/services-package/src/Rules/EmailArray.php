@@ -41,7 +41,7 @@ class EmailArray implements Rule
             }
 
             $validator = Validator::make(['email' => $email], [
-                'email' => 'email'
+                'email' => 'email:rfc,dns'
             ]);
 
             if ($validator->fails()) {
