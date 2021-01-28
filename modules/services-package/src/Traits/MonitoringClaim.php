@@ -38,7 +38,7 @@ trait MonitoringClaim
         try {
 
             $claims = $this->getAllDataFilter($request, $status, $treatment)->map(function ($item) {
-                $item['time_expire'] = $this->timeExpire($item->created_at, $item->claimObject->time_limit);
+                $item['time_expire'] = $this->timeExpire($item->created_at, $item->time_limit, $item->status);
                 return $item;
             });
 
@@ -56,14 +56,14 @@ trait MonitoringClaim
      * @param $timeLimit
      * @return mixed
      */
-    protected function timeExpire($createdDate = false, $timeLimit = false)
+    protected function timeExpire($createdDate = false, $timeLimit = false, $status)
     {
 
         $diff = null;
 
-        if ($timeLimit && $createdDate) {
+        if ($timeLimit && $createdDate && ($status !== 'archived')) {
 
-            $dateExpire = $createdDate->addWeekdays($timeLimit);
+            $dateExpire = $createdDate->copy()->addWeekdays($timeLimit);
             $diff = now()->diffInDays(($dateExpire), false);
         }
 
@@ -127,7 +127,7 @@ trait MonitoringClaim
                 throw new CustomException("Impossible de récupérer des réclamations.");
         }
 
-        $time_limit = $this->timeExpire($claim->created_at, $claim->claimObject->time_limit);
+        $time_limit = $this->timeExpire($claim->created_at, $claim->time_limit, $claim->status);
 
         $claim = collect($claim)->toArray();
 
@@ -335,7 +335,7 @@ trait MonitoringClaim
 
             if (!is_null($identite)) {
 
-                $interval = $this->timeExpireRelance($claim->created_at, $claim->claimObject->time_limit);
+                $interval = $this->timeExpireRelance($claim->created_at, $claim->time_limit);
                 $this->sendNotificationRelance($interval, $identite, $claim);
 
             }

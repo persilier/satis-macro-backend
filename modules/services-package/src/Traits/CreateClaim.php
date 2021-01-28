@@ -208,10 +208,21 @@ trait CreateClaim
             $data[] = 'unit_targeted_id';
         }
 
+        $data[] = 'time_limit';
+
+        $request->merge(['time_limit' => ClaimObject::find($request->claim_object_id)->time_limit]);
+
         return $data;
     }
 
 
+    /**
+     * @param $request
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
+     * @return mixed
+     */
     protected function createClaim($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
         $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
