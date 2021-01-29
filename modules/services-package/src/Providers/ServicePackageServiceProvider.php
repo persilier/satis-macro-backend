@@ -213,8 +213,8 @@ class ServicePackageServiceProvider extends ServiceProvider
     protected function registerLaravelPassportIssues()
     {
         Passport::routes();
-        Passport::tokensExpireIn(Carbon::now()->addMinutes(30));
-        Passport::refreshTokensExpireIn(Carbon::now()->addDay());
+        Passport::tokensExpireIn(Carbon::now()->addDay());
+        Passport::refreshTokensExpireIn(Carbon::now()->addMonth());
         Passport::enableImplicitGrant();
         Passport::tokensCan($this->getScopes());
     }
