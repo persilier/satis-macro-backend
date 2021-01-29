@@ -17,6 +17,7 @@ use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Relationship;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
@@ -292,6 +293,7 @@ trait UpdateClaim
             'claim' => $claim,
             'claimCategories' => ClaimCategory::all(),
             'institutions' => Institution::all(),
+            'units' => Unit::where('institution_id', $claim->institution_targeted_id)->get(),
             'channels' => Channel::all(),
             'claimObjects' => ClaimObject::all(),
             'currencies' => Currency::all(),
