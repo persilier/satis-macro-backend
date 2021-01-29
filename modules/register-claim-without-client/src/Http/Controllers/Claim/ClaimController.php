@@ -91,11 +91,13 @@ class ClaimController extends ApiController
         $request->merge(['claimer_id' => $claimer->id]);
 
         // Check if the claim is complete
-        $request->merge(['status' => $this->getStatus($request, false, true, false)]);
+        $statusOrErrors = $this->getStatus($request, false, true, false);
+
+        $request->merge(['status' => $statusOrErrors['status']]);
 
         $claim = $this->createClaim($request, false, true, false);
 
-        return response()->json($claim, 201);
+        return response()->json([ 'claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
 
     }
 

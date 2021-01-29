@@ -9,6 +9,10 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
 
+/**
+ * Class PlanController
+ * @package Satis2020\MetadataPackage\Http\Controllers\Plan
+ */
 class PlanController extends ApiController
 {
 
@@ -29,7 +33,7 @@ class PlanController extends ApiController
     {
         return response()->json([
             'plan' => Str::upper(json_decode(Metadata::ofName('app-nature')->firstOrFail()->data)),
-            'year_installation' => env('APP_YEAR_INSTALLATION')
+            'year_installation' => env('APP_YEAR_INSTALLATION', '2021')
         ], 200);
     }
 

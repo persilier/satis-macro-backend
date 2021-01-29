@@ -16,5 +16,5 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::prefix('/my')->name('my.')->group(function () {
-    Route::resource('claims-incompletes', 'Claims\ClaimController')->except(['create']);
+    Route::resource('claims-incompletes', 'Claims\ClaimController')->except(['create', 'store']);
 });
