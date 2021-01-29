@@ -53,7 +53,7 @@ class AttachFilesController extends ApiController
 
         $this->uploadAttachments($request, $claim);
 
-        return response()->json($claim,201);
+        return response()->json($claim->files,201);
 
     }
 

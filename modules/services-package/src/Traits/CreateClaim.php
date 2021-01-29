@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -12,6 +13,7 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Requirement;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Notifications\Recurrence;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
@@ -125,7 +127,7 @@ trait CreateClaim
      * @param bool $with_client
      * @param bool $with_relationship
      * @param bool $with_unit
-     * @return string
+     * @return array
      * @throws CustomException
      */
     protected function getStatus($request, $with_client = true, $with_relationship = false, $with_unit = true)
@@ -152,8 +154,11 @@ trait CreateClaim
 
         $validator = Validator::make($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)), $rules->all());
 
+        $errors = [];
+
         if ($validator->fails()) {
 
+            $errors = $validator->errors()->messages();
             $status = 'incomplete';
 
         } else {
@@ -162,9 +167,36 @@ trait CreateClaim
 
         }
 
-        return $status;
+        return ['status' => $status, 'errors' => $this->incompleteErrors($errors)];
     }
 
+
+    /**
+     * @param $errors
+     * @return \Illuminate\Support\Collection
+     */
+    protected function incompleteErrors($errors){
+
+        $requirements = collect([]);
+
+        if(!empty($errors)){
+             foreach ($errors as $key => $error){
+
+                 ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
+
+             }
+
+        }
+        return $requirements;
+    }
+
+    /**
+     * @param $request
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
+     * @return array
+     */
     protected function getData($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
         $data = [
