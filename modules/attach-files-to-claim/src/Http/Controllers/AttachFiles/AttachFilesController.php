@@ -35,6 +35,7 @@ class AttachFilesController extends ApiController
     {
 
         $this->validate($request,[
+            'file' => 'required',
             'file.*' => 'required|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv'
         ]);
 
