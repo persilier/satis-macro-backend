@@ -24,7 +24,9 @@ class Treatment extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'treatments' => 'json'
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -65,7 +67,8 @@ class Treatment extends Model
         'rejected_reason',
         'comments',
         'invalidated_reason',
-        'number_reject'
+        'number_reject',
+        'treatments'
     ];
 
     /**
