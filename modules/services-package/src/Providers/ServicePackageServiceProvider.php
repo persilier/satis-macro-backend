@@ -212,7 +212,8 @@ class ServicePackageServiceProvider extends ServiceProvider
      */
     protected function registerLaravelPassportIssues()
     {
-        Passport::routes();
+
+        $this->routeAuthRefreshToken();
         Passport::tokensExpireIn(Carbon::now()->addDay());
         Passport::refreshTokensExpireIn(Carbon::now()->addMonth());
         Passport::enableImplicitGrant();
@@ -278,6 +279,19 @@ class ServicePackageServiceProvider extends ServiceProvider
         return [
             'middleware' => ['api']
         ];
+    }
+
+    protected function routeAuthRefreshToken(){
+        //Passport::routes();
+        Route::post('/oauth/token', [
+            'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
+            'middleware' => 'throttle:3,5',
+        ]);
+        Route::post('/token/refresh', [
+            'middleware' => ['web', 'auth'],
+            'uses' => '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh',
+            'as' => 'passport.token.refresh',
+        ]);
     }
 
     protected function registerMailSmtpConfigs()
