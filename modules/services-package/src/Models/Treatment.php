@@ -25,7 +25,7 @@ class Treatment extends Model
      * @var array
      */
     protected $casts = [
-        'treatments' => 'json'
+        'treatments' => 'array'
     ];
 
     /**

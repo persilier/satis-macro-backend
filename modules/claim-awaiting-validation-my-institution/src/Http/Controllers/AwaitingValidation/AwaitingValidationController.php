@@ -9,11 +9,12 @@ use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Rules\TreatmentCanBeValidateRules;
 use Satis2020\ServicePackage\Traits\AwaitingValidation;
+use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
 class AwaitingValidationController extends ApiController
 {
 
-    use AwaitingValidation;
+    use AwaitingValidation, SeveralTreatment;
 
     public function __construct()
     {

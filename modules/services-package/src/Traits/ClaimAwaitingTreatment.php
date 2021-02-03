@@ -108,6 +108,7 @@ trait ClaimAwaitingTreatment
     /**
      * @param $claim
      * @param $request
+     * @param $treatments
      * @return mixed
      */
     protected function rejectedClaimUpdate($claim, $request)
@@ -117,7 +118,8 @@ trait ClaimAwaitingTreatment
             'transferred_to_unit_at' => NULL,
             'rejected_reason' => $request->rejected_reason,
             'rejected_at' => Carbon::now(),
-            'number_reject' => (int)$claim->activeTreatment->number_reject + 1
+            'number_reject' => (int)$claim->activeTreatment->number_reject + 1,
+            'treatments' => $this->backupData($claim)
         ]);
 
         if (!is_null($claim->transfered_to_targeted_institution_at)) {

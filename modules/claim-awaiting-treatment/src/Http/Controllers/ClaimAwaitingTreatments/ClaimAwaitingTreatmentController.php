@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
 /**
  * Class ClaimAwaitingTreatmentController
@@ -21,7 +22,7 @@ use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
  */
 class ClaimAwaitingTreatmentController extends ApiController
 {
-    use ClaimAwaitingTreatment;
+    use ClaimAwaitingTreatment, SeveralTreatment;
 
     public function __construct()
     {

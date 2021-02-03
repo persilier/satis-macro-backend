@@ -42,7 +42,8 @@ trait AwaitingValidation
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
-            'invalidated_reason' => NULL
+            'invalidated_reason' => NULL,
+            'treatments' => $this->backupData($claim)
         ]);
 
         if (!is_null($claim->activeTreatment->declared_unfounded_at)) { // the claim is declared unfounded
@@ -70,6 +71,7 @@ trait AwaitingValidation
             'validated_at' => Carbon::now(),
             'solved_at' => NULL,
             'declared_unfounded_at' => NULL,
+            'treatments' => $this->backupData($claim)
         ]);
 
         $claim->update(['status' => 'assigned_to_staff']);
