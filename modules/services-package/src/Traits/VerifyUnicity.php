@@ -117,18 +117,24 @@ trait VerifyUnicity
      */
     protected function handleIdentityPhoneNumberAndEmailVerificationStore($request, $idValue = null)
     {
-        // Identity PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
-        if (!$verifyPhone['status']) {
-            $verifyPhone['message'] = 'We found someone with the phone number : ' . $verifyPhone['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
-            throw new CustomException($verifyPhone, 409);
+
+        if($request->telephone){
+            // Identity PhoneNumber Unicity Verification
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
+            if (!$verifyPhone['status']) {
+                $verifyPhone['message'] = 'We found someone with the phone number : ' . $verifyPhone['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
+                throw new CustomException($verifyPhone, 409);
+            }
+
         }
 
         // Identity Email Unicity Verification
-        $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
-        if (!$verifyEmail['status']) {
-            $verifyEmail['message'] = 'We found someone with the email address : ' . $verifyEmail['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
-            throw new CustomException($verifyEmail, 409);
+        if($request->has('email')){
+            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
+            if (!$verifyEmail['status']) {
+                $verifyEmail['message'] = 'We found someone with the email address : ' . $verifyEmail['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
+                throw new CustomException($verifyEmail, 409);
+            }
         }
     }
 

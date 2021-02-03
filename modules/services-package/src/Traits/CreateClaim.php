@@ -72,14 +72,14 @@ trait CreateClaim
             $data['lastname'] = [Rule::requiredIf(is_null($request->claimer_id))];
             $data['sexe'] = [Rule::requiredIf(is_null($request->claimer_id)), Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = [Rule::requiredIf(is_null($request->claimer_id)), 'array', new TelephoneArray];
-            $data['email'] = [Rule::requiredIf(is_null($request->claimer_id)), 'array', new EmailArray];
+            $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
             $data['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
         } else {
             $data['firstname'] = 'required';
             $data['lastname'] = 'required';
             $data['sexe'] = ['required', Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = ['required', 'array', new TelephoneArray];
-            $data['email'] = ['required', 'array', new EmailArray];
+            $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
         }
 
         if ($with_relationship) {
