@@ -87,7 +87,7 @@ class DiscussionMessageController extends ApiController
             'text' => Rule::requiredIf(!$request->hasfile('files')),
             'posted_by' => ['required', 'exists:staff,id', new StaffBelongsToDiscussionContributorsRules($discussion)],
             'discussion_id' => 'required|exists:discussions,id',
-            'files.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png',
+            'files.*' => 'mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
             'parent_id' => ['exists:messages,id', new MessageBelongsToDiscussionRules($discussion)]
         ];
 
