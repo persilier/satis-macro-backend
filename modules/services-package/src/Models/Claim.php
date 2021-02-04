@@ -67,7 +67,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire'];
+    protected $appends = ['timeExpire', 'accountType'];
 
     /**
      * @return mixed
@@ -83,6 +83,14 @@ class Claim extends Model
         }
 
         return $diff;
+    }
+
+    /**
+     * @return |null
+     */
+    public function getaccountTypeAttribute(){
+
+        return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id) : NULL;
     }
 
 

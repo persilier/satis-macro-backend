@@ -45,12 +45,15 @@ trait UpdateClaim
     {
 
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $claim->claimer_id);
+        if($request->has('telephone')){
 
-        if (!$verifyPhone['status']) {
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $claim->claimer_id);
 
-            throw new CustomException("We can't perform your request. The phone number  belongs to someone else");
+            if (!$verifyPhone['status']) {
 
+                throw new CustomException("We can't perform your request. The phone number  belongs to someone else");
+
+            }
         }
 
         // Client Email Unicity Verification
