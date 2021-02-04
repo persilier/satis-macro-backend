@@ -38,9 +38,9 @@ trait VerifyUnicity
                 ->get();
 
             $search = $collection->search(function ($item, $key) use ($value, $column, $idColumn, $idValue) {
-                return is_null($idValue)
-                    ? in_array($value, json_decode($item->{$column}))
-                    : $item->{$idColumn} !== $idValue && in_array($value, json_decode($item->{$column}));
+
+                return $item->{$column} ? (is_null($idValue) ? in_array($value, json_decode($item->{$column}))
+                        : $item->{$idColumn} !== $idValue && in_array($value, json_decode($item->{$column}))) : false;
             });
 
             if ($search !== false) return ['status' => false, 'conflictValue' => $value, 'entity' => $collection->get($search)];
@@ -118,7 +118,7 @@ trait VerifyUnicity
     protected function handleIdentityPhoneNumberAndEmailVerificationStore($request, $idValue = null)
     {
 
-        if($request->telephone){
+        if($request->has('telephone')){
             // Identity PhoneNumber Unicity Verification
             $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
             if (!$verifyPhone['status']) {
@@ -131,11 +131,13 @@ trait VerifyUnicity
         // Identity Email Unicity Verification
         if($request->has('email')){
             $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
+
             if (!$verifyEmail['status']) {
                 $verifyEmail['message'] = 'We found someone with the email address : ' . $verifyEmail['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
                 throw new CustomException($verifyEmail, 409);
             }
         }
+
     }
 
     /**
