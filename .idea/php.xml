@@ -3938,6 +3938,13 @@
       <path value="$PROJECT_DIR$/vendor/satis2020/staff-history" />
       <path value="$PROJECT_DIR$/vendor/satis2020/my-institution-type-role" />
       <path value="$PROJECT_DIR$/vendor/react/http" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/mobile-api" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/attach-files-to-claim" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/search-claim-any-reference" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/revive-staff" />
+      <path value="$PROJECT_DIR$/vendor/satis2020/search-claim-my-reference" />
+      <path value="$PROJECT_DIR$/vendor/laravel-lang/lang" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

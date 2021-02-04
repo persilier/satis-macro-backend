@@ -64,6 +64,7 @@
     "satis2020/relationship": "^1.0",
     "satis2020/reporting-claim-any-institution": "^1.0",
     "satis2020/reporting-claim-my-institution": "^1.0",
+    "satis2020/revive-staff": "^1.0",
     "satis2020/satisfaction-measured-any-claim": "^1.0",
     "satis2020/satisfaction-measured-my-claim": "^1.0",
     "satis2020/search": "^1.0",
@@ -632,6 +633,13 @@
     {
       "type": "path",
       "url": "modules/attach-files-to-claim/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/revive-staff/",
       "options": {
         "symlink": true
       }

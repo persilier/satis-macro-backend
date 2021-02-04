@@ -27,8 +27,8 @@ class Controller extends BaseController
     public function index()
     {
         $claim = Claim::findOrFail("e74c2f16-a603-4147-8489-78d485a23a11");
-        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
-        return response()->json('Hello', 200);
+        dd($this->getStaffToReviveIdentities($claim));
+        return response()->json($this->getStaffToReviveIdentities($claim), 200);
     }
 
     public function download(File $file)

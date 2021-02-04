@@ -97,7 +97,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-relance-parameters',
             'list-faq',
             'search-claim-any-reference',
-            'attach-files-to-claim'
+            'attach-files-to-claim',
+            'revive-staff'
         ];
 
         $filialPermissions = [
@@ -125,7 +126,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-active-pilot',
             'unfounded-claim-awaiting-assignment',
             'search-claim-my-reference',
-            'attach-files-to-claim'
+            'attach-files-to-claim',
+            'revive-staff'
         ];
 
         $observatoryPermissions = [
@@ -176,7 +178,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-relance-parameters',
             'list-faq',
             'search-claim-any-reference',
-            'attach-files-to-claim'
+            'attach-files-to-claim',
+            'revive-staff'
         ];
 
         $memberPermissions = [
@@ -237,7 +240,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-relance-parameters',
             'list-faq',
             'search-claim-my-reference',
-            'attach-files-to-claim'
+            'attach-files-to-claim',
+            'revive-staff'
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {

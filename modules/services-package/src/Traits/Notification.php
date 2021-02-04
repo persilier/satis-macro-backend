@@ -160,4 +160,127 @@ trait Notification
 
     }
 
+    protected function getStaffToReviveIdentities(Claim $claim)
+    {
+        $identities = [];
+
+        $statusAssociatedToCreatedByPilot = [
+            'incomplete',
+            'full'
+        ];
+
+        $statusAssociatedToTargetedInstitutionPilot = [
+            'transferred_to_targeted_institution'
+        ];
+
+        $statusAssociatedToCreatedBy = [
+            'incomplete'
+        ];
+
+        $statusAssociatedToTransferredToUnitPilot = [
+            'rejected',
+            'treated',
+            'validated',
+        ];
+
+        $statusAssociatedToUnitLead = [
+            'transferred_to_unit'
+        ];
+
+        $statusAssociatedToStaff = [
+            'assigned_to_staff'
+        ];
+
+        // On récupère l'identité du pilot de l'institution qui a créé la réclamation lorsque la réclamation est incomplete|full
+        if (in_array($claim->status, $statusAssociatedToCreatedByPilot)) {
+
+            if (!is_null($claim->createdBy)) {
+                $identity = $this->getInstitutionPilot($claim->createdBy->institution);
+                if (!is_null($identity))
+                    $identities[$identity->id] = $identity;
+            }
+
+        }
+
+        // On récupère l'identité du pilot de l'institution ciblée par la réclamation lorsque la réclamation est transferred_to_targeted_institution
+        if (in_array($claim->status, $statusAssociatedToTargetedInstitutionPilot)) {
+
+            if (!is_null($claim->institutionTargeted)) {
+                $identity = $this->getInstitutionPilot($claim->institutionTargeted);
+                if (!is_null($identity))
+                    $identities[$identity->id] = $identity;
+            }
+
+        }
+
+        // On récupère l'identité du pilot qui a transferé la réclamation
+        if (in_array($claim->status, $statusAssociatedToTransferredToUnitPilot)) {
+
+            if (!is_null($claim->activeTreatment)) {
+
+                $institution = null;
+
+                if (!is_null($claim->activeTreatment->transferred_to_targeted_institution_at)) {
+                    $institution = $claim->institutionTargeted;
+                } elseif (!is_null($claim->createdBy)) {
+                    $institution = $claim->createdBy->institution;
+                }
+
+                $identity = $this->getInstitutionPilot($institution);
+                if (!is_null($identity))
+                    $identities[$identity->id] = $identity;
+            }
+
+        }
+
+        // On récupère l'identité du staff qui est le lead de l'unité à laquelle la réclamation a été transférée
+        if (in_array($claim->status, $statusAssociatedToUnitLead)) {
+
+            if (!is_null($claim->activeTreatment)) {
+
+                if (!is_null($claim->activeTreatment->responsibleUnit)) {
+
+                    if (!is_null($claim->activeTreatment->responsibleUnit->lead)) {
+
+                        if (!is_null($claim->activeTreatment->responsibleUnit->lead->identite)) {
+                            $identities[$claim->activeTreatment->responsibleUnit->lead->identite->id] = $claim->activeTreatment->responsibleUnit->lead->identite;
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+        // On récupère l'identité du staff chargé du traitement de la réclamation
+        if (in_array($claim->status, $statusAssociatedToStaff)) {
+
+            if (!is_null($claim->activeTreatment)) {
+
+                if (!is_null($claim->activeTreatment->responsibleStaff)) {
+
+                    if (!is_null($claim->activeTreatment->responsibleStaff->identite))
+                        $identities[$claim->activeTreatment->responsibleStaff->identite->id] = $claim->activeTreatment->responsibleStaff->identite;
+
+                }
+            }
+
+        }
+
+        // On récupère l'identité du staff ayant enregistré la réclamation
+        if (in_array($claim->status, $statusAssociatedToCreatedBy)) {
+
+            if (!is_null($claim->createdBy)) {
+
+                if (!is_null($claim->createdBy->identite))
+                    $identities[$claim->createdBy->identite->id] = $claim->createdBy->identite;
+            }
+
+        }
+        
+        return array_values($identities);
+
+    }
+
 }

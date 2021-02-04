@@ -24,6 +24,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/dragonmantank/cron-expression" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/egulias/email-validator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/evenement/evenement" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facade/flare-client-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facade/ignition" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facade/ignition-contracts" />
@@ -38,6 +39,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/hamcrest/hamcrest-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-diactoros" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-zendframework-bridge" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel-lang/lang" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/framework" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/passport" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/tinker" />
@@ -106,7 +108,12 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/active-pilot" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/any-institution-type-role" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/attach-files-to-claim" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/mobile-api" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution-type-role" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/revive-staff" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-any-reference" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-my-reference" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-history" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />

@@ -88,7 +88,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -98,7 +99,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'history-list-create-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',

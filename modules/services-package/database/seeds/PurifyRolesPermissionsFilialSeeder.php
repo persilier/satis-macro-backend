@@ -63,7 +63,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -73,7 +74,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'history-list-create-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',

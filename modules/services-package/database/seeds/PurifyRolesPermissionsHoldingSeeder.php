@@ -90,7 +90,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -100,7 +101,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-incomplete-against-any-institution', 'show-claim-incomplete-against-any-institution', 'update-claim-incomplete-against-any-institution',
                     'history-list-create-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'revive-staff'
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',

@@ -42,10 +42,28 @@ class Claim extends Model
      * @var array
      */
     protected $fillable = [
-        'reference', 'description', 'claim_object_id', 'claimer_id', 'relationship_id', 'account_targeted_id',
-        'institution_targeted_id', 'unit_targeted_id', 'request_channel_slug', 'response_channel_slug',
-        'event_occured_at', 'claimer_expectation', 'amount_disputed', 'amount_currency_slug', 'is_revival',
-        'created_by', 'completed_by', 'completed_at', 'active_treatment_id', 'archived_at', 'status', 'time_limit'
+        'reference',
+        'description',
+        'claim_object_id',
+        'claimer_id',
+        'relationship_id',
+        'account_targeted_id',
+        'institution_targeted_id',
+        'unit_targeted_id',
+        'request_channel_slug',
+        'response_channel_slug',
+        'event_occured_at',
+        'claimer_expectation',
+        'amount_disputed',
+        'amount_currency_slug',
+        'is_revival',
+        'created_by',
+        'completed_by',
+        'completed_at',
+        'active_treatment_id',
+        'archived_at',
+        'status',
+        'time_limit'
     ];
 
 
