@@ -84,7 +84,6 @@ class ClaimController extends ApiController
         if (is_null($request->claimer_id)) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
-
             // register claimer
             $claimer = $this->createIdentity($request);
             $request->merge(['claimer_id' => $claimer->id]);

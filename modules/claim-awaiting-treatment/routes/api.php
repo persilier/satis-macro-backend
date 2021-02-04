@@ -30,6 +30,11 @@ Route::put('/claim-assignment-staff/{claim}/treatment', 'ClaimAssignmentToStaffs
 Route::put('/claim-assignment-staff/{claim}/unfounded', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffController@unfoundedClaim')->name('claim.assignment.staff.unfounded');
 
 /*
+ * Claim Reassignment
+ */
+
+Route::resource('claim-reassignment', 'ClaimReassignment\ClaimReassignmentController')->except(['store', 'destroy']);
+/*
  * PilotTreatment
  */
 Route::put('/claim-awaiting-assignment/{claim}/unfounded', 'PilotTreatment\UnfoundedClaimController@update')->name('claim.awaiting.assignment.unfounded');
