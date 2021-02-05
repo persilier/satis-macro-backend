@@ -27,7 +27,7 @@ class Controller extends BaseController
     public function index()
     {
         $claim = Claim::findOrFail("e74c2f16-a603-4147-8489-78d485a23a11");
-        dd($this->getStaffToReviveIdentities($claim));
+        dd(Claim::all());
         return response()->json($this->getStaffToReviveIdentities($claim), 200);
     }
 

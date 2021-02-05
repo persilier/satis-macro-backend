@@ -87,7 +87,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'unfounded-claim-awaiting-assignment',
                     'search-claim-any-reference',
                     'attach-files-to-claim',
-                    'revive-staff'
+                    'revive-staff',
+                    'revoke-claim'
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [
@@ -98,7 +99,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'history-list-create-claim',
                     'search-claim-any-reference',
                     'attach-files-to-claim',
-                    'revive-staff'
+                    'revive-staff',
+                    'revoke-claim'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',

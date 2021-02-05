@@ -98,7 +98,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-faq',
             'search-claim-any-reference',
             'attach-files-to-claim',
-            'revive-staff'
+            'revive-staff',
+            'revoke-claim'
         ];
 
         $filialPermissions = [
@@ -127,7 +128,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'unfounded-claim-awaiting-assignment',
             'search-claim-my-reference',
             'attach-files-to-claim',
-            'revive-staff'
+            'revive-staff',
+            'revoke-claim'
         ];
 
         $observatoryPermissions = [
@@ -179,7 +181,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-faq',
             'search-claim-any-reference',
             'attach-files-to-claim',
-            'revive-staff'
+            'revive-staff',
+            'revoke-claim'
         ];
 
         $memberPermissions = [
@@ -241,7 +244,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-faq',
             'search-claim-my-reference',
             'attach-files-to-claim',
-            'revive-staff'
+            'revive-staff',
+            'revoke-claim'
         ];
 
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {

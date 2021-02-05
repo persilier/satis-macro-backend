@@ -112,6 +112,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/mobile-api" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/my-institution-type-role" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/revive-staff" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/revoke-claim" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-any-reference" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-my-reference" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-history" />

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class Claim
@@ -15,6 +16,18 @@ use Spatie\Translatable\HasTranslations;
 class Claim extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope('toBeProcessed', function (Builder $builder) {
+            $builder->whereNull('revoked_at');
+        });
+    }
 
     /**
      * The attributes that are translatable
@@ -34,7 +47,15 @@ class Claim extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at', 'event_occured_at', 'completed_at', 'archived_at', 'created_at', 'updated_at'];
+    protected $dates = [
+        'deleted_at',
+        'event_occured_at',
+        'completed_at',
+        'archived_at',
+        'created_at',
+        'updated_at',
+        'revoked_at'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -63,7 +84,9 @@ class Claim extends Model
         'active_treatment_id',
         'archived_at',
         'status',
-        'time_limit'
+        'time_limit',
+        'revoked_at',
+        'revoked_by'
     ];
 
 
@@ -88,13 +111,11 @@ class Claim extends Model
     /**
      * @return |null
      */
-    public function getaccountTypeAttribute(){
+    public function getaccountTypeAttribute()
+    {
 
         return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id) : NULL;
     }
-
-
-
 
 
     /**
@@ -231,6 +252,14 @@ class Claim extends Model
         return $this->hasMany(Discussion::class);
     }
 
+    /**
+     * Get the staff who register the claim
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function revokedBy()
+    {
+        return $this->belongsTo(Staff::class, 'revoked_by');
+    }
 
 
 }
