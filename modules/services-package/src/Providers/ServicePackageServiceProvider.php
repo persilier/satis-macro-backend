@@ -285,7 +285,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         //Passport::routes();
         Route::post('/oauth/token', [
             'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
-            'middleware' => 'throttle:3,5',
+            'middleware' => 'throttle:3,120',
         ]);
         Route::post('/token/refresh', [
             'middleware' => ['web', 'auth'],

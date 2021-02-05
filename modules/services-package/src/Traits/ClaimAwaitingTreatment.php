@@ -263,4 +263,26 @@ trait ClaimAwaitingTreatment
         return $nombreReject < $nombreRejectMax;
     }
 
+    /**
+     * @return mixed
+     */
+    protected function queryClaimReassignment(){
+
+        return Claim::with($this->getRelationsAwitingTreatment())->whereHas('activeTreatment', function ($query){
+
+            $query->where('responsible_staff_id', '!=' ,NULL)->where('responsible_unit_id', $this->staff()->unit_id);
+
+        })->whereStatus('assigned_to_staff');
+    }
+
+
+    protected function checkLeadReassignment(){
+
+        $staff = $this->staff();
+
+        if (!$this->checkLead($staff)) {
+            throw new CustomException("Seul le lead de votre unité est autorisé à effectuer cette action.");
+        }
+    }
+
 }
