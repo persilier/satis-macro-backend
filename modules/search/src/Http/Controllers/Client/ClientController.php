@@ -44,8 +44,34 @@ class ClientController extends ApiController
             }
 
             $clients->push([
+                'identityId' => $item->client->identite->id,
+                'identity' => $item->client->identite,
                 'client' => $item->client,
                 'accounts' => $item->accounts,
+                'fullName' => $fullName,
+                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
+            ]);
+
+            return $item;
+
+        });
+
+        // get the claimers of the institution
+        $institution->claims->map(function ($item, $key) use ($clients) {
+
+            $fullName = $item->claimer->firstname . ' ' . $item->claimer->lastname . ' / ';
+
+            $i = 0;
+            foreach ($item->claimer->telephone as $telephone) {
+                $i++;
+                $fullName .= ($i == count($item->claimer->telephone)) ? $telephone : $telephone . ' , ';
+            }
+
+            $clients->push([
+                'identityId' => $item->claimer->id,
+                'identity' => $item->claimer,
+                'client' => null,
+                'accounts' => [],
                 'fullName' => $fullName,
                 'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
             ]);
@@ -58,7 +84,7 @@ class ClientController extends ApiController
             return $value['contains'];
         });
 
-        return response()->json($filtered->take(10)->values(), 200);
+        return response()->json($filtered->unique('identityId')->take(10)->values(), 200);
     }
 
 }
