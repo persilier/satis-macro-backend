@@ -651,6 +651,20 @@
       "options": {
         "symlink": true
       }
+    },
+    {
+      "type": "path",
+      "url": "modules/uemoa-reports-any-institution/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/uemoa-reports-my-institution/",
+      "options": {
+        "symlink": true
+      }
     }
   ]
 }
