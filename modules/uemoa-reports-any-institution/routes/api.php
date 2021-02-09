@@ -19,8 +19,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/any')->name('any.')->group(function () {
 
     Route::get('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@index')->name('uemoa-global-state-report.index');
-
-    // Export excel
     Route::post('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@excelExport')->name('uemoa-global-state-report.excelExport');
+
+    Route::get('/uemoa/state-more-30-days', 'StateMore30Days\StateMore30DaysController@index')->name('uemoa-out-time-30-days.index');
+    Route::post('/uemoa/state-more-30-days', 'StateMore30Days\StateMore30DaysController@excelExport')->name('uemoa-out-time-30-days.excelExport');
+
+    Route::get('/uemoa/state-out-time', 'StateOutTime\StateOutTimeController@index')->name('uemoa-state-out-time.index');
+    Route::post('/uemoa/state-out-time', 'StateOutTime\StateOutTimeController@excelExport')->name('uemoa-state-out-time.excelExport');
 
 });

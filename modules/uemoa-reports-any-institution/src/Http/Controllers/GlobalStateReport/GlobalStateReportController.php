@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Satis2020\ServicePackage\Exports\UemoaReports\GlobalStateReportExcel;
+use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
@@ -55,9 +55,7 @@ class GlobalStateReportController extends ApiController
 
         $claims = $this->resultatsGlobalState($request);
 
-        $myInstitution = false;
-
-        return Excel::download(new GlobalStateReportExcel($claims, $myInstitution), 'rapport_uemoa_etat_global.xlsx');
+        return Excel::download(new StateReportExcel($claims, false, false), 'rapport-uemoa-etat-global-reclamation.xlsx');
     }
 
 }
