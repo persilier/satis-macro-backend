@@ -71,7 +71,7 @@ trait VerifyUnicity
             if (!is_null($staff)) {
                 return [
                     'status' => false,
-                    'message' => 'A Staff already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
+                    'message' => 'Un Staff existe déjà avec le même ' . $attribute . ' : ' . $verify['conflictValue'],
                     'staff' => $staff,
                     'verify' => $verify
                 ];
@@ -79,7 +79,7 @@ trait VerifyUnicity
 
             return [
                 'status' => false,
-                'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Staff',
+                'message' => 'Nous avons retrouvé quelqu\'un avec le même ' . $attribute . ' : ' . $verify['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que Staff',
                 'identite' => $verify['entity'],
                 'verify' => $verify
             ];
@@ -122,7 +122,7 @@ trait VerifyUnicity
             // Identity PhoneNumber Unicity Verification
             $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
             if (!$verifyPhone['status']) {
-                $verifyPhone['message'] = 'We found someone with the phone number : ' . $verifyPhone['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
+                $verifyPhone['message'] = 'Nous avons retrouvé quelqu\'un avec le numéro de téléphone : ' . $verifyPhone['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
                 throw new CustomException($verifyPhone, 409);
             }
 
@@ -133,7 +133,7 @@ trait VerifyUnicity
             $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
 
             if (!$verifyEmail['status']) {
-                $verifyEmail['message'] = 'We found someone with the email address : ' . $verifyEmail['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as the claimer';
+                $verifyEmail['message'] = 'Nous avons retrouvé quelqu\'un avec l\'adresse email : ' . $verifyEmail['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
                 throw new CustomException($verifyEmail, 409);
             }
         }
@@ -151,14 +151,14 @@ trait VerifyUnicity
         // Staff PhoneNumber Unicity Verification
         $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $identite->id);
         if (!$verifyPhone['status']) {
-            $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
+            $verifyPhone['message'] = "Nous ne pouvons pas traiter votre demande. Le numéro de téléphone ".$verifyPhone['verify']['conflictValue']." appartient à quelqu'un d'autre";
             throw new CustomException($verifyPhone, 409);
         }
 
         // Staff Email Unicity Verification
         $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $identite->id);
         if (!$verifyEmail['status']) {
-            $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
+            $verifyEmail['message'] = "Nous ne pouvons pas traiter votre demande. L'adresse email ".$verifyEmail['verify']['conflictValue']." appartient à quelqu'un d'autre";
             throw new CustomException($verifyEmail, 409);
         }
     }
@@ -229,7 +229,7 @@ trait VerifyUnicity
 
                 return [
                     'status' => false,
-                    'message' => 'A Client already exist with the ' . $attribute . ' : ' . $verify['conflictValue'],
+                    'message' => 'Nous avons retrouvé un client avec le ' . $attribute . ' : ' . $verify['conflictValue'],
                     'identite' => $client,
                     'verify' => $verify
                 ];
@@ -237,7 +237,7 @@ trait VerifyUnicity
 
             return [
                 'status' => false,
-                'message' => 'We found someone with the ' . $attribute . ' : ' . $verify['conflictValue'] . ' that you provide! Please, verify if it\'s the same that you want to register as a Client',
+                'message' => 'Nous avons retrouvé quelqu\'un avec le ' . $attribute . ' : ' . $verify['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que client',
                 'identite' => $verify['entity'],
                 'verify' => $verify
             ];
@@ -262,7 +262,7 @@ trait VerifyUnicity
 
         return [
             'status' => false,
-            'message' => 'A Client already exist with the account number.',
+            'message' => 'Un client existe déjà avec ce numéro de compte.',
             'account' => $account->load(
                 'AccountType',
                 'client_institution.category_client',
