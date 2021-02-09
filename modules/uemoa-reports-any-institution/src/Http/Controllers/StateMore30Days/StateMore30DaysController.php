@@ -1,21 +1,21 @@
 <?php
 
-namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\GlobalStateReport;
+namespace Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days;
 
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Satis2020\ServicePackage\Exports\UemoaReports\GlobalStateReportExcel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
+
 /**
- * Class GlobalStateReportController
- * @package Satis2020\UemoaReportsMyInstitution\Http\Controllers\GlobalStateReport
+ * Class StateMore30DaysController
+ * @package Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days
  */
-class GlobalStateReportController extends ApiController
+class StateMore30DaysController extends ApiController
 {
     use UemoaReports;
 
@@ -23,7 +23,7 @@ class GlobalStateReportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-reporting-claim-my-institution')->only(['index', 'excelExport']);
+        $this->middleware('permission:list-reporting-claim-any-institution')->only(['index', 'excelExport']);
     }
 
     /**
@@ -38,11 +38,12 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsStateMore30Days($request);
 
         return response()->json($claims, 200);
 
     }
+
 
     /**
      * @param Request $request
@@ -53,9 +54,9 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsStateMore30Days($request);
 
-        return Excel::download(new StateReportExcel($claims, true, false), 'rapport-uemoa-etat-global-reclamation.xlsx');
+        return Excel::download(new StateReportExcel($claims, false, true), 'rapport-uemoa-etat-reclamation-30-jours.xlsx');
     }
 
 }
