@@ -183,9 +183,6 @@ trait UemoaReports{
     }
 
 
-
-
-
     /**
      * @param $claim
      * @return string
@@ -201,7 +198,7 @@ trait UemoaReports{
      */
     protected function dateTreatment($claim){
 
-        return ($claim->activeTreatment && $claim->activeTreatment->solved_at) ? $claim->activeTreatment->solved_at->copy()->format('d/m/y') : '';
+        return ($claim->activeTreatment && $claim->activeTreatment->validated_at) ? $claim->activeTreatment->validated_at->copy()->format('d/m/y') : '';
     }
 
 
@@ -244,7 +241,7 @@ trait UemoaReports{
      */
     protected function closing($claim){
 
-        return $claim->status === "archived" ? $claim->activeTreatment->satisfaction_measured_at->copy()->format('d/m/y')  : '';
+        return $claim->status === "archived" ? ($claim->activeTreatment->satisfaction_measured_at ? $claim->activeTreatment->satisfaction_measured_at->copy()->format('d/m/y') : $claim->activeTreatment->validated_at->copy()->format('d/m/y'))   : '';
     }
 
 
@@ -269,7 +266,7 @@ trait UemoaReports{
 
         $delay = null;
 
-        ($claim->activeTreatment && $claim->activeTreatment->solved_at) ? $claim->activeTreatment->transferred_to_unit_at->copy()->diffInDays(($claim->activeTreatment->solved_at), false) : '';
+        ($claim->activeTreatment && $claim->activeTreatment->validated_at) ? $claim->activeTreatment->transferred_to_unit_at->copy()->diffInDays(($claim->activeTreatment->validated_at), false) : '';
 
         return $delay;
     }

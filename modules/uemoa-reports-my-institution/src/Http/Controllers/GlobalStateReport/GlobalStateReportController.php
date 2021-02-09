@@ -5,6 +5,8 @@ namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\GlobalStateReport
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Satis2020\ServicePackage\Exports\UemoaReports\GlobalStateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
@@ -20,6 +22,7 @@ class GlobalStateReportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
+        $this->middleware('permission:list-reporting-claim-my-institution')->only(['index', 'excelExport']);
     }
 
     /**
@@ -38,6 +41,22 @@ class GlobalStateReportController extends ApiController
 
         return response()->json($claims, 200);
 
+    }
+
+    /**
+     * @param Request $request
+     * @return
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function excelExport(Request $request){
+
+        $this->validate($request, $this->rulePeriode());
+
+        $claims = $this->resultatsGlobalState($request, true);
+
+        $myInstitution = true;
+
+        return Excel::download(new GlobalStateReportExcel($claims, $myInstitution), 'rapport_uemoa_etat_global.xlsx');
     }
 
 }
