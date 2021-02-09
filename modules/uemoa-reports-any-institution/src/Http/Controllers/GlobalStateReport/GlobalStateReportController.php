@@ -22,6 +22,7 @@ class GlobalStateReportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
+        $this->middleware('permission:list-reporting-claim-any-institution')->only(['index', 'excelExport']);
     }
 
     /**
