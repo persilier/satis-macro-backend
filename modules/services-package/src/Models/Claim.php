@@ -114,7 +114,7 @@ class Claim extends Model
     public function getaccountTypeAttribute()
     {
 
-        return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id) : NULL;
+        return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id)->name : 'A TITRE PERSONNEL';
     }
 
 

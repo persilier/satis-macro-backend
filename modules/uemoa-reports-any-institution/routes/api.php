@@ -12,3 +12,15 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+/**
+ * Gloal State Report Excel
+ */
+Route::prefix('/any')->name('any.')->group(function () {
+
+    Route::get('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@index')->name('uemoa-global-state-report.index');
+
+    // Export excel
+    Route::post('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@excelExport')->name('uemoa-global-state-report.excelExport');
+
+});
