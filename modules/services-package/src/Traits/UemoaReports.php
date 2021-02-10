@@ -103,7 +103,6 @@ trait UemoaReports{
         }
 
         return $datas;
-
     }
 
 
@@ -169,6 +168,81 @@ trait UemoaReports{
 
         return $datas;
 
+    }
+
+
+    /**
+     * @param $request
+     * @param bool $myInstitution
+     * @return array
+     */
+    protected function resultatsStateAnalytique($request, $myInstitution = false){
+
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution)->get()->groupBy([
+            function ($item) {
+                return $item->institutionTargeted->name;
+            },
+            'accountType',
+            function($item){
+                return $item->claimObject->claimCategory->name;
+            },
+            function($item){
+                return $item->claimObject->name;
+            }
+        ]);
+
+        $claimCollection = collect([]);
+
+        $claims = $claims->map(function ($itemInstitution, $keyInstitution) use ($claimCollection, $myInstitution){
+
+            $itemInstitution = $itemInstitution->map(function ($itemTypeClient, $keyTypeClient) use ($claimCollection, $keyInstitution,$myInstitution){
+
+
+                $itemTypeClient = $itemTypeClient->map(function ($itemCategoryObject, $keyCategoryObject) use ($claimCollection, $keyInstitution, $keyTypeClient,$myInstitution){
+
+
+                    $itemCategoryObject = $itemCategoryObject->map(function ($itemObject, $keyObject) use ($claimCollection, $keyInstitution, $keyTypeClient, $keyCategoryObject,$myInstitution){
+
+
+                        $itemObject = $itemObject->map(function ($itemClaim, $keyClaim) use ($claimCollection, $keyInstitution, $keyTypeClient, $keyCategoryObject, $keyObject, $itemObject,$myInstitution){
+
+                            $data = [
+                                'filiale ' => $keyInstitution,
+                                'typeClient ' => $keyTypeClient,
+                                'claimCategorie ' => $keyCategoryObject,
+                                'claimObject ' => $keyObject,
+                                'totalClaim' => $itemObject->count(),
+                                'totalTreated' => $this->totalTreated($itemObject),
+                                'totalUnfounded' => $this->totalUnfounded($itemObject),
+                                'totalNoValidated' => $this->totalNoValidated($itemObject),
+                                'delayMediumQualification' => $this->delayMediumQualification($itemObject),
+                                'delayPlanned' => $itemObject->first()->claimObject->time_limit,
+                                'delayMediumTreatmentOpenDay' => $this->delayMediumTreatmentOpenDay($itemObject),
+                                'delayMediumTreatmentWorkingDay' => $this->delayMediumTreatmentWorkingDay($itemObject),
+                                'percentageTreatedInDelay' => $this->percentageInTime($itemObject),
+                                'percentageTreatedOutDelay' => $this->percentageOutTime($itemObject),
+                                'percentageNoTreated' => $this->percentageNotTreated($itemObject)
+                            ];
+
+                            if(!$myInstitution){
+
+                                $data = Arr::except($data, 'filiale');
+
+                            }
+
+                            $claimCollection->push($data);
+
+                        });
+
+                    });
+
+                });
+
+            });
+
+        });
+
+        return $claimCollection->all();
     }
 
 
@@ -368,6 +442,184 @@ trait UemoaReports{
 
         }, $end);
 
+    }
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function percentageNotTreated($itemObject){
+
+        $totalNoValidated = $this->totalNoValidated($itemObject);
+
+        $total= $itemObject->count();
+
+        return ($totalNoValidated && $total) ? (round((($totalNoValidated /$total ) * 100),2)) : 0;
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function percentageOutTime($itemObject){
+
+        $totalTreatedOutDelay = $this->totalTreatedOutDelay($itemObject);
+
+        $totalTreated = $this->totalTreated($itemObject);
+
+        return ($totalTreatedOutDelay && $totalTreated) ? (round((($totalTreatedOutDelay /$totalTreated ) * 100),2)) : 0;
+    }
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function percentageInTime($itemObject){
+
+        $totalTreatedInDelay = $this->totalTreatedInDelay($itemObject);
+
+        $totalTreated = $this->totalTreated($itemObject);
+
+        return ($totalTreatedInDelay && $totalTreated) ? (round((($totalTreatedInDelay /$totalTreated ) * 100),2)) : 0;
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalTreatedInDelay($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($item->time_limit) < $item->activeTreatment->validated_at));
+
+        })->count();
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalTreatedOutDelay($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($item->time_limit) > $item->activeTreatment->validated_at));
+
+        })->count();
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function delayMediumQualification($itemObject){
+        $total = 0;
+        $delay = 0;
+
+        foreach ($itemObject as $item){
+
+            $open_day = $this->delayQualification($item)['open_day'];
+
+            if($open_day){
+
+                $total++;
+                $delay += $open_day;
+            }
+        }
+
+        return ($total && $delay) ? round($delay / $total) : 0;
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function delayMediumTreatmentOpenDay($itemObject){
+        $total = 0;
+        $delay = 0;
+
+        foreach ($itemObject as $item){
+
+            $open_day = $this->delayTreatment($item)['open_day'];
+
+            if($open_day){
+
+                $total++;
+                $delay += $open_day;
+            }
+        }
+
+        return ($total && $delay) ? round($delay / $total) : 0;
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function delayMediumTreatmentWorkingDay($itemObject){
+        $total = 0;
+        $delay = 0;
+
+        foreach ($itemObject as $item){
+
+            $working_day = $this->delayTreatment($item)['working_day'];
+
+            if($working_day){
+
+                $total++;
+                $delay += $working_day;
+            }
+        }
+
+        return ($total && $delay) ? round($delay / $total) : 0;
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalTreated($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at);
+
+        })->count();
+    }
+
+
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalNoValidated($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && !$item->activeTreatment->validated_at);
+
+        })->count();
+    }
+
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalUnfounded($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->declared_unfounded_at);
+
+        })->count();
     }
 
 

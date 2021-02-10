@@ -27,4 +27,7 @@ Route::prefix('/any')->name('any.')->group(function () {
     Route::get('/uemoa/state-out-time', 'StateOutTime\StateOutTimeController@index')->name('uemoa-state-out-time.index');
     Route::post('/uemoa/state-out-time', 'StateOutTime\StateOutTimeController@excelExport')->name('uemoa-state-out-time.excelExport');
 
+    Route::get('/uemoa/state-analytique', 'StateAnalytique\StateAnalytiqueController@index')->name('uemoa-state-analytique.index');
+    Route::post('/uemoa/state-analytique', 'StateAnalytique\StateAnalytiqueController@excelExport')->name('uemoa-state-analytique.excelExport');
+
 });
