@@ -382,7 +382,7 @@ trait UemoaReports{
     protected function closing($claim){
 
         return $claim->status === "archived" ?
-            ($claim->activeTreatment->satisfaction_measured_at ?
+            (($claim->activeTreatment && $claim->activeTreatment->satisfaction_measured_at) ?
                 $claim->activeTreatment->satisfaction_measured_at->copy()->format('d/m/y') :
                 $claim->activeTreatment->validated_at->copy()->format('d/m/y'))   : null;
     }
