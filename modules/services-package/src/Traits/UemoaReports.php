@@ -242,7 +242,8 @@ trait UemoaReports{
 
         });
 
-        return $claimCollection->all();
+        return $claimCollection;
+
     }
 
 

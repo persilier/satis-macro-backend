@@ -4,14 +4,16 @@ namespace Satis2020\ServicePackage\Exports\UemoaReports;
 use App\User;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
  * Class GlobalStateReportExcel
  * @package Satis2020\ServicePackage\Exports\UemoaReports
  */
-class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell, WithHeadings
+class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell, WithHeadings, ShouldAutoSize
 {
     private $claims;
     private $myInstitution;
@@ -76,6 +78,7 @@ class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell,
             $header,
         ];
     }
+
 
 
 }
