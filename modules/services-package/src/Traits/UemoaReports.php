@@ -381,10 +381,22 @@ trait UemoaReports{
      */
     protected function closing($claim){
 
-        return $claim->status === "archived" ?
-            (($claim->activeTreatment && $claim->activeTreatment->satisfaction_measured_at) ?
-                $claim->activeTreatment->satisfaction_measured_at->copy()->format('d/m/y') :
-                $claim->activeTreatment->validated_at->copy()->format('d/m/y'))   : null;
+        $dateClosing = null;
+
+        if($claim->status === "archived"){
+
+            if($claim->activeTreatment && $claim->activeTreatment->satisfaction_measured_at){
+
+                $dateClosing = $claim->activeTreatment->satisfaction_measured_at->copy()->format('d/m/y');
+
+            }elseif($claim->activeTreatment && $claim->activeTreatment->validated_at){
+
+                $dateClosing = $claim->activeTreatment->validated_at->copy()->format('d/m/y');
+            }
+
+        }
+
+        return $dateClosing;
     }
 
 
