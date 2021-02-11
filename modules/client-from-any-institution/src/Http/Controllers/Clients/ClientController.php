@@ -180,9 +180,18 @@ class ClientController extends ApiController
     {
         $this->validate($request, $this->rulesClient(true));
 
-        $client = $this->getOneAccountClient($accountId);
+        $account = Account::with([
+            'accountType',
+            'client_institution.client.identite',
+            'client_institution.category_client',
+            'client_institution.institution'
+        ])->find($accountId);
 
-        $account = Account::findOrFail($accountId);
+        // verify if the account is not null and belong to the institution of the user connected
+        if (is_null($account))
+            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+
+        $client = $account->client_institution->client;
 
         // Account Number Verification
         $verifyAccount = $this->handleAccountVerification($request->number, $account->id);
@@ -212,7 +221,7 @@ class ClientController extends ApiController
 
         $account->update($request->only(['number', 'account_type_id']));
 
-        $client->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
+        $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
         return response()->json($client, 201);
     }
