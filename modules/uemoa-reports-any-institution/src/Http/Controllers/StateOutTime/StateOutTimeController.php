@@ -56,7 +56,9 @@ class StateOutTimeController extends ApiController
 
         $claims = $this->resultatsStateOutTime($request);
 
-        return Excel::download(new StateReportExcel($claims, false, false), 'rapport-uemoa-etat-hors-delai.xlsx');
+        Excel::store(new StateReportExcel($claims, false, false), 'rapport-uemoa-etat-hors-delai-any-institution.xlsx');
+
+        return response()->json(['file' => storage_path('app\rapport-uemoa-etat-hors-delai-any-institution.xlsx')], 200);
     }
 
 }

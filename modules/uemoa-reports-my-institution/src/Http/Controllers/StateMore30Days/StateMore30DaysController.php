@@ -56,7 +56,9 @@ class StateMore30DaysController extends ApiController
 
         $claims = $this->resultatsStateMore30Days($request, true);
 
-        return Excel::download(new StateReportExcel($claims, true, true), 'rapport-uemoa-etat-reclamation-30-jours.xlsx');
+        Excel::store(new StateReportExcel($claims, true, true), 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx');
+
+        return response()->json(['file' => storage_path('app\rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx')], 200);
     }
 
 }
