@@ -33,7 +33,8 @@ trait UemoaReports{
         $data = [
 
             'date_start' => 'required|date_format:Y-m-d',
-            'date_end' => 'required|date_format:Y-m-d|after:date_start'
+            'date_end' => 'required|date_format:Y-m-d|after:date_start',
+            'institution_id' => 'exists:institutions,id'
         ];
 
         return $data;
