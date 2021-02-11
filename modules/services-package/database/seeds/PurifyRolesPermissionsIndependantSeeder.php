@@ -69,7 +69,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-reject-unit-transfer-parameters',
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
-                    'list-faq',
+                    'list-faq', 'update-faq', 'store-faq',
                     'search-claim-my-reference',
                 ],
                 "pilot" => [

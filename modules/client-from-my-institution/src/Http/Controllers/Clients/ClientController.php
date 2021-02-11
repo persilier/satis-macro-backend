@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Clients;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,24 +16,28 @@ use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
+use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
+
     public function __construct()
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-client-from-my-institution')->only(['index']);
-        $this->middleware('permission:store-client-from-my-institution')->only(['create','store']);
+        $this->middleware('permission:store-client-from-my-institution')->only(['create', 'store']);
         $this->middleware('permission:show-client-from-my-institution')->only(['show']);
-        $this->middleware('permission:update-client-from-my-institution')->only(['edit','update']);
+        $this->middleware('permission:update-client-from-my-institution')->only(['edit', 'update']);
         $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);
     }
 
 
     /**
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -44,20 +49,25 @@ class ClientController extends ApiController
 
     /**
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
-    public function create(){
+    public function create()
+    {
         $institution = $this->institution();
         return response()->json([
             'client_institutions' => $this->getAllClientByInstitution($institution->id),
             'accountTypes' => AccountType::all(),
-            'clientCategories'=> CategoryClient::all()
-        ],200);
+            'clientCategories' => CategoryClient::all()
+        ], 200);
     }
 
 
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     public function store(Request $request)
@@ -105,20 +115,34 @@ class ClientController extends ApiController
 
 
     /**
-     * @param $clientId
+     * @param $accountId
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
-    public function show($clientId)
+    public function show($accountId)
     {
         $institution = $this->institution();
-        $client = $this->getOneClientByInstitution($institution->id, $clientId);
-        return response()->json($client, 200);
+
+        $account = Account::with([
+            'accountType',
+            'client_institution.client.identite',
+            'client_institution.category_client',
+            'client_institution.institution'
+        ])->find($accountId);
+
+        // verify if the account is not null and belong to the institution of the user connected
+        if (is_null($account) || $account->client_institution->institution_id != $institution->id)
+            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+
+        return response()->json($account, 200);
     }
 
 
     /**
      * @param $accountId
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     public function edit($accountId)
     {
@@ -130,8 +154,8 @@ class ClientController extends ApiController
             'client_institution' => $client,
             'account' => Account::with('AccountType')->find($accountId),
             'AccountTypes' => AccountType::all(),
-            'clientCategories'=> CategoryClient::all()
-        ],200);
+            'clientCategories' => CategoryClient::all()
+        ], 200);
 
     }
 
@@ -140,6 +164,8 @@ class ClientController extends ApiController
      * @param Request $request
      * @param $accountId
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     public function update(Request $request, $accountId)
@@ -148,10 +174,18 @@ class ClientController extends ApiController
 
         $institution = $this->institution();
 
-        $client = $this->getOneAccountClientByInstitution($institution->id, $accountId);
+        $account = Account::with([
+            'accountType',
+            'client_institution.client.identite',
+            'client_institution.category_client',
+            'client_institution.institution'
+        ])->find($accountId);
 
+        // verify if the account is not null and belong to the institution of the user connected
+        if (is_null($account) || $account->client_institution->institution_id != $institution->id)
+            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
 
-        $account = Account::findOrFail($accountId);
+        $client = $account->client_institution->client;
 
         // Account Number Verification
         $verifyAccount = $this->handleAccountVerification($request->number, $account->id);
@@ -162,28 +196,28 @@ class ClientController extends ApiController
         }
 
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id, 'id', $client->client->identite->id);
+        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id, 'id', $client->identite->id);
 
         if (!$verifyPhone['status']) {
 
-            $verifyPhone['message'] = "We can't perform your request. The phone number ".$verifyPhone['verify']['conflictValue']." belongs to someone else";
+            $verifyPhone['message'] = "We can't perform your request. The phone number " . $verifyPhone['verify']['conflictValue'] . " belongs to someone else";
             throw new CustomException($verifyPhone, 409);
 
         }
 
         // Client Email Unicity Verification
-        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id,'id', $client->client->identite->id);
+        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id, 'id', $client->identite->id);
 
         if (!$verifyEmail['status']) {
 
-            $verifyEmail['message'] = "We can't perform your request. The email address ".$verifyEmail['verify']['conflictValue']." belongs to someone else";
+            $verifyEmail['message'] = "We can't perform your request. The email address " . $verifyEmail['verify']['conflictValue'] . " belongs to someone else";
             throw new CustomException($verifyEmail, 409);
 
         }
 
         $account->update($request->only(['number', 'account_type_id']));
 
-        $client->client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
+        $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
         return response()->json($client, 201);
     }

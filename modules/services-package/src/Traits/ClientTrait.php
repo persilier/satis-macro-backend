@@ -193,6 +193,7 @@ trait ClientTrait
     /**
      * @param $institutionId
      * @return Builder[]|Collection
+     * @throws CustomException
      */
     protected  function getAllClientByInstitution($institutionId){
         try{
@@ -217,6 +218,7 @@ trait ClientTrait
      * @param $institutionId
      * @param $accountId
      * @return Builder|Model
+     * @throws CustomException
      */
     protected  function getOneAccountClientByInstitution($institutionId, $accountId){
 
@@ -244,6 +246,7 @@ trait ClientTrait
     /**
      * @param $accountId
      * @return Builder|Model
+     * @throws CustomException
      */
     protected  function getOneAccountClient($accountId){
 
@@ -273,6 +276,7 @@ trait ClientTrait
     /**
      * @param $number
      * @return array
+     * @throws CustomException
      */
     protected function handleAccountClient($number)
     {
