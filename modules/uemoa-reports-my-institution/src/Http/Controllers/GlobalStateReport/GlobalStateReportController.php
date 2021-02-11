@@ -55,7 +55,9 @@ class GlobalStateReportController extends ApiController
 
         $claims = $this->resultatsGlobalState($request, true);
 
-        Excel::store(new StateReportExcel($claims, true, false), 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx');
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        Excel::store(new StateReportExcel($claims, true, false, $libellePeriode, 'Rapport global des réclamations'), 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx');
 
 
         return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx'], 200);

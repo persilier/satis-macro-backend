@@ -217,7 +217,7 @@ class ClientController extends ApiController
      */
     public function destroy(Account $account)
     {
-        $account->delete();
+        $account->secureDelete('claims');
         return response()->json($account, 201);
     }
 

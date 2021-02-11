@@ -33,7 +33,8 @@ trait UemoaReports{
         $data = [
 
             'date_start' => 'required|date_format:Y-m-d',
-            'date_end' => 'required|date_format:Y-m-d|after:date_start'
+            'date_end' => 'required|date_format:Y-m-d|after:date_start',
+            'institution_id' => 'exists:institutions,id'
         ];
 
         return $data;
@@ -67,7 +68,7 @@ trait UemoaReports{
 
         $claims = Claim::with($this->getRelations())->whereBetween('created_at', [$date_start, $date_end]);
 
-        if($myInstitution){
+        if($myInstitution || $request->has('institution_id')){
 
             $claims = $claims->where('institution_targeted_id', $this->institution()->id);
         }
@@ -207,10 +208,9 @@ trait UemoaReports{
                         $itemObject = $itemObject->map(function ($itemClaim, $keyClaim) use ($claimCollection, $keyInstitution, $keyTypeClient, $keyCategoryObject, $keyObject, $itemObject,$myInstitution){
 
                             $data = [
-                                'filiale ' => $keyInstitution,
-                                'typeClient ' => $keyTypeClient,
-                                'claimCategorie ' => $keyCategoryObject,
-                                'claimObject ' => $keyObject,
+                                'typeClient' => $keyTypeClient,
+                                'claimCategorie' => $keyCategoryObject,
+                                'claimObject' => $keyObject,
                                 'totalClaim' => $itemObject->count(),
                                 'totalTreated' => $this->totalTreated($itemObject),
                                 'totalUnfounded' => $this->totalUnfounded($itemObject),
@@ -226,7 +226,7 @@ trait UemoaReports{
 
                             if(!$myInstitution){
 
-                                $data = Arr::except($data, 'filiale');
+                                $data = Arr::prepend($data, $keyInstitution, 'filiale');
 
                             }
 
