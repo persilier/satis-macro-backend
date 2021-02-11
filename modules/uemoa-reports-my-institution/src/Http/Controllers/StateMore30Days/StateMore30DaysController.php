@@ -56,7 +56,9 @@ class StateMore30DaysController extends ApiController
 
         $claims = $this->resultatsStateMore30Days($request, true);
 
-        Excel::store(new StateReportExcel($claims, true, true), 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx');
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        Excel::store(new StateReportExcel($claims, true, true, $libellePeriode, 'Reclamation en retard de +30j'), 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx'], 200);
     }

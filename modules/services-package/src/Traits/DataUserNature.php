@@ -175,4 +175,49 @@ trait DataUserNature
     }
 
 
+    /**
+     * @param $data
+     * @return mixed
+     */
+    protected function libellePeriode($data){
+
+        $start = $data['startDate'];
+        $end = $data['endDate'];
+
+        if($start === $end){
+
+            $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
+
+        }else{
+
+            if($start->year !== $end->year){
+
+                $libelle = $start->day." ".$start->shortMonthName." ".$start->year." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+            }else{
+
+                if($start->month !== $end->month){
+
+                    $libelle = $start->day." ".$start->shortMonthName." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+                }else{
+
+                    if($start->day !== $end->day){
+
+                        $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+
+                    }else{
+
+                        $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
+                    }
+
+                }
+            }
+        }
+
+        return $libelle;
+    }
+
+
+
 }
