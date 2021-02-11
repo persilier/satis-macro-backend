@@ -123,7 +123,12 @@ class ClientController extends ApiController
     {
         $institution = $this->institution();
 
-        $account = Account::with(['accountType', 'client_institution.client.identite'])->find($accountId);
+        $account = Account::with([
+            'accountType',
+            'client_institution.client.identite',
+            'client_institution.category_client',
+            'client_institution.institution'
+        ])->find($accountId);
 
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id)
