@@ -202,7 +202,7 @@ class ClientController extends ApiController
         }
 
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id, 'id', $client->client->identite->id);
+        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $request->institution_id, 'id', $client->identite->id);
 
         if (!$verifyPhone['status']) {
 
@@ -211,7 +211,7 @@ class ClientController extends ApiController
         }
 
         // Client Email Unicity Verification
-        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id, 'id', $client->client->identite->id);
+        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $request->institution_id, 'id', $client->identite->id);
 
         if (!$verifyEmail['status']) {
 
