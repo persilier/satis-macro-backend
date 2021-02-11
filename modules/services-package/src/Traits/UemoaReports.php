@@ -68,7 +68,12 @@ trait UemoaReports{
 
         $claims = Claim::with($this->getRelations())->whereBetween('created_at', [$date_start, $date_end]);
 
-        if($myInstitution || $request->has('institution_id')){
+        if($request->has('institution_id')){
+
+            $claims = $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if($myInstitution){
 
             $claims = $claims->where('institution_targeted_id', $this->institution()->id);
         }
