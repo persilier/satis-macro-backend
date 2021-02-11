@@ -193,6 +193,7 @@ trait ClientTrait
     /**
      * @param $institutionId
      * @return Builder[]|Collection
+     * @throws CustomException
      */
     protected  function getAllClientByInstitution($institutionId){
         try{
