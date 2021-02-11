@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
 /**
@@ -43,7 +44,6 @@ class GlobalStateReportController extends ApiController
 
     }
 
-
     /**
      * @param Request $request
      * @return
@@ -55,7 +55,9 @@ class GlobalStateReportController extends ApiController
 
         $claims = $this->resultatsGlobalState($request);
 
-        Excel::store(new StateReportExcel($claims, false, false), 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx');
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        Excel::store(new StateReportExcel($claims, false, false, $libellePeriode, 'Rapport global des réclamations'), 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx'], 200);
     }

@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/any')->name('any.')->group(function () {
 
+    Route::get('/uemoa/institution', 'Institution\InstitutionController@index')->name('uemoa-institution.index');
+
     Route::get('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@index')->name('uemoa-global-state-report.index');
     Route::post('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@excelExport')->name('uemoa-global-state-report.excelExport');
 

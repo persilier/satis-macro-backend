@@ -18,17 +18,20 @@ class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell,
 {
     private $claims;
     private $myInstitution;
+    private $libellePeriode;
 
     /**
      * GlobalStateReportExcel constructor.
      * @param $claims
      * @param $myInstitution
-     * @param $colTelephone
+     * @param $libellePeriode
+     * @param $reportName
      */
-    public function __construct($claims, $myInstitution)
+    public function __construct($claims, $myInstitution, $libellePeriode)
     {
         $this->claims = $claims;
         $this->myInstitution = $myInstitution;
+        $this->libellePeriode = $libellePeriode;
     }
     /**
      * @return Collection
@@ -76,6 +79,12 @@ class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell,
         }
 
         return [
+            [
+               'Etat Analytique des réclamations'
+            ],
+            [
+                'Période : '.$this->libellePeriode
+            ],
             $header,
         ];
     }

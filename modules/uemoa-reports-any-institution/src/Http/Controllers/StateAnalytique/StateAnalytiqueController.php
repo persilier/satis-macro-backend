@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateAnalytiqueReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
 /**
@@ -56,7 +57,9 @@ class StateAnalytiqueController extends ApiController
 
         $claims = $this->resultatsStateAnalytique($request);
 
-        Excel::store(new StateAnalytiqueReportExcel($claims, false), 'rapport-uemoa-etat-analytique-any-institution.xlsx');
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-any-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-analytique-any-institution.xlsx'], 200);
     }

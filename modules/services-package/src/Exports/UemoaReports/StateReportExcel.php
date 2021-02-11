@@ -18,18 +18,24 @@ class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadi
     private $claims;
     private $myInstitution;
     private $colTelephone;
+    private $libellePeriode;
+    private $reportName;
 
     /**
      * GlobalStateReportExcel constructor.
      * @param $claims
      * @param $myInstitution
      * @param $colTelephone
+     * @param $libellePeriode
+     * @param $reportName
      */
-    public function __construct($claims, $myInstitution, $colTelephone)
+    public function __construct($claims, $myInstitution, $colTelephone, $libellePeriode,$reportName)
     {
         $this->claims = $claims;
         $this->myInstitution = $myInstitution;
         $this->colTelephone = $colTelephone;
+        $this->libellePeriode = $libellePeriode;
+        $this->reportName = $reportName;
     }
     /**
      * @return Collection
@@ -90,6 +96,12 @@ class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadi
         }
 
         return [
+            [
+                $this->reportName
+            ],
+            [
+                'Période : '.$this->libellePeriode
+            ],
             $header,
         ];
     }
