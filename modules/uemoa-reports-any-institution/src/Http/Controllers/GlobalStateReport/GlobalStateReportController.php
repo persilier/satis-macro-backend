@@ -57,7 +57,7 @@ class GlobalStateReportController extends ApiController
 
         Excel::store(new StateReportExcel($claims, false, false), 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx');
 
-        return response()->json(['file' => storage_path('app\rapport-uemoa-etat-global-reclamation-any-institution.xlsx')], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx'], 200);
     }
 
 }

@@ -58,7 +58,7 @@ class StateAnalytiqueController extends ApiController
 
         Excel::store(new StateAnalytiqueReportExcel($claims, true), 'rapport-uemoa-etat-analytique-my-institution.xlsx');
 
-        return response()->json(['file' => storage_path('app\rapport-uemoa-etat-analytique-my-institution.xlsx')], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-analytique-my-institution.xlsx'], 200);
     }
 
 }

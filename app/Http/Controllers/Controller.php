@@ -62,4 +62,14 @@ class Controller extends BaseController
         ];
         return response()->download(public_path($files[$file]['url']), $files[$file]['name']);
     }
+
+
+    /**
+     * @param $file
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadExcelReports($file){
+
+        return response()->download(storage_path('app/'.$file));
+    }
 }
