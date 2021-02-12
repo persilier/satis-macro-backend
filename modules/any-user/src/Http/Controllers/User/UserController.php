@@ -105,6 +105,7 @@ class UserController extends ApiController
         $this->validate($request, $this->rulesCreateUser(false, true));
 
         $roles = $this->verifiedRole($request, $user->identite);
+
         $user = $this->remokeAssigneRole($user, $roles);
 
         if($request->filled('new_password')){

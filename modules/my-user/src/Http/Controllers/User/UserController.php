@@ -102,7 +102,7 @@ class UserController extends ApiController
      */
     protected function userUpdate(Request $request, User $user){
 
-        $this->validate($request, $this->rulesCreateUser(true, true));
+        $this->validate($request, $this->rulesCreateUser(false, true));
 
         if($request->filled('roles')){
             $roles = $this->verifiedRole($request, $user->identite);
