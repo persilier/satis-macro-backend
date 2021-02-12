@@ -63,7 +63,7 @@ class Handler
         if($exception instanceof SecureDeleteException){
             $modelName = Str::lower(class_basename($exception->getModel()));
 
-            return $this->errorResponse("Cannot remove this instance of {$modelName} permanently. It is related with any other resource", 404);
+            return $this->errorResponse("Impossible de supprimer cette instance de {$modelName}. Elle est liée à d'autre(s) ressource(s)", 404);
         }
 
         if($exception instanceof QueryException){
