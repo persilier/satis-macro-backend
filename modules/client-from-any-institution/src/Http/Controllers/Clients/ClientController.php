@@ -228,12 +228,22 @@ class ClientController extends ApiController
 
 
     /**
-     * @param Account $account
+     * @param $accountId
      * @return JsonResponse
-     * @throws \Exception
      */
-    public function destroy(Account $account)
+    public function destroy($accountId)
     {
+        $account = Account::with([
+            'accountType',
+            'client_institution.client.identite',
+            'client_institution.category_client',
+            'client_institution.institution'
+        ])->find($accountId);
+
+        // verify if the account is not null and belong to the institution of the user connected
+        if (is_null($account))
+            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+
         $account->secureDelete('claims');
         return response()->json($account, 201);
     }

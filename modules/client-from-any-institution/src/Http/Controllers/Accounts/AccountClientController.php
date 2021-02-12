@@ -34,6 +34,7 @@ class AccountClientController extends ApiController
      * @param $clientId
      * @return JsonResponse
      * @throws ValidationException
+     * @throws CustomException
      */
     public function store(Request $request, $clientId)
     {
