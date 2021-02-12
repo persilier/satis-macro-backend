@@ -24,7 +24,7 @@ class UnitTypeController extends ApiController
         $this->middleware('permission:store-unit-type')->only(['store']);
         $this->middleware('permission:show-unit-type')->only(['show']);
         $this->middleware('permission:update-unit-type')->only(['edit','update']);
-        $this->middleware('permission:delete-unit-type')->only(['destroy']);
+        $this->middleware('permission:destroy-unit-type')->only(['destroy']);
     }
     /**
      * Display a listing of the resource.
