@@ -5,19 +5,20 @@ use App\User;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
  * Class GlobalStateReportExcel
  * @package Satis2020\ServicePackage\Exports\UemoaReports
  */
-class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadings, ShouldAutoSize
+class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
 {
     private $claims;
     private $myInstitution;
-    private $colTelephone;
     private $libellePeriode;
     private $reportName;
 
@@ -29,11 +30,10 @@ class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadi
      * @param $libellePeriode
      * @param $reportName
      */
-    public function __construct($claims, $myInstitution, $colTelephone, $libellePeriode,$reportName)
+    public function __construct($claims, $myInstitution, $libellePeriode,$reportName)
     {
         $this->claims = $claims;
         $this->myInstitution = $myInstitution;
-        $this->colTelephone = $colTelephone;
         $this->libellePeriode = $libellePeriode;
         $this->reportName = $reportName;
     }
@@ -44,55 +44,45 @@ class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadi
     {
         return $this->claims;
     }
-
-
-    /**
-     * @return string
-     */
-    public function startCell(): string
-    {
-        return 'A2';
-    }
-
-
     /**
      * @return array
      */
     public function headings(): array
     {
         $header = [
+            'filiale' => 'Filiale',
             'typeClient' => 'Type Client',
             'client' => 'Client',
             'account' => 'N° compte',
             'telephone' => 'Téléphone',
-            'agence' => 'Agence (agence concernée sinon agence du client)',
+            'agence' => 'Agence',
             'claimCategorie' => 'Catégorie réclamation',
             'claimObject' => 'Objet réclamation',
             'requestChannel' => 'Canal de réception',
-            'commentClient' => 'Commentaire (client) - desciption de la réclamation',
-            'staffTreating' => 'Fonction de traitement - staff traitant',
-            'solution' => 'Commentaire (fonction de traitement) solution apportée par le staff',
+            'commentClient' => 'Commentaire (client)',
+            'functionTreating' => 'Fonction de traitement',
+            'staffTreating' => 'Staff traitant',
+            'solution' => 'Solution apportée par le staff',
             'status' => 'Statut',
             'dateRegister' => 'Date réclamation',
             'dateQualification' => 'Date qualification',
-            'dateTreatment' => 'Date traitement (= date validation)',
+            'dateTreatment' => 'Date traitement',
             'dateClosing' => 'Date clôture',
-            'delayQualificationOpenDay' => 'Délai de qualification (J) jour(s) ouvré(s)',
-            'delayQualificationWorkingDay' => 'Délai de qualification (J) en jour(s) ouvrable(s)',
-            'delayTreatmentOpenDay' =>  'Délai de traitement en jour(s) ouvré(s)',
-            'delayTreatmentWorkingDay' => 'Délai de traitement en jour(s) ouvrable(s)',
+            'delayQualifWithWeekend' => 'Délai de qualification (J) avec Weekend',
+            'delayTreatWithWeekend' =>  'Délai de traitement (J) avec Weekend',
+            'delayTreatWithoutWeekend' => 'Délai de traitement (J) sans Weekend',
             'amountDisputed' => 'Montant réclamé' ,
             'accountCurrency' => 'Devise du montant'
         ];
 
-        if($this->colTelephone){
+//        if($this->colTelephone){
+//
+//            $header = Arr::except($header, 'telephone');
+//        }
 
-            $header = Arr::except($header, 'telephone');
-        }
+        if($this->myInstitution){
 
-        if(!$this->myInstitution){
-
-            $header = Arr::prepend($header, 'Filiale', 'filiale');
+            $header = Arr::except($header, 'filiale');
         }
 
         return [
@@ -105,5 +95,6 @@ class StateReportExcel implements FromCollection, WithCustomStartCell, WithHeadi
             $header,
         ];
     }
+
 
 }

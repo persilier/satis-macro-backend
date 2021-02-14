@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Staff;
 
 /**
  * Trait UemoaReports
@@ -96,14 +97,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim);
-
-            $data = Arr::except($data, 'telephone');
-
-            if(!$myInstitution){
-
-                $data = Arr::prepend($data, $claim->institutionTargeted->name, 'filiale');
-            }
+            $data = $this->tabDatas($claim, $myInstitution);
 
             $datas->push($data);
         }
@@ -130,12 +124,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim);
-
-            if(!$myInstitution){
-
-                $data = Arr::prepend($data, $claim->institutionTargeted->name, 'filiale');
-            }
+            $data = $this->tabDatas($claim, $myInstitution);
 
             $datas->push($data);
         }
@@ -162,12 +151,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim);
-
-            if(!$myInstitution){
-
-                $data = Arr::prepend($data, $claim->institutionTargeted->name, 'filiale');
-            }
+            $data = $this->tabDatas($claim, $myInstitution);
 
             $datas->push($data);
         }
@@ -188,7 +172,6 @@ trait UemoaReports{
             function ($item) {
                 return $item->institutionTargeted->name;
             },
-            'accountType',
             function($item){
                 return $item->claimObject->claimCategory->name;
             },
@@ -199,53 +182,41 @@ trait UemoaReports{
 
         $claimCollection = collect([]);
 
-        $claims = $claims->map(function ($itemInstitution, $keyInstitution) use ($claimCollection, $myInstitution){
+        $claims = $claims->map(function ($categories, $keyInstitution) use ($claimCollection, $myInstitution){
 
-            $itemInstitution = $itemInstitution->map(function ($itemTypeClient, $keyTypeClient) use ($claimCollection, $keyInstitution,$myInstitution){
+            $categories->map(function ($objects, $keyCategory) use ($claimCollection, $myInstitution, $keyInstitution){
 
+                $objects->map(function ($claims, $keyObject)  use ($claimCollection, $myInstitution,$keyInstitution, $keyCategory){
 
-                $itemTypeClient = $itemTypeClient->map(function ($itemCategoryObject, $keyCategoryObject) use ($claimCollection, $keyInstitution, $keyTypeClient,$myInstitution){
+                    $data = [
+                        'filiale' =>  $keyInstitution,
+                        'claimCategorie' => $keyCategory,
+                        'claimObject' => $keyObject,
+                        'totalClaim' => (string) $claims->count(),
+                        'totalTreated' => (string) $this->totalTreated($claims),
+                        'totalUnfounded' => (string) $this->totalUnfounded($claims),
+                        'totalNoValidated' => (string) $this->totalNoValidated($claims),
+                        'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
+                        'delayPlanned' => (string) $claims->first()->claimObject->time_limit,
+                        'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
+                        'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
+                        'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
+                        'percentageTreatedOutDelay' => (string)  $this->percentageOutTime($claims),
+                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims)
+                    ];
 
+                    if($myInstitution){
 
-                    $itemCategoryObject = $itemCategoryObject->map(function ($itemObject, $keyObject) use ($claimCollection, $keyInstitution, $keyTypeClient, $keyCategoryObject,$myInstitution){
+                        $data = Arr::except($data, 'filiale');
 
-
-                        $itemObject = $itemObject->map(function ($itemClaim, $keyClaim) use ($claimCollection, $keyInstitution, $keyTypeClient, $keyCategoryObject, $keyObject, $itemObject,$myInstitution){
-
-                            $data = [
-                                'typeClient' => $keyTypeClient,
-                                'claimCategorie' => $keyCategoryObject,
-                                'claimObject' => $keyObject,
-                                'totalClaim' => $itemObject->count(),
-                                'totalTreated' => $this->totalTreated($itemObject),
-                                'totalUnfounded' => $this->totalUnfounded($itemObject),
-                                'totalNoValidated' => $this->totalNoValidated($itemObject),
-                                'delayMediumQualification' => $this->delayMediumQualification($itemObject),
-                                'delayPlanned' => $itemObject->first()->claimObject->time_limit,
-                                'delayMediumTreatmentOpenDay' => $this->delayMediumTreatmentOpenDay($itemObject),
-                                'delayMediumTreatmentWorkingDay' => $this->delayMediumTreatmentWorkingDay($itemObject),
-                                'percentageTreatedInDelay' => $this->percentageInTime($itemObject),
-                                'percentageTreatedOutDelay' => $this->percentageOutTime($itemObject),
-                                'percentageNoTreated' => $this->percentageNotTreated($itemObject)
-                            ];
-
-                            if(!$myInstitution){
-
-                                $data = Arr::prepend($data, $keyInstitution, 'filiale');
-
-                            }
-
-                            $claimCollection->push($data);
-
-                        });
-
-                    });
+                    }
+                    return $claimCollection->push($data);
 
                 });
 
             });
 
-        });
+      });
 
         return $claimCollection;
 
@@ -254,20 +225,23 @@ trait UemoaReports{
 
     /**
      * @param $claim
-     * @return array
+     * @param $myInstitution
+     * @return void
      */
-    protected function tabDatas($claim){
+    protected function tabDatas($claim, $myInstitution){
 
-        return  [
+        $data =  [
+            'filiale' => $claim->institutionTargeted->name,
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
             'telephone' => $this->telephone($claim),
-            'agence' =>  $claim->unitTargeted ? $claim->unitTargeted->name : '',
+            'agence' =>  $this->agence($claim),
             'claimCategorie' => $claim->claimObject->claimCategory->name,
             'claimObject' => $claim->claimObject->name,
             'requestChannel' => $claim->requestChannel->name,
             'commentClient' => $claim->description,
+            'functionTreating' => ($claim->activeTreatment && $claim->activeTreatment->responsibleUnit) ? $claim->activeTreatment->responsibleUnit->name : null,
             'staffTreating' => $this->staffTreating($claim),
             'solution' => $this->solution($claim),
             'status' => $this->status($claim),
@@ -275,13 +249,25 @@ trait UemoaReports{
             'dateQualification' => $this->dateQualification($claim),
             'dateTreatment' => $this->dateTreatment($claim),
             'dateClosing' => $this->closing($claim),
-            'delayQualificationOpenDay' => $this->delayQualification($claim)['open_day'],
-            'delayQualificationWorkingDay' => $this->delayQualification($claim)['working_day'],
-            'delayTreatmentOpenDay' => $this->delayTreatment($claim)['open_day'],
-            'delayTreatmentWorkingDay' => $this->delayTreatment($claim)['working_day'],
+            'delayQualifWithWeekend' => (string) $this->delayQualification($claim)['withWeekend'],
+            'delayTreatWithWeekend' => (string) $this->delayTreatment($claim)['withWeekend'],
+            'delayTreatWithoutWeekend' => (string) $this->delayTreatment($claim)['withoutWeekend'],
             'amountDisputed' =>  $claim->amount_disputed,
             'accountCurrency' => $this->currency($claim)
         ];
+
+        if($myInstitution){
+
+            $data = Arr::except($data, 'filiale');
+        }
+
+        return $data;
+
+    }
+
+    public function agence($claim){
+
+        return $claim->unitTargeted ? $claim->unitTargeted->name : ($claim->createdBy->unit ? $claim->createdBy->unit->name : '');
     }
 
     /**
@@ -350,7 +336,22 @@ trait UemoaReports{
      */
     protected function status($claim){
 
-        return $claim->status ? $claim->status : null;
+        $allStatus = [
+            'incomplete' => 'Incomplet',
+            'full' => 'Complet',
+            'assigned_to_staff' => 'affecté à un staff',
+            'archived' => 'Archivé',
+            'transferred_to_targeted_institution' => "transféré à l'institution ciblée",
+            'transferred_to_unit' => 'Transféré dans l\'unité concerné',
+            'treated' => 'Traité',
+            'rejected' => 'rejeté',
+            'unfounded' => 'Non fondé',
+            'validated' => 'Validé'
+        ];
+
+        $claim->status ? $status = $allStatus[$claim->status] : $status = '';
+
+        return $status;
     }
 
     /**
@@ -361,11 +362,8 @@ trait UemoaReports{
 
         $staff = '';
 
-        ($claim->activeTreatment && $claim->activeTreatment->responsibleUnit) ?
-            $staff .= $claim->activeTreatment->responsibleUnit->name : null;
-
         ($claim->activeTreatment && $claim->activeTreatment->responsibleStaff) ?
-            $staff .= ' - ' .$claim->activeTreatment->responsibleStaff->identite->firstname.' '.$claim->activeTreatment->responsibleStaff->identite->lastname : null;
+            $staff .= $claim->activeTreatment->responsibleStaff->identite->firstname.' '.$claim->activeTreatment->responsibleStaff->identite->lastname : null;
 
         return $staff;
     }
@@ -411,17 +409,17 @@ trait UemoaReports{
      */
     protected function delayQualification($claim){
 
-        $open_day = null;
-        $working_day = null;
+        $withWeekend = null;
+        $withoutWeekend = null;
 
         if($claim->activeTreatment && $claim->activeTreatment->transferred_to_unit_at){
-            $open_day = $this->diffInWorkingDays($claim->created_at->copy(), $claim->activeTreatment->transferred_to_unit_at->copy());
-            $working_day = $claim->created_at->copy()->diffInDays($claim->activeTreatment->transferred_to_unit_at->copy());
+            $withoutWeekend = $this->diffInWorkingDays($claim->created_at->copy(), $claim->activeTreatment->transferred_to_unit_at->copy());
+            $withWeekend = $claim->created_at->copy()->diffInDays($claim->activeTreatment->transferred_to_unit_at->copy());
         }
 
         return [
-            'open_day' => $open_day,
-            'working_day' => $working_day
+            'withWeekend' => $withWeekend,
+            'withoutWeekend' => $withoutWeekend
         ];
     }
 
@@ -431,18 +429,18 @@ trait UemoaReports{
      */
     protected function delayTreatment($claim){
 
-        $open_day = null;
-        $working_day = null;
+        $withWeekend = null;
+        $withoutWeekend = null;
 
-        if($claim->activeTreatment && $claim->activeTreatment->transferred_to_unit_at && $claim->activeTreatment->validated_at){
+        if($claim->activeTreatment && $claim->activeTreatment->validated_at){
 
-            $open_day = $claim->activeTreatment->transferred_to_unit_at->copy()->diffInDays(($claim->activeTreatment->validated_at->copy()));
-            $working_day = $this->diffInWorkingDays($claim->activeTreatment->transferred_to_unit_at->copy(), $claim->activeTreatment->validated_at->copy());
+            $withWeekend = $claim->created_at->copy()->diffInDays(($claim->activeTreatment->validated_at->copy()));
+            $withoutWeekend = $this->diffInWorkingDays($claim->created_at->copy(), $claim->activeTreatment->validated_at->copy());
         }
 
         return [
-            'open_day' => $open_day,
-            'working_day' => $working_day
+            'withWeekend' => $withWeekend,
+            'withoutWeekend' => $withoutWeekend
         ];
     }
 
@@ -454,11 +452,9 @@ trait UemoaReports{
      */
     protected function diffInWorkingDays($start, $end){
 
-        return $start->diffInDaysFiltered(function (Carbon $date) {
+        $weekendDays = $start->diffInWeekendDays($end);
 
-            return $date->isWeekday();
-
-        }, $end);
+        return ($start->diffInDays($end) - $weekendDays);
 
     }
 
@@ -541,12 +537,12 @@ trait UemoaReports{
 
         foreach ($itemObject as $item){
 
-            $open_day = $this->delayQualification($item)['open_day'];
+            $withWeekend = $this->delayQualification($item)['withWeekend'];
 
-            if($open_day){
+            if($withWeekend){
 
                 $total++;
-                $delay += $open_day;
+                $delay += $withWeekend;
             }
         }
 
@@ -558,18 +554,18 @@ trait UemoaReports{
      * @param $itemObject
      * @return float|int
      */
-    protected function delayMediumTreatmentOpenDay($itemObject){
+    protected function delayMediumTreatmentWithWeekend($itemObject){
         $total = 0;
         $delay = 0;
 
         foreach ($itemObject as $item){
 
-            $open_day = $this->delayTreatment($item)['open_day'];
+            $withWeekend = $this->delayTreatment($item)['withWeekend'];
 
-            if($open_day){
+            if($withWeekend){
 
                 $total++;
-                $delay += $open_day;
+                $delay += $withWeekend;
             }
         }
 
@@ -581,18 +577,18 @@ trait UemoaReports{
      * @param $itemObject
      * @return float|int
      */
-    protected function delayMediumTreatmentWorkingDay($itemObject){
+    protected function delayMediumTreatmentWithoutWeekend($itemObject){
         $total = 0;
         $delay = 0;
 
         foreach ($itemObject as $item){
 
-            $working_day = $this->delayTreatment($item)['working_day'];
+            $withoutWeekend = $this->delayTreatment($item)['withoutWeekend'];
 
-            if($working_day){
+            if($withoutWeekend){
 
                 $total++;
-                $delay += $working_day;
+                $delay += $withoutWeekend;
             }
         }
 

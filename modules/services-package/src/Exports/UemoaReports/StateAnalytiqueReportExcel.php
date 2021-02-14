@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * Class GlobalStateReportExcel
  * @package Satis2020\ServicePackage\Exports\UemoaReports
  */
-class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell, WithHeadings, ShouldAutoSize
+class StateAnalytiqueReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
 {
     private $claims;
     private $myInstitution;
@@ -41,41 +41,31 @@ class StateAnalytiqueReportExcel implements FromCollection, WithCustomStartCell,
         return $this->claims;
     }
 
-
-    /**
-     * @return string
-     */
-    public function startCell(): string
-    {
-        return 'A2';
-    }
-
-
     /**
      * @return array
      */
     public function headings(): array
     {
         $header = [
-            'typeClient' => 'Type Client',
+            'filiale' => 'Filiale',
             'claimCategorie' => 'Catégorie réclamation',
             'claimObject' => 'Object de réclamation',
             'totalClaim' => 'Nombres de réclamations',
-            'totalTreated' => 'Nombre de réclamations traitées (traitées correspond à validées)',
+            'totalTreated' => 'Nombre de réclamations traitées',
             'totalUnfounded' => 'Nombre de réclamation non fondé',
-            'totalNoValidated' => 'Nombre de réclamations en cours (les réclamations non encore validées)',
-            'delayMediumQualification' => 'DELAI MOYEN DE QUALIFICATIONS(en jours ouvrés depuis l\'enregistrement)',
-            'delayPlanned' => 'DELAI PREVU pour le traitement',
-            'delayMediumTreatmentOpenDay' => 'DELAI MOYEN DE TRAITEMENT Ouvré( traitement = validation du traitement)',
-            'delayMediumTreatmentWorkingDay' => 'DELAI MOYEN DE TRAITEMEN ouvrable',
-            'percentageTreatedInDelay' => '% DE RECLAMATIONS TRAITEES DANS LE DELAI',
-            'percentageTreatedOutDelay' => '% DE RECLAMATIONS traité hors délai',
-            'percentageNoTreated' => '% DE RECLAMATIONS en cours de traitement',
+            'totalNoValidated' => 'Nombre de réclamations en cours',
+            'delayMediumQualification' => 'Délai moyen de qualification (J) avec Weekend',
+            'delayPlanned' => 'Délai prévu pour le traitement',
+            'delayMediumTreatmentOpenDay' => 'Délai moyen de traitement (J) avec Weekend',
+            'delayMediumTreatmentWorkingDay' => 'Délai moyen de traitement (J) sans Weekend',
+            'percentageTreatedInDelay' => '% de réclamations traités dans le délai',
+            'percentageTreatedOutDelay' => '% de réclamations traités hors délai',
+            'percentageNoTreated' => '% de réclamations en cours de traitement',
         ];
 
-        if(!$this->myInstitution){
+        if($this->myInstitution){
 
-            $header = Arr::prepend($header, 'Filiale', 'filiale');
+            $header = Arr::except($header, 'filiale');
         }
 
         return [
