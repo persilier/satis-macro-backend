@@ -55,12 +55,14 @@ class IdentiteClaimController extends ApiController
         $this->updateIdentity($request, $identite);
         $request->merge(['claimer_id' => $identite->id]);
 
+        $status = $this->getStatus($request, false);
+
         // Check if the claim is complete
-        $request->merge(['status' => $this->getStatus($request, false)]);
+        $request->merge(['status' => $status['status']]);
 
         $claim = $this->createClaim($request, false);
 
-        return response()->json($claim, 201);
+        return response()->json(['claim' => $claim, 'errors' => $status['errors']], 201);
 
     }
     
