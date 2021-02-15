@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Identite;
 
 class ClientBelongsToInstitutionRules implements Rule
@@ -45,7 +46,9 @@ class ClientBelongsToInstitutionRules implements Rule
             })
             ->first();
 
-        return !is_null($institution);
+        $claimer = Claim::with(['claimer'])->where('claimer_id', $value)->first();
+
+        return !is_null($institution) || !is_null($claimer);
     }
 
     /**
