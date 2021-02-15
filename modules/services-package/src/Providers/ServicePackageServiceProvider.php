@@ -282,16 +282,16 @@ class ServicePackageServiceProvider extends ServiceProvider
     }
 
     protected function routeAuthRefreshToken(){
-        //Passport::routes();
-        Route::post('/oauth/token', [
-            'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
-            'middleware' => 'throttle:3,120',
-        ]);
-        Route::post('/token/refresh', [
-            'middleware' => ['web', 'auth'],
-            'uses' => '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh',
-            'as' => 'passport.token.refresh',
-        ]);
+        Passport::routes();
+//        Route::post('/oauth/token', [
+//            'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
+//           // 'middleware' => 'throttle:3,120',
+//        ]);
+//        Route::post('/token/refresh', [
+//            'middleware' => ['web', 'auth'],
+//            'uses' => '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh',
+//            'as' => 'passport.token.refresh',
+//        ]);
     }
 
     protected function registerMailSmtpConfigs()
