@@ -72,7 +72,6 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
-                    'list-claim-assignment-to-staff', 'show-claim-awaiting-assignment',
                     'store-claim-without-client',
                     'list-claim-awaiting-validation-any-institution', 'show-claim-awaiting-validation-any-institution', 'validate-treatment-any-institution',
                     'list-any-claim-archived', 'show-any-claim-archived',
