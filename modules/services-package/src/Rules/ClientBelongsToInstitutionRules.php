@@ -46,7 +46,10 @@ class ClientBelongsToInstitutionRules implements Rule
             })
             ->first();
 
-        $claimer = Claim::with(['claimer'])->where('claimer_id', $value)->first();
+        $claimer = Claim::with(['claimer'])
+            ->where('claimer_id', $value)
+            ->where('institution_targeted_id', $this->institution_id)
+            ->first();
 
         return !is_null($institution) || !is_null($claimer);
     }

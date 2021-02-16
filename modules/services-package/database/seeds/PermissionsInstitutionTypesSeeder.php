@@ -182,7 +182,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
-            'revoke-claim'
+            'revoke-claim',
+            'list-claim-assignment-to-staff', 'show-claim-awaiting-assignment',
         ];
 
         $memberPermissions = [
