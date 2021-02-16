@@ -166,14 +166,14 @@ class ComponentController extends ApiController
 
                         if (!is_null($value->value)) {
                             $value->value->forceDelete();
-                        }
 
-                        // if an image exist already, delete it
-                        list($storage, $pathToImage) = explode('/storage/', $value->value->url);
+                            // if an image exist already, delete it
+                            list($storage, $pathToImage) = explode('/storage/', $value->value->url);
 
-                        if (Storage::disk('public')->exists($pathToImage)) {
-                            Storage::disk('public')->delete($pathToImage);
-                        }
+                            if (Storage::disk('public')->exists($pathToImage)) {
+                                Storage::disk('public')->delete($pathToImage);
+                            }
+                        }                        
 
                         $title = $request->file("params_$attr")->getClientOriginalName();
                         $path = $request->file("params_$attr")->store('components', 'public');
