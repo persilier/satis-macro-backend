@@ -20,6 +20,8 @@ trait SeveralTreatment
 
         if(!$treatments = $claim->activeTreatment->treatments){
             $treatments = collect([]);
+        }else {
+            $treatments = collect($treatments);
         }
 
         $treatments->push([
@@ -34,7 +36,7 @@ trait SeveralTreatment
             'comments' => $claim->activeTreatment->comments,
         ]);
 
-        return $treatments;
+        return $treatments->all();
 
     }
 
