@@ -65,7 +65,6 @@ class AwaitingValidationController extends ApiController
      */
     public function validated(Request $request, Claim $claim)
     {
-
         $claim->load($this->getRelations());
 
         $rules = [
