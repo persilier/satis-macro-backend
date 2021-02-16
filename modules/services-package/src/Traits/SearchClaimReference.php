@@ -45,7 +45,7 @@ trait SearchClaimReference
         return [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite', 'activeTreatment.assignedToStaffBy.identite'
+            'activeTreatment.responsibleStaff.identite', 'activeTreatment.assignedToStaffBy.identite', 'activeTreatment.responsibleUnit'
         ];
     }
 
