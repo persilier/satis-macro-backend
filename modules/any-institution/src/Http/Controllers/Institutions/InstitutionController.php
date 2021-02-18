@@ -79,7 +79,9 @@ class InstitutionController extends ApiController
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws RetrieveDataUserNatureException
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function store(Request $request)
     {

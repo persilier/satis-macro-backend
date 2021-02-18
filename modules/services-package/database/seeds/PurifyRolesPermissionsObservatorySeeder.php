@@ -69,6 +69,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'update-relance-parameters',
                     'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
+                    'list-any-institution', 'store-any-institution',  'show-any-institution', 'update-any-institution', 'destroy-any-institution'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

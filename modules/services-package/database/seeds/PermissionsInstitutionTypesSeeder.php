@@ -183,6 +183,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             'revoke-claim',
+            'list-any-institution', 'store-any-institution',  'show-any-institution', 'update-any-institution', 'destroy-any-institution'
         ];
 
         $memberPermissions = [
