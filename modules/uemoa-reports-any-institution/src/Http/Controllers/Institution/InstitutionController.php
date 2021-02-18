@@ -35,7 +35,11 @@ class InstitutionController extends ApiController
     public function index()
     {
 
-        return response()->json(Institution::all(), 200);
+        return response()->json(Institution::whereHas('institutionType', function ($q){
+
+            $q->where('maximum_number_of_institutions', 0);
+
+        })->get(), 200);
 
     }
 

@@ -18,7 +18,7 @@ trait UnitTrait
     protected  function getAllUnitByInstitution($institution){
 
         $unit = Unit::with([
-            'unitType', 'institution', 'parent', 'lead'
+            'unitType', 'institution', 'parent', 'children', 'lead.identite'
         ])->where('institution_id', $institution)->get();
 
         return $unit;
@@ -34,7 +34,7 @@ trait UnitTrait
         try{
 
             $unit = Unit::with([
-                'unitType', 'institution', 'parent', 'lead'
+                'unitType', 'institution', 'parent', 'children', 'lead.identite'
             ])->where('institution_id', $institution)->findOrFail($id);
 
             return $unit;
