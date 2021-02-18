@@ -40,7 +40,7 @@ class ClaimController extends ApiController
 
         $incompletes = $this->getAllClaim($request , 'incomplete');
 
-        $toAssignedToUnit= $this->getAllClaim($request , 'transferred_to_targeted_institution');
+        $toAssignedToUnit= $this->getAllClaim($request , 'full');
 
         $toAssignedToUStaff = $this->getAllClaim($request , 'transferred_to_unit', true);
 
