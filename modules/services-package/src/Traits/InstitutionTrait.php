@@ -39,6 +39,7 @@ trait InstitutionTrait
      * @param $type_id
      * @param $nature
      * @return bool
+     * @throws CustomException
      */
     protected function getVerifiedStore($type_id, $nature){
 
