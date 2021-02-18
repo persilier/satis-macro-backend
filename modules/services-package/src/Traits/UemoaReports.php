@@ -19,9 +19,22 @@ trait UemoaReports{
     protected function getRelations()
     {
         $relations = [
-            'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite','activeTreatment.responsibleUnit', 'activeTreatment.assignedToStaffBy.identite'
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.responsibleUnit',
+            'activeTreatment.assignedToStaffBy.identite'
         ];
 
         return $relations;

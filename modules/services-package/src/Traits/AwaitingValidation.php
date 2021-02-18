@@ -25,15 +25,29 @@ trait AwaitingValidation
     protected function getRelations()
     {
         return [
-            'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment'
         ];
     }
 
     protected function getActiveTreatmentRelations()
     {
         return [
-            'responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite'
+            'responsibleUnit',
+            'assignedToStaffBy.identite',
+            'responsibleStaff.identite',
+            'satisfactionMeasuredBy.identite',
         ];
     }
 

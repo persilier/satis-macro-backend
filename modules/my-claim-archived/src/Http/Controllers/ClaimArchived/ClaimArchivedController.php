@@ -43,6 +43,7 @@ class ClaimArchivedController extends ApiController
     /**
      * @param $claim
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function show($claim)
     {

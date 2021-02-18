@@ -53,15 +53,29 @@ trait AwaitingAssignment
     protected function getRelations()
     {
         return [
-            'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment'
         ];
     }
 
     protected function getActiveTreatmentRelationsAwaitingAssignment()
     {
         return [
-            'responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite'
+            'responsibleUnit',
+            'assignedToStaffBy.identite',
+            'responsibleStaff.identite',
+            'satisfactionMeasuredBy.identite',
         ];
     }
 

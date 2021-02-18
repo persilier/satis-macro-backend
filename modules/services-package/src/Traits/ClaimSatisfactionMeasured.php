@@ -50,9 +50,22 @@ trait ClaimSatisfactionMeasured
     protected function getRelations()
     {
         return [
-            'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
-            'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite', 'activeTreatment.assignedToStaffBy.identite'
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.responsibleUnit'
         ];
     }
 
@@ -75,6 +88,7 @@ trait ClaimSatisfactionMeasured
      * @param $claim
      * @param $status
      * @return Builder|Builder[]|Collection|Model
+     * @throws CustomException
      */
     protected function getOneMyClaim($claim, $status = 'validated'){
 
