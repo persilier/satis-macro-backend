@@ -21,7 +21,7 @@ trait AwaitingAssignment
                 '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
                 [$this->institution()->id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
             )
-            ->whereNull('claims.deleted_at');
+            ->whereNull('claims.deleted_at')
             ->whereNull('claims.revoked_at');
     }
 
