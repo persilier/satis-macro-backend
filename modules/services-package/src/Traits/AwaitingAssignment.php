@@ -22,6 +22,7 @@ trait AwaitingAssignment
                 [$this->institution()->id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
             )
             ->whereNull('claims.deleted_at');
+            ->whereNull('claims.revoked_at');
     }
 
     protected function getDuplicatesQuery($claim_query, $claim)
