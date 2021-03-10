@@ -50,6 +50,7 @@ trait CreateClaim
             'institution_targeted_id' => 'required|exists:institutions,id',
             'request_channel_slug' => 'required|exists:channels,slug',
             'response_channel_slug' => ['required', 'exists:channels,slug', new ChannelIsForResponseRules],
+            'lieu' => 'nullable|string',
             'event_occured_at' => [
                 'required',
                 'date_format:Y-m-d H:i',
@@ -202,6 +203,7 @@ trait CreateClaim
         $data = [
             'description',
             'claim_object_id',
+            'lieu',
             'claimer_id',
             'institution_targeted_id',
             'request_channel_slug',
@@ -290,6 +292,10 @@ trait CreateClaim
         return $claim;
     }
 
+    /**
+     * @param $request
+     * @param $claim
+     */
     protected function uploadAttachments($request, $claim)
     {
         if ($request->hasfile('file')) {
@@ -305,6 +311,9 @@ trait CreateClaim
         }
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
     protected function getTargetedInstitutions()
     {
         return Institution::with('institutionType')
@@ -315,6 +324,9 @@ trait CreateClaim
             ->values();
     }
 
+    /**
+     * @param $claim
+     */
     protected function closeTimeLimitNotification($claim)
     {
         // check if the claimObject related to the claim have a time_limit = 1 and send a notification to the active pilot
@@ -325,6 +337,9 @@ trait CreateClaim
         }
     }
 
+    /**
+     * @param $claim
+     */
     protected function recurrenceNotification($claim)
     {
         if($this->canSendRecurrenceNotification($claim->createdBy->institution_id)){

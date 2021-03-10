@@ -88,6 +88,7 @@ trait UpdateClaim
 
         $rules = Arr::only($data, [
             'description',
+            'lieu',
             'claim_object_id',
             'institution_targeted_id',
             'request_channel_slug',
@@ -407,6 +408,7 @@ trait UpdateClaim
 
         $data = [
             'description',
+            'lieu',
             'claim_object_id',
             'institution_targeted_id',
             'request_channel_slug',

@@ -2,10 +2,12 @@
 
 namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Channel;
@@ -28,6 +30,10 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
+/**
+ * Class ClaimController
+ * @package Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim
+ */
 class ClaimController extends ApiController
 {
 
@@ -45,8 +51,8 @@ class ClaimController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return Response
+     * @throws RetrieveDataUserNatureException
      */
     public function create()
     {
@@ -71,9 +77,9 @@ class ClaimController extends ApiController
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      * @throws CustomException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {

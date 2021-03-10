@@ -3,6 +3,9 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -22,12 +25,12 @@ class Claim extends Model
      *
      * @return void
      */
-    protected static function booted()
+    /*protected static function booted()
     {
         static::addGlobalScope('toBeProcessed', function (Builder $builder) {
             $builder->whereNull('revoked_at');
         });
-    }
+    }*/
 
     /**
      * The attributes that are translatable
@@ -65,6 +68,7 @@ class Claim extends Model
     protected $fillable = [
         'reference',
         'description',
+        'lieu',
         'claim_object_id',
         'claimer_id',
         'relationship_id',
@@ -120,7 +124,7 @@ class Claim extends Model
 
     /**
      * Get the claimObject associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function claimObject()
     {
@@ -129,7 +133,7 @@ class Claim extends Model
 
     /**
      * Get the claimer associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function claimer()
     {
@@ -138,7 +142,7 @@ class Claim extends Model
 
     /**
      * Get the relationship associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function relationship()
     {
@@ -147,7 +151,7 @@ class Claim extends Model
 
     /**
      * Get the accountTargeted associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function accountTargeted()
     {
@@ -156,7 +160,7 @@ class Claim extends Model
 
     /**
      * Get the institutionTargeted associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function institutionTargeted()
     {
@@ -165,7 +169,7 @@ class Claim extends Model
 
     /**
      * Get the unitTargeted associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function unitTargeted()
     {
@@ -174,7 +178,7 @@ class Claim extends Model
 
     /**
      * Get the requestChannel associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function requestChannel()
     {
@@ -183,7 +187,7 @@ class Claim extends Model
 
     /**
      * Get the responseChannel associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function responseChannel()
     {
@@ -192,7 +196,7 @@ class Claim extends Model
 
     /**
      * Get the amountCurrency associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function amountCurrency()
     {
@@ -201,7 +205,7 @@ class Claim extends Model
 
     /**
      * Get the staff who register the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function createdBy()
     {
@@ -210,7 +214,7 @@ class Claim extends Model
 
     /**
      * Get the staff who complete the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function completedBy()
     {
@@ -219,6 +223,7 @@ class Claim extends Model
 
     /**
      * Get all of the claim's files.
+     * @return MorphMany
      */
     public function files()
     {
@@ -227,7 +232,7 @@ class Claim extends Model
 
     /**
      * Get the treatments associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function treatments()
     {
@@ -236,7 +241,7 @@ class Claim extends Model
 
     /**
      * Get the active treatment associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function activeTreatment()
     {
@@ -245,7 +250,7 @@ class Claim extends Model
 
     /**
      * Get the discussions associated with the claim
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function discussions()
     {
@@ -254,7 +259,7 @@ class Claim extends Model
 
     /**
      * Get the staff who register the claim
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function revokedBy()
     {

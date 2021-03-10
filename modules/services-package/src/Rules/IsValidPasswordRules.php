@@ -46,7 +46,7 @@ class IsValidPasswordRules implements Rule
      */
     public function message()
     {
-        return 'Le mot de passe doit comporter au moins 8 caractères et doit inclure au moins une lettre majuscule, un chiffre et un caractère spécial.';
+        return 'Le mot de passe doit comporter au moins 8 caractères et doit inclure au moins une lettre majuscule et minuscule, un chiffre et un caractère spécial.';
     }
 
 }
