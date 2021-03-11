@@ -58,11 +58,11 @@ class ClaimObject implements ToCollection, WithHeadingRow
 
             } else {
 
-                $data = $this->getIds($row, 'claim_categories', 'claim_category', 'name');
+                $data = $this->getIds($row, 'claim_categories', 'category', 'name');
 
                 $data = $this->getIds($data, 'severity_levels', 'severity_level','name');
 
-                $this->storeImportClaimObject($data);
+                $this->storeImportClaimObject($data, $row['category']);
 
             }
 

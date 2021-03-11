@@ -54,10 +54,9 @@ trait ClaimObject
     protected function rulesImport(){
 
         return [
-
-            'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
+            'category' => ['required', 'string'],
+            'object' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
             'description' => 'nullable',
-            'claim_category' => ['required', new NameModelRules(['table' => 'claim_categories', 'column'=> 'name'])],
             'severity_level' => ['required', new NameModelRules(['table' => 'severity_levels', 'column'=> 'name'])],
             'time_limit' => 'required|integer',
         ];
@@ -66,15 +65,23 @@ trait ClaimObject
 
     /**
      * @param $row
+     * @param $nameCategory
      * @return mixed
      */
-    protected function storeImportClaimObject($row){
+    protected function storeImportClaimObject($row, $nameCategory){
+
+        $category = $row['category'];
+
+        if(is_null($category)){
+
+            $category = \Satis2020\ServicePackage\Models\ClaimCategory::create(['name' => $nameCategory])->id;
+        }
 
         return \Satis2020\ServicePackage\Models\ClaimObject::create([
 
-            'name' => $row['name'],
+            'name' => $row['object'],
             'description' => $row['description'],
-            'claim_category_id' => $row['claim_category'],
+            'claim_category_id' => $category,
             'severity_levels_id' => $row['severity_level'],
             'time_limit' => $row['time_limit']
         ]);
