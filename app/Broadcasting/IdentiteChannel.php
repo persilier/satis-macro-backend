@@ -4,6 +4,10 @@ namespace App\Broadcasting;
 
 use Satis2020\ServicePackage\Models\User;
 
+/**
+ * Class IdentiteChannel
+ * @package App\Broadcasting
+ */
 class IdentiteChannel
 {
     /**

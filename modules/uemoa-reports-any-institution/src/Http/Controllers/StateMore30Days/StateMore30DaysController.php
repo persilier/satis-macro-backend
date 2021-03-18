@@ -37,7 +37,7 @@ class StateMore30DaysController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->rulePeriode());
+        $this->validate($request, $this->ruleFilter($request));
 
         $claims = $this->resultatsStateMore30Days($request);
 
@@ -53,7 +53,7 @@ class StateMore30DaysController extends ApiController
      */
     public function excelExport(Request $request){
 
-        $this->validate($request, $this->rulePeriode());
+        $this->validate($request, $this->ruleFilter($request));
 
         $claims = $this->resultatsStateMore30Days($request);
 
