@@ -110,6 +110,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                 $role->update(['is_editable' => 0]);
             }
 
+            Permission::doesntHave('roles')->delete();
+
         }
     }
 }

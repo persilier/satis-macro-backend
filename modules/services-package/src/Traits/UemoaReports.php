@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
+use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
+use Satis2020\ServicePackage\Rules\UnitCanTreatRules;
 
 /**
  * Trait UemoaReports
@@ -55,6 +58,25 @@ trait UemoaReports{
 
     }
 
+
+    /**
+     * @param $request
+     * @return array
+     */
+    protected function ruleFilter($request){
+
+        $data = $this->rulePeriode();
+
+        $data['claim_category_id'] = 'nullable|exists:claim_categories,id';
+        $data['claim_object_id'] = 'nullable|exists:claim_objects,id';
+        $data['request_channel_slug'] = 'nullable|exists:channels,slug';
+        $data['unit_targeted_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+        $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanTreatRules()];
+        $data['account_type_id'] = 'exists:type_clients,id';
+
+        return $data;
+    }
+
     /**
      * @param $request
      * @return mixed
@@ -91,6 +113,63 @@ trait UemoaReports{
 
             $claims = $claims->where('institution_targeted_id', $this->institution()->id);
         }
+
+        if($request->has('claim_category_id') || $request->has('claim_object_id')){
+
+
+            if($request->has('claim_object_id')){
+
+                $claims = $claims->where('claim_object_id', $request->claim_object_id);
+
+            }else{
+
+                $claims = $claims->whereHas('claimObject', function ($q) use ($request){
+
+                    $q->where('claim_category_id', $request->claim_category_id);
+
+                });
+            }
+
+        }
+
+
+        if($request->has('request_channel_slug')){
+
+            $claims = $claims->where('request_channel_slug', $request->request_channel_slug);
+        }
+
+
+        if($request->has('unit_targeted_id')){
+
+            $claims = $claims->where('unit_targeted_id', $request->unit_targeted_id);
+        }
+
+
+        if($request->has('responsible_unit_id')){
+
+            $claims = $claims->whereHas('activeTreatment', function ($r) use ($request){
+
+                $r->where('responsible_unit_id', $request->responsible_unit_id);
+
+            });
+        }
+
+
+        if($request->has('account_type_id')){
+
+            $claims = $claims->whereHas('accountTargeted', function ($r) use ($request){
+
+                $r->where('account_type_id', $request->account_type_id);
+
+            });
+        }
+
+
+        if($request->has('status')){
+
+            $claims = $claims->where('status', $request->status);
+        }
+
 
         return $claims;
 
@@ -349,7 +428,20 @@ trait UemoaReports{
      */
     protected function status($claim){
 
-        $allStatus = [
+        $allStatus = $this->allStatus();
+
+        $claim->status ? $status = $allStatus[$claim->status] : $status = '';
+
+        return $status;
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function allStatus(){
+
+        return [
             'incomplete' => 'Incomplet',
             'full' => 'Complet',
             'assigned_to_staff' => 'affecté à un staff',
@@ -361,10 +453,6 @@ trait UemoaReports{
             'unfounded' => 'Non fondé',
             'validated' => 'Validé'
         ];
-
-        $claim->status ? $status = $allStatus[$claim->status] : $status = '';
-
-        return $status;
     }
 
     /**
@@ -648,9 +736,6 @@ trait UemoaReports{
 
         })->count();
     }
-
-
-
 
 
 }

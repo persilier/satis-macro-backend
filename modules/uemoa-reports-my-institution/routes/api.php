@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/my')->name('my.')->group(function () {
 
+    Route::get('/uemoa/data-filter', 'DataFilter\DataFilterController@index')->name('uemoa-filter.index');
+
     Route::get('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@index')->name('uemoa-global-state-report.index');
     Route::post('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@excelExport')->name('uemoa-global-state-report.excelExport');
 

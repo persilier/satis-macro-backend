@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
 /**
@@ -17,7 +18,7 @@ use Satis2020\ServicePackage\Traits\UemoaReports;
  */
 class GlobalStateReportController extends ApiController
 {
-    use UemoaReports;
+    use UemoaReports, CreateClaim;
 
     public function __construct()
     {
@@ -36,7 +37,7 @@ class GlobalStateReportController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->rulePeriode());
+        $this->validate($request, $this->ruleFilter($request));
 
         $claims = $this->resultatsGlobalState($request);
 
@@ -51,7 +52,7 @@ class GlobalStateReportController extends ApiController
      */
     public function excelExport(Request $request){
 
-        $this->validate($request, $this->rulePeriode());
+        $this->validate($request, $this->ruleFilter($request));
 
         $claims = $this->resultatsGlobalState($request);
 
