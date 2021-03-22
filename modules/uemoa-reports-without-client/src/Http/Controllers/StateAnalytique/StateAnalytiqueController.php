@@ -1,22 +1,21 @@
 <?php
 
-namespace Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days;
+namespace Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateAnalytique;
 
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
+use Satis2020\ServicePackage\Exports\UemoaReports\StateAnalytiqueReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
-
 /**
- * Class StateMore30DaysController
- * @package Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days
+ * Class StateAnalytiqueController
+ * @package Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateAnalytique
  */
-class StateMore30DaysController extends ApiController
+class StateAnalytiqueController extends ApiController
 {
     use UemoaReports;
 
@@ -37,9 +36,9 @@ class StateMore30DaysController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->ruleFilter($request));
+        $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsStateMore30Days($request);
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
 
         return response()->json($claims, 200);
 
@@ -51,17 +50,18 @@ class StateMore30DaysController extends ApiController
      * @return
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function excelExport(Request $request){
+    public function excelExport(Request $request)
+    {
 
-        $this->validate($request, $this->ruleFilter($request));
+        $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsStateMore30Days($request);
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Reclamation en retard de +30j', false), 'rapport-uemoa-etat-reclamation-30-jours-any-institution.xlsx');
+        Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-any-institution.xlsx');
 
-        return response()->json(['file' => 'rapport-uemoa-etat-reclamation-30-jours-any-institution.xlsx'], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-analytique-any-institution.xlsx'], 200);
     }
 
 }

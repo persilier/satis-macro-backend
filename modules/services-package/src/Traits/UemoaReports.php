@@ -61,18 +61,32 @@ trait UemoaReports{
 
     /**
      * @param $request
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return array
      */
-    protected function ruleFilter($request){
+    protected function ruleFilter($request, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $data = $this->rulePeriode();
 
         $data['claim_category_id'] = 'nullable|exists:claim_categories,id';
         $data['claim_object_id'] = 'nullable|exists:claim_objects,id';
         $data['request_channel_slug'] = 'nullable|exists:channels,slug';
-        $data['unit_targeted_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
-        $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanTreatRules()];
-        $data['account_type_id'] = 'exists:type_clients,id';
+
+        if ($with_relationship) {
+            $data['relationship_id'] = 'exists:relationships,id';
+        }
+
+        if($with_unit){
+            $data['unit_targeted_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanBeTargetRules];
+        }
+
+        if($with_client){
+            $data['account_type_id'] = 'exists:type_clients,id';
+        }
+
+        $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanTreatRules];
 
         return $data;
     }
@@ -93,9 +107,12 @@ trait UemoaReports{
     /**
      * @param $request
      * @param bool $myInstitution
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return mixed
      */
-    protected function getAllClaimByPeriode($request, $myInstitution = false){
+    protected function getAllClaimByPeriode($request, $myInstitution = false , $with_client = true, $with_relationship = false, $with_unit = true){
 
         $periode = $this->periodeParams($request);
 
@@ -138,11 +155,14 @@ trait UemoaReports{
             $claims = $claims->where('request_channel_slug', $request->request_channel_slug);
         }
 
+        if($with_unit){
 
-        if($request->has('unit_targeted_id')){
+            if($request->has('unit_targeted_id')){
 
-            $claims = $claims->where('unit_targeted_id', $request->unit_targeted_id);
+                $claims = $claims->where('unit_targeted_id', $request->unit_targeted_id);
+            }
         }
+
 
 
         if($request->has('responsible_unit_id')){
@@ -154,16 +174,29 @@ trait UemoaReports{
             });
         }
 
+        if($with_client){
 
-        if($request->has('account_type_id')){
+            if($request->has('account_type_id')){
 
-            $claims = $claims->whereHas('accountTargeted', function ($r) use ($request){
+                $claims = $claims->whereHas('accountTargeted', function ($r) use ($request){
 
-                $r->where('account_type_id', $request->account_type_id);
+                    $r->where('account_type_id', $request->account_type_id);
 
-            });
+                });
+            }
         }
 
+        if($with_relationship){
+
+            if($request->has('relationship_id')){
+
+                $claims = $claims->whereHas('relationship', function ($o) use ($request){
+
+                    $o->where('id', $request->relationship_id);
+
+                });
+            }
+        }
 
         if($request->has('status')){
 
@@ -179,17 +212,20 @@ trait UemoaReports{
     /**
      * @param $request
      * @param bool $myInstitution
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsGlobalState($request, $myInstitution = false){
+    protected function resultatsGlobalState($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $datas = collect([]);
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution)->get();
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get();
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
 
             $datas->push($data);
         }
@@ -198,17 +234,19 @@ trait UemoaReports{
     }
 
 
-
     /**
      * @param $request
      * @param bool $myInstitution
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsStateMore30Days($request, $myInstitution = false){
+    protected function resultatsStateMore30Days($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $datas = collect([]);
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution)->get()->filter(function ($item){
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->filter(function ($item){
 
             return ($item->created_at->copy()->diffInDays(now()) >= 30) && ($item->activeTreatment && $item->activeTreatment->validated_at);
 
@@ -216,7 +254,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
 
             $datas->push($data);
         }
@@ -229,13 +267,16 @@ trait UemoaReports{
     /**
      * @param $request
      * @param bool $myInstitution
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsStateOutTime($request, $myInstitution = false){
+    protected function resultatsStateOutTime($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $datas = collect([]);
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution)->get()->filter(function ($item){
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->filter(function ($item){
 
             return ($item->created_at->copy()->diffInDays(now()) > $item->time_limit) && ($item->activeTreatment && !$item->activeTreatment->validated_at);
 
@@ -243,7 +284,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
 
             $datas->push($data);
         }
@@ -256,11 +297,14 @@ trait UemoaReports{
     /**
      * @param $request
      * @param bool $myInstitution
+     * @param bool $with_client
+     * @param bool $with_relationship
+     * @param bool $with_unit
      * @return array
      */
-    protected function resultatsStateAnalytique($request, $myInstitution = false){
+    protected function resultatsStateAnalytique($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution)->get()->groupBy([
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->groupBy([
             function ($item) {
                 return $item->institutionTargeted->name;
             },
@@ -318,12 +362,14 @@ trait UemoaReports{
     /**
      * @param $claim
      * @param $myInstitution
-     * @return void
+     * @param $with_relationship
+     * @return array
      */
-    protected function tabDatas($claim, $myInstitution){
+    protected function tabDatas($claim, $myInstitution, $with_relationship){
 
         $data =  [
             'filiale' => $claim->institutionTargeted->name,
+            'relationShip' => $this->relationShip($claim),
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
@@ -353,13 +399,38 @@ trait UemoaReports{
             $data = Arr::except($data, 'filiale');
         }
 
+        if($with_relationship){
+
+            $data = Arr::except($data, 'typeClient');
+            $data = Arr::except($data, 'client');
+            $data = Arr::except($data, 'account');
+
+        }else{
+
+            $data = Arr::except($data, 'relationShip');
+        }
+
         return $data;
 
     }
 
+    /**
+     * @param $claim
+     * @return string
+     */
     public function agence($claim){
 
         return $claim->unitTargeted ? $claim->unitTargeted->name : ($claim->createdBy->unit ? $claim->createdBy->unit->name : '');
+    }
+
+
+    /**
+     * @param $claim
+     * @return string
+     */
+    public function relationShip($claim){
+
+        return $claim->relationShip ? $claim->relationShip->name  : '';
     }
 
     /**
