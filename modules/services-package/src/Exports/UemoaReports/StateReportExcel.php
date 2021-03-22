@@ -21,21 +21,23 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
     private $myInstitution;
     private $libellePeriode;
     private $reportName;
+    private $relationShip;
 
     /**
      * GlobalStateReportExcel constructor.
      * @param $claims
      * @param $myInstitution
-     * @param $colTelephone
      * @param $libellePeriode
      * @param $reportName
+     * @param $relationShip
      */
-    public function __construct($claims, $myInstitution, $libellePeriode,$reportName)
+    public function __construct($claims, $myInstitution, $libellePeriode,$reportName, $relationShip)
     {
         $this->claims = $claims;
         $this->myInstitution = $myInstitution;
         $this->libellePeriode = $libellePeriode;
         $this->reportName = $reportName;
+        $this->relationShip = $relationShip;
     }
     /**
      * @return Collection
@@ -51,6 +53,7 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
     {
         $header = [
             'filiale' => 'Filiale',
+            'relationShip' => 'Relation avec le réclamant',
             'typeClient' => 'Type Client',
             'client' => 'Client',
             'account' => 'N° compte',
@@ -75,14 +78,20 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'accountCurrency' => 'Devise du montant'
         ];
 
-//        if($this->colTelephone){
-//
-//            $header = Arr::except($header, 'telephone');
-//        }
-
         if($this->myInstitution){
 
             $header = Arr::except($header, 'filiale');
+        }
+
+        if($this->relationShip){
+
+            $header = Arr::except($header, 'typeClient');
+            $header = Arr::except($header, 'client');
+            $header = Arr::except($header, 'account');
+
+        }else{
+
+            $header = Arr::except($header, 'relationShip');
         }
 
         return [
