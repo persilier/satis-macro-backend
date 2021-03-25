@@ -3,8 +3,10 @@
 namespace Satis2020\UemoaReportsAnyInstitution\Http\Controllers\GlobalStateReport;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -32,7 +34,7 @@ class GlobalStateReportController extends ApiController
      *
      * @param Request $request
      * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function index(Request $request)
     {
@@ -48,7 +50,7 @@ class GlobalStateReportController extends ApiController
     /**
      * @param Request $request
      * @return
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function excelExport(Request $request){
 
@@ -61,6 +63,43 @@ class GlobalStateReportController extends ApiController
         Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Rapport global des réclamations', false), 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-any-institution.xlsx'], 200);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return
+     * @throws ValidationException
+     * @throws \Throwable
+     */
+    public function pdfExport(Request $request){
+
+        $this->validate($request, $this->ruleFilter($request));
+
+        $claims = $this->resultatsGlobalState($request);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-reclamation', [
+            'claims' => $claims,
+            'myInstitution' => false,
+            'libellePeriode' => $libellePeriode,
+            'title' => 'Rapport global des réclamations',
+            'relationShip' => false,
+            'logo' => $this->logo($this->institution()),
+            'colorTableHeader' => $this->colorTableHeader(),
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+        ])->render();
+
+        $file = 'rapport-uemoa-etat-global-reclamation-any-institution.pdf';
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML($data);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download($file);
     }
 
 }

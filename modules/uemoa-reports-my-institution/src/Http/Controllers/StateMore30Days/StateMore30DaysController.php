@@ -3,6 +3,7 @@
 namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\StateMore30Days;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -61,6 +62,43 @@ class StateMore30DaysController extends ApiController
         Excel::store(new StateReportExcel($claims, true, $libellePeriode, 'Reclamation en retard de +30j', false), 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-reclamation-30-jours-my-institution.xlsx'], 200);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Throwable
+     */
+    public function pdfExport(Request $request){
+
+        $this->validate($request, $this->ruleFilter($request));
+
+        $claims = $this->resultatsStateMore30Days($request);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-reclamation', [
+            'claims' => $claims,
+            'myInstitution' => true,
+            'libellePeriode' => $libellePeriode,
+            'title' => 'Reclamation en retard de +30j',
+            'relationShip' => false,
+            'logo' => $this->logo($this->institution()),
+            'colorTableHeader' => $this->colorTableHeader(),
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+        ])->render();
+
+        $file = 'rapport-uemoa-etat-reclamation-30-jours-my-institution.pdf';
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML($data);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download($file);
     }
 
 }

@@ -86,7 +86,11 @@ trait UemoaReports{
             $data['account_type_id'] = 'exists:type_clients,id';
         }
 
-        $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanTreatRules];
+        if($with_relationship){
+            $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitCanTreatRules];
+        }else{
+            $data['responsible_unit_id'] = ['nullable', 'exists:units,id', new UnitBelongsToInstitutionRules($request->institution_targeted_id), new UnitCanTreatRules];
+        }
 
         return $data;
     }
@@ -806,6 +810,34 @@ trait UemoaReports{
             return ($item->activeTreatment && $item->activeTreatment->declared_unfounded_at);
 
         })->count();
+    }
+
+
+    /**
+     * @param $institution
+     * @return string
+     */
+    protected function logo($institution){
+
+        if(is_null($institution->logo)){
+
+            $logo = asset('assets/reporting/images/satisLogo.png');
+
+        }else{
+
+            $logo = $institution->logo;
+        }
+
+        return $logo;
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function colorTableHeader(){
+
+       return "#7F9CF5";
     }
 
 

@@ -3,6 +3,7 @@
 namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\StateAnalytique;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -61,6 +62,43 @@ class StateAnalytiqueController extends ApiController
         Excel::store(new StateAnalytiqueReportExcel($claims, true, $libellePeriode), 'rapport-uemoa-etat-analytique-my-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-analytique-my-institution.xlsx'], 200);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Throwable
+     */
+    public function pdfExport(Request $request)
+    {
+
+        $this->validate($request, $this->rulePeriode());
+
+        $claims = $this->resultatsStateAnalytique($request);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-analytique', [
+            'claims' => $claims,
+            'myInstitution' => true,
+            'libellePeriode' => $libellePeriode,
+            'title' => 'Rapport Analytique',
+            'logo' => $this->logo($this->institution()),
+            'colorTableHeader' => $this->colorTableHeader(),
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+        ])->render();
+
+        $file = 'rapport-uemoa-etat-analytique-my-institution.pdf';
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML($data);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download($file);
     }
 
 }
