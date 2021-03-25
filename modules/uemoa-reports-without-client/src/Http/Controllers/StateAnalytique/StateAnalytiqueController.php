@@ -3,6 +3,7 @@
 namespace Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateAnalytique;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -62,6 +63,38 @@ class StateAnalytiqueController extends ApiController
         Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-any-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-analytique-any-institution.xlsx'], 200);
+    }
+
+
+
+    public function pdfExport(Request $request)
+    {
+
+        $this->validate($request, $this->rulePeriode());
+
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-analytique', [
+            'claims' => $claims,
+            'myInstitution' => false,
+            'libellePeriode' => $libellePeriode,
+            'title' => 'Rapport Analytique',
+            'logo' => $this->logo($this->institution()),
+            'colorTableHeader' => $this->colorTableHeader(),
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+        ])->render();
+
+        $file = 'rapport-uemoa-etat-analytique-without-client.pdf';
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML($data);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download($file);
     }
 
 }

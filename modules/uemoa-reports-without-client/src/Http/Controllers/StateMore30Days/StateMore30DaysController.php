@@ -3,8 +3,10 @@
 namespace Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateMore30Days;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -32,7 +34,7 @@ class StateMore30DaysController extends ApiController
      *
      * @param Request $request
      * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function index(Request $request)
     {
@@ -49,7 +51,7 @@ class StateMore30DaysController extends ApiController
     /**
      * @param Request $request
      * @return
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function excelExport(Request $request){
 
@@ -62,6 +64,43 @@ class StateMore30DaysController extends ApiController
         Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Reclamation en retard de +30j', true), 'rapport-uemoa-etat-reclamation-30-jours-any-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-reclamation-30-jours-any-institution.xlsx'], 200);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws ValidationException
+     * @throws \Throwable
+     */
+    public function pdfExport(Request $request){
+
+        $this->validate($request, $this->ruleFilter($request, false, false, true));
+
+        $claims = $this->resultatsStateMore30Days($request, false , false, false, true);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-reclamation', [
+            'claims' => $claims,
+            'myInstitution' => true,
+            'libellePeriode' => $libellePeriode,
+            'title' => 'Reclamation en retard de +30j',
+            'relationShip' => true,
+            'logo' => $this->logo($this->institution()),
+            'colorTableHeader' => $this->colorTableHeader(),
+            'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
+        ])->render();
+
+        $file = 'rapport-uemoa-etat-reclamation-30-jours-without-client.pdf';
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadHTML($data);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download($file);
     }
 
 }
