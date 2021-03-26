@@ -60,7 +60,7 @@ class StateOutTimeController extends ApiController
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Réclamations en retard', true), 'rapport-uemoa-etat-hors-delai-without-institution.xlsx');
+        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Réclamations en retard', true), 'rapport-uemoa-etat-hors-delai-without-client.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-hors-delai-without-client.xlsx'], 200);
     }

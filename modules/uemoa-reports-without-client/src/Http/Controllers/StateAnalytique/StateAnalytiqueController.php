@@ -60,9 +60,9 @@ class StateAnalytiqueController extends ApiController
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-without-institution.xlsx');
+        Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-without-client.xlsx');
 
-        return response()->json(['file' => 'rapport-uemoa-etat-analytique-without-institution.xlsx'], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-analytique-without-client.xlsx'], 200);
     }
 
 
