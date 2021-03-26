@@ -55,9 +55,9 @@ class StateMore30DaysController extends ApiController
      */
     public function excelExport(Request $request){
 
-        $this->validate($request, $this->ruleFilter($request, false, false, true));
+        $this->validate($request, $this->ruleFilter($request, false, true, true));
 
-        $claims = $this->resultatsStateMore30Days($request, false , false, false, true);
+        $claims = $this->resultatsStateMore30Days($request, false , false, true, true);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
@@ -75,9 +75,9 @@ class StateMore30DaysController extends ApiController
      */
     public function pdfExport(Request $request){
 
-        $this->validate($request, $this->ruleFilter($request, false, false, true));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateMore30Days($request, false , false, false, true);
+        $claims = $this->resultatsStateMore30Days($request, false , false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 

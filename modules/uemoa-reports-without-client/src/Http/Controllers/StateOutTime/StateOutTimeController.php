@@ -38,9 +38,9 @@ class StateOutTimeController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->ruleFilter($request, false, false, true));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request, false , false, false, true);
+        $claims = $this->resultatsStateOutTime($request, false , false, true, false);
 
         return response()->json($claims, 200);
 
@@ -54,9 +54,9 @@ class StateOutTimeController extends ApiController
      */
     public function excelExport(Request $request){
 
-        $this->validate($request, $this->ruleFilter($request, false, false, true));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request, false , false, false, true);
+        $claims = $this->resultatsStateOutTime($request, false , false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
@@ -74,9 +74,9 @@ class StateOutTimeController extends ApiController
      */
     public function pdfExport(Request $request){
 
-        $this->validate($request, $this->ruleFilter($request, false, false, true));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request, false , false, false, true);
+        $claims = $this->resultatsStateOutTime($request, false , false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
