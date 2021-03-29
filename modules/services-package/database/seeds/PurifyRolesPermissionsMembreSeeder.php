@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
+use Illuminate\Support\Facades\Config;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\AccountType;
 use Illuminate\Database\Seeder;
@@ -30,7 +31,7 @@ class PurifyRolesPermissionsMembreSeeder extends Seeder
      */
     public function run()
     {
-        $nature = env('APP_NATURE');
+        $nature = Config::get('services.app_nature', 'PRO');
         if ($nature === 'HUB') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 

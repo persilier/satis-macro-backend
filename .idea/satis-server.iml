@@ -117,6 +117,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-any-reference" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/search-claim-my-reference" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/staff-history" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/uemoa-reports-any-institution" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/satis2020/uemoa-reports-my-institution" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
