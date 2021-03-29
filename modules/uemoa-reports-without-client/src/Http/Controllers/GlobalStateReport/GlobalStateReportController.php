@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateOutTime;
+namespace Satis2020\UemoaReportsWithoutClient\Http\Controllers\GlobalStateReport;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -9,16 +9,17 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
-
 /**
- * Class StateMore30DaysController
- * @package Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days
+ * Class GlobalStateReportController
+ * @package Satis2020\UemoaReportsWithoutClient\Http\Controllers\GlobalStateReport
  */
-class StateOutTimeController extends ApiController
+class GlobalStateReportController extends ApiController
 {
-    use UemoaReports;
+    use UemoaReports, CreateClaim;
 
     public function __construct()
     {
@@ -37,14 +38,13 @@ class StateOutTimeController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->ruleFilter($request));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request);
+        $claims = $this->resultatsGlobalState($request, false, false, true, false);
 
         return response()->json($claims, 200);
 
     }
-
 
     /**
      * @param Request $request
@@ -53,15 +53,15 @@ class StateOutTimeController extends ApiController
      */
     public function excelExport(Request $request){
 
-        $this->validate($request, $this->ruleFilter($request));
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request);
+        $claims = $this->resultatsGlobalState($request, false,false, true, false);
 
-        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' => $this->periodeParams($request)['date_end']]);
 
-        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Réclamations en retard', false), 'rapport-uemoa-etat-hors-delai-any-institution.xlsx');
+        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Rapport global des réclamations', true), 'rapport-uemoa-etat-global-reclamation-without-client.xlsx');
 
-        return response()->json(['file' => 'rapport-uemoa-etat-hors-delai-any-institution.xlsx'], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-without-client.xlsx'], 200);
     }
 
 
@@ -73,9 +73,9 @@ class StateOutTimeController extends ApiController
      */
     public function pdfExport(Request $request){
 
-        $this->validate($request, $this->rulePeriode());
+        $this->validate($request, $this->ruleFilter($request, false, true, false));
 
-        $claims = $this->resultatsStateOutTime($request);
+        $claims = $this->resultatsGlobalState($request, false,false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
@@ -83,14 +83,14 @@ class StateOutTimeController extends ApiController
             'claims' => $claims,
             'myInstitution' => false,
             'libellePeriode' => $libellePeriode,
-            'title' => 'Réclamations en retard',
-            'relationShip' => false,
+            'title' => 'Rapport global des réclamations',
+            'relationShip' => true,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
         ])->render();
 
-        $file = 'rapport-uemoa-etat-hors-delai-any-institution.pdf';
+        $file = 'rapport-uemoa-etat-global-reclamation-without-client.pdf';
 
         $pdf = App::make('dompdf.wrapper');
 
@@ -100,6 +100,5 @@ class StateOutTimeController extends ApiController
 
         return $pdf->download($file);
     }
-
 
 }

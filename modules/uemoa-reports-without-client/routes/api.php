@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 /**
  * Gloal State Report Excel
  */
-Route::prefix('/my')->name('my.')->group(function () {
+Route::prefix('/without')->name('without.')->group(function () {
 
+    //Route::get('/uemoa/institution', 'Institution\InstitutionController@index')->name('uemoa-institution.index');
     Route::get('/uemoa/data-filter', 'DataFilter\DataFilterController@index')->name('uemoa-filter.index');
 
     Route::get('/uemoa/global-state-report', 'GlobalStateReport\GlobalStateReportController@index')->name('uemoa-global-state-report.index');
@@ -34,4 +36,5 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/uemoa/state-analytique', 'StateAnalytique\StateAnalytiqueController@index')->name('uemoa-state-analytique.index');
     Route::post('/uemoa/state-analytique', 'StateAnalytique\StateAnalytiqueController@excelExport')->name('uemoa-state-analytique.excelExport');
     Route::post('/uemoa/state-analytique-pdf', 'StateAnalytique\StateAnalytiqueController@pdfExport')->name('uemoa-state-analytique.pdfExport');
+
 });

@@ -1,22 +1,22 @@
 <?php
 
-namespace Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateOutTime;
+namespace Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateAnalytique;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
+use Satis2020\ServicePackage\Exports\UemoaReports\StateAnalytiqueReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
-
 /**
- * Class StateMore30DaysController
- * @package Satis2020\UemoaReportsAnyInstitution\Http\Controllers\StateMore30Days
+ * Class StateAnalytiqueController
+ * @package Satis2020\UemoaReportsWithoutClient\Http\Controllers\StateAnalytique
  */
-class StateOutTimeController extends ApiController
+class StateAnalytiqueController extends ApiController
 {
     use UemoaReports;
 
@@ -37,9 +37,9 @@ class StateOutTimeController extends ApiController
     public function index(Request $request)
     {
 
-        $this->validate($request, $this->ruleFilter($request));
+        $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsStateOutTime($request);
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
 
         return response()->json($claims, 200);
 
@@ -51,46 +51,42 @@ class StateOutTimeController extends ApiController
      * @return
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function excelExport(Request $request){
-
-        $this->validate($request, $this->ruleFilter($request));
-
-        $claims = $this->resultatsStateOutTime($request);
-
-        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
-
-        Excel::store(new StateReportExcel($claims, false, $libellePeriode, 'Réclamations en retard', false), 'rapport-uemoa-etat-hors-delai-any-institution.xlsx');
-
-        return response()->json(['file' => 'rapport-uemoa-etat-hors-delai-any-institution.xlsx'], 200);
-    }
-
-
-    /**
-     * @param Request $request
-     * @return mixed
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Throwable
-     */
-    public function pdfExport(Request $request){
+    public function excelExport(Request $request)
+    {
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsStateOutTime($request);
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        $data = view('ServicePackage::uemoa.report-reclamation', [
+        Excel::store(new StateAnalytiqueReportExcel($claims, false, $libellePeriode), 'rapport-uemoa-etat-analytique-without-client.xlsx');
+
+        return response()->json(['file' => 'rapport-uemoa-etat-analytique-without-client.xlsx'], 200);
+    }
+
+
+
+    public function pdfExport(Request $request)
+    {
+
+        $this->validate($request, $this->rulePeriode());
+
+        $claims = $this->resultatsStateAnalytique($request, false, false, true, false);
+
+        $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
+
+        $data = view('ServicePackage::uemoa.report-analytique', [
             'claims' => $claims,
             'myInstitution' => false,
             'libellePeriode' => $libellePeriode,
-            'title' => 'Réclamations en retard',
-            'relationShip' => false,
+            'title' => 'Rapport Analytique',
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
         ])->render();
 
-        $file = 'rapport-uemoa-etat-hors-delai-any-institution.pdf';
+        $file = 'rapport-uemoa-etat-analytique-without-client.pdf';
 
         $pdf = App::make('dompdf.wrapper');
 
@@ -100,6 +96,5 @@ class StateOutTimeController extends ApiController
 
         return $pdf->download($file);
     }
-
 
 }
