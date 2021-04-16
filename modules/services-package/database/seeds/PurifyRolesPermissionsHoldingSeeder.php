@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
+use Illuminate\Support\Facades\Config;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\AccountType;
 use Illuminate\Database\Seeder;
@@ -30,7 +31,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
      */
     public function run()
     {
-        $nature = env('APP_NATURE');
+        $nature = Config::get('services.app_nature', 'PRO');
+
         if ($nature === 'MACRO') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
@@ -76,7 +78,6 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
                     'store-claim-against-any-institution',
                     'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
-                    'list-claim-archived', 'show-claim-archived',
                     'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
                     'show-dashboard-data-all-institution', 'show-dashboard-data-my-institution',
                     'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',

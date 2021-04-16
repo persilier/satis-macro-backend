@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Claim;
@@ -95,7 +96,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
-            'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
+            'list-faq', 'show-faq', 'store-faq', 'update-faq', 'delete-faq',
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
@@ -176,11 +177,11 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
-            'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
+            'list-faq', 'show-faq', 'store-faq', 'update-faq', 'delete-faq',
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
-            'list-any-institution', 'store-any-institution',  'show-any-institution', 'update-any-institution', 'destroy-any-institution'
+            'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution'
         ];
 
         $memberPermissions = [
@@ -239,28 +240,40 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'update-reject-unit-transfer-parameters',
             'update-min-fusion-percent-parameters',
             'update-relance-parameters',
-            'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
+            'list-faq', 'show-faq', 'store-faq', 'update-faq', 'delete-faq',
             'search-claim-my-reference',
             'attach-files-to-claim',
             'revive-staff',
         ];
 
+        $nature = Config::get('services.app_nature', 'PRO');
+
         foreach (Permission::where('guard_name', 'api')->get() as $permission) {
-            if (in_array($permission->name, $holdingPermissions)) {
-                $this->addInstitutionTypeToPermission($permission, 'holding');
+
+            if ($nature === 'MACRO') {
+                if (in_array($permission->name, $holdingPermissions)) {
+                    $this->addInstitutionTypeToPermission($permission, 'holding');
+                }
+                if (in_array($permission->name, $filialPermissions)) {
+                    $this->addInstitutionTypeToPermission($permission, 'filiale');
+                }
             }
-            if (in_array($permission->name, $filialPermissions)) {
-                $this->addInstitutionTypeToPermission($permission, 'filiale');
+
+            if ($nature === 'HUB') {
+                if (in_array($permission->name, $observatoryPermissions)) {
+                    $this->addInstitutionTypeToPermission($permission, 'observatory');
+                }
+                if (in_array($permission->name, $memberPermissions)) {
+                    $this->addInstitutionTypeToPermission($permission, 'membre');
+                }
             }
-            if (in_array($permission->name, $observatoryPermissions)) {
-                $this->addInstitutionTypeToPermission($permission, 'observatory');
+
+            if ($nature === 'PRO') {
+                if (in_array($permission->name, $independantPermissions)) {
+                    $this->addInstitutionTypeToPermission($permission, 'independant');
+                }
             }
-            if (in_array($permission->name, $memberPermissions)) {
-                $this->addInstitutionTypeToPermission($permission, 'membre');
-            }
-            if (in_array($permission->name, $independantPermissions)) {
-                $this->addInstitutionTypeToPermission($permission, 'independant');
-            }
+
         }
 
     }
