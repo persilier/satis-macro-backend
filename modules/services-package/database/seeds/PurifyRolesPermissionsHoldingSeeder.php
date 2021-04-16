@@ -56,7 +56,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-notifications',
                     'list-performance-indicator', 'store-performance-indicator', 'update-performance-indicator', 'destroy-performance-indicator', 'show-performance-indicator', 'edit-performance-indicator',
                     'update-processing-circuit-any-institution',
-                    'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
+                    'list-severity-level', 'update-severity-level', 'show-severity-level',
                     'list-staff-from-any-unit', 'store-staff-from-any-unit', 'update-staff-from-any-unit', 'destroy-staff-from-any-unit', 'show-staff-from-any-unit', 'edit-staff-from-any-unit',
                     'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
                     'list-user-any-institution', 'show-user-any-institution', 'store-user-any-institution',

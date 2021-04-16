@@ -38,7 +38,7 @@ class SeverityLevel extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'color' , 'others'
+        'name', 'description','status', 'color' , 'others'
     ];
 
     /**

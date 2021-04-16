@@ -17,6 +17,7 @@ use Satis2020\ServicePackage\Models\Requirement;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Notifications\Recurrence;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
@@ -274,7 +275,15 @@ trait CreateClaim
 
                 if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
 
-                    $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+                    if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
+
+                        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaimHighForcefulness($claim));
+
+                    }else{
+
+                        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+
+                    }
 
                     // check if the claimObject related to the claim have a time_limit = 1 and send a notification
                     $this->closeTimeLimitNotification($claim);

@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\SeverityLevel;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
+/**
+ * Class SeverityLevelController
+ * @package Satis2020\SeverityLevel\Http\Controllers\SeverityLevels
+ */
 class SeverityLevelController extends ApiController
 {
     public function __construct()
@@ -13,14 +17,16 @@ class SeverityLevelController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-severity-level')->only(['index']);
-        $this->middleware('permission:store-severity-level')->only(['store']);
+        //$this->middleware('permission:store-severity-level')->only(['store']);
         $this->middleware('permission:update-severity-level')->only(['update']);
         $this->middleware('permission:show-severity-level')->only(['show']);
-        $this->middleware('permission:destroy-severity-level')->only(['destroy']);
+        //$this->middleware('permission:destroy-severity-level')->only(['destroy']);
     }
+
     /**
      * Display a listing of the resource.
      *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {

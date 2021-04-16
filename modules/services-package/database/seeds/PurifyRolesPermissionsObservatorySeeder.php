@@ -53,7 +53,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-performance-indicator', 'store-performance-indicator', 'update-performance-indicator', 'destroy-performance-indicator', 'show-performance-indicator', 'edit-performance-indicator',
                     'update-processiong-circuit-without-institution',
                     'list-relationship', 'store-relationship', 'update-relationship', 'destroy-relationship', 'show-relationship',
-                    'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
+                    'list-severity-level', 'update-severity-level', 'show-severity-level',
                     'list-staff-from-maybe-no-unit', 'store-staff-from-maybe-no-unit', 'update-staff-from-maybe-no-unit', 'destroy-staff-from-maybe-no-unit', 'show-staff-from-maybe-no-unit',
                     'show-dashboard-data-all-institution',
                     'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',

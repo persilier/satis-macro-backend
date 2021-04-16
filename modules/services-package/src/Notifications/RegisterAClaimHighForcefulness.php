@@ -10,10 +10,10 @@ use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 
 /**
- * Class RegisterAClaim
+ * Class RegisterAClaimHighForcefulness
  * @package Satis2020\ServicePackage\Notifications
  */
-class RegisterAClaim extends Notification implements ShouldQueue
+class RegisterAClaimHighForcefulness extends Notification implements ShouldQueue
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
@@ -29,13 +29,15 @@ class RegisterAClaim extends Notification implements ShouldQueue
     {
         $this->claim = $claim;
 
-        $this->event = $this->getNotification('register-a-claim');
+        $this->event = $this->getNotification('register-a-claim-high-force-fulness');
 
         $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
 
         $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
 
         $this->event->text = str_replace('{claim_status}', $this->claim->status, $this->event->text);
+
+        $this->event->text = str_replace('{severity_level}', $this->claim->claimObject->severityLevel->name, $this->event->text);
     }
 
     /**
