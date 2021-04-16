@@ -1,0 +1,33 @@
+{
+    "name": "satis2020/metadata-package",
+    "description": "satis2020/metadata-package est un package dans lequel nous allons gérer les métadata",
+    "license": "DMD",
+    "version" : "1.0.0",
+    "authors": [
+        {
+            "name": "Christian AWASSI",
+            "email": "christian@dmdconsult.com"
+        },
+        {
+            "name": "Nelson AZONHOU",
+            "email": "ulrich@dmdconsult.com"
+        }
+    ],
+    "require": {
+        "satis2020/services-package": "1.0.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Satis2020\\MetadataPackage\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Satis2020\\MetadataPackage\\Providers\\MetadataPackageServiceProvider"
+            ]
+        }
+    }
+}

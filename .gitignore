@@ -4,9 +4,17 @@
 /storage/*.key
 /vendor
 .env
+.env.develop
 .env.backup
 .phpunit.result.cache
+composer.lock.json
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/.idea
+composer.lock
+package-lock.json
+package.json
+/config/broadcasting.php
+/tests
