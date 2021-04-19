@@ -51,13 +51,20 @@ trait AwaitingValidation
         ];
     }
 
+    /**
+     * @param $request
+     * @param $claim
+     * @return mixed
+     */
     protected function handleValidate($request, $claim)
     {
+        $backup = $this->backupData($claim);
+
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
             'invalidated_reason' => NULL,
-            'treatments' => $this->backupData($claim)
+            'treatments' => $backup
         ]);
 
         if (!is_null($claim->activeTreatment->declared_unfounded_at)) { // the claim is declared unfounded
@@ -80,12 +87,14 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
+        $backup = $this->backupData($claim);
+
         $claim->activeTreatment->update([
             'invalidated_reason' => $request->invalidated_reason,
             'validated_at' => Carbon::now(),
             'solved_at' => NULL,
             'declared_unfounded_at' => NULL,
-            'treatments' => $this->backupData($claim)
+            'treatments' => $backup
         ]);
 
         $claim->update(['status' => 'assigned_to_staff']);

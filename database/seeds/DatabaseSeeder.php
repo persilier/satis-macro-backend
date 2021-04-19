@@ -145,6 +145,7 @@ class DatabaseSeeder extends Seeder
 
 //        $this->call(\Satis2020\Notification\Database\Seeds\ClaimHighForceFulnessNotification::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetSeverityLevelsSeed::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
 
     }
 

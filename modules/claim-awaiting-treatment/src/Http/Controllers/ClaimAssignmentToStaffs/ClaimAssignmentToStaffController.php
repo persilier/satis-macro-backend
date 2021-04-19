@@ -5,6 +5,7 @@ namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToSta
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Validation\Rules\RequiredIf;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
@@ -12,6 +13,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
@@ -99,7 +101,10 @@ class ClaimAssignmentToStaffController extends ApiController
             ],
             'solution' => ['required', 'string'],
             'comments' => ['nullable', 'string'],
-            'preventive_measures' => ['nullable', 'string']
+            'preventive_measures' => ['string',
+                Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
+                && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
+            ]
         ];
 
         $this->validate($request, $rules);

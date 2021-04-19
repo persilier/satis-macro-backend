@@ -71,6 +71,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-reject-unit-transfer-parameters',
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
+                    'update-measure-preventive-parameters',
                     'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
                 ],
