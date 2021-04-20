@@ -113,7 +113,7 @@ trait ClaimAwaitingTreatment
      */
     protected function rejectedClaimUpdate($claim, $request)
     {
-        $backup = $this->backupData($claim);
+        $backup = $this->backupData($claim, $request);
 
         $claim->activeTreatment->update([
             'transferred_to_unit_at' => NULL,

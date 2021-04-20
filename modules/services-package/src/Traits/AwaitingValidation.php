@@ -58,7 +58,7 @@ trait AwaitingValidation
      */
     protected function handleValidate($request, $claim)
     {
-        $backup = $this->backupData($claim);
+        $backup = $this->backupData($claim, $request, false, true);
 
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
@@ -67,7 +67,8 @@ trait AwaitingValidation
             'treatments' => $backup
         ]);
 
-        if (!is_null($claim->activeTreatment->declared_unfounded_at)) { // the claim is declared unfounded
+        if(!is_null($claim->activeTreatment->declared_unfounded_at)){
+            // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
@@ -87,7 +88,7 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
-        $backup = $this->backupData($claim);
+        $backup = $this->backupData($claim, $request, false, false);
 
         $claim->activeTreatment->update([
             'invalidated_reason' => $request->invalidated_reason,
