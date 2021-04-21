@@ -30,10 +30,10 @@ trait SeveralTreatment
         }
 
         $treatments->push([
-            'invalidated_reason' =>  $claim->activeTreatment->invalidated_reason ? $rejected : (NULL ? $validated : $request->invalidated_reason),
-            'rejected_reason' => $request->rejected_reason ? $rejected : NULL,
-            'rejected_at' => Carbon::now() ? $rejected : NULL,
-            'validated_at' =>  $claim->activeTreatment->validated_at ? $rejected : Carbon::now() ,
+            'invalidated_reason' => $rejected ? $claim->activeTreatment->invalidated_reason : ($validated ? NULL : $request->invalidated_reason),
+            'rejected_reason' => $rejected ? $request->rejected_reason : NULL,
+            'rejected_at' => $rejected ? Carbon::now() : NULL,
+            'validated_at' => $rejected ? $claim->activeTreatment->validated_at : Carbon::now() ,
             'declared_unfounded_at' => $claim->activeTreatment->declared_unfounded_at,
             'unfounded_reason' => $claim->activeTreatment->unfounded_reason,
             'solved_at' => $claim->activeTreatment->solved_at,
