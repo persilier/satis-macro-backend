@@ -22,6 +22,9 @@ trait AwaitingValidation
         });
     }
 
+    /**
+     * @return array
+     */
     protected function getRelations()
     {
         return [

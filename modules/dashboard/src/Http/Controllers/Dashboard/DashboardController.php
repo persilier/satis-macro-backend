@@ -3,6 +3,8 @@
 namespace Satis2020\Dashboard\Http\Controllers\Dashboard;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
@@ -27,12 +29,17 @@ class DashboardController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws \Illuminate\Validation\ValidationException
      */
 
-    public function index()
+    public function index(Request $request)
     {
+        $this->validate($request, [
+            'institution_targeted_id' => 'nullable|exists:institutions,id'
+        ]);
+
         $permissions = Auth::user()->getAllPermissions();
 
         // initialise statistics collection
@@ -94,6 +101,9 @@ class DashboardController extends ApiController
                 Carbon::now()->subMonths(11)->format('Y-m-d H:i:s'),
                 Carbon::now()->format('Y-m-d H:i:s')
             ])
+            ->where(function($q) use ($request){
+                $request->has('institution_targeted_id') ? $q->where('institution_targeted_id', $request->institution_targeted_id) : $q->where('institution_targeted_id', '!=', NULL);
+            })
             ->get()
             ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics, $pointOfServicesTargeted, $institutionsTargeted) {
 
@@ -220,7 +230,8 @@ class DashboardController extends ApiController
                 return $claim;
             });
 
-        return response()->json([
+        $statisticsDashboard = [
+            'institutions' => Institution::all(),
             'statistics' => $statistics,
             'channelsUse' => $channelsUse,
             'claimObjectsUse' => $claimObjectsUse,
@@ -229,7 +240,15 @@ class DashboardController extends ApiController
             'totalClaimsRegisteredStatistics' => $totalClaimsRegisteredStatistics->get('total'),
             'institutionsTargeted' => $institutionsTargeted,
             'pointOfServicesTargeted' => $pointOfServicesTargeted
-        ], 200);
+        ];
+
+        if($request->has('institution_targeted_id')){
+
+            $statisticsDashboard = Arr::except($statisticsDashboard, 'institutionsTargeted');
+
+        }
+
+        return response()->json($statisticsDashboard, 200);
     }
 
 }
