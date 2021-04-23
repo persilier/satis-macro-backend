@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\RejectUnitTransferLimitationSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ModulePermissionsSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InitializeChannelsTableSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdateTimeLimitToClaimTableSeeder::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdateTimeLimitToClaimTableSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\RevokeClaimNotificationsTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\RoleDescriptionSeed::class);
 //         $this->call(\Satis2020\ServicePackage\Database\Seeds\TruncateNotifJobs::class);
@@ -143,9 +143,11 @@ class DatabaseSeeder extends Seeder
 
         /**************** Fin Installation Seed **************************/
 
-        $this->call(\Satis2020\Notification\Database\Seeds\ClaimHighForceFulnessNotification::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetSeverityLevelsSeed::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
+//        $this->call(\Satis2020\Notification\Database\Seeds\ClaimHighForceFulnessNotification::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetSeverityLevelsSeed::class);
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
+
+          $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateOrUpdateComponentSeeder::class);
 
     }
 
