@@ -72,7 +72,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
                     'update-measure-preventive-parameters',
-                    'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
+                    'show-faq','store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
                 ],
                 "pilot-holding" => [

@@ -132,12 +132,12 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallInstitutionTypeSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallInstitutionSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallMetadataSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsHoldingSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsFilialSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsMembreSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsHoldingSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsFilialSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsMembreSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
 
@@ -147,7 +147,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\ResetSeverityLevelsSeed::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
 
-          $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateOrUpdateComponentSeeder::class);
+         $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateOrUpdateComponentSeeder::class);
 
     }
 

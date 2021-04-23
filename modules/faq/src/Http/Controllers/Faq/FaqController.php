@@ -19,7 +19,7 @@ class FaqController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-faq')->only(['index']);
+        //$this->middleware('permission:list-faq')->only(['index']);
         $this->middleware('permission:store-faq')->only(['store']);
         $this->middleware('permission:show-faq')->only(['show']);
         $this->middleware('permission:update-faq')->only(['update']);
