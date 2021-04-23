@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Faq;
+use Satis2020\ServicePackage\Models\FaqCategory;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 /**
@@ -64,6 +65,15 @@ class FaqController extends ApiController
     public function show(Faq $faq)
     {
         return response()->json($faq->load('faqCategory'), 200);
+    }
+
+
+    /**
+     * @return JsonResponse
+     */
+    public function categoryAll(){
+
+        return response()->json(FaqCategory::all(), 200);
     }
 
 
