@@ -97,6 +97,34 @@ class CreateOrUpdateComponentSeeder extends Seeder
                     'title_stat_service' => [
                         'type' => 'text',
                         'value' => 'Statistique les services techniques qui reçoivent plus de réclamations sur les 30 derniers jours',
+                    ],
+                    'pourcent_incomplet' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations Incomplètes',
+                    ],
+                    'pourcent_complete' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations Complètes',
+                    ],
+                    'pourcent_to_unit' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations Transférées à une Unité',
+                    ],
+                    'pourcent_in_treatment' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations en Cours de Traitement',
+                    ],
+                    'pourcent_treat' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations Traitées',
+                    ],
+                    'pourcent_unfound' => [
+                        'type' => 'text',
+                        'value' => '% Réclamations Non Fondées',
+                    ],
+                    'pourcent_satisfated' => [
+                        'type' => 'text',
+                        'value' => '% Satisfaction Mesurée',
                     ]
                 ]
             ],
