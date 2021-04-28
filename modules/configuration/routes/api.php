@@ -28,6 +28,10 @@ Route::put("/configurations/mail", "Mail\MailController@update")->name("configur
 Route::get("/configurations/relance", "Relance\RelanceController@show")->name("configurations.relance.show");
 Route::put("/configurations/relance", "Relance\RelanceController@update")->name("configurations.relance.update");
 
+// measure preventive
+Route::get("/configurations/measure-preventive", "MeasurePreventive\MeasurePreventiveController@show")->name("configurations.measure.preventive.show");
+Route::put("/configurations/measure-preventive", "MeasurePreventive\MeasurePreventiveController@update")->name("configurations.measure.preventive.update");
+
 // Qualifications parameters
 Route::resource('delai-qualification-parameters', 'DelaiParameters\QualificationController')->except(['edit', 'update']);
 // Treatments parameters

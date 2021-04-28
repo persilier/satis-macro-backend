@@ -56,7 +56,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-notifications',
                     'list-performance-indicator', 'store-performance-indicator', 'update-performance-indicator', 'destroy-performance-indicator', 'show-performance-indicator', 'edit-performance-indicator',
                     'update-processing-circuit-my-institution',
-                    'list-severity-level', 'store-severity-level', 'update-severity-level', 'destroy-severity-level', 'show-severity-level',
+                    'list-severity-level', 'update-severity-level', 'show-severity-level',
                     'list-staff-from-my-unit', 'store-staff-from-my-unit', 'update-staff-from-my-unit', 'destroy-staff-from-my-unit', 'show-staff-from-my-unit',
                     'show-dashboard-data-my-institution',
                     'list-account-type', 'show-account-type', 'update-account-type', 'store-account-type', 'destroy-account-type',
@@ -70,7 +70,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-reject-unit-transfer-parameters',
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
-                    'list-faq', 'show-faq','store-faq', 'update-faq', 'delete-faq',
+                    'update-measure-preventive-parameters',
+                    'show-faq','store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                 ],
                 "pilot" => [

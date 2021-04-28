@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
  *
  * channels
  */
-Route::get('dashboard', 'Dashboard\DashboardController@index')->name('dashboard.index');
+Route::post('dashboard', 'Dashboard\DashboardController@index')->name('dashboard.index');
