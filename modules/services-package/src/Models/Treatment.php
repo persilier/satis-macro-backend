@@ -68,7 +68,8 @@ class Treatment extends Model
         'comments',
         'invalidated_reason',
         'number_reject',
-        'treatments'
+        'treatments',
+        'note'
     ];
 
     /**

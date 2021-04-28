@@ -22,6 +22,9 @@ trait AwaitingValidation
         });
     }
 
+    /**
+     * @return array
+     */
     protected function getRelations()
     {
         return [
@@ -51,16 +54,24 @@ trait AwaitingValidation
         ];
     }
 
+    /**
+     * @param $request
+     * @param $claim
+     * @return mixed
+     */
     protected function handleValidate($request, $claim)
     {
+        $backup = $this->backupData($claim, $request, false, true);
+
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
             'invalidated_reason' => NULL,
-            'treatments' => $this->backupData($claim)
+            'treatments' => $backup
         ]);
 
-        if (!is_null($claim->activeTreatment->declared_unfounded_at)) { // the claim is declared unfounded
+        if(!is_null($claim->activeTreatment->declared_unfounded_at)){
+            // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
@@ -80,12 +91,14 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
+        $backup = $this->backupData($claim, $request, false, false);
+
         $claim->activeTreatment->update([
             'invalidated_reason' => $request->invalidated_reason,
             'validated_at' => Carbon::now(),
             'solved_at' => NULL,
             'declared_unfounded_at' => NULL,
-            'treatments' => $this->backupData($claim)
+            'treatments' => $backup
         ]);
 
         $claim->update(['status' => 'assigned_to_staff']);

@@ -282,5 +282,4 @@ trait Notification
         return array_values($identities);
 
     }
-
 }
