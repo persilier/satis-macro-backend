@@ -16,24 +16,23 @@ trait SeveralTreatment
 
     /**
      * @param $claim
-     * @param $request
-     * @param bool $rejected
-     * @param bool $validated
+     * @param array $validationData
      * @return array
      */
-    protected function backupData($claim, $request, $rejected = true, $validated = false){
+    protected function backupData($claim, array $validationData)
+    {
+        $treatments = $claim->activeTreatment->treatments;
 
-        if(!$treatments = $claim->activeTreatment->treatments){
+        // If treatments is null, initialize it at empty array
+        if (is_null($treatments)) {
             $treatments = collect([]);
-        }else {
+        } else {
             $treatments = collect($treatments);
         }
 
         $treatments->push([
-            'invalidated_reason' => $rejected ? $claim->activeTreatment->invalidated_reason : ($validated ? NULL : $request->invalidated_reason),
-            'rejected_reason' => $rejected ? $request->rejected_reason : NULL,
-            'rejected_at' => $rejected ? Carbon::now() : NULL,
-            'validated_at' => $rejected ? $claim->activeTreatment->validated_at : Carbon::now() ,
+            'invalidated_reason' => $validationData['invalidated_reason'],
+            'validated_at' => $validationData['validated_at'],
             'declared_unfounded_at' => $claim->activeTreatment->declared_unfounded_at,
             'unfounded_reason' => $claim->activeTreatment->unfounded_reason,
             'solved_at' => $claim->activeTreatment->solved_at,
@@ -44,7 +43,6 @@ trait SeveralTreatment
         ]);
 
         return $treatments->all();
-
     }
 
 }
