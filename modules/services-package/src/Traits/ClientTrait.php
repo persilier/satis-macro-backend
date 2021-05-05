@@ -300,4 +300,19 @@ trait ClientTrait
     }
 
 
+    /**
+     * @param $request
+     * @param $clientId
+     * @return Builder|Model
+     */
+    protected function getOneClient($request, $clientId){
+        return ClientInstitution::with([
+            'client.identite',
+            'institution',
+            'category_client'
+        ])->where('client_id', $clientId)->where('institution_id', $request->institution_id)->first();
+
+    }
+
+
 }

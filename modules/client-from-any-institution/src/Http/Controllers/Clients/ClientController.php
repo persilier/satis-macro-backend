@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
@@ -129,7 +130,7 @@ class ClientController extends ApiController
      * @param $accountId
      * @return JsonResponse
      */
-    public function show($accountId)
+    public function edit($accountId)
     {
         $account = Account::with([
             'accountType',
@@ -149,22 +150,23 @@ class ClientController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param $accountId
-     * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
-     * @throws CustomException
+     * @param Request $request
+     * @param $clientId
+     * @return void
+     * @throws ValidationException
      */
-    public function edit($accountId)
+    public function show(Request $request, $clientId)
     {
-        $client = $this->getOneAccountClient($accountId);
-        return response()->json([
-            'client_institution' => $client,
-            'account' => Account::with('AccountType')->find($accountId),
-            'clients' => $this->getAllClientByInstitution($client->institution_id),
-            'institutions' => Institution::all(),
-            'accountTypes' => AccountType::all(),
-            'clientCategories' => CategoryClient::all()
-        ], 200);
+        $this->validate($request, [
+            'institution_id' => 'required|exists:institutions,id'
+        ]);
+
+        if(!$client = $this->getOneClient($request, $clientId)){
+
+            throw new CustomException("Impossible de retrouver ce client dans votre institution.");
+        }
+
+        return response()->json($client, 200);
 
     }
 

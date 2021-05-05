@@ -97,12 +97,14 @@ trait VerifyUnicity
     {
         // Staff PhoneNumber Unicity Verification
         $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone');
+
         if (!$verifyPhone['status']) {
             throw new CustomException($verifyPhone, 409);
         }
 
         // Staff Email Unicity Verification
         $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email');
+
         if (!$verifyEmail['status']) {
             throw new CustomException($verifyEmail, 409);
         }
