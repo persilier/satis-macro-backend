@@ -53,16 +53,16 @@ class SmtpParametersRules implements Rule
             // Create a message
             $message = (new Swift_Message('Wonderful Subject'))
                 ->setFrom([$this->smtp_parameters['username'] => 'John Doe'])
-                ->setTo(['ulrich@dmdconsulte.com', 'christian@dmdconsulte.com' => 'AWASSI Guy Maurel Christian'])
+                ->setTo(['ulrich@dmdconsult.com', 'christian@dmdconsult.com' => 'AWASSI Guy Maurel Christian'])
                 ->setBody('Here is the message itself');
 
             // Send the message
             return $mailer->send($message);
         } catch (Swift_TransportException $e) {
-            $this->message = $e->getMessage();
+            $this->message = 'Les paramètres SMTP d\'envoie de mail renseignés ne sont pas bon.';//$e->getMessage();
             return false;
         } catch (Exception $e) {
-            $this->message = $e->getMessage();
+            $this->message = 'Les paramètres SMTP d\'envoie de mail renseignés ne sont pas bon.';//$e->getMessage();
             return false;
         }
     }

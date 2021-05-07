@@ -12,6 +12,8 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Models\Client;
+use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -119,7 +121,7 @@ class ClientController extends ApiController
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function show($accountId)
+    public function edit($accountId)
     {
         $institution = $this->institution();
 
@@ -139,23 +141,19 @@ class ClientController extends ApiController
 
 
     /**
-     * @param $accountId
-     * @return JsonResponse
-     * @throws CustomException
-     * @throws RetrieveDataUserNatureException
+     * @param Request $request
+     * @param $clientId
+     * @return void
      */
-    public function edit($accountId)
+    public function show(Request $request, $clientId)
     {
+        $request->merge(['institution_id' => $this->institution()->id]);
+        if(!$client = $this->getOneClient($request, $clientId)){
 
-        $institution = $this->institution();
+            throw new CustomException("Impossible de retrouver ce client dans votre institution.");
+        }
 
-        $client = $this->getOneAccountClientByInstitution($institution->id, $accountId);
-        return response()->json([
-            'client_institution' => $client,
-            'account' => Account::with('AccountType')->find($accountId),
-            'AccountTypes' => AccountType::all(),
-            'clientCategories' => CategoryClient::all()
-        ], 200);
+        return response()->json($client, 200);
 
     }
 

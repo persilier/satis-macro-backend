@@ -61,7 +61,12 @@ trait AwaitingValidation
      */
     protected function handleValidate($request, $claim)
     {
-        $backup = $this->backupData($claim, $request, false, true);
+        $validationData = [
+            'invalidated_reason' => NULL,
+            'validated_at' => Carbon::now()
+        ];
+
+        $backup = $this->backupData($claim, $validationData);
 
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
@@ -91,11 +96,16 @@ trait AwaitingValidation
 
     protected function handleInvalidate($request, $claim)
     {
-        $backup = $this->backupData($claim, $request, false, false);
+        $validationData = [
+            'invalidated_reason' => $request->invalidated_reason,
+            'validated_at' => Carbon::now()
+        ];
+
+        $backup = $this->backupData($claim, $validationData);
 
         $claim->activeTreatment->update([
-            'invalidated_reason' => $request->invalidated_reason,
-            'validated_at' => Carbon::now(),
+            'invalidated_reason' => $validationData['invalidated_reason'],
+            'validated_at' => $validationData['validated_at'],
             'solved_at' => NULL,
             'declared_unfounded_at' => NULL,
             'treatments' => $backup
