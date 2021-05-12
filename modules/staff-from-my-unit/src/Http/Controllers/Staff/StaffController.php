@@ -81,6 +81,8 @@ class StaffController extends ApiController
     {
         $request->merge(['institution_id' => $this->institution()->id]);
 
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rules());
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
@@ -142,6 +144,8 @@ class StaffController extends ApiController
         $staff->load('identite', 'position', 'unit', 'institution');
 
         $request->merge(['institution_id' => $this->institution()->id]);
+
+        $this->convertEmailInStrToLower($request);
 
         $this->validate($request, $this->rules());
 

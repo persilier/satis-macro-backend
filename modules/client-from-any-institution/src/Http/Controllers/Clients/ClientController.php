@@ -86,6 +86,8 @@ class ClientController extends ApiController
      */
     public function store(Request $request)
     {
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rulesClient(true));
 
         // Account Number Verification
@@ -180,6 +182,8 @@ class ClientController extends ApiController
      */
     public function update(Request $request, $accountId)
     {
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rulesClient(true));
 
         $account = Account::with([

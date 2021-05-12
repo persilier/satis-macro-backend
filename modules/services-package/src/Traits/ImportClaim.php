@@ -169,7 +169,6 @@ trait ImportClaim
             'amount_currency_slug' => $row['devise_slug'],
             'claimer_expectation' => $row['attente'],
             'is_revival' => $row['relance'],
-            'lieu' => $row['lieu'],
             'time_limit' => ClaimObject::find($row['objet_reclamation'])->time_limit,
             'created_by' => $this->staff()->id,
             'status' => $status
