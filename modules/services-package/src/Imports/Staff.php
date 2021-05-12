@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
@@ -48,7 +49,10 @@ class Staff implements ToCollection, WithHeadingRow
     {
 
         $collection = $collection->toArray();
+        if(empty($collection)){
 
+            throw new CustomException("Le fichier excel d'import des staffs est vide.", 404);
+        }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
             // conversions email and telephone en table

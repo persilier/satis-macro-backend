@@ -3,9 +3,11 @@
 
 namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
@@ -32,7 +34,7 @@ trait ImportClaim
     public function formatDateEvent($row, $keyRow)
     {
         if(array_key_exists($keyRow, $row)) {
-            $value = Carbon::parse($row[$keyRow]);
+            $value = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[$keyRow]));
             $row[$keyRow] = $value;
         }
 
@@ -59,16 +61,21 @@ trait ImportClaim
                 $fail($attribute . ' attribute is not a response channel');
             }
         }];
+        $rules['lieu'] = 'nullable|string';
         $rules['montant_reclame'] = 'nullable|integer|min:1';
         $rules['devise_slug'] = ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request['montant_reclame']))];
         $rules['date_evenement'] = [
             'required',
-            /*'date_format:Y-m-d H:i',
+            'date_format:Y-m-d H:i',
             function ($attribute, $value, $fail) {
-                if (Carbon::parse($value)->gt(Carbon::now())) {
-                    $fail($attribute . ' is invalid! The value is greater than now');
+                try{
+                    if (Carbon::parse($value)->gt(Carbon::now())) {
+                        $fail($attribute . ' is invalid! The value is greater than now');
+                    }
+                }catch (InvalidFormatException $e){
+                    $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
                 }
-            }*/
+            }
         ];
         $rules['description'] = 'required|string';
         $rules['attente'] = 'nullable|string';
@@ -162,6 +169,8 @@ trait ImportClaim
             'amount_currency_slug' => $row['devise_slug'],
             'claimer_expectation' => $row['attente'],
             'is_revival' => $row['relance'],
+            'lieu' => $row['lieu'],
+            'time_limit' => ClaimObject::find($row['objet_reclamation'])->time_limit,
             'created_by' => $this->staff()->id,
             'status' => $status
         ];
