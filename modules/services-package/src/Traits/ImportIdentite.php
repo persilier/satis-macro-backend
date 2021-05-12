@@ -156,7 +156,6 @@ trait ImportIdentite
             'telephone' => $row['telephone'],
             'email'     => $row['email'],
             'ville'     => $row['ville'],
-            'other_attributes' => $row['other_attributes_identites'],
         ];
     }
 

@@ -1,5 +1,8 @@
 <?php
 namespace Satis2020\ServicePackage\Imports;
+use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
+use ErrorException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
@@ -12,6 +15,7 @@ use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\ImportClaim;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
+use Throwable;
 
 /**
  * Class Client
@@ -56,14 +60,19 @@ class Claim implements ToCollection, WithHeadingRow
 
         if(empty($collection)){
 
-            throw new CustomException("Le fichier excel d'import des réclamation est vide.", 404);
+            throw new CustomException("Le fichier excel d'import des réclamations est vide.", 404);
         }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
+
+            if(array_key_exists('date_evenement', $row)){
+                if(is_numeric($row['date_evenement'])){
+                    $row['date_evenement'] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_evenement']))->format('Y-m-d H:i');
+                }
+            }
             // conversions email and telephone en table
             $data = $this->explodeValueRow($row, 'email', $separator = ' ');
             $data = $this->explodeValueRow($data, 'telephone', $separator = ' ');
-            //$data = $this->formatDateEvent($data, 'date_evenement');
 
             $validator = Validator::make($row, $this->rules($row, $this->with_client, $this->with_relationship, $this->with_unit));
             // fields validations

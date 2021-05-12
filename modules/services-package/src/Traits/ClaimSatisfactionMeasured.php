@@ -81,7 +81,7 @@ trait ClaimSatisfactionMeasured
 
             return  ($this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
 
-        })->all();
+        })->values();
     }
 
 

@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -56,8 +57,12 @@ trait CreateClaim
                 'required',
                 'date_format:Y-m-d H:i',
                 function ($attribute, $value, $fail) {
-                    if (Carbon::parse($value)->gt(Carbon::now())) {
-                        $fail($attribute . ' is invalid! The value is greater than now');
+                    try{
+                        if (Carbon::parse($value)->gt(Carbon::now())) {
+                            $fail($attribute . ' is invalid! The value is greater than now');
+                        }
+                    }catch (InvalidFormatException $e){
+                        $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
                     }
                 }
             ],
