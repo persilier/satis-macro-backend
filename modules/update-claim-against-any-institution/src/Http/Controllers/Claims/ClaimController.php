@@ -87,6 +87,8 @@ class ClaimController extends ApiController
 
         $request->merge(['claimer_id' => $claim->claimer_id]);
 
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rulesCompletion($request, $claim));
 
         $this->validateUnicityIdentiteCompletion($request, $claim);

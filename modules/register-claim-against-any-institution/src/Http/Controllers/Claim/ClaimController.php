@@ -73,6 +73,8 @@ class ClaimController extends ApiController
 
         $request->merge(['created_by' => $this->staff()->id]);
 
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rules($request));
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);

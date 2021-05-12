@@ -45,6 +45,8 @@ class IdentiteClaimController extends ApiController
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
         $request->merge(['claimer_id' => $identite->id]);
 
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rules($request, false));
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);

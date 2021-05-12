@@ -40,6 +40,8 @@ class IdentiteStaffController extends ApiController
      */
     public function store(Request $request, Identite $identite)
     {
+        $this->convertEmailInStrToLower($request);
+
         $this->validate($request, $this->rules());
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);

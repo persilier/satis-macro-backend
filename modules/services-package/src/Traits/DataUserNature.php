@@ -219,5 +219,17 @@ trait DataUserNature
     }
 
 
+    /**
+     * @param $request
+     */
+    protected function convertEmailInStrToLower($request){
+
+        if($request->has('email') && !empty($request->has('email') )){
+            $request->merge(['email' => array_map('strtolower',$request->email)]);
+        }
+
+    }
+
+
 
 }
