@@ -4,7 +4,7 @@
 #!/storage/app/public/components/
 #!/storage/app/public/excels/
 
-/public/hot
+#/public/hot
 
 #/storage/*.key
 
