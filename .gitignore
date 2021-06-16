@@ -1,6 +1,5 @@
 /node_modules
 
-!public/storage/
 public/storage/*
 !public/storage/components/
 !public/storage/excels/
