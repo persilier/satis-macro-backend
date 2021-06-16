@@ -21,6 +21,3 @@ package-lock.json
 package.json
 /tests
 
-/storage/app/public/*
-!/storage/app/public/excels
-!/storage/app/public/components-example
