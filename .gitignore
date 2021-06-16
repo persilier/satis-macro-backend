@@ -1,12 +1,6 @@
 /node_modules
 
-#/storage/app/public/*
-#!/storage/app/public/components/
-#!/storage/app/public/excels/
-
-#/public/hot
-
-#/storage/*.key
+/storage/*.key
 
 /vendor
 
