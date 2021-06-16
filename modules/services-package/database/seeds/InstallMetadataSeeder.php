@@ -152,6 +152,11 @@ class InstallMetadataSeeder extends Seeder
                         'event' => 'revoke-claim-staff-notification',
                         'description' => "Notification envoyée aux staff concerné après la révocation d'une réclamation",
                         'text' => "Nous vous informons que la réclamation : Reference: {claim_reference}. Objet : {claim_object} vient d'être révoquée."
+                    ],
+                    [
+                        'event' => 'register-a-claim-high-force-fulness',
+                        'description' => "Notification envoyée au pilote après enregistrement d'une réclamation de gravité élevé.",
+                        'text' => "Une nouvelle reclamation a ete enregistree. Reference: {claim_reference}. Gravite : {severity_level}. Etat : {claim_status}. Objet : {claim_object}"
                     ]
                 ]),
             ],
@@ -168,6 +173,10 @@ class InstallMetadataSeeder extends Seeder
                     "number_reject_max" => 3,
                 ]),
             ],
+            [
+                'name' => 'measure-preventive',
+                'data' => json_encode(false)
+            ]
         ];
 
         foreach ($metadataList as $metadata) {
