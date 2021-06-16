@@ -1,8 +1,8 @@
 /node_modules
 
-/public/storage/*
-!/public/storage/components/
-!/public/storage/excels/
+/storage/app/public/*
+!/storage/app/public/components/
+!/storage/app/public/excels/
 
 /public/hot
 
