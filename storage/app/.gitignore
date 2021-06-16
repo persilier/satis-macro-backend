@@ -1,6 +1,6 @@
 ./*
 !./public/
 ./public/*
-!./public/excels
-!./public/components-example
+!./public/excels/
+!./public/components-example/
 !.gitignore
