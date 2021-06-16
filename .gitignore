@@ -1,7 +1,5 @@
 /node_modules
 
-!public/
-public/*
 !public/storage/
 public/storage/*
 !public/storage/components/
