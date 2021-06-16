@@ -1,4 +1,4 @@
 *
 !.gitignore
-!components
-!excels
+!components/
+!excels/
