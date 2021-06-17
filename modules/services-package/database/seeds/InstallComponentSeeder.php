@@ -36,8 +36,8 @@ class InstallComponentSeeder extends Seeder
                     ],
                     'background' => [
                         'type' => 'image',
-                        'path' => 'components/background.jpg',
-                        'title' => 'background.jpg'
+                        'path' => 'components/background.jpeg',
+                        'title' => 'background.jpeg'
                     ],
                     'title' => [
                         'type' => 'text',
