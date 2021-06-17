@@ -67,9 +67,9 @@ class InstallAdministratorSeeder extends Seeder
             'disabled_at' => null
         ]);
 
-        $user->assignRole(
-            Role::where('name', $roleName)->where('guard_name', 'api')->firstOrFail()
-        );
+        $role = Role::where('name', $roleName)->where('guard_name', 'api')->firstOrFail();
+
+        $user->assignRole($role);
 
         return $user;
     }
@@ -104,16 +104,7 @@ class InstallAdministratorSeeder extends Seeder
     public function run()
     {
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-
         $appNature = Config::get('services.app_nature', 'PRO');
-
-        UnitType::truncate();
-        Unit::truncate();
-        Position::truncate();
-        Staff::truncate();
-        Identite::truncate();
-        User::truncate();
 
         // create unit type
         $unitType = $this->createUnitType('SERVICE');
