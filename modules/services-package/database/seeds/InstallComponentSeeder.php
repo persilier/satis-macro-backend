@@ -50,6 +50,10 @@ class InstallComponentSeeder extends Seeder
                     'version' => [
                         'type' => 'text',
                         'value' => '2020.1',
+                    ],
+                    'header' => [
+                        'type' => 'text',
+                        'value' => 'Bienvenue sur SATIS',
                     ]
                 ]
             ],
