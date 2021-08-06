@@ -2,23 +2,9 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Illuminate\Support\Facades\Config;
-use Satis2020\ServicePackage\Models\Account;
-use Satis2020\ServicePackage\Models\AccountType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\CategoryClient;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ServicePackage\Models\Discussion;
-use Satis2020\ServicePackage\Models\File;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Message;
-use Satis2020\ServicePackage\Models\Position;
-use Satis2020\ServicePackage\Models\Treatment;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -71,7 +57,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
                     'update-measure-preventive-parameters',
-                    'show-faq','store-faq', 'update-faq', 'delete-faq',
+                    'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                 ],
                 "pilot" => [
@@ -117,10 +103,17 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
 
             foreach ($independantRoles as $roleName => $permissions) {
 
-                $role = Role::updateOrCreate(
-                    ['name' => $roleName, 'guard_name' => 'api'],
-                    ['institution_types' => ['independant']]
-                );
+                $role = Role::where('name', $roleName)->where('guard_name', 'api')->first();
+
+                if (is_null($role)) {
+                    $role = Role::create([
+                        'name' => $roleName,
+                        'guard_name' => 'api',
+                        'institution_types' => ['independant']
+                    ]);
+                } else {
+                    $role->update(['institution_types' => ['independant']]);
+                }
 
                 if (empty($permissions)) {
                     $role->syncPermissions($permissions);
