@@ -117,11 +117,10 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
 
             foreach ($independantRoles as $roleName => $permissions) {
 
-                $role = Role::where('name', $roleName)->where('guard_name', 'api')->first();
-
-                if (is_null($role)) {
-                    $role = Role::create(['name' => $roleName, 'guard_name' => 'api']);
-                }
+                $role = Role::updateOrCreate(
+                    ['name' => $roleName, 'guard_name' => 'api'],
+                    ['institution_types' => ['independant']]
+                );
 
                 if (empty($permissions)) {
                     $role->syncPermissions($permissions);
