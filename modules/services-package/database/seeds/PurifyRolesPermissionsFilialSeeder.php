@@ -2,14 +2,34 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class PurifyRolesPermissionsFilialSeeder extends Seeder
 {
+
+    public function addInstitutionTypeToRole($roleName, $institutionType)
+    {
+        $role = Role::where("name", $roleName)->where("guard_name", "api")->first();
+
+        if (is_null($role)) {
+            return json_encode([$institutionType]);
+        }
+
+        $institution_types = is_null($role->institution_types)
+            ? []
+            : json_decode($role->institution_types);
+
+        if (!in_array($institutionType, $institution_types)) {
+            array_push($institution_types, $institutionType);
+        }
+
+        return json_encode($institution_types);
+    }
+
     /**
      * Run the database seeds.
      *
@@ -76,25 +96,28 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
 
             foreach ($filialRoles as $roleName => $permissions) {
 
-                $role = Role::where('name', $roleName)->where('guard_name', 'api')->first();
+                $institutionTypes = $this->addInstitutionTypeToRole($roleName, 'filiale');
 
-                if (is_null($role)) {
-                    $role = Role::create(['name' => $roleName, 'guard_name' => 'api']);
-                }
+                $role = Role::updateOrCreate(
+                    ['name' => $roleName, 'guard_name' => 'api'],
+                    ['institution_types' => $institutionTypes]
+                );
 
                 if (empty($permissions)) {
+                    $role->syncPermissions($permissions);
                     $role->forceDelete();
-                }
-
-                // sync permissions
-                foreach ($permissions as $permissionName) {
-                    if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
-                        Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
+                } else {
+                    // sync permissions
+                    foreach ($permissions as $permissionName) {
+                        if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
+                            Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
+                        }
                     }
+
+                    $role->syncPermissions($permissions);
+                    $role->update(['is_editable' => 0]);
                 }
 
-                $role->syncPermissions($permissions);
-                $role->update(['is_editable' => 0]);
             }
 
             Permission::doesntHave('roles')->delete();

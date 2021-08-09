@@ -2,28 +2,34 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Illuminate\Support\Facades\Config;
-use Satis2020\ServicePackage\Models\Account;
-use Satis2020\ServicePackage\Models\AccountType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\CategoryClient;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ServicePackage\Models\Discussion;
-use Satis2020\ServicePackage\Models\File;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Message;
-use Satis2020\ServicePackage\Models\Position;
-use Satis2020\ServicePackage\Models\Treatment;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class PurifyRolesPermissionsHoldingSeeder extends Seeder
 {
+
+    public function addInstitutionTypeToRole($roleName, $institutionType)
+    {
+        $role = Role::where("name", $roleName)->where("guard_name", "api")->first();
+
+        if (is_null($role)) {
+            return json_encode([$institutionType]);
+        }
+
+        $institution_types = is_null($role->institution_types)
+            ? []
+            : json_decode($role->institution_types);
+
+        if (!in_array($institutionType, $institution_types)) {
+            array_push($institution_types, $institutionType);
+        }
+
+        return json_encode($institution_types);
+    }
+
     /**
      * Run the database seeds.
      *
@@ -72,7 +78,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-min-fusion-percent-parameters',
                     'update-relance-parameters',
                     'update-measure-preventive-parameters',
-                    'show-faq','store-faq', 'update-faq', 'delete-faq',
+                    'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
                 ],
                 "pilot-holding" => [
@@ -119,21 +125,28 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
 
             foreach ($holdingRoles as $roleName => $permissions) {
 
-                $role = Role::where('name', $roleName)->where('guard_name', 'api')->first();
+                $institutionTypes = $this->addInstitutionTypeToRole($roleName, 'holding');
 
-                if (is_null($role)) {
-                    $role = Role::create(['name' => $roleName, 'guard_name' => 'api']);
-                }
+                $role = Role::updateOrCreate(
+                    ['name' => $roleName, 'guard_name' => 'api'],
+                    ['institution_types' => $institutionTypes]
+                );
 
-                // sync permissions
-                foreach ($permissions as $permissionName) {
-                    if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
-                        Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
+                if (empty($permissions)) {
+                    $role->syncPermissions($permissions);
+                    $role->forceDelete();
+                } else {
+                    // sync permissions
+                    foreach ($permissions as $permissionName) {
+                        if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
+                            Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
+                        }
                     }
+
+                    $role->syncPermissions($permissions);
+                    $role->update(['is_editable' => 0]);
                 }
 
-                $role->syncPermissions($permissions);
-                $role->update(['is_editable' => 0]);
             }
 
             Permission::doesntHave('roles')->delete();
