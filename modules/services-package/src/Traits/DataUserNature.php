@@ -139,6 +139,7 @@ trait DataUserNature
      * @param $table
      * @param $keyRow
      * @param $column
+     * @param bool $id
      * @return mixed
      */
     public function getIds($row, $table, $keyRow, $column)

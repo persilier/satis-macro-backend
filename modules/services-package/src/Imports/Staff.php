@@ -58,9 +58,9 @@ class Staff implements ToCollection, WithHeadingRow
             // conversions email and telephone en table
             $data = $this->explodeValueRow($row, 'email', $separator = ' ');
             $data = $this->explodeValueRow($data, 'telephone', $separator = ' ');
+            $data = $this->explodeValueRow($data, 'roles', $separator = ' ');
 
-            $validator = Validator::make($row, $this->rules());
-
+            $validator = Validator::make($row, $this->rules($row));
             // fields validations
             if ($validator->fails()) {
                 $errors_validations = [];
@@ -104,6 +104,11 @@ class Staff implements ToCollection, WithHeadingRow
 
         }
 
+    }
+
+    public function headingRow(): int
+    {
+        return 2;
     }
 
     // this function returns all validation errors after import

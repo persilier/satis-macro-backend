@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ExplodeTelephoneRules implements Rule
 {
+    protected $message;
     /**
      * Create a new rule instance.
      *

@@ -18,4 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/my')->name('my.')->group(function () {
     Route::resource('units', 'Unit\UnitController');
+
+    Route::post('/import-unit-type-unit', 'ImportExport\ImportController@importUnitTypeUnit');
 });

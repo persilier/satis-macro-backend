@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/any')->name('any.')->group(function () {
     Route::resource('units', 'Unit\UnitController');
     Route::get('/units/{institution}/staffs', 'Unit\UnitStaffController@index');
+    Route::post('/import-unit-type-unit', 'ImportExport\ImportController@importUnitTypeUnit');
 });

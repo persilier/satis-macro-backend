@@ -51,7 +51,6 @@ class NameModelRules implements Rule
             })->first();
 
         } catch (\Exception $exception) {
-
             return false;
         }
 
