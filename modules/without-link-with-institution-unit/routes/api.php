@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('/without-link')->name('without-link.')->group(function () {
     Route::resource('units', 'Unit\UnitController');
+    Route::post('/import-unit-type-unit', 'ImportExport\ImportController@importUnitTypeUnit');
 });

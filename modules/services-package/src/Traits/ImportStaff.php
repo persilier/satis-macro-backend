@@ -4,9 +4,12 @@
 namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Models\Role;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Rules\NameModelRules;
+use Satis2020\ServicePackage\Rules\RoleValidationForImport;
 
 /**
  * Trait ImportClient
@@ -16,9 +19,10 @@ trait ImportStaff
 {
 
     /**
+     * @param $row
      * @return mixed
      */
-    public function rules(){
+    public function rules($row){
 
         $rules = $this->rulesIdentite();
 
@@ -39,13 +43,14 @@ trait ImportStaff
             ];
         }
 
-
-        //$rules['other_attributes_staffs'] = 'array';
-
         if (!$this->myInstitution){
 
             $rules['institution'] = 'required|exists:institutions,name';
         }
+
+        $rules['roles'] = [
+            'required', new RoleValidationForImport($row['institution']),
+        ];
 
         return $rules;
     }
@@ -152,7 +157,7 @@ trait ImportStaff
             'identite_id' => $identite->id,
             'position_id' => $row['position'],
             'institution_id' => $row['institution'],
-            'others' => $row['other_attributes_staffs']
+            'others' => null
         ];
 
         if($this->unitRequired){
@@ -161,6 +166,16 @@ trait ImportStaff
         }
 
         $store =  Staff::create($data);
+
+        if (! User::where('username', $identite->email[0])->first()) {
+
+            $user = User::create([
+                'username' => $identite->email[0],
+                'password' => bcrypt('satis'),
+                'identite_id' => $identite->id
+            ]);
+            $user->assignRole(Role::whereIn('name', $row['roles'])->where('guard_name', 'api')->get());
+        }
 
         return $store;
     }
