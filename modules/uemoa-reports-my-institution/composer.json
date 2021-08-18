@@ -1,0 +1,34 @@
+{
+  "name": "satis2020/uemoa-reports-my-institution",
+  "description": "satis2020/uemoa-reports-my-institution est un module qui va permettre de gérer les rapports UEMOA pour toutes les institutions",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Christian AWASSI",
+      "email": "christian@dmdconsult.com"
+    },
+    {
+      "name": "Nelson AZONHOU",
+      "email": "ulrich@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\UemoaReportsMyInstitution\\": "src/",
+      "Satis2020\\UemoaReportsMyInstitution\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\UemoaReportsMyInstitution\\Providers\\UemoaReportsMyInstitutionServiceProvider"
+      ]
+    }
+  }
+}

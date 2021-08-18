@@ -1,0 +1,34 @@
+{
+  "name": "satis2020/claim-category",
+  "description": "satis2020/claim-category est un package qui va la gestion des catégories de plaintes et réclamations.",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Christian AWASSI",
+      "email": "christian@dmdconsult.com"
+    },
+    {
+      "name": "Nelson AZONHOU",
+      "email": "ulrich@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\ClaimCategory\\": "src/",
+      "Satis2020\\ClaimCategory\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\ClaimCategory\\Providers\\ClaimCategoryServiceProvider"
+      ]
+    }
+  }
+}
