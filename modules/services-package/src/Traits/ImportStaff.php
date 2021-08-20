@@ -4,6 +4,8 @@
 namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Role;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
@@ -26,9 +28,7 @@ trait ImportStaff
 
         $rules = $this->rulesIdentite();
 
-        $rules['position'] = ['required',
-            new NameModelRules(['table' => 'positions', 'column'=> 'name']),
-        ];
+        $rules['position'] = ['required'];
 
         if ($this->unitRequired){
 
@@ -85,6 +85,7 @@ trait ImportStaff
     {
         $status = true;
         $identite = false;
+        $staff = false;
         $message = '';
 
         $verifyPhone = $this->handleInArrayUnicityVerification($row['telephone'], 'identites', 'telephone');
@@ -117,14 +118,13 @@ trait ImportStaff
 
             }else{
 
-                if($this->etat){
-
+                if ($this->etat) {
+                    $identite = Identite::find($identite->id);
                     $identite->update($this->fillableIdentite($row));
-
                 }
 
-                if(!$staff = Staff::where('identite', $identite->id)->where('institution_id', $row['institution'])->first()){
-
+                if(! $staff = Staff::where('identite_id', $identite->id)->where('institution_id', $row['institution'])
+                    ->first()){
                     $staff = $this->storeStaff($row, $identite);
 
                 }else{
@@ -153,9 +153,24 @@ trait ImportStaff
      */
     protected function storeStaff($row, $identite){
 
+        $lang = app()->getLocale();
+
+        $position = DB::table('positions')->whereNull('deleted_at')->get();
+        if (!$position = $position->filter(function ($item) use ($lang, $row) {
+            $name = json_decode($item->name)->{$lang};
+            if($name === $row['position'])
+                return $item;
+        })->first()) {
+            $position = Position::create([
+                'name' => $row['position'],
+                'description' => null,
+                'others' => null
+            ]);
+        }
+
         $data = [
             'identite_id' => $identite->id,
-            'position_id' => $row['position'],
+            'position_id' => $position->id,
             'institution_id' => $row['institution'],
             'others' => null
         ];
@@ -190,8 +205,6 @@ trait ImportStaff
         $data = $this->mergeMyInstitution($data);
 
         $data = $this->getIdInstitution($data, 'institution', 'name');
-
-        $data = $this->getIds($data, 'positions', 'position', 'name');
 
         if($this->unitRequired){
 

@@ -17,7 +17,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-staff-from-any-unit')->only(['importStaffs']);
+       // $this->middleware('permission:store-staff-from-any-unit')->only(['importStaffs']);
     }
 
     /**

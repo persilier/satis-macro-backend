@@ -54,10 +54,10 @@ trait ImportIdentite
             'lastname' => 'required|string',
             'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
             'telephone' => [
-                'required', new ExplodeTelephoneRules,
+                'nullable', new ExplodeTelephoneRules,
             ],
             'email' => [
-                'required', new ExplodeEmailRules,
+                'email', new ExplodeEmailRules,
             ],
             'ville' => 'required|string',
         ];
@@ -148,7 +148,6 @@ trait ImportIdentite
      * @return array
      */
     protected function fillableIdentite($row){
-
         return [
             'firstname' => $row['firstname'],
             'lastname'  => $row['lastname'],
