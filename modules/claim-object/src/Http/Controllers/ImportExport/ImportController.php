@@ -41,7 +41,11 @@ class ImportController extends ApiController
 
         $file = $request->file('file');
 
-        $imports = new ClaimObject();
+        $institution = $this->institution();
+
+        $myInstitution = $institution->name;
+
+        $imports = new ClaimObject($myInstitution);
 
         $imports->import($file);
 

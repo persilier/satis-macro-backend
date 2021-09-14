@@ -17,11 +17,19 @@ class ClaimObject implements ToCollection, WithHeadingRow
 {
     use Importable, SkipsFailures, DataUserNature, \Satis2020\ServicePackage\Traits\ClaimObject;
 
+    private $myInstitution;
+    private $withoutInstitution;
     private $errors; // array to accumulate errors
 
-    public function __construct()
+    /***
+     * ClaimObject constructor.
+     * @param $myInstitution
+     * @param bool $withoutInstitution
+     */
+    public function __construct($myInstitution = false, $withoutInstitution = false)
     {
-
+        $this->myInstitution = $myInstitution;
+        $this->withoutInstitution = $withoutInstitution;
     }
 
     /**
@@ -39,6 +47,12 @@ class ClaimObject implements ToCollection, WithHeadingRow
         }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
+
+
+
+            if ($this->myInstitution) {
+                $row['institution'] = $this->myInstitution;
+            }
 
             $validator = Validator::make($row, $this->rulesImport());
             // fields validations
@@ -64,9 +78,6 @@ class ClaimObject implements ToCollection, WithHeadingRow
             } else {
 
                 $data = $this->getIds($row, 'claim_categories', 'category', 'name');
-
-                $data = $this->getIds($data, 'severity_levels', 'severity_level','name');
-
                 $this->storeImportClaimObject($data, $row['category']);
 
             }
@@ -75,6 +86,14 @@ class ClaimObject implements ToCollection, WithHeadingRow
 
 
 
+    }
+
+    /***
+     * @return int
+     */
+    public function headingRow(): int
+    {
+        return 2;
     }
 
     // this function returns all validation errors after import
