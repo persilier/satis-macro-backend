@@ -22,9 +22,10 @@ trait ImportIdentite
      * @param $row
      * @param $keyRow
      * @param string $separator
+     * @param bool $phone
      * @return mixed
      */
-    public function explodeValueRow($row, $keyRow, $separator = ' ')
+    public function explodeValueRow($row, $keyRow, $separator = '/', $phone = false)
     {
         if(array_key_exists($keyRow, $row)) {
             // put keywords into array
@@ -33,8 +34,14 @@ trait ImportIdentite
             $values = [];
             foreach($datas as $data)
             {
-                $values[$i] = $data;
+                $values[$i] = $phone ? preg_replace("/\s+/", "", $data) : $data;
                 $i++;
+            }
+
+            if ($keyRow === 'email') {
+                foreach ($values as $key => $value){
+                    $values[$key] = trim(strtolower($value));
+                }
             }
 
             $row[$keyRow] = $values;
@@ -57,7 +64,7 @@ trait ImportIdentite
                 'nullable', new ExplodeTelephoneRules,
             ],
             'email' => [
-                'email', new ExplodeEmailRules,
+                new ExplodeEmailRules,
             ],
             'ville' => 'required|string',
         ];

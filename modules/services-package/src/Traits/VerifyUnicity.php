@@ -33,6 +33,8 @@ trait VerifyUnicity
     {
         foreach ($values as $value) {
 
+            $value = strtolower($value);
+
             $collection = DB::table($table)
                 ->whereNull('deleted_at')
                 ->get();

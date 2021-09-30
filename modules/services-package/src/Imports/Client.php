@@ -56,8 +56,8 @@ class Client implements ToCollection, WithHeadingRow
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
             // conversions email and telephone en table
-            $data = $this->explodeValueRow($row, 'email', $separator = ' ');
-            $data = $this->explodeValueRow($data, 'telephone', $separator = ' ');
+            $data = $this->explodeValueRow($row, 'email', $separator = '/');
+            $data = $this->explodeValueRow($data, 'telephone', $separator = '/', true);
 
             $validator = Validator::make($row, $this->rules());
 

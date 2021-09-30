@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 /**
  * Class ExplodeEmailRules
@@ -31,8 +32,9 @@ class ExplodeEmailRules implements Rule
      */
     public function passes($attribute, $value)
     {
+        $value = explode('/', $value);
 
-        $value = explode(' ', $value);
+        $value = array_map('strtolower', $value);
 
         $collection = collect([]);
 
@@ -42,6 +44,8 @@ class ExplodeEmailRules implements Rule
         }
 
         foreach ($value as $email) {
+
+            $email = trim($email);
 
             if($collection->search($email, true) !== false){
                 $this->message = $email." is sent more than once";

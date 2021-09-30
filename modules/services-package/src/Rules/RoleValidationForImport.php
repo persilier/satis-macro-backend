@@ -29,7 +29,7 @@ class RoleValidationForImport implements Rule
      */
     public function passes($attribute, $value)
     {
-        $value = explode(' ', $value);
+        $value = explode('/', $value);
 
         if(!is_array($value)){
             $this->message = " :attribute is not an array ";

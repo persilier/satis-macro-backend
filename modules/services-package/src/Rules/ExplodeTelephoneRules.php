@@ -27,7 +27,7 @@ class ExplodeTelephoneRules implements Rule
      */
     public function passes($attribute, $value)
     {
-        $value = explode(' ', $value);
+        $value = explode('/', $value);
 
         $collection = collect([]);
 

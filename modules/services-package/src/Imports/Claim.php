@@ -71,8 +71,8 @@ class Claim implements ToCollection, WithHeadingRow
                 }
             }
             // conversions email and telephone en table
-            $data = $this->explodeValueRow($row, 'email', $separator = ' ');
-            $data = $this->explodeValueRow($data, 'telephone', $separator = ' ');
+            $data = $this->explodeValueRow($row, 'email', $separator = '/');
+            $data = $this->explodeValueRow($data, 'telephone', $separator = '/', true);
 
             $validator = Validator::make($row, $this->rules($row, $this->with_client, $this->with_relationship, $this->with_unit));
             // fields validations
