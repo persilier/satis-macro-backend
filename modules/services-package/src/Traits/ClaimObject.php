@@ -118,7 +118,7 @@ trait ClaimObject
             ]);
         }
 
-        if (isset($row['treatment_units']) && $treatmentUnits = explode("/",$row['treatment_units'])) {
+        if (isset($row['treatment_units']) && $treatmentUnits = explode("/", $row['treatment_units'])) {
             foreach ($treatmentUnits as $unitName) {
 
                 if (!$unit = Unit::where('name->'.$lang, $unitName)->where('institution_id', $institutionId)->first()) {

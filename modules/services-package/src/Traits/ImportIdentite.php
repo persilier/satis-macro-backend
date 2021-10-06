@@ -66,7 +66,7 @@ trait ImportIdentite
             'email' => [
                 new ExplodeEmailRules,
             ],
-            'ville' => 'required|string',
+            'ville' => 'nullable|string',
         ];
 
         return $rules;
