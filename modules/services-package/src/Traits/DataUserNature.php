@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -217,6 +218,22 @@ trait DataUserNature
         }
 
         return $libelle;
+    }
+
+    protected function base64SaveImg($base64_img, $link_store, $add_name = "")
+    {
+        $extension = explode('/', mime_content_type($base64_img))[1];
+        $safeName = $add_name . time() . '.' . $extension;
+        $base64_image = $base64_img;
+        $data = substr($base64_image, strpos($base64_image, ',') + 1);
+        $data = base64_decode($data);
+        $path = public_path("storage") . "/" . $link_store;
+        if (!file_exists($path)) {
+            File::makeDirectory($path, $mode = 0777, true, true);
+        }
+        file_put_contents($path . $safeName, $data);
+
+        return ["ext" => $extension, "link" =>  "/storage/" . $link_store . $safeName];
     }
 
 

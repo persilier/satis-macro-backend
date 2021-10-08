@@ -42,11 +42,9 @@ class ClaimCategoryController extends ApiController
      */
     public function store(Request $request)
     {
-
         $this->validate($request, $this->rules());
         $claimCategory = ClaimCategory::create($request->only(['name', 'description', 'others']));
         return response()->json($claimCategory, 201);
-
     }
 
 

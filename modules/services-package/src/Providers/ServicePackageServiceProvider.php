@@ -196,7 +196,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router = $this->app['router'];
         $router->aliasMiddleware('transform.input', \Satis2020\ServicePackage\Http\Middleware\TransformInput::class);
         $router->aliasMiddleware('set.language', \Satis2020\ServicePackage\Http\Middleware\SetLanguage::class);
-        $router->aliasMiddleware('client-from-my-institution.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
+//        $router->aliasMiddleware('client-from-my-institution.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
         $router->aliasMiddleware('auth', \Satis2020\ServicePackage\Http\Middleware\Authenticate::class);
         $router->aliasMiddleware('status.account', \Satis2020\ServicePackage\Http\Middleware\CheckStatusAccountUser::class);
         $router->aliasMiddleware('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
@@ -205,6 +205,7 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router->aliasMiddleware('verification', \Satis2020\ServicePackage\Http\Middleware\Verification::class);
         $router->aliasMiddleware('mystaff', \Satis2020\ServicePackage\Http\Middleware\MyStaff::class);
         $router->aliasMiddleware('active.pilot', \Satis2020\ServicePackage\Http\Middleware\ActivePilot::class);
+        $router->aliasMiddleware('client.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
     }
 
     /**
