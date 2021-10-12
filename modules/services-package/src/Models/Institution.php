@@ -143,9 +143,9 @@ class Institution extends Model
         return $this->hasOne(InstitutionMessageApi::class);
     }
 
-    public function emailClaimConfigurations()
+    public function emailClaimConfiguration()
     {
-        return $this->hasMany(EmailClaimConfiguration::class);
+        return $this->hasOne(EmailClaimConfiguration::class);
     }
 
 }

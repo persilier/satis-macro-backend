@@ -36,12 +36,9 @@ class ConfigurationsController extends ApiController
     }
 
 
-    public function edit($institutionId)
+    public function edit()
     {
-        return response()->json([
-            "institutions" => Institution::all(),
-            "email_configuration" => $this->editConfiguration($institutionId)
-        ], 200);
+        return response()->json(Institution::with('emailClaimConfiguration')->get(), 200);
     }
 
 }
