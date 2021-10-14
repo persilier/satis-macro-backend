@@ -166,8 +166,10 @@ class DashboardController extends ApiController
                         $this->incrementTotalRegistered($claim, $channelsUse->get($claim->requestChannel->name)));
 
                     // channelsUse
-                    $claimObjectsUse->put($claim->claimObject->name,
-                        $this->incrementTotalRegistered($claim, $claimObjectsUse->get($claim->claimObject->name)));
+                    if (!is_null($claim->claimObject)) {
+                        $claimObjectsUse->put($claim->claimObject->name,
+                            $this->incrementTotalRegistered($claim, $claimObjectsUse->get($claim->claimObject->name)));
+                    }
 
                     // pointOfServicesTargeted
                     if (!is_null($claim->unitTargeted)) {

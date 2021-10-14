@@ -90,10 +90,20 @@ trait Dashboard
 
         // myInstitution
         try {
-            if (array_key_exists('myInstitution', $subKeys) && $claim->createdBy->institution_id == $this->institution()->id) {
+            if (
+                array_key_exists('myInstitution', $subKeys)
+                && ($claim->createdBy->institution_id == $this->institution()->id)
+            ) {
                 $subKeys['myInstitution']++;
             }
         } catch (\Exception $exception) {
+            if (
+                array_key_exists('myInstitution', $subKeys)
+                && is_null($claim->createdBy)
+                && ($claim->institution_targeted_id == $this->institution()->id && $claim->request_channel_slug == 'email')
+            ) {
+                $subKeys['myInstitution']++;
+            }
         }
 
         // myUnit
