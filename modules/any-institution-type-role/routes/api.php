@@ -9,5 +9,5 @@ Route::prefix('/any')->name('any.')->group(function () {
      */
     Route::resource('roles', 'Role\RoleController');
     Route::post('/roles/permissions/list', 'Permission\PermissionController@index')->name('roles.permissions.index');
-    Route::get('/roles/add-profil/import', 'ImportExport\AddRolesToProfilsController@store')->name('roles.add-roles-profils.store');
+    Route::post('/roles/add-profil/import', 'ImportExport\AddRolesToProfilsController@store')->name('roles.add-roles-profils.store');
 });

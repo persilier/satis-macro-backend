@@ -56,14 +56,11 @@ class AddProfilToRole implements ToCollection, WithHeadingRow
                 foreach ($validator->errors()->messages() as $messages) {
 
                     foreach ($messages as $error) {
-
                         $errors_validations[] = $error;
-
                     }
                 }
 
                 $this->errors[$key] = [
-
                     'error' => $errors_validations,
                     'data' => $row
                 ];

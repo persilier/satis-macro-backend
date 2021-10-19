@@ -10,6 +10,7 @@ use Satis2020\ServicePackage\Models\Role;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Rules\AddProfilToRoleValidation;
 use Satis2020\ServicePackage\Rules\NameModelRules;
 use Satis2020\ServicePackage\Rules\RoleValidationForImport;
 
@@ -61,7 +62,7 @@ trait ImportStaff
 
         return [
             "profil" => 'required|exists:roles,name',
-            "roles" =>  'required',
+            "roles" =>  ['required', new AddProfilToRoleValidation()]
         ];
     }
 
