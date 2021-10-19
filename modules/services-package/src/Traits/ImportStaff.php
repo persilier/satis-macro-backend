@@ -56,6 +56,18 @@ trait ImportStaff
     }
 
 
+
+    public function rulesAddProfilToRole(){
+
+        return [
+            "profil" => 'required|exists:roles,name',
+            "roles" =>  'required|array',
+            "roles.*" =>  'required|exists:roles,name',
+        ];
+    }
+
+
+
     /**
      * @param $row
      * @return array|bool
@@ -212,6 +224,13 @@ trait ImportStaff
         }
 
         return $data;
+    }
+
+
+    protected function addProfils($data)
+    {
+        $users = User::role($data['profil'])->get();
+        $users->syncRoles($data['roles']);
     }
 
 
