@@ -229,8 +229,13 @@ trait ImportStaff
 
     protected function addProfils($data)
     {
-        $users = User::role($data['profil'])->get();
-        $users->syncRoles($data['roles']);
+        try {
+            $users = User::role($data['profil'])->get();
+            $users->syncRoles($data['roles']);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
 
