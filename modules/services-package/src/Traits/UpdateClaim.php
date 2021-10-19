@@ -233,6 +233,8 @@ trait UpdateClaim
             ])->where(function ($query) use ($institution_id) {
                 $query->whereHas('createdBy', function ($q) use ($institution_id) {
                     $q->where('institution_id', $institution_id);
+                })->orWhereDoesnt('createdBy' , function ($p) use ($institution_id) {
+                    $p->where('institution_targeted_id', $institution_id);
                 });
             })->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
@@ -273,13 +275,14 @@ trait UpdateClaim
 
     protected function getAllRequirements($claimObject)
     {
-
-        $requirements = $claimObject->requirements->pluck('name');
         $rules = collect([]);
 
-        foreach ($requirements as $requirement) {
-            $rules->put($requirement, 'required');
-        }
+        try {
+            $requirements = $claimObject->requirements->pluck('name');
+            foreach ($requirements as $requirement) {
+                $rules->put($requirement, 'required');
+            }
+        } catch (\Exception $exception){}
 
         return $rules;
 
