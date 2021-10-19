@@ -152,7 +152,8 @@ trait Notification
             ])
             ->get()
             ->filter(function ($claim, $key) use ($institutionId) {
-                return $claim->createdBy->institution_id == $institutionId;
+                return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institutionId :
+                    $claim->createdBy->institution_id == $institutionId;
             })
             ->count();
 
