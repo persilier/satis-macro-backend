@@ -135,9 +135,8 @@ trait UpdateClaim
             }
 
         } catch (\Exception $exception) {
-
-            throw new CustomException("Can't retrieve the claimObject requirements");
-
+            if ($claim->createdBy && $claim->request_channel_slug !== "email")
+                throw new CustomException("Can't retrieve the claimObject requirements");
         }
 
         return $rules;
@@ -168,6 +167,8 @@ trait UpdateClaim
             ])->where(function ($query) use ($institutionId) {
                 $query->whereHas('createdBy', function ($q) use ($institutionId) {
                     $q->where('institution_id', $institutionId);
+                })->orWhereDoesnt('createdBy', function ($p) use ($institutionId) {
+                    $p->where('institution_targeted_id', $institutionId);
                 });
             })->where('status', $status)->get();
 
@@ -367,6 +368,8 @@ trait UpdateClaim
             $claim = Claim::where(function ($query) use ($institutionId) {
                 $query->whereHas('createdBy', function ($q) use ($institutionId) {
                     $q->where('institution_id', $institutionId);
+                })->orWhereDoesnt('createdBy', function ($p) use ($institutionId) {
+                    $p->where('institution_targeted_id', $institutionId);
                 });
             })->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
@@ -449,8 +452,14 @@ trait UpdateClaim
         $claim->claimer->update($request->only($dataIdentite));
 
         // send notification to pilot
-        if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
-            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+        if (is_null($claim->createdBy) && $claim->request_channel_slug === 'email') {
+            $institution = $claim->institutionTargeted;
+        }  else {
+            $institution = $claim->createdBy->institution;
+        }
+
+        if (!is_null($this->getInstitutionPilot($institution))) {
+            $this->getInstitutionPilot($institution)->notify(new RegisterAClaim($claim));
         }
 
         return $claim;

@@ -69,7 +69,6 @@ class AddProfilToRole implements ToCollection, WithHeadingRow
                 ];
 
             } else {
-
                 if (! $this->addProfils($data)) {
                     $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                     $this->errors[$key]['conflits']['role'] = "Impossible d'associer des rôles à ce profil.";

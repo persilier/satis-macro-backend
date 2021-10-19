@@ -61,8 +61,7 @@ trait ImportStaff
 
         return [
             "profil" => 'required|exists:roles,name',
-            "roles" =>  'required|array',
-            "roles.*" =>  'required|exists:roles,name',
+            "roles" =>  'required',
         ];
     }
 
@@ -230,8 +229,12 @@ trait ImportStaff
     protected function addProfils($data)
     {
         try {
-            $users = User::role($data['profil'])->get();
-            $users->syncRoles($data['roles']);
+            $users = User::whereHas('roles', function ($q) use ($data) {
+                $q->where('name', $data['profil']);
+            })->get();
+            foreach ($users as $user) {
+                $user->assignRole(Role::whereIn('name', $data['roles'])->get());
+            }
             return true;
         } catch (\Exception $exception) {
             return false;
