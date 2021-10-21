@@ -436,12 +436,13 @@ trait UpdateClaim
             'account_targeted_id',
             'relationship_id',
             'unit_targeted_id',
-            'status',
+            'time_limit',
             'completed_by',
             'completed_at'
         ];
 
-        $request->merge(['status' => 'full', 'completed_by' => $userId, 'completed_at' => Carbon::now()]);
+        $request->merge(['status' => 'full', 'completed_by' => $userId, 'completed_at' => Carbon::now(),
+            'time_limit'=> ClaimObject::findOrFail($request->claim_object_id)->id]);
 
 
         $claim->update($request->only($data));

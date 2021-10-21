@@ -33,7 +33,7 @@ trait ClaimObject
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
                 'severity_levels_id' => 'exists:severity_levels,id',
-                'time_limit' => 'required|integer',
+                'time_limit' => 'required|integer|min:0',
                 'others' => 'array',
             ];
 
@@ -45,7 +45,7 @@ trait ClaimObject
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
                 'severity_levels_id' => 'exists:severity_levels,id',
-                'time_limit' => 'required|integer',
+                'time_limit' => 'required|integer|min:0',
                 'others' => 'array',
             ];
         }
@@ -64,7 +64,7 @@ trait ClaimObject
             'description' => 'nullable',
             'severity_level' => 'required|exists:severity_levels,status',
             'treatment_units' => 'nullable',
-            'time_limit' => 'required|integer',
+            'time_limit' => 'required|integer|min:0',
         ];
 
          if (!$this->withoutInstitution) {
