@@ -57,7 +57,8 @@ class RevokeClaimController extends ApiController
         $claim->claimer->notify(new RevokeClaimClaimerNotification($claim));
 
         // notify the pilot
-        $pilotIdentity = $this->getInstitutionPilot($claim->createdBy->institution);
+        $pilotIdentity = $this->getInstitutionPilot(is_null($claim->createdBy) ? $claim->institutionTargeted :
+            $claim->createdBy->institution);
         if (!is_null($pilotIdentity))
             $pilotIdentity->notify(new RevokeClaimStaffNotification($claim));
 

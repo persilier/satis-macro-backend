@@ -55,7 +55,7 @@ class UnfoundedClaimController extends ApiController
 
         // return unauthorized when the user have not the right to treat this claim
         if (!(
-            ($claim->createdBy->institution_id == $institution->id && $claim->status == 'full')
+            ((is_null($claim->createdBy) ? $claim->institution_targeted_id : $claim->createdBy->institution_id) == $institution->id && $claim->status == 'full')
             || ($claim->institution_targeted_id == $institution->id && $claim->status == 'transferred_to_targeted_institution')
         )) {
             return $this->errorResponse("Unauthorized", 401);

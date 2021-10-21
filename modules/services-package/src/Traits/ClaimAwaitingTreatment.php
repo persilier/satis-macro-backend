@@ -124,7 +124,7 @@ trait ClaimAwaitingTreatment
             $institution = Institution::find($claim->institution_targeted_id);
         } else {
             $claim->update(['status' => 'full']);
-            $institution = $claim->createdBy->institution;
+            $institution = is_null($claim->createdBy) ? $claim->institutionTargeted : $claim->createdBy->institution;
         }
 
         if (!is_null($this->getInstitutionPilot($institution))) {

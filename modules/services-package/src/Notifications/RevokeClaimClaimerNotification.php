@@ -86,9 +86,12 @@ class RevokeClaimClaimerNotification extends Notification implements ShouldQueue
     public function toMessage($notifiable)
     {
         return [
-            'to' => $this->claim->createdBy->institution->iso_code.$notifiable->telephone[0],
+            'to' => is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->iso_code
+                .$notifiable->telephone[0] : $this->claim->createdBy->institution->iso_code.$notifiable->telephone[0],
             'text' => $this->event->text,
-            'institutionMessageApi' => $this->claim->createdBy->institution->institutionMessageApi
+            'institutionMessageApi' =>  is_null($this->claim->createdBy) ?
+                $this->claim->institutionTargeted->institutionMessageApi :
+                $this->claim->createdBy->institution->institutionMessageApi
         ];
     }
 }

@@ -164,13 +164,18 @@ trait UpdateClaim
                 'createdBy.identite',
                 'completedBy.identite',
                 'files'
-            ])->where(function ($query) use ($institutionId) {
-                $query->whereHas('createdBy', function ($q) use ($institutionId) {
-                    $q->where('institution_id', $institutionId);
-                })->orWhereDoesnt('createdBy', function ($p) use ($institutionId) {
-                    $p->where('institution_targeted_id', $institutionId);
-                });
-            })->where('status', $status)->get();
+            ])->where('status', $status)->get()->filter(function ($claim) use ($institutionId) {
+                return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institutionId :
+                    $claim->createdBy->institution_id == $institutionId;
+            })->values();
+
+//            ->where(function ($query) use ($institutionId) {
+//                $query->whereHas('createdBy', function ($q) use ($institutionId) {
+//                    $q->where('institution_id', $institutionId);
+//                })->orWhereDoesntHave('createdBy', function ($p) use ($query, $institutionId) {
+//                    $query->where('institution_targeted_id', $institutionId);
+//                });
+//            })
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
@@ -231,13 +236,19 @@ trait UpdateClaim
                 'createdBy.identite',
                 'completedBy.identite',
                 'files'
-            ])->where(function ($query) use ($institution_id) {
-                $query->whereHas('createdBy', function ($q) use ($institution_id) {
-                    $q->where('institution_id', $institution_id);
-                })->orWhereDoesnt('createdBy' , function ($p) use ($institution_id) {
-                    $p->where('institution_targeted_id', $institution_id);
-                });
-            })->where('status', $status)->findOrFail($claimId);
+            ])->where('status', $status)->get()->filter(function ($claim) use ($institution_id) {
+                return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institution_id :
+                    $claim->createdBy->institution_id == $institution_id;
+            })->values()->firstWhere('id', $claimId);
+
+//            ->where(function ($query) use ($institution_id) {
+//                $query->whereHas('createdBy', function ($q) use ($institution_id) {
+//                    $q->where('institution_id', $institution_id);
+//                })->orWhereDoesntHave('createdBy' , function ($p) use ($query, $institution_id) {
+//                    $query->where('institution_targeted_id', $institution_id);
+//                });
+//            })->findOrFail($claimId)
+
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
         }
@@ -365,13 +376,10 @@ trait UpdateClaim
     protected function getClaimUpdate($institutionId, $claimId, $status = 'full')
     {
         try {
-            $claim = Claim::where(function ($query) use ($institutionId) {
-                $query->whereHas('createdBy', function ($q) use ($institutionId) {
-                    $q->where('institution_id', $institutionId);
-                })->orWhereDoesnt('createdBy', function ($p) use ($institutionId) {
-                    $p->where('institution_targeted_id', $institutionId);
-                });
-            })->where('status', $status)->findOrFail($claimId);
+            $claim = Claim::where('status', $status)->get()->filter(function ($claim) use ($institutionId) {
+                return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institutionId :
+                    $claim->createdBy->institution_id == $institutionId;
+            })->values()->firstWhere('id', $claimId);;
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation.");
         }

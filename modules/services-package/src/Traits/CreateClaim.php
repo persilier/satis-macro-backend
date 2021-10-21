@@ -345,7 +345,8 @@ trait CreateClaim
         // check if the claimObject related to the claim have a time_limit = 1 and send a notification to the active pilot
         if (!is_null($claim->claimObject)) {
             if ($claim->claimObject->time_limit == 1) {
-                $this->getInstitutionPilot($claim->createdBy->institution)->notify(new ReminderBeforeDeadline($claim, $claim->claimObject->time_limit));
+                $this->getInstitutionPilot(is_null($claim->createdBy) ? $claim->institutionTargeted :
+                    $claim->createdBy->institution)->notify(new ReminderBeforeDeadline($claim, $claim->claimObject->time_limit));
             }
         }
     }
@@ -355,8 +356,10 @@ trait CreateClaim
      */
     protected function recurrenceNotification($claim)
     {
-        if($this->canSendRecurrenceNotification($claim->createdBy->institution_id)){
-            $this->getInstitutionPilot($claim->createdBy->institution)->notify(new Recurrence($claim));
+        if($this->canSendRecurrenceNotification(is_null($claim->createdBy) ? $claim->institution_targeted_id :
+            $claim->createdBy->institution_id)){
+            $this->getInstitutionPilot(is_null($claim->createdBy) ? $claim->institutionTargeted :
+                $claim->createdBy->institution)->notify(new Recurrence($claim));
         }
     }
 
