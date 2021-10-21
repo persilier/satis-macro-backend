@@ -442,7 +442,7 @@ trait UpdateClaim
         ];
 
         $request->merge(['status' => 'full', 'completed_by' => $userId, 'completed_at' => Carbon::now(),
-            'time_limit'=> ClaimObject::findOrFail($request->claim_object_id)->id]);
+            'time_limit' => ClaimObject::findOrFail($request->claim_object_id)->time_limit]);
 
 
         $claim->update($request->only($data));
