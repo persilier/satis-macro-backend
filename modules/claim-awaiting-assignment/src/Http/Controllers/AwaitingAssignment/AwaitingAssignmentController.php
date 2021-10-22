@@ -36,7 +36,6 @@ class AwaitingAssignmentController extends ApiController
      */
     public function index()
     {
-
         $claims = $this->getClaimsQuery()->get()->map(function ($item, $key) {
 
             $item = Claim::with($this->getRelations())->find($item->id);

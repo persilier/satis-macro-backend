@@ -13,7 +13,9 @@ trait AwaitingAssignment
     protected function getClaimsQuery()
     {
         $whereRawConditionVariables = [];
-        $whereRawCondition = '(`staff`.`institution_id` = ? and `claims`.`status` = ?)';
+        $whereRawCondition = '( ';
+
+        $whereRawCondition .= '(`staff`.`institution_id` = ? and `claims`.`status` = ?)';
         $whereRawConditionVariables[] = $this->institution()->id;
         $whereRawConditionVariables[] = "full";
 
@@ -24,6 +26,8 @@ trait AwaitingAssignment
         $whereRawCondition .= ' or (`claims`.`status`= ? and `claims`.`created_by` is null and `claims`.`institution_targeted_id`= ?)';
         $whereRawConditionVariables[] = "full";
         $whereRawConditionVariables[] = $this->institution()->id;
+
+        $whereRawCondition .= ' )';
 
         return DB::table('claims')
             ->select('claims.*')
