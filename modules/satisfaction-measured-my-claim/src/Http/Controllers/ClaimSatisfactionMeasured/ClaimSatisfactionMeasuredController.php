@@ -75,7 +75,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
             'note' => $request->note
         ]);
 
-        $claim->update(['status' => 'archived']);
+        $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
 
         return response()->json($claim, 200);
     }

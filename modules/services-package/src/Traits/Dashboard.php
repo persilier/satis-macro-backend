@@ -142,6 +142,15 @@ trait Dashboard
                 $subKeys['myInstitution']++;
             }
         } catch (\Exception $exception) {
+
+            if (
+                array_key_exists('myInstitution', $subKeys)
+                && $claim->status == 'full'
+                && is_null($claim->createdBy)
+                && $claim->institution_targeted_id == $this->institution()->id
+            ) {
+                $subKeys['myInstitution']++;
+            }
         }
 
         // myUnit

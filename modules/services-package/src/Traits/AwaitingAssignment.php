@@ -12,15 +12,25 @@ trait AwaitingAssignment
 {
     protected function getClaimsQuery()
     {
+        $whereRawConditionVariables = [];
+        $whereRawCondition = '(`staff`.`institution_id` = ? and `claims`.`status` = ?)';
+        $whereRawConditionVariables[] = $this->institution()->id;
+        $whereRawConditionVariables[] = "full";
+
+        $whereRawCondition .= ' or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?)';
+        $whereRawConditionVariables[] = $this->institution()->id;
+        $whereRawConditionVariables[] = "transferred_to_targeted_institution";
+
+        $whereRawCondition .= ' or (`claims`.`status`= ? and `claims`.`created_by` is null and `claims`.`institution_targeted_id`= ?)';
+        $whereRawConditionVariables[] = "full";
+        $whereRawConditionVariables[] = $this->institution()->id;
+
         return DB::table('claims')
             ->select('claims.*')
-            ->join('staff', function ($join) {
+            ->leftJoin('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
             })
-            ->whereRaw(
-                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
-                [$this->institution()->id, 'full', $this->institution()->id, 'transferred_to_targeted_institution']
-            )
+            ->whereRaw($whereRawCondition, $whereRawConditionVariables)
             ->whereNull('claims.deleted_at')
             ->whereNull('claims.revoked_at');
     }

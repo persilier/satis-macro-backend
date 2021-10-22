@@ -424,7 +424,7 @@ trait UemoaReports{
      */
     public function agence($claim){
 
-        return $claim->unitTargeted ? $claim->unitTargeted->name : ($claim->createdBy->unit ? $claim->createdBy->unit->name : '');
+        return optional($claim->unitTargeted)->name ?: optional(optional($claim->createdBy)->unit)->name;
     }
 
 
