@@ -34,7 +34,7 @@ trait ClaimAwaitingTreatment
     {
         return DB::table('claims')
             ->select('claims.*')
-            ->join('staff', function ($join) {
+            ->leftJoin('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
             })
             ->join('treatments', function ($join) {

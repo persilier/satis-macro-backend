@@ -14,6 +14,7 @@ use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Message;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
@@ -28,7 +29,15 @@ class Controller extends BaseController
 
     public function index()
     {
-        $claim = Claim::findOrFail("4a6f1d6d-85d6-4349-a28b-32116dde7806");
+        $claim = Claim::findOrFail("a63dfbec-f8ef-4bb5-9f97-2933ab3b4073");
+
+        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+        $notifiable =$this->getInstitutionPilot($claim->createdBy->institution);
+
+        dd($this->getFeedBackChannels($notifiable->staff));
+
+        dump($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high'));
+        dd($this->getInstitutionPilot($claim->createdBy->institution));
 
         $identities = $this->getStaffToReviveIdentities($claim);
 
