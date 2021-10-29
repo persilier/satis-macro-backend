@@ -24,10 +24,8 @@ class RelanceController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-
         $this->middleware('permission:any-send-relance')->only(['sendAnyRelance']);
         $this->middleware('permission:my-send-relance')->only(['sendMyRelance']);
-
     }
 
 
@@ -43,7 +41,6 @@ class RelanceController extends ApiController
         $my = false;
         RelanceMail::dispatch($request, $claim, $my);
         return response()->json($claim, 200);
-
     }
 
 

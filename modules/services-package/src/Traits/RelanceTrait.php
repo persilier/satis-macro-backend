@@ -62,7 +62,12 @@ trait RelanceTrait
 
             $claim = $this->getOneRelance($claimId, false, $my);
             try {
-                $identite = $this->getInstitutionPilot($claim->createdBy->identite->staff->institution);
+                if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+                    $institution = $claim->institutionTargeted;
+                } else {
+                    $institution = $claim->createdBy->identite->staff->institution;
+                }
+                $identite = $this->getInstitutionPilot($institution);
             } catch (\Exception $exception) {
                 $identite = null;
             }
@@ -96,10 +101,8 @@ trait RelanceTrait
         }
 
         return [
-
             'identite' => $identite,
             'claim' => $claim
-
         ];
 
     }
@@ -113,17 +116,12 @@ trait RelanceTrait
     {
 
         if ($identite instanceof Collection) {
-
             $identite->each(function ($item) use ($claim) {
-
                 $this->dispatchRelance($item, $claim);
-
             });
 
         } else {
-
             $this->dispatchRelance($identite, $claim);
-
         }
 
     }
@@ -131,9 +129,7 @@ trait RelanceTrait
 
     protected function dispatchRelance($identite, $claim)
     {
-
         $mail = new RelanceMail($identite, $claim);
-
         return Mail::to($identite->email[0])->send($mail);
     }
 
@@ -142,11 +138,9 @@ trait RelanceTrait
      */
     protected function rulesAnyMyRelanceSend()
     {
-
         return [
             'comment' => 'required|string',
         ];
-
     }
 
 

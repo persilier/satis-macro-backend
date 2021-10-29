@@ -195,12 +195,15 @@ trait Notification
         // On récupère l'identité du pilot de l'institution qui a créé la réclamation lorsque la réclamation est incomplete|full
         if (in_array($claim->status, $statusAssociatedToCreatedByPilot)) {
 
-            if (!is_null($claim->createdBy)) {
-                $identity = $this->getInstitutionPilot($claim->createdBy->institution);
-                if (!is_null($identity))
-                    $identities[$identity->id] = $identity;
+            if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+                $institution = $claim->institutionTargeted;
+            } else {
+                $institution = $claim->createdBy->institution;
             }
 
+            $identity = $this->getInstitutionPilot($institution);
+            if (!is_null($identity))
+                $identities[$identity->id] = $identity;
         }
 
         // On récupère l'identité du pilot de l'institution ciblée par la réclamation lorsque la réclamation est transferred_to_targeted_institution
@@ -223,8 +226,13 @@ trait Notification
 
                 if (!is_null($claim->activeTreatment->transferred_to_targeted_institution_at)) {
                     $institution = $claim->institutionTargeted;
-                } elseif (!is_null($claim->createdBy)) {
-                    $institution = $claim->createdBy->institution;
+                } else {
+
+                    if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+                        $institution = $claim->institutionTargeted;
+                    } else {
+                        $institution = $claim->createdBy->institution;
+                    }
                 }
 
                 $identity = $this->getInstitutionPilot($institution);
@@ -276,6 +284,12 @@ trait Notification
 
                 if (!is_null($claim->createdBy->identite))
                     $identities[$claim->createdBy->identite->id] = $claim->createdBy->identite;
+
+            } else {
+
+                $identity = $this->getInstitutionPilot($claim->institutionTargeted);
+                if (!is_null($identity))
+                    $identities[$identity->id] = $identity;
             }
 
         }

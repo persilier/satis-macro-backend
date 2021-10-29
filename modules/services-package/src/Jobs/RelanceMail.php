@@ -48,9 +48,7 @@ class RelanceMail implements ShouldQueue
         $resultats = $this->treatmentAnyMyRelances($this->claim->id, $this->claim->status, $this->my);
 
         if(!is_null($resultats['identite'])){
-
              $this->notifMailSendDispach($resultats['identite'], $resultats['claim']);
-
         }
 
         return true;
