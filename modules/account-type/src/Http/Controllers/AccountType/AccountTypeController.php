@@ -47,7 +47,7 @@ class AccountTypeController extends ApiController
     {
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('account_types', 'name')],
-            'description' => 'string',
+            'description' => 'nullable|string',
         ];
 
         $this->validate($request, $rules);
@@ -77,7 +77,7 @@ class AccountTypeController extends ApiController
     {
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('account_types', 'name', 'id', "{$accountType->id}")],
-            'description' => 'string',
+            'description' => 'nullable|string',
         ];
         $this->validate($request, $rules);
 
