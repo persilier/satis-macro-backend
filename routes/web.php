@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('mail', 'Controller@index');
-Route::get('download/{file}', 'Controller@download');
-Route::get('download-uemoa-reports/{file}', 'Controller@downloadExcelReports');
-Route::get('download-excel/{file}', 'Controller@downloadExcels');
-Route::get('new-claim-reference/{institution}', 'Controller@claimReference');
+Route::get('mail', 'Controllers@index');
+Route::get('download/{file}', 'Controllers@download');
+Route::get('download-uemoa-reports/{file}', 'Controllers@downloadExcelReports');
+Route::get('download-excel/{file}', 'Controllers@downloadExcels');
+Route::get('new-claim-reference/{institution}', 'Controllers@claimReference');
