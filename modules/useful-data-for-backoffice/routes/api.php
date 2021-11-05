@@ -12,6 +12,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::prefix('/backoffice')->name('backoffice.')->group(function () {
+Route::prefix('/useful-data')->name('backoffice.')->group(function () {
     Route::get('/claim/create', 'RetrieveDataForCreateClaim\RetrieveDataController@create')->name('claim.create');
 });
