@@ -195,7 +195,7 @@ trait Notification
         // On récupère l'identité du pilot de l'institution qui a créé la réclamation lorsque la réclamation est incomplete|full
         if (in_array($claim->status, $statusAssociatedToCreatedByPilot)) {
 
-            if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+            if (is_null($claim->createdBy)) {
                 $institution = $claim->institutionTargeted;
             } else {
                 $institution = $claim->createdBy->institution;
@@ -228,7 +228,7 @@ trait Notification
                     $institution = $claim->institutionTargeted;
                 } else {
 
-                    if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+                    if (is_null($claim->createdBy)) {
                         $institution = $claim->institutionTargeted;
                     } else {
                         $institution = $claim->createdBy->institution;

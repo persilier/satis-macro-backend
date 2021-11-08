@@ -135,7 +135,7 @@ trait UpdateClaim
             }
 
         } catch (\Exception $exception) {
-            if ($claim->createdBy && $claim->request_channel_slug !== "email")
+            if ($claim->createdBy)
                 throw new CustomException("Can't retrieve the claimObject requirements");
         }
 
@@ -168,14 +168,6 @@ trait UpdateClaim
                 return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institutionId :
                     $claim->createdBy->institution_id == $institutionId;
             })->values();
-
-//            ->where(function ($query) use ($institutionId) {
-//                $query->whereHas('createdBy', function ($q) use ($institutionId) {
-//                    $q->where('institution_id', $institutionId);
-//                })->orWhereDoesntHave('createdBy', function ($p) use ($query, $institutionId) {
-//                    $query->where('institution_targeted_id', $institutionId);
-//                });
-//            })
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer les listes des réclamations");
@@ -240,14 +232,6 @@ trait UpdateClaim
                 return is_null($claim->createdBy) ? $claim->institution_targeted_id == $institution_id :
                     $claim->createdBy->institution_id == $institution_id;
             })->values()->firstWhere('id', $claimId);
-
-//            ->where(function ($query) use ($institution_id) {
-//                $query->whereHas('createdBy', function ($q) use ($institution_id) {
-//                    $q->where('institution_id', $institution_id);
-//                })->orWhereDoesntHave('createdBy' , function ($p) use ($query, $institution_id) {
-//                    $query->where('institution_targeted_id', $institution_id);
-//                });
-//            })->findOrFail($claimId)
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
@@ -461,7 +445,7 @@ trait UpdateClaim
         $claim->claimer->update($request->only($dataIdentite));
 
         // send notification to pilot
-        if (is_null($claim->createdBy) && $claim->request_channel_slug === 'email') {
+        if (is_null($claim->createdBy)) {
             $institution = $claim->institutionTargeted;
         }  else {
             $institution = $claim->createdBy->institution;

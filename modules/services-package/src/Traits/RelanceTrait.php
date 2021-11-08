@@ -62,7 +62,7 @@ trait RelanceTrait
 
             $claim = $this->getOneRelance($claimId, false, $my);
             try {
-                if (is_null($claim->createdBy) && $claim->request_channel_slug == "email") {
+                if (is_null($claim->createdBy)) {
                     $institution = $claim->institutionTargeted;
                 } else {
                     $institution = $claim->createdBy->identite->staff->institution;
