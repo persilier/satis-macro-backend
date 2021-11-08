@@ -100,7 +100,7 @@ trait Dashboard
             if (
                 array_key_exists('myInstitution', $subKeys)
                 && is_null($claim->createdBy)
-                && ($claim->institution_targeted_id == $this->institution()->id && $claim->request_channel_slug == 'email')
+                && ($claim->institution_targeted_id == $this->institution()->id)
             ) {
                 $subKeys['myInstitution']++;
             }
