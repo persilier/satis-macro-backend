@@ -62,6 +62,7 @@
     "satis2020/processing-circuit-without-institution": "^1.0",
     "satis2020/register-claim-against-any-institution": "^1.0",
     "satis2020/register-claim-against-my-institution": "^1.0",
+    "satis2020/register-claim-against-my-institution-by-portal": "^1.0",
     "satis2020/register-claim-without-client": "^1.0",
     "satis2020/relance": "^1.0",
     "satis2020/relationship": "^1.0",
@@ -704,6 +705,13 @@
     {
       "type": "path",
       "url": "modules/useful-data-plugin-wordpress/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/register-claim-against-my-institution-by-portal/",
       "options": {
         "symlink": true
       }

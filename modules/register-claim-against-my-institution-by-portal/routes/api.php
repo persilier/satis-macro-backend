@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('my')->group(function () {
+Route::prefix('portal/my')->group(function () {
     /**
      * Staff
      */
-    Route::name('my.')->group(function () {
-        Route::resource('claims', 'Claim\ClaimController')->only(['create', 'store']);
+    Route::name('portal.my.')->group(function () {
+        Route::get('claims/{institution}/create', 'Claim\ClaimController@create')->name('create');
+        Route::post('claims', 'Claim\ClaimController@store')->name('store');
         Route::resource('identites.claims', 'Identite\IdentiteClaimController', ['only' => ['store']]);
-        Route::post('import-claim', 'ImportExport\ImportController@importClaims');
     });
 
 });
