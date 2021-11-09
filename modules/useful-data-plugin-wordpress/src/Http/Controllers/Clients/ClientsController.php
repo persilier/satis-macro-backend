@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Currency;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 
 class ClientsController extends Controller
@@ -20,10 +21,16 @@ class ClientsController extends Controller
 
     public function show($accountNumber)
     {
-        return response()->json(Account::with('client_institution.client.identite')
-            ->where('number', $accountNumber)
-            ->firstOrFail()
-            ->client_institution->client->identite, 200);
+        $account = Account::with('client_institution.client.identite')
+                            ->where('number', $accountNumber)
+                            ->firstOrFail();
+
+        return response()->json(Identite::with('client.client_institution.accounts')
+            ->whereHas('client', function ($q) use ($account){
+                $q->whereHas('client_institution', function ($p) use ($account){
+                    $p->where('institution_id', $account->client_institution->institution_id);
+                });
+        })->findOrFail($account->client_institution->client->identite->id),200);
     }
 
 }
