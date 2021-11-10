@@ -19,6 +19,25 @@ use Satis2020\ServicePackage\Models\Unit;
  */
 trait VerifyUnicity
 {
+
+    protected function handleUnicityWithoutConflit($request, $idColumn = null, $idValue = null)
+    {
+        $identite = null;
+
+        $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', $idColumn, $idValue);
+
+        $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', $idColumn, $idValue);
+
+        if (!$verifyPhone['status']) {
+            $identite = $verifyPhone['entity'];
+        }
+
+        if (!$verifyEmail['status']) {
+            $identite = $verifyEmail['entity'];
+        }
+
+        return $identite;
+    }
     /**
      * Verify if an attribute is uniq in a table
      *

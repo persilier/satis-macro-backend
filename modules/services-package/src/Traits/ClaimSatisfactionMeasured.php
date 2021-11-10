@@ -40,7 +40,7 @@ trait ClaimSatisfactionMeasured
         
         $data['is_claimer_satisfied'] = ['required', 'boolean'];
         $data['unsatisfaction_reason'] = ['nullable', Rule::requiredIf((!$request->is_claimer_satisfied)), 'string'];
-        $data['note'] = 'integer|min:1|max:5';
+        $data['note'] = 'nullable|integer|min:1|max:5';
 
         return $data;
     }
