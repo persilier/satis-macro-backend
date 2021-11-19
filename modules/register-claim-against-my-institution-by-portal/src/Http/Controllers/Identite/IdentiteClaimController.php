@@ -63,6 +63,8 @@ class IdentiteClaimController extends Controller
 
         $claim = $this->createClaim($request, false);
 
+        $this->attachFilesToClaimBase64($claim, $request);
+
         return response()->json([ 'claim' => $claim, 'errors' => $status['errors']], 201);
 
     }

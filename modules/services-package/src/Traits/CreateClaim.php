@@ -71,7 +71,7 @@ trait CreateClaim
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
-            'file_data' => 'nullable'
+            'attach_files' => 'nullable'
         ];
 
         if ($with_client) {

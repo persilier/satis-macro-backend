@@ -237,6 +237,17 @@ trait DataUserNature
     }
 
 
+    protected function attachFilesToClaimBase64($claim, $request)
+    {
+        if ($request->has('attach_files')) {
+            for ($i = 0; $i < sizeof($request->attach_files); $i++) {
+                $save_img = $this->base64SaveImg($request->attach_files[$i], 'claim-attachments/', $i);
+                $claim->files()->create(['title' => "attachement portal web".$claim->reference, 'url' => $save_img['link']]);
+            }
+        }
+    }
+
+
     /**
      * @param $request
      */
