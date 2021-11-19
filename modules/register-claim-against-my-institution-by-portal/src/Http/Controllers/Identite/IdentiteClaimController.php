@@ -40,7 +40,6 @@ class IdentiteClaimController extends Controller
     {
         $rulesRequest = $this->rules($request, false);
         $rulesRequest['created_by'] = 'nullable';
-
         $request->merge(['claimer_id' => $identite->id]);
 
         $this->convertEmailInStrToLower($request);

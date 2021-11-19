@@ -73,6 +73,11 @@ class ClaimController extends Controller
 
         $claim = $this->createClaim($request);
 
+        for ($i = 0; $i < sizeof($request->file_data); $i++) {
+            $save_img = $this->base64SaveImg($request->file_data[$i], 'claim-attachments/', $i);
+            $claim->files()->create(['title' => "attachement portal web".$claim->reference, 'url' => $save_img['link']]);
+        }
+
         return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
 
     }
