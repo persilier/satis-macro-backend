@@ -46,6 +46,7 @@ class ClaimController extends Controller
 
     public function store(Request $request)
     {
+
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
         $this->convertEmailInStrToLower($request);

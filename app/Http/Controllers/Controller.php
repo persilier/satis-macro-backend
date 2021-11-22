@@ -29,25 +29,37 @@ class Controller extends BaseController
 
     public function index()
     {
-        $claim = Claim::findOrFail("a63dfbec-f8ef-4bb5-9f97-2933ab3b4073");
+//        $sendMail = $this->londoSMSApi(
+//            "BciGatewayLogin",
+//            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
+//            "BCI",
+//            "SATISPROBCI",
+//            "TEST001",
+//            1,
+//            "242064034953",
+//            'TEST SMS API BCI'
+//        );
+//        dd($sendMail->json());
 
-        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-        $notifiable =$this->getInstitutionPilot($claim->createdBy->institution);
-
-        dd($this->getFeedBackChannels($notifiable->staff));
-
-        dump($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high'));
-        dd($this->getInstitutionPilot($claim->createdBy->institution));
-
-        $identities = $this->getStaffToReviveIdentities($claim);
+//        $claim = Claim::findOrFail("a63dfbec-f8ef-4bb5-9f97-2933ab3b4073");
+//
+//        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
+//        $notifiable =$this->getInstitutionPilot($claim->createdBy->institution);
+//
+//        dd($this->getFeedBackChannels($notifiable->staff));
+//
+//        dump($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high'));
+//        dd($this->getInstitutionPilot($claim->createdBy->institution));
+//
+//        $identities = $this->getStaffToReviveIdentities($claim);
 
         //$identities[1]->notify(new ReviveStaff($claim, "CC"));
         
-        Notification::send($this->getStaffToReviveIdentities($claim), new ReviveStaff($claim, "CC"));
-
-        dd($identities[1]);
-        
-        return response()->json([], 200);
+//        Notification::send($this->getStaffToReviveIdentities($claim), new ReviveStaff($claim, "CC"));
+//
+//        dd($identities[1]);
+//
+//        return response()->json([], 200);
     }
 
     public function download(File $file)
@@ -93,5 +105,24 @@ class Controller extends BaseController
     public function downloadExcelReports($file){
 
         return response()->download(storage_path('app/'.$file));
+    }
+
+    public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
+    {
+        $headers = [
+            "Authorization" => "Basic ".base64_encode("$username:$password")
+        ];
+        $data = [
+            '_id' => $id,
+            'priority' => $priority,
+            'telephone' => $to,
+            'message' => $text,
+            'source' => [
+                'client' => $client,
+                'app' => $app
+            ]
+        ];
+        return Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+
     }
 }

@@ -80,7 +80,35 @@ class MessageApiMethod
                 'text' => $text,
                 'api' => $apiId
             ])->throw()->json();
-        
+    }
+
+    /***
+     * @param $username
+     * @param $password
+     * @param $client
+     * @param $app
+     * @param $id
+     * @param $priority
+     * @param $to
+     * @param $text
+     * @return array|mixed
+     */
+    static public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
+    {
+        $headers = [
+            "Authorization" => "Basic ".base64_encode("$username:$password")
+        ];
+        $data = [
+            '_id' => $id,
+            'priority' => $priority,
+            'telephone' => $to,
+            'message' => $text,
+            'source' => [
+                'client' => $client,
+                'app' => $app
+            ]
+        ];
+        return Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
 
     }
 
