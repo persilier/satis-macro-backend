@@ -51,9 +51,7 @@ class MetadataRepository
      */
     public function update($data,$name)
     {
-        $metadata = $this->metadata->newQuery()
-            ->where('name',$name)
-            ->first();
+        $metadata = $this->getByName($name);
         $updatedData = json_decode($metadata->data,true);
         foreach ($data as $key => $datum){
             $updatedData[$key] = $datum;
