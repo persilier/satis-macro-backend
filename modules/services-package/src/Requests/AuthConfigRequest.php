@@ -36,8 +36,9 @@ class AuthConfigRequest extends FormRequest
             'password_expiration_msg' => ["string",Rule::requiredIf($this->password_expiration_control==true)],
             'block_attempt_control' => ['boolean'],
             'max_attempt' => ["numeric","min:1",Rule::requiredIf($this->block_attempt_control==true)],
-            'attempt_delay' => ["numeric","min:1",Rule::requiredIf($this->block_attempt_control==true)], //15 minutes
-            'account_blocked_msg' => ["string",Rule::requiredIf($this->block_attempt_control==true)], //15 minutes
+            'attempt_delay' => ["numeric","min:1",Rule::requiredIf($this->block_attempt_control==true)],
+            'attempt_waiting_time' => ["numeric","min:1",Rule::requiredIf($this->block_attempt_control==true)],
+            'account_blocked_msg' => ["string",Rule::requiredIf($this->block_attempt_control==true)],
         ];
 
         if ($this->getMethod()=="PUT"){

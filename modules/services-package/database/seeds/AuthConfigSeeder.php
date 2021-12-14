@@ -35,6 +35,7 @@ class AuthConfigSeeder extends Seeder
             'block_attempt_control' => true,
             'max_attempt' => 3,
             'attempt_delay' => 15, //15 minutes
+            'attempt_waiting_time' => 60, //15 minutes
             'account_blocked_msg' => "Votre compte a été bloqué suite à de nombreuses tentative manqué",
         ];
 
