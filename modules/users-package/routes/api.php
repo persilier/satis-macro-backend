@@ -44,7 +44,7 @@ Route::name('logout')->get('logout', 'Auth\AuthController@logout');
  */
 Route::name('edit.profil')->get('edit-profil', 'Profile\ProfileController@edit');
 Route::name('update.profil')->put('update-profil', 'Profile\ProfileController@update');
-Route::name('change.password')->post('change-password', 'Profile\ProfileController@changePassword');
+Route::name('change.password')->put('change-password', 'Profile\UpdatePasswordController@update');
 
 /**
  * Password Reset

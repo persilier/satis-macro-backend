@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\ServicePackage\Rules;
+
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,6 +11,12 @@ use Illuminate\Support\Facades\Hash;
  */
 class MatchOldPassword implements Rule
 {
+    protected $password;
+
+    public function __construct($password)
+    {
+        $this->password = $password;
+    }
     /**
      * Determine if the validation rule passes.
      *
@@ -19,7 +26,7 @@ class MatchOldPassword implements Rule
      */
     public function passes($attribute, $value)
     {
-        return Hash::check($value, auth()->user()->password);
+        return Hash::check($value, $this->password);
     }
 
     /**
