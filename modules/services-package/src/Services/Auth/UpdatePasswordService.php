@@ -3,18 +3,39 @@
 namespace Satis2020\ServicePackage\Services\Auth;
 
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Repositories\HistoryPasswordRepository;
 use Satis2020\ServicePackage\Repositories\UserRepository;
-
+/***
+ * Class UpdatePasswordService
+ * @package Satis2020\ServicePackage\Services\Auth
+ */
 class UpdatePasswordService
 {
+    use \Satis2020\ServicePackage\Traits\Metadata;
 
+    /***
+     * @var UserRepository
+     */
     protected $userRepository;
+
+    /***
+     * @var HistoryPasswordRepository
+     */
     protected $historyPasswordRepository;
+
+    /***
+     * @var $historyPasswords
+     */
     protected $historyPasswords;
-    protected $limitPassword;
+
+    /***
+     * @var $maxPassword
+     */
+    protected $maxPassword;
 
     /***
      * UpdatePasswordService constructor.
@@ -28,6 +49,7 @@ class UpdatePasswordService
     }
 
     /***
+     * Check if the management of password histories is active and Update Password
      * @param $newPassword
      * @param $user
      * @return mixed
@@ -35,9 +57,9 @@ class UpdatePasswordService
      */
     public function update($newPassword, $user)
     {
-        $tes = true;
-        if ($tes === true) {
-            $this->limitPassword = 4;
+        $configParameters = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
+        if ($configParameters && $configParameters->password_expiration_control) {
+            $this->maxPassword = $configParameters->max_password_histories;
             $this->verifyPasswordExistInTheHistory($newPassword, $user);
             $this->historyPasswordRepository->create([
                 "password" => bcrypt($newPassword),
@@ -52,6 +74,7 @@ class UpdatePasswordService
     }
 
     /***
+     * Verify password exists in the history
      * @param $newPassword
      * @param $user
      * @throws CustomException
@@ -59,15 +82,17 @@ class UpdatePasswordService
     protected function verifyPasswordExistInTheHistory($newPassword, $user)
     {
          $this->historyPasswords = $this->historyPasswordRepository->getPasswordForHistoryManagement($user->id,
-             $this->limitPassword);
+             $this->maxPassword);
 
          if ($passwordExist = $this->historyPasswords->first(function ($item) use ($newPassword) {
              return Hash::check($newPassword, $item->password);
          })) {
-             throw new CustomException('Le mot de passe saisi est se trouve dans les '. $this->limitPassword . ' derniers mot de passes déjà utilisés.');
+             throw new CustomException('Le mot de passe saisi est se trouve dans les '.
+                 $this->maxPassword . ' derniers mot de passes déjà utilisés.',
+                 Response::HTTP_PRECONDITION_REQUIRED);
          }
 
-         if ($this->historyPasswords->count() >= $this->limitPassword) {
+         if ($this->historyPasswords->count() >= $this->maxPassword) {
              $this->historyPasswordRepository->delete($this->historyPasswords->first()->id);
          }
     }
