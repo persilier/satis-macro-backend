@@ -1,5 +1,5 @@
 <?php
-namespace Satis2020\AuthConfigPackage\Providers;
+namespace Satis2020\AuthConfig\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -58,7 +58,7 @@ class AuthConfigServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\AuthConfigPackage\Http\Controllers',
+            'namespace' => 'Satis2020\AuthConfig\Http\Controllers',
             'middleware' => ['api']
         ];
     }

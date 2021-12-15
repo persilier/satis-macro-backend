@@ -1,11 +1,11 @@
 <?php
 
-namespace Satis2020\AuthConfigPackage\Controllers;
+namespace Satis2020\AuthConfig\Http\Controllers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
-use Satis2020\AuthConfigPackage\Services\AuthConfigService;
+use Satis2020\AuthConfig\Services\AuthConfigService;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\AuthConfigRequest;
 
