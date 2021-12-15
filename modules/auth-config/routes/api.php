@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Satis2020\AuthConfigPackage\Controllers\AuthConfigController;
+use Satis2020\AuthConfig\Http\Controllers\AuthConfigController;
 
 /*
 |--------------------------------------------------------------------------
