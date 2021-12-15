@@ -24,6 +24,9 @@ class AuthConfigController extends ApiController
     {
         parent::__construct();
         $this->authConfigService = $authConfigService;
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-auth-config')->only(['show']);
+        $this->middleware('permission:update-auth-config')->only(['update']);
     }
 
     /**
