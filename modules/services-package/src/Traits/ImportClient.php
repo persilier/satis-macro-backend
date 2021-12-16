@@ -41,7 +41,7 @@ trait ImportClient
             new NameModelRules(['table' => 'category_clients', 'column'=> 'name']),
         ];
 
-        $rules['other_attributes_clients'] = 'array';
+        $rules['other_attributes_clients'] = 'nullable';
 
         if (!$this->myInstitution){
 

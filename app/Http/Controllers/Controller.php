@@ -29,6 +29,7 @@ class Controller extends BaseController
 
     public function index()
     {
+        activity()->log('Look mum, I logged something');
 //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
 //            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
