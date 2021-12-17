@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Satis2020\ServicePackage\Services\Auth\UpdatePasswordService;
 
 /**
  * Class MatchOldPassword
@@ -12,10 +13,13 @@ use Illuminate\Support\Facades\Hash;
 class MatchOldPassword implements Rule
 {
     protected $password;
+    protected $email;
 
-    public function __construct($password)
+    public function __construct($password, $email)
     {
         $this->password = $password;
+        $this->email = $email;
+        $this->updatePasswordService = app(UpdatePasswordService::class);
     }
     /**
      * Determine if the validation rule passes.
@@ -37,5 +41,12 @@ class MatchOldPassword implements Rule
     public function message()
     {
         return 'The :attribute is match with old password.';
+    }
+
+    protected function getPasswordUser()
+    {
+        if (!is_null($this->password)) {
+            $this->password = $this->updatePasswordService->getByEmail($this->email);
+        }
     }
 }

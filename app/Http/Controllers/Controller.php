@@ -15,6 +15,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Message;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Requests\UpdatePasswordRequest;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
@@ -27,9 +28,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
+    public function testPassword(UpdatePasswordRequest $request)
+    {
+        dd($request);
+    }
+
     public function index()
     {
-        activity()->log('Look mum, I logged something');
+
 //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
 //            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,

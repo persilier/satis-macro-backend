@@ -9,4 +9,13 @@ class Activity extends ActivityLog
 {
     use UuidAsId;
 
+    /***
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
+    }
+
+
 }

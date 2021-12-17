@@ -13,10 +13,6 @@ use Satis2020\ServicePackage\Repositories\UserRepository;
  */
 class UpdatePasswordRequest extends FormRequest
 {
-    /**
-     * @var $userPassword
-     */
-    protected $userPassword;
 
     /**
      * @return bool
@@ -33,7 +29,7 @@ class UpdatePasswordRequest extends FormRequest
     {
         return [
             'email' => [Rule::requiredIf(is_null(auth()->user())), 'email', 'exists:users,username'],
-            'current_password' => ['required', new MatchOldPassword($this->userPassword)],
+            'current_password' => ['required', new MatchOldPassword($this->password_exist, $this->email)],
             'new_password' => ['required', 'different:current_password', 'confirmed', new IsValidPasswordRules],
             'new_password_confirmation' => 'required'
         ];
@@ -46,12 +42,10 @@ class UpdatePasswordRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $userRepository = app(UserRepository::class);
-
         if (auth()->user())
-            $this->userPassword = auth()->user()->password;
+            $this->merge(['password_exist' => auth()->user()->password]);
         else
-            $this->userPassword = $userRepository->getByEmail($this->email)->password;
+            $this->merge(['password_exist' => null]);
     }
 
 

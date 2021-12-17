@@ -51,4 +51,19 @@ class UserRepository
         return $user->refresh();
     }
 
+
+    public function getUserByInstitution($institutionId)
+    {
+        return $this->user->with(['identite.staff'])
+            ->join('identites', function($join)  use ($institutionId){
+                $join->on('users.identite_id', '=', 'identites.id')
+                    ->join('staff', function ($j) use ($institutionId){
+                        $j->on('identites.id', '=', 'staff.identite_id')
+                        ->where('staff.institution_id', $institutionId);
+                    });
+            })->where('institution_id', $institutionId)
+            ->select('users.*')
+            ->get();
+    }
+
 }
