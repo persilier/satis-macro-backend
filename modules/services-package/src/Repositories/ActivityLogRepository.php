@@ -61,7 +61,7 @@ class ActivityLogRepository
      */
     public function getByInstitution($institutionId, $paginate)
     {
-        return $this->activity->with('institution')
+        return $this->activity->with('institution', 'causer.identite', 'subject')
                             ->where('institution_id', $institutionId)
                             ->latest()
                             ->paginate($paginate);
@@ -75,7 +75,7 @@ class ActivityLogRepository
      */
     public function getByInstitutionFilters($institutionId, $request ,$paginate)
     {
-         $query = $this->activity->with('institution', 'causer', 'subject')
+         $query = $this->activity->with('institution', 'causer.identite', 'subject')
                             ->where('institution_id', $institutionId);
          if (!is_null($request)) {
 
