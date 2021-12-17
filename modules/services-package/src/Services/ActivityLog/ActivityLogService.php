@@ -2,15 +2,7 @@
 
 namespace Satis2020\ServicePackage\Services\ActivityLog;
 
-use Carbon\Carbon;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Repositories\ActivityLogRepository;
-use Satis2020\ServicePackage\Repositories\HistoryPasswordRepository;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 
 /***
