@@ -4,17 +4,10 @@ namespace Satis2020\ActivityLog\Http\Controllers\ActivityLog;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\AccountType;
-use Satis2020\ServicePackage\Models\Activity;
-use Satis2020\ServicePackage\Repositories\ActivityLogRepository;
 use Satis2020\ServicePackage\Requests\ActivityLogFilterRequest;
-use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 
@@ -53,7 +46,10 @@ class ActivityLogController extends ApiController
      */
     public function create(ActivityLogService $activityLogService)
     {
-        return response($activityLogService->getDataForFiltering($this->institution()->id));
+        return response([
+            "filters" => $activityLogService->getDataForFiltering($this->institution()->id),
+            "logs" => $activityLogService->allActivityFilters($this->institution()->id, null,200)
+        ]);
     }
 
 }
