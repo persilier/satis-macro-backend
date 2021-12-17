@@ -77,20 +77,22 @@ class ActivityLogRepository
     {
          $query = $this->activity->with('institution')
                             ->where('institution_id', $institutionId);
+         if (!is_null($request)) {
 
-         if ($request->has('causer_id')) {
-             $query = $query->where('causer_id', $request->causer_id);
+             if ($request->has('causer_id')) {
+                 $query = $query->where('causer_id', $request->causer_id);
+             }
+
+             if ($request->has('log_action')) {
+                 $query = $query->where('log_action', $request->log_action);
+             }
+
+             if ($request->has('date_start') && $request->has('date_end')) {
+                 $query = $query->whereBetween('created_at',
+                     [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
+                 );
+             }
          }
-
-        if ($request->has('log_action')) {
-            $query = $query->where('log_action', $request->log_action);
-        }
-
-        if ($request->has('date_start') && $request->has('date_end')) {
-            $query = $query->whereBetween('created_at',
-                [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
-            );
-        }
 
         return $query->latest()->paginate($paginate);
     }

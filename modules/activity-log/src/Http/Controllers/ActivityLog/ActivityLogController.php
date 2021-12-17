@@ -46,7 +46,10 @@ class ActivityLogController extends ApiController
      */
     public function create(ActivityLogService $activityLogService)
     {
-        return response($activityLogService->getDataForFiltering($this->institution()->id));
+        return response([
+            "filters" => $activityLogService->getDataForFiltering($this->institution()->id),
+            "logs" => $activityLogService->allActivityFilters($this->institution()->id, null,200)
+        ]);
     }
 
 }
