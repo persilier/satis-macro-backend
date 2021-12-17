@@ -24,13 +24,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Satis2020\\AuthConfigPackage\\": "src/"
+            "Satis2020\\AuthConfig\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Satis2020\\AuthConfigPackage\\Providers\\AuthConfigServiceProvider"
+                "Satis2020\\AuthConfig\\Providers\\AuthConfigServiceProvider"
             ]
         }
     }

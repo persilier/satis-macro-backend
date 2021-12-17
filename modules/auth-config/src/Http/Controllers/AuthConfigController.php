@@ -1,13 +1,13 @@
 <?php
 
-namespace Satis2020\AuthConfigPackage\Controllers;
+namespace Satis2020\AuthConfig\Http\Controllers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
-use Satis2020\AuthConfigPackage\Services\AuthConfigService;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\AuthConfigRequest;
+use Satis2020\ServicePackage\Services\AuthConfigService;
 
 class AuthConfigController extends ApiController
 {
@@ -24,6 +24,9 @@ class AuthConfigController extends ApiController
     {
         parent::__construct();
         $this->authConfigService = $authConfigService;
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-auth-config')->only(['show']);
+        $this->middleware('permission:update-auth-config')->only(['update']);
     }
 
     /**

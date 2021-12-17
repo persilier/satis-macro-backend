@@ -18,11 +18,6 @@ class AuthConfigSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Metadata::truncate();
-        Metadata::flushEventListeners();
-
-
         $authSettings = [
             'inactivity_control' => true,
             'inactivity_time_limit' => 30, //30 days
@@ -39,7 +34,9 @@ class AuthConfigSeeder extends Seeder
             'account_blocked_msg' => "Votre compte a été bloqué suite à de nombreuses tentative manqué",
         ];
 
-        Metadata::create([
+        Metadata::query()->updateOrCreate([
+            "name"=>Metadata::AUTH_PARAMETERS
+        ],[
             'id' => (string)Str::uuid(),
             'name' => Metadata::AUTH_PARAMETERS,
             'data' => json_encode($authSettings)

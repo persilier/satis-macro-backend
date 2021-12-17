@@ -80,7 +80,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-measure-preventive-parameters',
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
-                    "my-email-claim-configuration"
+                    "my-email-claim-configuration",
+                    'list-auth-config','update-auth-config',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

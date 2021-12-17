@@ -53,7 +53,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-user-my-institution', 'show-user-my-institution', 'store-user-my-institution',
                     'update-active-pilot',
                     'search-claim-my-reference',
-                    "my-email-claim-configuration"
+                    "my-email-claim-configuration",
+                    'list-auth-config','update-auth-config',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
