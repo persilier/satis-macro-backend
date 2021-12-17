@@ -32,6 +32,7 @@ class AuthConfigSeeder extends Seeder
             'attempt_delay' => 15, //15 minutes
             'attempt_waiting_time' => 60, //15 minutes
             'account_blocked_msg' => "Votre compte a été bloqué suite à de nombreuses tentative manqué",
+            'inactive_account_msg' => "Votre compte a été désactivé pour inactivité",
         ];
 
         Metadata::query()->updateOrCreate([

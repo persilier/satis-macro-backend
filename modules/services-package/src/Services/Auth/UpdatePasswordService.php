@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Services\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Repositories\HistoryPasswordRepository;
@@ -46,6 +47,11 @@ class UpdatePasswordService
     {
         $this->historyPasswordRepository = $historyPasswordRepository;
         $this->userRepository = $userRepository;
+    }
+
+    public function getByEmail($email)
+    {
+        return $this->userRepository->getByEmail($email);
     }
 
     /***

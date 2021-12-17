@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
 use Satis2020\ServicePackage\Rules\MatchOldPassword;

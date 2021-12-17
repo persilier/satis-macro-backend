@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Rules;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Satis2020\ServicePackage\Services\Auth\UpdatePasswordService;
@@ -14,12 +15,17 @@ class MatchOldPassword implements Rule
 {
     protected $password;
     protected $email;
+    /**
+     * @var Application|mixed
+     */
+    private $updatePasswordService;
 
     public function __construct($password, $email)
     {
         $this->password = $password;
         $this->email = $email;
         $this->updatePasswordService = app(UpdatePasswordService::class);
+        $this->getPasswordUser();
     }
     /**
      * Determine if the validation rule passes.
@@ -45,8 +51,8 @@ class MatchOldPassword implements Rule
 
     protected function getPasswordUser()
     {
-        if (!is_null($this->password)) {
-            $this->password = $this->updatePasswordService->getByEmail($this->email);
+        if (is_null($this->password)) {
+            $this->password = $this->updatePasswordService->getByEmail($this->email)->password;
         }
     }
 }
