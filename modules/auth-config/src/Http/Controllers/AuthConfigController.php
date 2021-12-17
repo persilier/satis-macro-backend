@@ -7,7 +7,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\AuthConfigRequest;
-use Satis2020\ServicePackage\Services\AuthConfigService;
+use Satis2020\ServicePackage\Services\Auth\AuthConfigService;
 
 class AuthConfigController extends ApiController
 {
