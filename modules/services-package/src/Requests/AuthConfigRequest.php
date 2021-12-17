@@ -28,6 +28,7 @@ class AuthConfigRequest extends FormRequest
         $rules =  [
             'inactivity_control' => ['boolean'],
             'inactivity_time_limit' => ["numeric","min:1",Rule::requiredIf($this->inactivity_control==true)],
+            'inactive_account_msg' => ["string",Rule::requiredIf($this->inactivity_control==true)],
             'password_expiration_control' => ['boolean'],
             'password_lifetime' => ["numeric","min:1",Rule::requiredIf($this->password_expiration_control==true)],
             'max_password_histories' => ["numeric","min:1",Rule::requiredIf($this->password_expiration_control==true)],

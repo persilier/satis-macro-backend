@@ -1,5 +1,5 @@
 <?php
-namespace  Satis2020\ServicePackage\Services;
+namespace Satis2020\ServicePackage\Services\Auth;
 
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Repositories\MetadataRepository;
