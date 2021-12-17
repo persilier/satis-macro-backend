@@ -80,6 +80,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
                     "any-email-claim-configuration",
                     'list-auth-config','update-auth-config',
+                    'activity-log'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

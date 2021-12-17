@@ -31,7 +31,7 @@ class ActivityLogController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-//        $this->middleware('permission:activity-log')->only(['index']);
+        $this->middleware('permission:activity-log')->only(['index']);
     }
 
 
