@@ -11,6 +11,7 @@ use Satis2020\ServicePackage\Models\LoginAttempt;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
+use Satis2020\ServicePackage\Requests\LoginRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthService
@@ -31,7 +32,7 @@ class AuthService
      */
     private $userRepository;
 
-    public function __construct(Request $request)
+    public function __construct(LoginRequest $request)
     {
         $this->configs = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
         $this->request = $request;

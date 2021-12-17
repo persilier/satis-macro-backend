@@ -11,6 +11,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Requests\LoginRequest;
 use Satis2020\ServicePackage\Services\Auth\AuthService;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -85,8 +86,9 @@ class AuthController extends ApiController
      * @param Request $request
      * @return mixed
      * @throws \Laravel\Passport\Exceptions\OAuthServerException
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(ServerRequestInterface $serverRequest,Request $request)
+    public function store(ServerRequestInterface $serverRequest,LoginRequest $request)
     {
         $authService = new AuthService($request);
         $AttemptsResponse = $authService->proceedAttempt();
