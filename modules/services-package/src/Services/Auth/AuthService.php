@@ -201,7 +201,7 @@ class AuthService
     {
         $loginAttempt = LoginAttempt::query()
             ->where('ip',\request()->ip())
-            ->orWhere('email',$this->request->username)
+            ->where('email',$this->request->username)
             ->first();
         if ($loginAttempt==null){
             $loginAttempt = LoginAttempt::query()

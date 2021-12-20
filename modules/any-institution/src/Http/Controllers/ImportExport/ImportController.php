@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Institution;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 
 /**
@@ -14,11 +15,15 @@ use Satis2020\ServicePackage\Imports\Institution;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:store-any-institution')->only(['importInstitutions']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -47,11 +52,17 @@ class ImportController extends ApiController
         if($imports->getErrors()){
 
             $datas = [
-
                 'status' => false,
                 'institutions' => $imports->getErrors()
             ];
         }
+
+        $this->activityLogService->store("Importation des institutions par excel",
+            $this->institution()->id,
+            $this->activityLogService::DELETED,
+            'institution',
+            $this->user()
+        );
 
         return response()->json($datas,201);
 

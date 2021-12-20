@@ -26,7 +26,7 @@ class InstitutionController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function getMyInstitution(){
