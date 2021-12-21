@@ -30,6 +30,7 @@ class ActivityLogService
     const REASSIGNMENT_CLAIM = "REASSIGNMENT_CLAIM";
     const VALIDATED_CLAIM = 'VALIDATE_CLAIM';
     const INVALIDATED_CLAIM = 'INVALIDATED_CLAIM';
+    const AUTH = 'AUTH';
     /***
      * @var $activityLogRepository
      */
@@ -108,7 +109,8 @@ class ActivityLogService
             self::ASSIGNMENT_CLAIM => 'Affectation',
             self::REASSIGNMENT_CLAIM => 'Réaffectation',
             self::VALIDATED_CLAIM => 'Validation',
-            self::INVALIDATED_CLAIM => 'Invalidation'
+            self::INVALIDATED_CLAIM => 'Invalidation',
+            self::AUTH => 'Authentification'
         ];
     }
 
