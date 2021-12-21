@@ -109,7 +109,7 @@ class AuthController extends ApiController
             return  \response([
                 "error"=>true,
                 "message"=>$e->getMessage()
-            ],400);
+            ],Response::HTTP_UNAUTHORIZED);
         }
     }
 }

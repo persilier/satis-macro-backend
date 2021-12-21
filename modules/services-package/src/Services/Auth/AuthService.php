@@ -103,7 +103,7 @@ class AuthService
         if ($this->configs->inactivity_control){
             if (!$this->isAccountActive()){
                 $response = [
-                    'status'=>Response::HTTP_UNAVAILABLE_FOR_LEGAL_REASONS,
+                    'status'=>Response::HTTP_BAD_REQUEST,
                     'message'=>$this->configs->inactive_account_msg
                 ];
             }
@@ -122,7 +122,6 @@ class AuthService
         //check if login attempts control is activated
         if ($this->configs->block_attempt_control){
             if ($this->isAccountBlocked()){
-
                 if ($this->getDurationSinceLastAttempt()>$this->configs->attempt_waiting_time){
                     $this->resetAttempts();
                     $response['status'] = Response::HTTP_OK;
@@ -201,7 +200,7 @@ class AuthService
     {
         $loginAttempt = LoginAttempt::query()
             ->where('ip',\request()->ip())
-            ->orWhere('email',$this->request->username)
+            ->where('email',$this->request->username)
             ->first();
         if ($loginAttempt==null){
             $loginAttempt = LoginAttempt::query()
