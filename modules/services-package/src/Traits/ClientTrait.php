@@ -171,7 +171,17 @@ trait ClientTrait
             'number'  => $request->number
         ];
 
-        return $account = Account::create($store);
+        $account = Account::create($store);
+
+        $this->activityLogService->store("Enregistrement d'un compte client",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'account',
+            $this->user(),
+            $account
+        );
+
+        return $account;
     }
 
     /**

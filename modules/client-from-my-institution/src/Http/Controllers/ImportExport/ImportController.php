@@ -5,6 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class ImportExportController
@@ -12,11 +13,15 @@ use Satis2020\ServicePackage\Imports\Client;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:store-client-from-my-institution')->only(['importClient', 'downloadFile']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -60,6 +65,13 @@ class ImportController extends ApiController
                 'clients' => $imports->getErrors()
             ];
         }
+
+        $this->activityLogService->store('Importation des comptes clients par fichier excel',
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'account',
+            $this->user()
+        );
 
         return response()->json($datas,201);
 
