@@ -80,14 +80,17 @@ class AuthService
                 $this->userRepository->getByEmail($this->request->username)->id,
                 ActivityLogService::AUTH);
         $response = true;
+
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
-            if (
-            Carbon::parse($lastLog->created_at)->diffInWeekdays(now())>=
-            $this->configs->inactivity_time_limit){
-                $this->disableAccount();
-                $response =  false;
+            if ($lastLog!=null){
+                if (
+                    Carbon::parse($lastLog->created_at)->diffInWeekdays(now())>=
+                    $this->configs->inactivity_time_limit){
+                    $this->disableAccount();
+                    $response =  false;
+                }
             }
         }
         return $response;
