@@ -41,7 +41,7 @@ trait ImportClient
             new NameModelRules(['table' => 'category_clients', 'column'=> 'name']),
         ];
 
-        $rules['other_attributes_clients'] = 'array';
+//        $rules['other_attributes_clients'] = 'array';
 
         if (!$this->myInstitution){
 
@@ -65,7 +65,7 @@ trait ImportClient
         ){
             $store = [
                 'identites_id' => $identiteId,
-                'others'  => $row['other_attributes_clients'],
+//                'others'  => $row['other_attributes_clients'],
             ];
 
             $client = Client::create($store);

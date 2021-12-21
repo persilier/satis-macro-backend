@@ -1,9 +1,12 @@
 <?php
 namespace Satis2020\ServicePackage\Imports;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Satis2020\ServicePackage\Exceptions\CustomException;
@@ -17,7 +20,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  * Class Client
  * @package Satis2020\ServicePackage\Imports
  */
-class Client implements ToCollection, WithHeadingRow
+class Client implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
     use Importable, SkipsFailures,DataUserNature, ImportClient, ImportIdentite, IdentiteVerifiedTrait, VerifyUnicity;
 
@@ -189,6 +192,11 @@ class Client implements ToCollection, WithHeadingRow
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
 }

@@ -1,10 +1,12 @@
 <?php
 
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Imports\Client;
+use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
 
 /**
  * Class ImportExportController
@@ -28,40 +30,54 @@ class ImportController extends ApiController
         $institution = $this->institution();
 
         $request->validate([
-
             'file' => 'required|file|max:2048|mimes:xls,xlsx',
             'etat_update' => 'required|boolean',
             'stop_identite_exist' => 'required|boolean'
         ]);
 
-        $datas = [
-
-            'status' => true,
-            'clients' => ''
-        ];
-
-        $file = $request->file('file');
-
-        $etat = $request->etat_update;
-
-        $stop_identite_exist = $request->stop_identite_exist;
-
         $myInstitution = $institution->name;
-
-        $imports = new Client($etat, $myInstitution, $stop_identite_exist);
-
-        $imports->import($file);
-
-        if($imports->getErrors()){
-
-            $datas = [
-
-                'status' => false,
-                'clients' => $imports->getErrors()
-            ];
+        try {
+            Excel::import(new TransactionClientImport($myInstitution,
+                $request->etat_update,
+                $request->stop_identite_exist),
+                request()->file('file')
+            );
+        } catch (\Exception $e){
+            return response()->json('here no',201);
         }
 
-        return response()->json($datas,201);
+        return response()->json('here',201);
+
+
+
+//        $datas = [
+//
+//            'status' => true,
+//            'clients' => ''
+//        ];
+//
+//        $file = $request->file('file');
+//
+//        $etat = $request->etat_update;
+//
+//        $stop_identite_exist = $request->stop_identite_exist;
+//
+//        $myInstitution = $institution->name;
+//
+//        $imports = new Client($etat, $myInstitution, $stop_identite_exist);
+//
+//        $imports->queue($file);
+
+//        if($imports->getErrors()){
+//
+//            $datas = [
+//
+//                'status' => false,
+//                'clients' => $imports->getErrors()
+//            ];
+//        }
+
+//        return response()->json($datas,201);
 
     }
 
