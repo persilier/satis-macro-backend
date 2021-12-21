@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Requests\LoginRequest;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthService
@@ -31,12 +32,14 @@ class AuthService
      * @var \Illuminate\Contracts\Foundation\Application|mixed
      */
     private $userRepository;
+    private $activityLogService;
 
     public function __construct(LoginRequest $request)
     {
         $this->configs = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
         $this->request = $request;
         $this->userRepository = app(UserRepository::class);
+        $this->activityLogService = app(ActivityLogService::class);
 
     }
 
@@ -51,8 +54,7 @@ class AuthService
 
     public function isAccountDisabled()
     {
-        return $this->userRepository
-                ->getByEmail($this->request->username)
+        return $this->getUser()
                 ->disabled_at!=null;
     }
 
@@ -73,13 +75,16 @@ class AuthService
      */
     public function isAccountActive()
     {
-        $lastLogin = "2021-12-16 15:42:01";
+        $lastLog = $this->activityLogService
+            ->getLastLogByUserAndAction(
+                $this->userRepository->getByEmail($this->request->username)->id,
+                ActivityLogService::AUTH);
         $response = true;
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
             if (
-            Carbon::parse($lastLogin)->diffInWeekdays(now())>=
+            Carbon::parse($lastLog->created_at)->diffInWeekdays(now())>=
             $this->configs->inactivity_time_limit){
                 $this->disableAccount();
                 $response =  false;
@@ -95,9 +100,6 @@ class AuthService
     {
         $response = ["status"=>Response::HTTP_OK];
 
-        /*if (!$this->accountExists()){
-            throw new NotFoundHttpException();
-        }*/
 
         //check if account inactivity  control is activated
         if ($this->configs->inactivity_control){
@@ -135,7 +137,24 @@ class AuthService
                 }
             }
         }
+
+        if ($response['status']!=Response::HTTP_OK){
+            $this->activityLogService->store(
+                'Attempt login',
+                null,
+                ActivityLogService::AUTH,
+                'user',
+                $this->getUser(),
+                $this->getUser()
+            );
+        }
         return $response;
+    }
+
+    public function getUser()
+    {
+        return $this->userRepository
+            ->getByEmail($this->request->username);
     }
 
     /**
@@ -152,8 +171,7 @@ class AuthService
      */
     public function passwordIsExpired()
     {
-        return Carbon::parse($this->userRepository
-                ->getByEmail($this->request->username)
+        return Carbon::parse($this->getUser()
                 ->password_updated_at)
                 ->diffInWeekdays(now())>=$this->configs->password_lifetime;
     }
@@ -176,12 +194,22 @@ class AuthService
     /**
      * void
      */
-    public function resetAttempts()
+    public function resetAttempts($loggedIn=false)
     {
         $attempt = $this->getAttempts();
         $attempt->last_attempt_at = null;
         $attempt->attempts = 0;
         $attempt->save();
+        if ($loggedIn){
+            $this->activityLogService->store(
+                'Attempt login',
+                $this->userRepository->getInstitutionByUser($this->getUser()->id)->id,
+                ActivityLogService::AUTH,
+                'user',
+                $this->getUser(),
+                $this->getUser()
+            );
+        }
     }
 
     /**

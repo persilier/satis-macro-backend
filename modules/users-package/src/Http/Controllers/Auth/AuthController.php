@@ -3,6 +3,7 @@ namespace Satis2020\UserPackage\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Laminas\Diactoros\Response as Psr7Response;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Laravel\Passport\TokenRepository;
@@ -12,6 +13,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\LoginRequest;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Services\Auth\AuthService;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -37,17 +39,20 @@ class AuthController extends ApiController
      */
     private $tokens;
 
+    protected $activityLogService;
+
     public function __construct(
         AuthorizationServer $server,
         TokenRepository $tokens,
-        JwtParser $jwt
+        JwtParser $jwt,
+        ActivityLogService $activityLogService
     )
     {
         parent::__construct();
         $this->jwt = $jwt;
         $this->server = $server;
         $this->tokens = $tokens;
-        
+        $this->activityLogService = $activityLogService;
         $this->middleware('auth:api')->except(['store']);
     }
 
@@ -76,7 +81,17 @@ class AuthController extends ApiController
      */
     public function logout()
     {
+        $this->activityLogService->store(
+            'Logout',
+            $this->institution()->id,
+            $this->activityLogService::AUTH,
+            'user',
+            $this->user(),
+            $this->user()
+        );
+
         $this->user()->token()->revoke();
+
         return $this->showMessage('Déconnexion réussie de l\'utilisateur.');
     }
 
@@ -102,8 +117,9 @@ class AuthController extends ApiController
             $convertedResponse =  $this->convertResponse(
                 $this->server->respondToAccessTokenRequest($serverRequest, new Psr7Response)
             );
-            $authService->resetAttempts();
-            return  $convertedResponse;
+            $authService->resetAttempts(true);
+            $content = json_decode($convertedResponse->getContent(),true);
+            return  \response($content,Response::HTTP_OK);
         } catch (OAuthServerException $e) {
             $authService->logAttempt();
             return  \response([

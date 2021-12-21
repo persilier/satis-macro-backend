@@ -151,4 +151,14 @@ class ActivityLogService
         return $activity;
     }
 
+    /**
+     * @param $user_id
+     * @param $action_type
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getLastLogByUserAndAction($user_id, $action_type)
+    {
+        return $this->activityLogRepository
+            ->getLastLogByUserAndAction($user_id,$action_type);
+    }
 }

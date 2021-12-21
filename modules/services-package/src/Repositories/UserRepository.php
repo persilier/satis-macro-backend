@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Repositories;
 
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
 /**
  * Class UserRepository
@@ -64,6 +65,12 @@ class UserRepository
             })->where('institution_id', $institutionId)
             ->select('users.*')
             ->get();
+    }
+
+    public function getInstitutionByUser($user_id)
+    {
+        $staff = $this->getById($user_id)->load('identite.staff')->identite->staff;
+        return Institution::query()->findOrFail($staff->institution_id);
     }
 
 }

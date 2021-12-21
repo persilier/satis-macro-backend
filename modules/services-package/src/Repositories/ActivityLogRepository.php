@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Repositories;
 
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Models\Activity;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class ActivityLogRepository
 {
@@ -95,6 +96,20 @@ class ActivityLogRepository
          }
 
         return $query->latest()->paginate($paginate);
+    }
+
+    /**
+     * @param $user_id
+     * @param $action_type
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getLastLogByUserAndAction($user_id, $action_type)
+    {
+        return $this->activity->newQuery()
+            ->where("causer_id",$user_id)
+            ->where('log_action',$action_type)
+            ->latest()
+            ->first();
     }
 
 
