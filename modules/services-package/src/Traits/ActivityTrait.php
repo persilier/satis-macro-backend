@@ -36,5 +36,4 @@ trait ActivityTrait
         return null;
     }
 
-
 }
