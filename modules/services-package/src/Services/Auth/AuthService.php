@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\LoginAttempt;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
@@ -69,7 +70,6 @@ class AuthService
         return false;
     }
 
-
     /**
      * @return bool
      */
@@ -80,7 +80,6 @@ class AuthService
                 $this->userRepository->getByEmail($this->request->username)->id,
                 ActivityLogService::AUTH);
         $response = true;
-
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
