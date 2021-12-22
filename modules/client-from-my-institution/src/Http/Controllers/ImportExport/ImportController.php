@@ -3,10 +3,12 @@
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
+use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
+use Satis2020\ServicePackage\Services\Imports\ClientImportService;
 
 /**
  * Class ImportExportController
@@ -22,63 +24,43 @@ class ImportController extends ApiController
     }
 
     /**
-     * @param Request $request
+     * @param ImportClientRequest $request
+     * @param ClientImportService $clientImportService
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
-    public function importClients(Request $request){
+    public function importClients(ImportClientRequest $request, ClientImportService $clientImportService)
+    {
+        $myInstitution = $this->institution()->name;
 
-        $institution = $this->institution();
+//        ini_set("max_execution_time", "200000");
 
-        $request->validate([
-            'file' => 'required|file|max:2048|mimes:xls,xlsx',
-            'etat_update' => 'required|boolean',
-            'stop_identite_exist' => 'required|boolean'
-        ]);
+        $file = $request->file('file');
 
-        $myInstitution = $institution->name;
-        try {
-            Excel::import(new TransactionClientImport($myInstitution,
+        $name = $file->getClientOriginalName();
+
+        $path = $request->file('file')->store("import-files", 'public');
+
+        Excel::import(
+            new TransactionClientImport(
+                $myInstitution,
                 $request->etat_update,
-                $request->stop_identite_exist),
-                request()->file('file')
-            );
-        } catch (\Exception $e){
-            return response()->json('here no',201);
-        }
+                $request->stop_identite_exist,
+                $clientImportService
+            ),
+            $path,
+            'public',
+            \Maatwebsite\Excel\Excel::CSV
+        );
 
-        return response()->json('here',201);
+//        Excel::import(new TransactionClientImport($myInstitution,
+//            $request->etat_update,
+//            $request->stop_identite_exist,
+//            $clientImportService),
+//            request()->file('file')
+//        );
 
-
-
-//        $datas = [
-//
-//            'status' => true,
-//            'clients' => ''
-//        ];
-//
-//        $file = $request->file('file');
-//
-//        $etat = $request->etat_update;
-//
-//        $stop_identite_exist = $request->stop_identite_exist;
-//
-//        $myInstitution = $institution->name;
-//
-//        $imports = new Client($etat, $myInstitution, $stop_identite_exist);
-//
-//        $imports->queue($file);
-
-//        if($imports->getErrors()){
-//
-//            $datas = [
-//
-//                'status' => false,
-//                'clients' => $imports->getErrors()
-//            ];
-//        }
-
-//        return response()->json($datas,201);
-
+        return response()->json(['status' => true, 'clients' => ''],201);
     }
 
 

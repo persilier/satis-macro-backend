@@ -59,7 +59,6 @@ trait VerifyUnicity
                 ->get();
 
             $search = $collection->search(function ($item, $key) use ($value, $column, $idColumn, $idValue) {
-
                 return $item->{$column} ? (is_null($idValue) ? in_array($value, json_decode($item->{$column}))
                         : $item->{$idColumn} !== $idValue && in_array($value, json_decode($item->{$column}))) : false;
             });
