@@ -33,13 +33,8 @@ class ImportController extends ApiController
     {
         $myInstitution = $this->institution()->name;
 
-//        ini_set("max_execution_time", "200000");
-
-        $file = $request->file('file');
-
-        $name = $file->getClientOriginalName();
-
-        $path = $request->file('file')->store("import-files", 'public');
+//        $fileName = 'demo-client'. '.' . $request->file('file')->getClientOriginalExtension();
+//        $request->file('file')->storeAs('public', $fileName);
 
         Excel::import(
             new TransactionClientImport(
@@ -48,7 +43,7 @@ class ImportController extends ApiController
                 $request->stop_identite_exist,
                 $clientImportService
             ),
-            $path,
+            "demo-client.csv",
             'public',
             \Maatwebsite\Excel\Excel::CSV
         );

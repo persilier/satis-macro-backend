@@ -12,10 +12,12 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Row;
+use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\NameModelRules;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue //, WithValidation
+class TransactionClientImport implements OnEachRow, WithHeadingRow, ShouldQueue, WithChunkReading//, WithValidation
 {
     protected $myInstitution;
     protected $stopIdentityExist;
@@ -81,9 +83,17 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         $row = $this->transformRowBeforeStoring($row);
 
-        dump($row);
+        Identite::create([
+            'firstname' => $row['firstname'],
+            'lastname' => $row['lastname'],
+            'sexe' => $row['sexe'],
+            'telephone' => $row['telephone'],
+            'email' => $row['email'],
+            'ville' => $row['ville'],
+        ]);
 
-        $this->clientImportService->store($row, $this->stopIdentityExist, $this->updateIdentity);
+//        dump($row);
+//        $this->clientImportService->store($row, $this->stopIdentityExist, $this->updateIdentity);
     }
 
     public function transformRowBeforeStoring($data)

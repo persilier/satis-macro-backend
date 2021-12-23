@@ -181,9 +181,6 @@ return [
         */
         'remote_disk'   => null,
         'remote_prefix' => null,
-        'temporary_files' => [
-            'force_resync_remote' => true,
-        ],
 
     ],
 ];
