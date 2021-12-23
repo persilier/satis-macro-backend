@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Row;
 use Satis2020\ServicePackage\Rules\NameModelRules;
 use Satis2020\ServicePackage\Services\Imports\ClientImportService;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading , ShouldQueue
 {
     protected $myInstitution;
     protected $stopIdentityExist;
@@ -27,7 +27,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 100;
     }
 
     public function onRow(Row $row)
