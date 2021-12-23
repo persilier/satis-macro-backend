@@ -27,22 +27,15 @@ class ClientImportService
     protected $accountTypeRepository;
     protected $institutionRepository;
 
-    public function __construct(IdentityRepository $identityRepository,
-                                ClientRepository $clientRepository,
-                                ClientInstitutionRepository $clientInstitutionRepository,
-                                AccountRepository $accountRepository,
-                                CategoryClientRepository $categoryClientRepository,
-                                AccountTypeRepository $accountTypeRepository,
-                                InstitutionRepository $institutionRepository
-    )
+    public function __construct()
     {
-        $this->identityRepository = $identityRepository;
-        $this->clientRepository = $clientRepository;
-        $this->clientInstitutionRepository = $clientInstitutionRepository;
-        $this->accountRepository = $accountRepository;
-        $this->categoryClientRepository = $categoryClientRepository;
-        $this->accountTypeRepository = $accountTypeRepository;
-        $this->institutionRepository = $institutionRepository;
+        $this->identityRepository = app(IdentityRepository::class);
+        $this->clientRepository = app(ClientRepository::class);
+        $this->clientInstitutionRepository = app(ClientInstitutionRepository::class);
+        $this->accountRepository = app(AccountRepository::class);
+        $this->categoryClientRepository = app(CategoryClientRepository::class);
+        $this->accountTypeRepository = app(AccountTypeRepository::class);
+        $this->institutionRepository = app(InstitutionRepository::class);
     }
 
     public function store($client, $stopIdentityExist, $updateIdentity)

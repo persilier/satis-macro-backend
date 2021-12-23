@@ -19,8 +19,8 @@ class ImportController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:api');
-        $this->middleware('permission:store-client-from-my-institution')->only(['importClient', 'downloadFile']);
+//        $this->middleware('auth:api');
+//        $this->middleware('permission:store-client-from-my-institution')->only(['importClient', 'downloadFile']);
     }
 
     /**
@@ -36,12 +36,12 @@ class ImportController extends ApiController
 //        $fileName = 'demo-client'. '.' . $request->file('file')->getClientOriginalExtension();
 //        $request->file('file')->storeAs('public', $fileName);
 
+
         Excel::import(
             new TransactionClientImport(
                 $myInstitution,
                 $request->etat_update,
-                $request->stop_identite_exist,
-                $clientImportService
+                $request->stop_identite_exist
             ),
             "demo-client.csv",
             'public',
