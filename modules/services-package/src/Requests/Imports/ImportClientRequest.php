@@ -24,8 +24,7 @@ class ImportClientRequest extends FormRequest
     public function rules()
     {
         return [
-//            'file' => 'required|file|max:2048000|mimes:xls,xlsx,csv',
-            'file' => 'required',
+            'file' => 'required|file|max:2048000|mimes:xls,xlsx,csv,txt',
             'etat_update' => 'required|boolean',
             'stop_identite_exist' => 'required|boolean'
         ];

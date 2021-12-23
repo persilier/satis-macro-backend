@@ -33,27 +33,16 @@ class ImportController extends ApiController
     {
         $myInstitution = $this->institution()->name;
 
-//        $fileName = 'demo-client'. '.' . $request->file('file')->getClientOriginalExtension();
-//        $request->file('file')->storeAs('public', $fileName);
-
-
         Excel::import(
             new TransactionClientImport(
                 $myInstitution,
                 $request->etat_update,
                 $request->stop_identite_exist
             ),
-            "demo-client.csv",
+            $request->file('file'),
             'public',
             \Maatwebsite\Excel\Excel::CSV
         );
-
-//        Excel::import(new TransactionClientImport($myInstitution,
-//            $request->etat_update,
-//            $request->stop_identite_exist,
-//            $clientImportService),
-//            request()->file('file')
-//        );
 
         return response()->json(['status' => true, 'clients' => ''],201);
     }

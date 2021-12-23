@@ -25,40 +25,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->updateIdentity = $updateIdentity;
     }
 
-//    public function collection(Collection $collections)
-//    {
-//        foreach ($collections as $client) {
-//            $this->clientImportService->store($client, $this->stopIdentityExist, $this->updateIdentity);
-//        }
-//    }
-
-
-//    public function rules(): array
-//    {
-//        return [
-//            'institution' => 'required|exists:institutions,name',
-//            'category_client' => ['required', new NameModelRules(['table' => 'category_clients', 'column' => 'name'])],
-//            'account_type' => ['required',  new NameModelRules(['table' => 'account_types', 'column'=> 'name'])],
-//            'account_number' => 'required',
-//            'firstname' => 'required|string',
-//            'lastname' => 'required|string',
-//            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
-//            'telephone' => 'required|array',
-//            'email' => [
-//                'required', 'array', /*new EmailValidationRules*/
-//            ],
-//            'ville' => 'required',
-//        ];
-//    }
-//
-//    public function prepareForValidation($data, $index)
-//    {
-//        $data['institution'] = $this->myInstitution ? $this->myInstitution : $data['institution'];
-//        $data['telephone'] = !is_null($data['telephone']) ? explode('/', $data['telephone']) : [];
-//        $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
-//        return $data;
-//    }
-
     public function chunkSize(): int
     {
         return 1000;
@@ -105,7 +71,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
     public function transformRowBeforeStoring($data)
     {
-        $data['institution'] = "Independant";
+        $data['institution'] = $this->myInstitution ? $this->myInstitution : $data['institution'];
         $data['telephone'] = !is_null($data['telephone']) ? explode('/', $data['telephone']) : [];
         $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
 
