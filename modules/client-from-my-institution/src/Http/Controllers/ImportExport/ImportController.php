@@ -25,11 +25,10 @@ class ImportController extends ApiController
 
     /**
      * @param ImportClientRequest $request
-     * @param ClientImportService $clientImportService
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function importClients(ImportClientRequest $request, ClientImportService $clientImportService)
+    public function importClients(ImportClientRequest $request)
     {
         $myInstitution = $this->institution()->name;
 
@@ -40,7 +39,6 @@ class ImportController extends ApiController
                 $request->stop_identite_exist
             ),
             $request->file('file'),
-//            "demo-client.csv",
             'public',
             \Maatwebsite\Excel\Excel::CSV
         );
