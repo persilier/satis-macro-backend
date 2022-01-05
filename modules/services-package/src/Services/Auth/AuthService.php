@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\LoginAttempt;
 use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Requests\LoginRequest;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthService
 {
@@ -102,44 +99,46 @@ class AuthService
     {
         $response = ["status"=>Response::HTTP_OK];
 
+        $user = $this->getUser()->load('roles');
 
-        //check if account inactivity  control is activated
-        if ($this->configs->inactivity_control){
-            if (!$this->isAccountActive()){
-                $response = [
-                    'status'=>Response::HTTP_BAD_REQUEST,
-                    'message'=>$this->configs->inactive_account_msg
-                ];
-            }
-        }
-
-        //check if password expiration control is activated
-        if ($this->configs->password_expiration_control){
-            if ($this->passwordIsExpired()){
-                $response = [
-                    'status'=>Response::HTTP_LOCKED,
-                    'message'=>$this->configs->password_expiration_msg
-                ];
-            }
-        }
-
-        //check if login attempts control is activated
-        if ($this->configs->block_attempt_control){
-            if ($this->isAccountBlocked()){
-                if ($this->getDurationSinceLastAttempt()>$this->configs->attempt_waiting_time){
-                    $this->resetAttempts();
-                    $response['status'] = Response::HTTP_OK;
-                }else{
-                    $remainingTime =  $this->getDurationSinceLastAttempt()+$this->configs->attempt_waiting_time;
+        if (!$user->hasRole(['admin-holding','admin-pro','admin-filial','admin-observatory'])){
+            //check if account inactivity  control is activated
+            if ($this->configs->inactivity_control){
+                if (!$this->isAccountActive()){
                     $response = [
-                        'status'=>Response::HTTP_FORBIDDEN,
-                        'expire_in'=>$remainingTime,
-                        'message'=>$this->configs->account_blocked_msg
+                        'status'=>Response::HTTP_BAD_REQUEST,
+                        'message'=>$this->configs->inactive_account_msg
                     ];
                 }
             }
-        }
 
+            //check if password expiration control is activated
+            if ($this->configs->password_expiration_control){
+                if ($this->passwordIsExpired()){
+                    $response = [
+                        'status'=>Response::HTTP_LOCKED,
+                        'message'=>$this->configs->password_expiration_msg
+                    ];
+                }
+            }
+
+            //check if login attempts control is activated
+            if ($this->configs->block_attempt_control){
+                if ($this->isAccountBlocked()){
+                    if ($this->getDurationSinceLastAttempt()>$this->configs->attempt_waiting_time){
+                        $this->resetAttempts();
+                        $response['status'] = Response::HTTP_OK;
+                    }else{
+                        $remainingTime =  $this->getDurationSinceLastAttempt()+$this->configs->attempt_waiting_time;
+                        $response = [
+                            'status'=>Response::HTTP_FORBIDDEN,
+                            'expire_in'=>$remainingTime,
+                            'message'=>$this->configs->account_blocked_msg
+                        ];
+                    }
+                }
+            }
+        }
         if ($response['status']!=Response::HTTP_OK){
             $this->activityLogService->store(
                 'Attempt login',
