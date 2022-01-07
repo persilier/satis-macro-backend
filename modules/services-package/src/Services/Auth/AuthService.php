@@ -124,12 +124,14 @@ class AuthService
 
             //check if login attempts control is activated
             if ($this->configs->block_attempt_control){
+                $attempt_waiting_time = $this->configs->attempt_waiting_time*60;
                 if ($this->isAccountBlocked()){
-                    if ($this->getDurationSinceLastAttempt()>$this->configs->attempt_waiting_time){
+                    if ($this->getDurationSinceLastAttempt()>=$attempt_waiting_time){
                         $this->resetAttempts();
                         $response['status'] = Response::HTTP_OK;
                     }else{
-                        $remainingTime =  $this->getDurationSinceLastAttempt()+$this->configs->attempt_waiting_time;
+                        //remaining time to wait in seconds
+                        $remainingTime =  $this->getDurationSinceLastAttempt()+$attempt_waiting_time;
                         $response = [
                             'status'=>Response::HTTP_FORBIDDEN,
                             'expire_in'=>$remainingTime,
@@ -164,7 +166,7 @@ class AuthService
     public function getDurationSinceLastAttempt()
     {
         return  Carbon::parse($this->getAttempts()
-            ->last_attempt_at)->diffInMinutes(now());
+            ->last_attempt_at)->diffInSeconds(now()->addSeconds(5));
     }
 
     /**
@@ -183,7 +185,7 @@ class AuthService
     public function logAttempt()
     {
         $numberOfAtempts=1;
-        if ($this->getDurationSinceLastAttempt()<$this->configs->attempt_delay){
+        if ($this->getDurationSinceLastAttempt()<$this->configs->attempt_delay*60){
             $numberOfAtempts = $this->getAttempts()->attempts+1;
         }
         $attempt = $this->getAttempts();
@@ -194,6 +196,7 @@ class AuthService
 
     /**
      * void
+     * @param bool $loggedIn
      */
     public function resetAttempts($loggedIn=false)
     {
@@ -230,6 +233,7 @@ class AuthService
         $loginAttempt = LoginAttempt::query()
             ->where('ip',\request()->ip())
             ->where('email',$this->request->username)
+            ->latest()
             ->first();
         if ($loginAttempt==null){
             $loginAttempt = LoginAttempt::query()
