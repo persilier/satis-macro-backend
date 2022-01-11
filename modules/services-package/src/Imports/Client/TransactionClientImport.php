@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Imports\Client;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +22,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading //, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
 
     protected $myInstitution;
@@ -58,8 +59,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $row = $row->toArray();
 
         $row = $this->transformRowBeforeStoring($row);
-
-        Log::info($row);
 
         $validator = $this->validateRow($row);
 
