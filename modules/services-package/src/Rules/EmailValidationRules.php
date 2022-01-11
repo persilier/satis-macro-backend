@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EmailValidationRules implements Rule
 {
+    private $message;
 
     public function __construct()
     {

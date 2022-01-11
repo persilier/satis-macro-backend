@@ -4,7 +4,6 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Clients;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
@@ -12,8 +11,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
-use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -150,7 +147,7 @@ class ClientController extends ApiController
     public function show(Request $request, $clientId)
     {
         $request->merge(['institution_id' => $this->institution()->id]);
-        if(!$client = $this->getOneClient($request, $clientId)){
+        if (!$client = $this->getOneClient($request, $clientId)) {
 
             throw new CustomException("Impossible de retrouver ce client dans votre institution.");
         }
@@ -184,8 +181,9 @@ class ClientController extends ApiController
         ])->find($accountId);
 
         // verify if the account is not null and belong to the institution of the user connected
-        if (is_null($account) || $account->client_institution->institution_id != $institution->id)
+        if (is_null($account) || $account->client_institution->institution_id != $institution->id) {
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+        }
 
         $client = $account->client_institution->client;
 
@@ -193,7 +191,6 @@ class ClientController extends ApiController
         $verifyAccount = $this->handleAccountVerification($request->number, $account->id);
 
         if (!$verifyAccount['status']) {
-
             throw new CustomException($verifyAccount, 409);
         }
 
