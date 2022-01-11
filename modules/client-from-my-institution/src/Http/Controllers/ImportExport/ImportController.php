@@ -8,7 +8,6 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
 use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
-use Satis2020\ServicePackage\Services\Imports\ClientImportService;
 
 /**
  * Class ImportExportController
@@ -19,8 +18,11 @@ class ImportController extends ApiController
     public function __construct()
     {
         parent::__construct();
-//        $this->middleware('auth:api');
-//        $this->middleware('permission:store-client-from-my-institution')->only(['importClient', 'downloadFile']);
+
+        $this->middleware('auth:api');
+
+        $this->middleware('permission:store-client-from-my-institution')
+            ->only(['importClient', 'downloadFile']);
     }
 
     /**
@@ -30,7 +32,7 @@ class ImportController extends ApiController
      */
     public function importClients(ImportClientRequest $request)
     {
-        $myInstitution = $this->institution()->name;
+        $myInstitution = $this->institution();
 
         Excel::import(
             new TransactionClientImport(
@@ -43,7 +45,7 @@ class ImportController extends ApiController
             \Maatwebsite\Excel\Excel::CSV
         );
 
-        return response()->json(['status' => true, 'clients' => ''],201);
+        return response()->json(['status' => true, 'clients' => ''], 201);
     }
 
 
