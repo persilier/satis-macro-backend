@@ -2,7 +2,6 @@
 
 namespace Satis2020\ServicePackage\Imports\Client;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -80,14 +79,16 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     ->get()
                     ->filter(function ($identity, $key) use ($row) {
 
+                        $telephones = $identity->telephone ?: [];
                         foreach ($row['telephone'] as $value) {
-                            if (in_array($value, $identity->telephone)) {
+                            if (in_array($value, $telephones)) {
                                 return true;
                             }
                         }
 
+                        $emails = $identity->email ?: [];
                         foreach ($row['email'] as $value) {
-                            if (in_array($value, $identity->email)) {
+                            if (in_array($value, $emails)) {
                                 return true;
                             }
                         }
