@@ -60,6 +60,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         $row = $this->transformRowBeforeStoring($row);
 
+        Log::info($row);
+
         $validator = $this->validateRow($row);
 
         if (!$validator->fails()) {
