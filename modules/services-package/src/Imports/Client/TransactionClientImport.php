@@ -22,7 +22,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading //, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
 
     protected $myInstitution;
