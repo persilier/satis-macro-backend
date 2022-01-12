@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Channels;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Validator;
 use Satis2020\ServicePackage\MessageApiMethod;
+use Satis2020\ServicePackage\Services\SendSMService;
 
 class MessageChannel
 {
@@ -22,24 +23,7 @@ class MessageChannel
     {
         $data = $notification->toMessage($notifiable);
 
-        try {
-            $params = $data['institutionMessageApi']->params;
-            $params['to'] = $data['to'];
-            $params['text'] = $this->remove_accent($data['text']);
-
-            $messageApi = $data['institutionMessageApi']->messageApi;
-
-            $messageApiParams = [];
-
-            foreach ($messageApi->params as $param) {
-                $messageApiParams[] = $params[$param];
-            }
-
-            // Send notification to the $notifiable instance...
-            return call_user_func_array([MessageApiMethod::class, $messageApi->method], $messageApiParams);
-        }catch (\Exception $exception){
-            return $exception->getMessage();
-        }
+        return (new SendSMService())->send($data);
     }
 
 }
