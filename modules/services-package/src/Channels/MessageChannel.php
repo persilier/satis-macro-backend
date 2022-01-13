@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Channels;
 
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Satis2020\ServicePackage\MessageApiMethod;
 
@@ -35,9 +36,13 @@ class MessageChannel
                 $messageApiParams[] = $params[$param];
             }
 
+            Log::info("send sms method ".$messageApi->method);
             // Send notification to the $notifiable instance...
-            return call_user_func_array([MessageApiMethod::class, $messageApi->method], $messageApiParams);
+            $response = call_user_func_array([MessageApiMethod::class, $messageApi->method], $messageApiParams);
+           Log::debug($response);
+            return $response;
         }catch (\Exception $exception){
+            Log::debug($exception);
             return $exception->getMessage();
         }
     }

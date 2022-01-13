@@ -7,7 +7,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\AuthConfigRequest;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Services\Auth\AuthConfigService;
 
 class AuthConfigController extends ApiController
@@ -21,9 +21,9 @@ class AuthConfigController extends ApiController
     /**
      * AuthConfigController constructor.
      * @param AuthConfigService $authConfigService
-     * @param ActivityLogService $activityLogService
+     * @param NotificationProofService $activityLogService
      */
-    public function __construct(AuthConfigService $authConfigService, ActivityLogService $activityLogService)
+    public function __construct(AuthConfigService $authConfigService, NotificationProofService $activityLogService)
     {
         parent::__construct();
         $this->authConfigService = $authConfigService;

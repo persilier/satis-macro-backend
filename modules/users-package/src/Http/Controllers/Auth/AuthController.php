@@ -13,7 +13,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\LoginRequest;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Services\Auth\AuthService;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -45,7 +45,7 @@ class AuthController extends ApiController
         AuthorizationServer $server,
         TokenRepository $tokens,
         JwtParser $jwt,
-        ActivityLogService $activityLogService
+        NotificationProofService $activityLogService
     )
     {
         parent::__construct();

@@ -57,6 +57,7 @@
     "satis2020/my-institution-unit": "^1.0",
     "satis2020/my-user": "^1.0",
     "satis2020/notification": "^1.0",
+    "satis2020/notification-proof": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
     "satis2020/position": "^1.0",
     "satis2020/processing-circuit-any-institution": "^1.0",
@@ -728,6 +729,13 @@
     {
       "type": "path",
       "url": "modules/activity-log/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/notification-proof/",
       "options": {
         "symlink": true
       }

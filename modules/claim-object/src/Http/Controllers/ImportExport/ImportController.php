@@ -5,7 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\ClaimObject;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -17,7 +17,7 @@ class ImportController extends ApiController
 {
     use \Satis2020\ServicePackage\Traits\ClaimObject;
     protected $activityLogService;
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(NotificationProofService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

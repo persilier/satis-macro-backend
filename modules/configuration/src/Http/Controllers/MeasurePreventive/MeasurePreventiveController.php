@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 
 /**
  * Class MeasurePreventiveController
@@ -17,7 +17,7 @@ class MeasurePreventiveController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(NotificationProofService $activityLogService)
     {
         parent::__construct();
 

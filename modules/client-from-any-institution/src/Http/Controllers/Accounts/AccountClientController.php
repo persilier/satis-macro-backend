@@ -9,7 +9,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Account;
 use Illuminate\Http\Request;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 
 /**
@@ -22,7 +22,7 @@ class AccountClientController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(NotificationProofService $activityLogService)
     {
         parent::__construct();
 

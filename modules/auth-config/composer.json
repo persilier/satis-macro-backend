@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Satis2020\\AuthConfig\\Providers\\AuthConfigServiceProvider"
+              "NotificationProofServiceProvider"
             ]
         }
     }

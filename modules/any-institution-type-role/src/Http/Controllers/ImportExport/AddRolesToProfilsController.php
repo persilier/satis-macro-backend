@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Imports\AddProfilToRole;
 use Satis2020\ServicePackage\Models\InstitutionType;
 use Satis2020\ServicePackage\Models\Module;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Traits\RoleTrait;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -25,7 +25,7 @@ class AddRolesToProfilsController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(NotificationProofService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

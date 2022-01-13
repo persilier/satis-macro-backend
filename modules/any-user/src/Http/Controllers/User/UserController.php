@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\UserTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
@@ -24,7 +24,7 @@ class UserController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(NotificationProofService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

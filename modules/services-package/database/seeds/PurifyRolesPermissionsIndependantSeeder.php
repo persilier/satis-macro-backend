@@ -82,7 +82,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
                     'list-auth-config','update-auth-config',
-                    'activity-log'
+                    'activity-log',
+                    'list-notification-proof'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
