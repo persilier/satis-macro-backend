@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         'Laravel\Passport\Events\AccessTokenCreated' => [
             'Satis2020\ServicePackage\Listeners\RevokeExistingTokens',
         ],
+        'Illuminate\Notifications\Events\NotificationSent' => [
+            'Satis2020\ServicePackage\Listeners\LogNotification',
+        ],
     ];
 
     /**

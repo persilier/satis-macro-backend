@@ -102,7 +102,8 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
             'to' => $this->institution->iso_code.$notifiable->telephone[0],
             'text' => $this->event->text,
             'institutionMessageApi' => $this->getStaffInstitutionMessageApi($this->institution),
-            'institution_id'=>$this->institution->id
+            'institution_id'=>$this->institution->id,
+            'notifiable_id'=>$notifiable->id
         ];
     }
 }

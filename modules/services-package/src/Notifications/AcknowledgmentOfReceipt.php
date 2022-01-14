@@ -49,8 +49,8 @@ class AcknowledgmentOfReceipt extends Notification
     public function via($notifiable)
     {
         return ($this->claim->response_channel_slug == 'sms' || is_null($this->claim->response_channel_slug))
-            ? [MessageChannel::class]
-            : ['mail'];
+            ? [MessageChannel::class,'database']
+            : ['mail','database'];
     }
 
     /**
@@ -61,27 +61,12 @@ class AcknowledgmentOfReceipt extends Notification
      */
     public function toMail($notifiable)
     {
-        $response =  (new MailMessage)
+        return (new MailMessage)
             ->subject('Accusé de reception')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
             ]);
-
-        $institution_id =  is_null($this->claim->createdBy)
-            ? $this->claim->institutionTargeted->id:
-            $this->claim->createdBy->institution->id;
-
-        //save the notification message to db
-        $data = [
-            "message"=>$this->event->text,
-            "channel"=>NotificationConsts::EMAIL_CHANNEL,
-            "sent_at"=>now(),
-            "to"=>$notifiable->email[0]
-        ];
-        $this->storeProof($data,$institution_id);
-
-        return $response;
     }
 
     /**
@@ -92,8 +77,15 @@ class AcknowledgmentOfReceipt extends Notification
      */
     public function toArray($notifiable)
     {
+        $institution_id =  is_null($this->claim->createdBy)
+            ? $this->claim->institutionTargeted->id:
+            $this->claim->createdBy->institution->id;
         return [
-            //
+            "message"=>$this->event->text,
+            "channel"=>NotificationConsts::EMAIL_CHANNEL,
+            "sent_at"=>now(),
+            "to"=>$notifiable->id,
+            "institution_id"=>$institution_id
         ];
     }
 
@@ -112,8 +104,9 @@ class AcknowledgmentOfReceipt extends Notification
             'text' => $this->event->text,
             'institutionMessageApi' => is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->institutionMessageApi :
                  $this->claim->createdBy->institution->institutionMessageApi,
-            "institution_id"=> is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->id
+            'institution_id'=> is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->id
                  :  $this->claim->createdBy->institution->id,
+            'notifiable_id'=>$notifiable->id
         ];
     }
 

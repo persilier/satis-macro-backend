@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\NotificationProof;
 
@@ -29,7 +30,7 @@ $factory->define(NotificationProof::class, function (Faker $faker) {
     return [
         'id' => (string) Str::uuid(),
         "channel"=>$channel,
-        "to"=> $to,
+        "to"=> Identite::query()->doesntHave('user')->inRandomOrder()->first()->id,
         "sent_at"=>Carbon::today()->subDays(rand(0, 365)),
         "message"=>$faker->text,
         "institution_id"=> Institution::query()->inRandomOrder()->first()->id,

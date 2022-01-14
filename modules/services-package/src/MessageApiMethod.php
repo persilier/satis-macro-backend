@@ -22,7 +22,7 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toOceanicsms($user, $password, $from, $to, $text, $api,$institution_id)
+    static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
 
              $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
@@ -47,7 +47,7 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toMessageApi2($password, $from, $to, $text,$institution_id)
+    static public function toMessageApi2($password, $from, $to, $text)
     {
 
              return Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
@@ -71,7 +71,7 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toMessageApi3($username, $senderId, $to, $text, $apiId,$institution_id)
+    static public function toMessageApi3($username, $senderId, $to, $text, $apiId)
     {
 
              return Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
@@ -95,7 +95,7 @@ class MessageApiMethod
      * @param $text
      * @return array|mixed
      */
-    static public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text,$institution_id)
+    static public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
     {
         $headers = [
             "Authorization" => "Basic ".base64_encode("$username:$password")
@@ -113,7 +113,6 @@ class MessageApiMethod
         $response =  Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data)
             ->json();
 
-        Log::info("londo response ".$response['message']);
         return  isset($response['status']) && $response['status']==Response::HTTP_OK;
     }
 

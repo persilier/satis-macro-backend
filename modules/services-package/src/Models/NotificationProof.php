@@ -22,4 +22,9 @@ class NotificationProof extends Model
     {
         return $this->belongsTo(Institution::class);
     }
+
+    public function to()
+    {
+        return $this->belongsTo(Identite::class,"to");
+    }
 }

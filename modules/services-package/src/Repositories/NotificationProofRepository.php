@@ -3,7 +3,6 @@
 namespace Satis2020\ServicePackage\Repositories;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Satis2020\ServicePackage\Models\NotificationProof;
 
 class NotificationProofRepository
@@ -29,7 +28,8 @@ class NotificationProofRepository
      */
     public function create($data)
     {
-        return $this->notificationProof->newQuery()->create($data);
+        return $this->notificationProof->newQuery()
+            ->create($data);
     }
 
     /***
@@ -39,7 +39,7 @@ class NotificationProofRepository
     public function getAll($pagination)
     {
         return $this->notificationProof->newQuery()
-            ->with("institution")
+            ->with("institution","to")
             ->get();
     }
 
@@ -51,6 +51,7 @@ class NotificationProofRepository
     public function getByInstitution($institutionId, $paginate)
     {
         return $this->notificationProof->newQuery()
+            ->with('to')
             ->where('institution_id', $institutionId)
             ->latest()
             ->get();
@@ -65,7 +66,8 @@ class NotificationProofRepository
     public function getByInstitutionAndFilter($institutionId, $request ,$paginate)
     {
          $query = $this->notificationProof->newQuery()
-                            ->where('institution_id', $institutionId);
+             ->with('to')
+             ->where('institution_id', $institutionId);
          if (!is_null($request)) {
 
              if ($request->has('channel')) {
@@ -94,7 +96,7 @@ class NotificationProofRepository
      */
     public function getAllAndFilter($request ,$paginate)
     {
-         $query = $this->notificationProof->with('institution');
+         $query = $this->notificationProof->with('institution','to');
          if (!is_null($request)) {
              if ($request->has('institution_id')) {
                  $query = $query->where('institution_id', $request->institution_id);
