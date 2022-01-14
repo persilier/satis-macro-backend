@@ -6,12 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
-use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\NotificationProof;
-use Swift_TransportException;
 
 /**
  * Class AcknowledgmentOfReceipt
@@ -71,6 +68,10 @@ class AcknowledgmentOfReceipt extends Notification
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
             ]);
 
+        $institution_id =  is_null($this->claim->createdBy)
+            ? $this->claim->institutionTargeted->id:
+            $this->claim->createdBy->institution->id;
+
         //save the notification message to db
         $data = [
             "message"=>$this->event->text,
@@ -78,7 +79,7 @@ class AcknowledgmentOfReceipt extends Notification
             "sent_at"=>now(),
             "to"=>$notifiable->email[0]
         ];
-        $this->storeProof($this->claim,$data);
+        $this->storeProof($data,$institution_id);
 
         return $response;
     }
@@ -111,7 +112,8 @@ class AcknowledgmentOfReceipt extends Notification
             'text' => $this->event->text,
             'institutionMessageApi' => is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->institutionMessageApi :
                  $this->claim->createdBy->institution->institutionMessageApi,
-            "claim"=>$this->claim
+            "institution_id"=> is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->id
+                 :  $this->claim->createdBy->institution->id,
         ];
     }
 

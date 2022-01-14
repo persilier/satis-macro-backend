@@ -10,11 +10,9 @@ use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 trait NotificationProof
 {
 
-    protected function storeProof($claim,$data)
+    protected function storeProof($data,$institution_id)
     {
-
-        $institution =  is_null($claim->createdBy) ? $claim->institutionTargeted:  $this->claim->createdBy->institution;
-        $service = new NotificationProofService(app(NotificationProofRepository::class) );
-        $service->store($institution->id,$data);
+        $service = new NotificationProofService(app(NotificationProofRepository::class));
+        $service->store($institution_id,$data);
     }
 }

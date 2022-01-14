@@ -4,7 +4,9 @@
 namespace Satis2020\ServicePackage;
 
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class MessageApiMethod
 {
@@ -20,18 +22,19 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toOceanicsms($user, $password, $from, $to, $text, $api)
+    static public function toOceanicsms($user, $password, $from, $to, $text, $api,$institution_id)
     {
 
-            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+             $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
                 'user' => $user,
                 'password' => $password,
                 'from' => $from,
                 'to' => $to,
                 'text' => $text,
                 'api' => $api
-            ])->throw()->json();
-    
+            ])->body();
+
+        return is_string($response) && str_contains(strtolower($response),"id:");
     }
 
     /**
@@ -44,18 +47,17 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toMessageApi2($password, $from, $to, $text)
+    static public function toMessageApi2($password, $from, $to, $text,$institution_id)
     {
 
-            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+             return Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
                 'username' => 'satisuimcec',
                 'password' => $password,
                 'from' => $from,
                 'to' => $to,
                 'text' => $text,
                 'api' => "14265"
-            ])->throw()->json();        
-
+            ])->throw()->json();
     }
 
     /**
@@ -69,10 +71,10 @@ class MessageApiMethod
      * @return mixed
      * @throws \Illuminate\Http\Client\RequestException
      */
-    static public function toMessageApi3($username, $senderId, $to, $text, $apiId)
+    static public function toMessageApi3($username, $senderId, $to, $text, $apiId,$institution_id)
     {
 
-            return $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+             return Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
                 'username' => $username,
                 'password' => 'SatisUimcec',
                 'from' => $senderId,
@@ -93,7 +95,7 @@ class MessageApiMethod
      * @param $text
      * @return array|mixed
      */
-    static public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
+    static public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text,$institution_id)
     {
         $headers = [
             "Authorization" => "Basic ".base64_encode("$username:$password")
@@ -108,8 +110,15 @@ class MessageApiMethod
                 'app' => $app
             ]
         ];
-        return Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+        $response =  Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data)
+            ->json();
 
+        Log::info("londo response ".$response['message']);
+        return  isset($response['status']) && $response['status']==Response::HTTP_OK;
     }
+
+
+
+
 
 }
