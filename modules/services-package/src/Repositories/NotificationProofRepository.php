@@ -40,7 +40,7 @@ class NotificationProofRepository
     {
         return $this->notificationProof->newQuery()
             ->with("institution")
-            ->paginate($pagination);
+            ->get();
     }
 
     /***
@@ -53,14 +53,14 @@ class NotificationProofRepository
         return $this->notificationProof->newQuery()
             ->where('institution_id', $institutionId)
             ->latest()
-            ->paginate($paginate);
+            ->get();
     }
 
     /***
      * @param $institutionId
      * @param $request
      * @param $paginate
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function getByInstitutionAndFilter($institutionId, $request ,$paginate)
     {
@@ -83,14 +83,14 @@ class NotificationProofRepository
              }
          }
 
-        return $query->paginate($paginate);
+        return $query->get();
     }
 
     /***
      * @param $institutionId
      * @param $request
      * @param $paginate
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function getAllAndFilter($request ,$paginate)
     {
@@ -115,7 +115,7 @@ class NotificationProofRepository
              }
          }
 
-        return $query->paginate($paginate);
+        return $query->get();
     }
 
 }

@@ -8,10 +8,9 @@ use Illuminate\Http\Response;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Repositories\InstitutionRepository;
 use Satis2020\ServicePackage\Requests\NotificationProofRequest;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Services\Auth\AuthConfigService;
+use Satis2020\ServicePackage\Services\NotificationProof\NotificationProofService;
 
 class IndependantNotificationProofController extends ApiController
 {

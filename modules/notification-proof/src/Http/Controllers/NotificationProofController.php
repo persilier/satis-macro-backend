@@ -9,8 +9,8 @@ use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Repositories\InstitutionRepository;
 use Satis2020\ServicePackage\Requests\NotificationProofRequest;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
 use Satis2020\ServicePackage\Services\Auth\AuthConfigService;
+use Satis2020\ServicePackage\Services\NotificationProof\NotificationProofService;
 
 class NotificationProofController extends ApiController
 {
@@ -44,7 +44,12 @@ class NotificationProofController extends ApiController
      */
     public function index(NotificationProofRequest $request,$pagination=NotificationConsts::PAGINATION_LIMIT)
     {
-        return response($this->notificationProofService->filterNotificationProofs($request,$pagination),Response::HTTP_OK);
+        $institutionRepository = app(InstitutionRepository::class);
+
+        return response([
+            "proofs"=>$this->notificationProofService->filterNotificationProofs($request,$pagination),
+            "filter-data"=>$institutionRepository->getAll()]
+            ,Response::HTTP_OK);
     }
 
     /**
