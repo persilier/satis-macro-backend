@@ -4,7 +4,6 @@ namespace Satis2020\ServicePackage\Repositories;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Models\NotificationProof;
 
 class NotificationProofRepository

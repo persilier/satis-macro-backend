@@ -1,13 +1,9 @@
 <?php
 
-namespace Satis2020\ServicePackage\Services\ActivityLog;
+namespace Satis2020\ServicePackage\Services\NotificationProof;
 
-use Satis2020\ServicePackage\Consts\NotificationConsts;
-use Satis2020\ServicePackage\Repositories\ActivityLogRepository;
+use Satis2020\ServicePackage\Models\NotificationProof;
 use Satis2020\ServicePackage\Repositories\NotificationProofRepository;
-use Satis2020\ServicePackage\Repositories\UserRepository;
-use Spatie\Activitylog\ActivityLogger;
-use Spatie\Activitylog\Contracts\Activity;
 
 /***
  * Class NotificationProofService
@@ -66,7 +62,7 @@ class NotificationProofService
     /***
      * @param $institutionId
      * @param $data
-     * @return ActivityLogger
+     * @return NotificationProof
      */
     public function store($institutionId,$data)
     {

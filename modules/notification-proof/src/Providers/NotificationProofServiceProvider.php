@@ -3,7 +3,6 @@ namespace Satis2020\NotificationProof\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Traits\ApiResponser;
 
 class NotificationProofServiceProvider extends ServiceProvider
