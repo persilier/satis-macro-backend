@@ -75,7 +75,12 @@ class NotificationProofRepository
              }
 
              if ($request->has('to')) {
-                 $query = $query->where('to', 'LIKE','%'.$request->to.'%');
+                 $query = $query->whereHas("to",function ($query) use ($request){
+                     $query->where('firstname', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('lastname', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('telephone', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('email', 'LIKE','%'.$request->to.'%');
+                 });
              }
 
              if ($request->has('date_start') && $request->has('date_end')) {
@@ -107,7 +112,12 @@ class NotificationProofRepository
              }
 
              if ($request->has('to')) {
-                 $query = $query->where('to', 'LIKE','%'.$request->to.'%');
+                 $query = $query->whereHas("to",function ($query) use ($request){
+                     $query->where('firstname', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('lastname', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('telephone', 'LIKE','%'.$request->to.'%')
+                         ->orWhere('email', 'LIKE','%'.$request->to.'%');
+                 });
              }
 
              if ($request->has('date_start') && $request->has('date_end')) {

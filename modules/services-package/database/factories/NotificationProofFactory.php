@@ -30,7 +30,7 @@ $factory->define(NotificationProof::class, function (Faker $faker) {
     return [
         'id' => (string) Str::uuid(),
         "channel"=>$channel,
-        "to"=> Identite::query()->doesntHave('user')->inRandomOrder()->first()->id,
+        "to"=> Identite::query()->inRandomOrder()->first()->id,
         "sent_at"=>Carbon::today()->subDays(rand(0, 365)),
         "message"=>$faker->text,
         "institution_id"=> Institution::query()->inRandomOrder()->first()->id,

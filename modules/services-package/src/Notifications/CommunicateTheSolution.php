@@ -59,22 +59,12 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $response =  (new MailMessage)
+        return (new MailMessage)
             ->subject('Réclamation traitée')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
             ]);
-        //save the notification message to db
-        $data = [
-            "message"=>$this->event->text,
-            "channel"=>NotificationConsts::EMAIL_CHANNEL,
-            "sent_at"=>now(),
-            "to"=>$notifiable->email[0]
-        ];
-        $this->storeProof($this->claim,$data,$this->institution);
-
-        return $response;
     }
 
     /**

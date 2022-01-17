@@ -2,7 +2,8 @@
 
 namespace Satis2020\ServicePackage\Listeners;
 
-use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\Events\NotificationSent;
+use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Notifications\CommunicateTheSolution;
 use Satis2020\ServicePackage\Traits\NotificationProof;
@@ -26,18 +27,29 @@ class LogNotification
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(NotificationSent $event)
     {
         $notification = $event->notification;
-        dd($notification);
 
-        /*if (
-            $notification->type==AcknowledgmentOfReceipt::class ||
-            $notification->type==CommunicateTheSolution::class
-        ) {
-            $data = $notification->data;
-            $institution_id = $data['institution_id'];
-            $this->storeProof($data,$institution_id);
-        }*/
+        if
+        (
+            (get_class($notification) == AcknowledgmentOfReceipt::class ||
+            get_class($notification) == CommunicateTheSolution::class)
+            && $event->channel == "mail"
+        )
+        {
+            $text = $notification->event->text;
+            $to = $event->notifiable->id;
+            $institution = $notification->institution;
+
+            $data = [
+                "message"=>$text,
+                "channel"=>NotificationConsts::EMAIL_CHANNEL,
+                "sent_at"=>now(),
+                "to"=>$to
+            ];
+            $this->storeProof($data,$institution->id);
+
+        }
     }
 }

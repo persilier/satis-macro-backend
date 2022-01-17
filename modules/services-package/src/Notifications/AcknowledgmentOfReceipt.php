@@ -7,19 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
-use Satis2020\ServicePackage\Consts\NotificationConsts;
-use Satis2020\ServicePackage\Traits\NotificationProof;
 
 /**
  * Class AcknowledgmentOfReceipt
  * @package Satis2020\ServicePackage\Notifications
  */
-class AcknowledgmentOfReceipt extends Notification
+class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification,NotificationProof;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
     public $claim;
     public $event;
+    public $institution;
 
     /**
      * Create a new notification instance.
@@ -38,6 +37,8 @@ class AcknowledgmentOfReceipt extends Notification
 
         $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
 
+        $this->institution = is_null($this->claim->createdBy) ? $this->claim->institutionTargeted
+            :  $this->claim->createdBy->institution;
     }
 
     /**
@@ -61,6 +62,7 @@ class AcknowledgmentOfReceipt extends Notification
      */
     public function toMail($notifiable)
     {
+
         return (new MailMessage)
             ->subject('Accusé de reception')
             ->markdown('ServicePackage::mail.claim.feedback', [
@@ -77,15 +79,8 @@ class AcknowledgmentOfReceipt extends Notification
      */
     public function toArray($notifiable)
     {
-        $institution_id =  is_null($this->claim->createdBy)
-            ? $this->claim->institutionTargeted->id:
-            $this->claim->createdBy->institution->id;
         return [
-            "message"=>$this->event->text,
-            "channel"=>NotificationConsts::EMAIL_CHANNEL,
-            "sent_at"=>now(),
-            "to"=>$notifiable->id,
-            "institution_id"=>$institution_id
+            //
         ];
     }
 
