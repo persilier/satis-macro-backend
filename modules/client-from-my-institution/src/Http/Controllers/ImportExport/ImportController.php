@@ -5,7 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class ImportExportController
@@ -15,7 +15,7 @@ class ImportController extends ApiController
 {
     protected $activityLogService;
 
-    public function __construct(NotificationProofService $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

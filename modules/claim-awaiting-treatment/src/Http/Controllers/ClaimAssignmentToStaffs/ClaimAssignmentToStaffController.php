@@ -16,7 +16,7 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Notification;
 
@@ -30,7 +30,7 @@ class ClaimAssignmentToStaffController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(NotificationProofService $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 

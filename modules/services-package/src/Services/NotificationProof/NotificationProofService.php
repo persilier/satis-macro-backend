@@ -6,8 +6,8 @@ use Satis2020\ServicePackage\Models\NotificationProof;
 use Satis2020\ServicePackage\Repositories\NotificationProofRepository;
 
 /***
- * Class NotificationProofService
- * @package Satis2020\ServicePackage\Services\NotificationProofService
+ * Class ActivityLogService
+ * @package Satis2020\ServicePackage\Services\ActivityLogService
  */
 class NotificationProofService
 {
@@ -19,7 +19,7 @@ class NotificationProofService
     private $proofRepository;
 
     /***
-     * NotificationProofService constructor.
+     * ActivityLogService constructor.
      * @param NotificationProofRepository $proofRepository
      */
     public function __construct(NotificationProofRepository $proofRepository)

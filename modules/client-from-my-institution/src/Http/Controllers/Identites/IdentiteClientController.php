@@ -9,7 +9,7 @@ use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\ClientTrait;
@@ -20,7 +20,7 @@ class IdentiteClientController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(NotificationProofService $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
