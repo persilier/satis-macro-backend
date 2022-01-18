@@ -90,7 +90,7 @@ class Handler
                 'status'=>$exception->getCode(),
                 'message'=>$exception->getMessage()
             ];
-            return \response()->json($response);
+            return \response()->json($response,$exception->getCode());
         }
 
         if($exception instanceof CustomException){
