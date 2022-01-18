@@ -85,6 +85,10 @@ class Handler
             return $this->errorResponse($exception->getMessage(), $exception->getCode());
         }
 
+        if($exception instanceof TwoSessionNotAllowed){
+            return $this->errorResponse($exception->getMessage(), $exception->getCode());
+        }
+
         if($exception instanceof CustomException){
             return $this->errorResponse($exception->getData(), $exception->getCode());
         }

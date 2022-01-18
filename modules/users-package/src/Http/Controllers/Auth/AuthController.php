@@ -77,7 +77,7 @@ class AuthController extends ApiController
     /**
      * Log the user out the application
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
     {
@@ -90,8 +90,9 @@ class AuthController extends ApiController
             $this->user()
         );
 
-        $this->user()->token()->revoke();
-
+        $this->user()->tokens()->latest()->limit(1)->get()->map(function ($token) {
+            $token->revoke();
+        });
         return $this->showMessage('Déconnexion réussie de l\'utilisateur.');
     }
 

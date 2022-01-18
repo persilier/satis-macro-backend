@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Satis2020\ServicePackage\Exceptions\TwoSessionNotAllowed;
 use Satis2020\ServicePackage\Models\LoginAttempt;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Requests\LoginRequest;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
@@ -100,6 +102,8 @@ class AuthService
         $response = ["status"=>Response::HTTP_OK];
 
         $user = $this->getUser()->load('roles');
+
+        $this->checkIfUserIsAlreadyConnected();
 
         if (!$user->hasRole(['admin-holding','admin-pro','admin-filial','admin-observatory'])){
             //check if account inactivity  control is activated
@@ -243,5 +247,15 @@ class AuthService
                 ]);
         }
         return $loginAttempt;
+    }
+
+    public function checkIfUserIsAlreadyConnected()
+    {
+        $user = $this->getUser();
+        $user->tokens()->limit(1)->get()->map(function ($token) use ($user) {
+            if (!$token->revoked){
+                throw new TwoSessionNotAllowed("Désolé, vous êtes déjà connecté sur un autre appareil");
+            }
+    });
     }
 }
