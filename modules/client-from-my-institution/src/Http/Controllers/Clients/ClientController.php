@@ -14,7 +14,7 @@ use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\ClientInstitution;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -27,7 +27,7 @@ class ClientController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct(NotificationProofService $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

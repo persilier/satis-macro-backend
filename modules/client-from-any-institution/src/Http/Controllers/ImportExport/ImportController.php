@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client;
-use Satis2020\ServicePackage\Services\ActivityLog\NotificationProofService;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -18,7 +18,7 @@ class ImportController extends ApiController
 {
     protected $activityLogService;
 
-    public function __construct(NotificationProofService $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');

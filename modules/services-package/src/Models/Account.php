@@ -42,6 +42,10 @@ class Account extends Model
      */
     protected $casts = [];
 
+    protected $hidden = ['number'];
+
+    protected $appends = ['account_number'];
+
     /**
      * Get the client_institution associated with the Client Institution
      * @return BelongsTo
@@ -67,6 +71,11 @@ class Account extends Model
     public function claims()
     {
         return $this->hasMany(Claim::class, 'account_targeted_id');
+    }
+
+    public function getAccountNumberAttribute()
+    {
+        return substr_replace($this->number, '***', -4);
     }
 
 }
