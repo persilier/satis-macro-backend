@@ -86,7 +86,11 @@ class Handler
         }
 
         if($exception instanceof TwoSessionNotAllowed){
-            return $this->errorResponse($exception->getMessage(), $exception->getCode());
+            $response = [
+                'status'=>$exception->getCode(),
+                'message'=>$exception->getMessage()
+            ];
+            return \response()->json($response);
         }
 
         if($exception instanceof CustomException){
