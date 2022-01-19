@@ -51,13 +51,20 @@ class ClaimController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function create()
     {
         $institution = $this->institution();
         $institution->client_institutions->load(['client.identite', 'accounts']);
+
+        $institution->client_institutions->each(function ($client,$index){
+            $client->accounts->each(function ($account,$ik){
+                $account->makeVisible(['number']);
+            });
+        });
+
         return response()->json([
             'claimCategories' => ClaimCategory::all(),
             'client_institutions' => $institution->only('client_institutions')['client_institutions'],
