@@ -233,6 +233,9 @@ trait UpdateClaim
                     $claim->createdBy->institution_id == $institution_id;
             })->values()->firstWhere('id', $claimId);
 
+            $claim->accountTargeted->makeVisible('account_number');
+            $claim->accountTargeted->makeHidden('number');
+
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
         }
