@@ -43,10 +43,13 @@ class ClientController extends ApiController
                 $fullName .= ($i == count($item->client->identite->telephone)) ? $telephone : $telephone . ' , ';
             }
 
-            $item->accounts->each(function ($account,$k){
-                $account->makeVisible('account_number');
-                $account->makeHidden('number');
-            });
+            if (!is_null($item->accounts)){
+                $item->accounts->each(function ($account,$k){
+                    $account->makeVisible('account_number');
+                    $account->makeHidden('number');
+                });
+            }
+
             $clients->push([
                 'identityId' => $item->client->identite->id,
                 'identity' => $item->client->identite,
