@@ -267,8 +267,10 @@ trait UpdateClaim
                 'files'
             ])->where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
 
+            if ($claim->accountTargeted!=null){
                 $claim->accountTargeted->makeVisible('account_number');
                 $claim->accountTargeted->makeHidden('number');
+            }
 
         } catch (\Exception $exception) {
             throw new CustomException("Impossible de récupérer cette réclamation");
