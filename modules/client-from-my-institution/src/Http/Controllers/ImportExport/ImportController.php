@@ -40,9 +40,7 @@ class ImportController extends ApiController
                 $request->etat_update,
                 $request->stop_identite_exist
             ),
-            $request->file('file'),
-            'public',
-            \Maatwebsite\Excel\Excel::CSV
+            $request->file('file')
         );
 
         return response()->json(['status' => true, 'clients' => ''], 201);

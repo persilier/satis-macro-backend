@@ -47,7 +47,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 2000;
+        return 1000;
     }
 
     /***
@@ -64,45 +64,86 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         if (!$validator->fails()) {
 
-            $account = Account::with([
-                'client_institution.client.identite',
-            ])
-                ->where('number', $row['account_number'])
+            $identity = Identite::query()
+                ->whereJsonContains('telephone', $row['telephone'])
+                ->orWhereJsonContains('email', $row['email'])
                 ->first();
 
-            if ($account) {
-                $this->updateClientAccount($account, $row);
+            if ($identity) {
+                $identity->update([
+                    'firstname' => $row['firstname'],
+                    'lastname' => $row['lastname'],
+                    'sexe' => $row['sexe'],
+                    'telephone' => $row['telephone'],
+                    'email' => $row['email'],
+                    'ville' => $row['ville'],
+                ]);
             } else {
-
-                $identity = Identite::with('client.client_institution')
-                    ->get()
-                    ->filter(function ($identity, $key) use ($row) {
-
-                        $telephones = $identity->telephone ?: [];
-                        foreach ($row['telephone'] as $value) {
-                            if (in_array($value, $telephones)) {
-                                return true;
-                            }
-                        }
-
-                        $emails = $identity->email ?: [];
-                        foreach ($row['email'] as $value) {
-                            if (in_array($value, $emails)) {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    })
-                    ->first();
-
-                if ($identity) {
-                    $this->updateClientIdentity($identity, $row);
-                } else {
-                    $this->createClientIdentity($row);
-                }
-
+                $identity = Identite::query()
+                    ->create([
+                        'firstname' => $row['firstname'],
+                        'lastname' => $row['lastname'],
+                        'sexe' => $row['sexe'],
+                        'telephone' => $row['telephone'],
+                        'email' => $row['email'],
+                        'ville' => $row['ville'],
+                    ]);
             }
+
+            $client = Client::query()->updateOrCreate(
+                ['identites_id' => $identity->id]
+            );
+
+            $clientInstitution = ClientInstitution::query()->updateOrCreate(
+                ['client_id' => $client->id, 'institution_id' => $row['institution']],
+                ['category_client_id' => $row['category_client']]
+            );
+
+            $account = Account::query()->updateOrCreate(
+                ['number' => $row['account_number'], 'client_institution_id' => $clientInstitution->id],
+                ['account_type_id' => $row['account_type']]
+            );
+
+//            $account = Account::with([
+//                'client_institution.client.identite',
+//            ])
+//                ->where('number', $row['account_number'])
+//                ->first();
+//
+//            if ($account) {
+//                $this->updateClientAccount($account, $row);
+//            }
+//            else {
+//
+//                $identity = Identite::with('client.client_institution')
+//                    ->get()
+//                    ->filter(function ($identity, $key) use ($row) {
+//
+//                        $telephones = $identity->telephone ?: [];
+//                        foreach ($row['telephone'] as $value) {
+//                            if (in_array($value, $telephones)) {
+//                                return true;
+//                            }
+//                        }
+//
+//                        $emails = $identity->email ?: [];
+//                        foreach ($row['email'] as $value) {
+//                            if (in_array($value, $emails)) {
+//                                return true;
+//                            }
+//                        }
+//
+//                        return false;
+//                    })
+//                    ->first();
+//
+//                if ($identity) {
+//                    $this->updateClientIdentity($identity, $row);
+//                } else {
+//                    $this->createClientIdentity($row);
+//                }
+//
+//            }
 
         } else {
 
@@ -180,130 +221,129 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         return $data;
     }
 
-    protected function updateModel($model, $row, $columnsToUpdate)
-    {
-        $data = collect($row)
-            ->only($columnsToUpdate)
-            ->all();
-
-        $model->update($data);
-    }
-
-    protected function updateClientAccount($account, $row)
-    {
-        if (optional(optional($account)->client_institution)->institution_id) {
-
-            if ($account->client_institution->institution_id == $row['institution']) {
-
-                $clientInstitution = $account->client_institution;
-                $this->updateModel(
-                    $clientInstitution,
-                    $row,
-                    [
-                        'category_client'
-                    ]
-                );
-
-                if (optional(optional(optional($account)->client_institution)->client)->identite) {
-                    $identity = $account->client_institution->client->identite;
-                    $this->updateModel(
-                        $identity,
-                        $row,
-                        [
-                            'firstname',
-                            'lastname',
-                            'sexe',
-                            'telephone',
-                            'email',
-                            'ville',
-                        ]
-                    );
-                }
-
-            }
-        }
-    }
-
-    protected function updateClientIdentity($identity, $row)
-    {
-        $this->updateModel(
-            $identity,
-            $row,
-            [
-                'firstname',
-                'lastname',
-                'sexe',
-                'telephone',
-                'email',
-                'ville',
-            ]
-        );
-
-        if (optional($identity->client)->client_institution) {
-
-            $clientInstitution = $identity->client->client_institution;
-
-            if ($clientInstitution->institution_id == $row['institution']) {
-
-                $account = $this->createAccount($clientInstitution, $row);
-
-            } else {
-
-                $clientInstitution = $this->addClientToInstitution($identity->client, $row);
-                $account = $this->createAccount($clientInstitution, $row);
-
-            }
-
-        } else {
-
-            $client = $this->createClient($identity);
-            $clientInstitution = $this->addClientToInstitution($client, $row);
-            $account = $this->createAccount($clientInstitution, $row);
-
-        }
-    }
-
-    protected function createAccount($clientInstitution, $row)
-    {
-        return Account::create([
-            'client_institution_id' => $clientInstitution->id,
-            'account_type_id' => $row['account_type'],
-            'number' => $row['account_number']
-        ]);
-    }
-
-    protected function addClientToInstitution($client, $row)
-    {
-        return ClientInstitution::create([
-            'category_client_id' => $row['category_client'],
-            'client_id' => $client->id,
-            'institution_id' => $row['institution']
-        ]);
-    }
-
-    protected function createClient($identity)
-    {
-        return Client::create([
-            'identites_id' => $identity->id
-        ]);
-    }
-
-    protected function createClientIdentity($row)
-    {
-        $identity = Identite::create([
-            'firstname' => $row['firstname'],
-            'lastname' => $row['lastname'],
-            'sexe' => $row['sexe'],
-            'telephone' => $row['telephone'],
-            'email' => $row['email'],
-            'ville' => $row['ville'],
-        ]);
-
-        $client = $this->createClient($identity);
-        $clientInstitution = $this->addClientToInstitution($client, $row);
-        return $this->createAccount($clientInstitution, $row);
-
-    }
-
+//    protected function updateModel($model, $row, $columnsToUpdate)
+//    {
+//        $data = collect($row)
+//            ->only($columnsToUpdate)
+//            ->all();
+//
+//        $model->update($data);
+//    }
+//
+//    protected function updateClientAccount($account, $row)
+//    {
+//        if (optional(optional($account)->client_institution)->institution_id) {
+//
+//            if ($account->client_institution->institution_id == $row['institution']) {
+//
+//                $clientInstitution = $account->client_institution;
+//                $this->updateModel(
+//                    $clientInstitution,
+//                    $row,
+//                    [
+//                        'category_client'
+//                    ]
+//                );
+//
+//                if (optional(optional(optional($account)->client_institution)->client)->identite) {
+//                    $identity = $account->client_institution->client->identite;
+//                    $this->updateModel(
+//                        $identity,
+//                        $row,
+//                        [
+//                            'firstname',
+//                            'lastname',
+//                            'sexe',
+//                            'telephone',
+//                            'email',
+//                            'ville',
+//                        ]
+//                    );
+//                }
+//
+//            }
+//        }
+//    }
+//
+//    protected function updateClientIdentity($identity, $row)
+//    {
+//        $this->updateModel(
+//            $identity,
+//            $row,
+//            [
+//                'firstname',
+//                'lastname',
+//                'sexe',
+//                'telephone',
+//                'email',
+//                'ville',
+//            ]
+//        );
+//
+//        if (optional($identity->client)->client_institution) {
+//
+//            $clientInstitution = $identity->client->client_institution;
+//
+//            if ($clientInstitution->institution_id == $row['institution']) {
+//
+//                $account = $this->createAccount($clientInstitution, $row);
+//
+//            } else {
+//
+//                $clientInstitution = $this->addClientToInstitution($identity->client, $row);
+//                $account = $this->createAccount($clientInstitution, $row);
+//
+//            }
+//
+//        } else {
+//
+//            $client = $this->createClient($identity);
+//            $clientInstitution = $this->addClientToInstitution($client, $row);
+//            $account = $this->createAccount($clientInstitution, $row);
+//
+//        }
+//    }
+//
+//    protected function createAccount($clientInstitution, $row)
+//    {
+//        return Account::create([
+//            'client_institution_id' => $clientInstitution->id,
+//            'account_type_id' => $row['account_type'],
+//            'number' => $row['account_number']
+//        ]);
+//    }
+//
+//    protected function addClientToInstitution($client, $row)
+//    {
+//        return ClientInstitution::create([
+//            'category_client_id' => $row['category_client'],
+//            'client_id' => $client->id,
+//            'institution_id' => $row['institution']
+//        ]);
+//    }
+//
+//    protected function createClient($identity)
+//    {
+//        return Client::create([
+//            'identites_id' => $identity->id
+//        ]);
+//    }
+//
+//    protected function createClientIdentity($row)
+//    {
+//        $identity = Identite::create([
+//            'firstname' => $row['firstname'],
+//            'lastname' => $row['lastname'],
+//            'sexe' => $row['sexe'],
+//            'telephone' => $row['telephone'],
+//            'email' => $row['email'],
+//            'ville' => $row['ville'],
+//        ]);
+//
+//        $client = $this->createClient($identity);
+//        $clientInstitution = $this->addClientToInstitution($client, $row);
+//        return $this->createAccount($clientInstitution, $row);
+//
+//    }
 
 }
