@@ -19,7 +19,7 @@ class AwaitingValidationController extends ApiController
 
     protected $activityLogService;
 
-    public function __construct( $activityLogService)
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
