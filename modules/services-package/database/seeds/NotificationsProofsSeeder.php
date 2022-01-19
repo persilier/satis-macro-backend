@@ -2,13 +2,9 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Carbon\Carbon;
-use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\NotificationProof;
-use Faker\Generator as Faker;
 
 class NotificationsProofsSeeder extends Seeder
 {
