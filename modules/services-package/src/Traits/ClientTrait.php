@@ -224,7 +224,6 @@ trait ClientTrait
             }
         }catch (\Exception $exception){
 
-            dd($exception->getMessage());
             throw new CustomException("Impossible de retrouver une liste de clients.");
 
         }

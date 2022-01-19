@@ -139,6 +139,10 @@ class ClientController extends ApiController
             'client_institution.institution'
         ])->find($accountId);
 
+        $account->makeVisible(['account_number']);
+        $account->makeHidden(['number']);
+
+
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id)
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
