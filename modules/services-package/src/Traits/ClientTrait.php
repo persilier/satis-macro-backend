@@ -218,7 +218,7 @@ trait ClientTrait
             if (!$hideAccountNumber){
                 $clients->each(function ($client,$index){
                     $client->accounts->each(function ($account,$ik){
-                        $account->makeVisible(['number']);
+                        $account->makeVisible(['account_number']);
                     });
                 });
             }
