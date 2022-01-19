@@ -322,8 +322,14 @@ trait UpdateClaim
             throw new CustomException("Impossible de récupérer les informations nécessaires à la modification d'une réclamation.");
         }
 
-        if (!is_null($accounts))
+        if (!is_null($accounts)){
             $datas['accounts'] = $accounts;
+            $accounts->each(function ($account,$k){
+                $account->makeVisible('account_number');
+                $account->makeHidden('number');
+            });
+
+        }
 
         return $datas;
     }
