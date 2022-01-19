@@ -63,7 +63,7 @@ class ClientController extends ApiController
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id),
+            'client_institutions' => $this->getAllClientByInstitution($institution->id,false),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);

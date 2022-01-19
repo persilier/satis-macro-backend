@@ -205,7 +205,7 @@ trait ClientTrait
      * @return Builder[]|Collection
      * @throws CustomException
      */
-    protected  function getAllClientByInstitution($institutionId){
+    protected  function getAllClientByInstitution($institutionId,$hideAccountNumber=true){
         try{
 
             $clients = ClientInstitution::with(
@@ -215,8 +215,16 @@ trait ClientTrait
                 'accounts.accountType'
             )->where('institution_id',$institutionId)->get();
 
+            if (!$hideAccountNumber){
+                $clients->each(function ($client,$index){
+                    $client->accounts->each(function ($account,$ik){
+                        $account->makeVisible(['number']);
+                    });
+                });
+            }
         }catch (\Exception $exception){
 
+            dd($exception->getMessage());
             throw new CustomException("Impossible de retrouver une liste de clients.");
 
         }

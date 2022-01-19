@@ -75,7 +75,23 @@ class Account extends Model
 
     public function getAccountNumberAttribute()
     {
-        return substr_replace($this->number, '***', -4);
+        return $this->attributes['number'];
+    }
+
+    public function getNumberAttribute()
+    {
+        $len = strlen($this->attributes['number']);
+        $middle = intdiv($len,3);
+
+        return substr_replace($this->attributes['number'], $this->getAsterisks($middle), $middle,$middle);
+    }
+
+    public function getAsterisks($length)
+    {
+        $str = "";
+        for ($i=0;$i<$length;$i++)
+            $str.="*";
+        return $str;
     }
 
 }
