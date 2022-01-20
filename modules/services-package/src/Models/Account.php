@@ -89,8 +89,10 @@ class Account extends Model
     public function getAsterisks($length)
     {
         $str = "";
-        for ($i=0;$i<$length;$i++)
+        for ($i=0;$i<$length;$i++){
             $str.="*";
+        }
+
         return $str;
     }
 
