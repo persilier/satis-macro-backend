@@ -12,7 +12,7 @@ class CountryService
 
     public function getCountries()
     {
-        $response = Http::get(env("COUNTRIES_SERVICE_URL")."africa-countries");
+        $response = Http::get(config("countries_services.countries_services_url")."africa-countries");
         return $response->successful()?$response->json():[];
     }
 }

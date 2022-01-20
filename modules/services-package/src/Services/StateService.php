@@ -17,7 +17,7 @@ class StateService
      */
     public function getStatesByCountry($country_id)
     {
-        $response = Http::get(env("COUNTRIES_SERVICE_URL")."countries/".$country_id."/states");
+        $response = Http::get(config("countries_services.countries_services_url")."countries/".$country_id."/states");
         return $response->successful()?$response->json()['states']:[];
     }
 
@@ -29,7 +29,7 @@ class StateService
     {
         $state = null;
         if (!is_null($state_id)){
-            $response = Http::get(env("COUNTRIES_SERVICE_URL")."states/".$state_id);
+            $response = Http::get(config("countries_services.countries_services_url")."states/".$state_id);
             $state = $response->json();
         }
 
