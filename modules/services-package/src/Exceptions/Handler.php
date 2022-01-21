@@ -149,4 +149,13 @@ class Handler
     {
         return $request->acceptsHtml() && collect($request->route()->middleware())->contains('web');
     }
+
+    public function report(Exception $exception)
+    {
+        // Kill reporting if this is an "access denied" (code 9) OAuthServerException.
+        if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
+            return;
+        }
+
+    }
 }
