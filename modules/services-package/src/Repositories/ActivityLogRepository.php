@@ -108,7 +108,7 @@ class ActivityLogRepository
         return $this->activity->newQuery()
             ->where("causer_id",$user_id)
             ->where('log_action',$action_type)
-            ->latest()
+            ->orderByDesc('created_at')
             ->first();
     }
 

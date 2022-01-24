@@ -31,6 +31,9 @@ class ActivityLogService
     const VALIDATED_CLAIM = 'VALIDATE_CLAIM';
     const INVALIDATED_CLAIM = 'INVALIDATED_CLAIM';
     const AUTH = 'AUTH';
+    const LOGOUT = 'LOGOUT';
+    const LOGIN = 'LOGIN';
+    const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
     /***
      * @var $activityLogRepository
      */

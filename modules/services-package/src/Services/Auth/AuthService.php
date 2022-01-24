@@ -77,12 +77,13 @@ class AuthService
         $lastLog = $this->activityLogService
             ->getLastLogByUserAndAction(
                 $this->userRepository->getByEmail($this->request->username)->id,
-                ActivityLogService::AUTH);
-        $response = true;
+                ActivityLogService::LOGOUT);
+            $response = true;
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
             if ($lastLog!=null){
+
                 if (
                     Carbon::parse($lastLog->created_at)->diffInWeekdays(now())>=
                     $this->configs->inactivity_time_limit){
@@ -106,6 +107,7 @@ class AuthService
         $this->checkIfUserIsAlreadyConnected();
 
         if (!$user->hasRole(['admin-holding','admin-pro','admin-filial','admin-observatory'])){
+
             //check if account inactivity  control is activated
             if ($this->configs->inactivity_control){
                 if (!$this->isAccountActive()){
@@ -149,7 +151,7 @@ class AuthService
             $this->activityLogService->store(
                 'Attempt login',
                 null,
-                ActivityLogService::AUTH,
+                ActivityLogService::ATTEMPT_LOGIN,
                 'user',
                 $this->getUser(),
                 $this->getUser()
@@ -212,7 +214,7 @@ class AuthService
             $this->activityLogService->store(
                 'Attempt login',
                 $this->userRepository->getInstitutionByUser($this->getUser()->id)->id,
-                ActivityLogService::AUTH,
+                ActivityLogService::LOGIN,
                 'user',
                 $this->getUser(),
                 $this->getUser()

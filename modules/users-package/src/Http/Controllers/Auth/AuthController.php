@@ -84,7 +84,7 @@ class AuthController extends ApiController
         $this->activityLogService->store(
             'Logout',
             $this->institution()->id,
-            $this->activityLogService::AUTH,
+            $this->activityLogService::LOGOUT,
             'user',
             $this->user(),
             $this->user()
@@ -120,6 +120,7 @@ class AuthController extends ApiController
             );
             $authService->resetAttempts(true);
             $content = json_decode($convertedResponse->getContent(),true);
+
             return  \response($content,Response::HTTP_OK);
         } catch (OAuthServerException $e) {
             $authService->logAttempt();
