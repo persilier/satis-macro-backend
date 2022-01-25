@@ -23,7 +23,7 @@ class MessageChannel
     {
         $data = $notification->toMessage($notifiable);
 
-        return (new SendSMService())->send($data,true);
+        return (new SendSMService())->send($data);
     }
 
 }

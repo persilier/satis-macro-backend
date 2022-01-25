@@ -267,7 +267,9 @@ trait CreateClaim
      */
     protected function createClaim($request, $with_client = true, $with_relationship = false, $with_unit = true)
     {
-        $claim = Claim::create($request->only($this->getData($request, $with_client, $with_relationship, $with_unit)));
+        $data = $request->only($this->getData($request, $with_client, $with_relationship, $with_unit));
+
+        $claim = Claim::create($data);
         $this->uploadAttachments($request, $claim);
 
         // send notification to claimer

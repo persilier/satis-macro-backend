@@ -70,6 +70,8 @@ class ServicePackageServiceProvider extends ServiceProvider
                 \Satis2020\ServicePackage\Console\Commands\ReportingQuarterlyCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\ReportingBiannualCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\RelanceCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\SendSMSCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\SendMailCommand::class,
             ]);
 
             $this->app->booted(function () {

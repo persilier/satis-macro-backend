@@ -24,6 +24,7 @@
         "barryvdh/laravel-dompdf": "^0.8",
         "beyondcode/laravel-websockets": "^1.4",
         "pusher/pusher-php-server": "^4.1",
+        "nategood/httpful": "*",
         "spatie/laravel-activitylog": "*"
     },
     "require-dev": {
