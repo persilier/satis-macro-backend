@@ -171,7 +171,17 @@ trait ClientTrait
             'number'  => $request->number
         ];
 
-        return $account = Account::create($store);
+        $account = Account::create($store);
+
+        $this->activityLogService->store("Enregistrement d'un compte client",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'account',
+            $this->user(),
+            $account
+        );
+
+        return $account;
     }
 
     /**
@@ -195,7 +205,7 @@ trait ClientTrait
      * @return Builder[]|Collection
      * @throws CustomException
      */
-    protected  function getAllClientByInstitution($institutionId){
+    protected  function getAllClientByInstitution($institutionId,$hideAccountNumber=true){
         try{
 
             $clients = ClientInstitution::with(
@@ -205,6 +215,13 @@ trait ClientTrait
                 'accounts.accountType'
             )->where('institution_id',$institutionId)->get();
 
+            if (!$hideAccountNumber){
+                $clients->each(function ($client,$index){
+                    $client->accounts->each(function ($account,$ik){
+                        $account->makeVisible(['account_number']);
+                    });
+                });
+            }
         }catch (\Exception $exception){
 
             throw new CustomException("Impossible de retrouver une liste de clients.");

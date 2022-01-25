@@ -5,12 +5,9 @@ namespace Satis2020\AnyInstitutionTypeRole\Http\Controllers\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Models\InstitutionType;
-use Satis2020\ServicePackage\Models\Module;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\RoleTrait;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -21,7 +18,9 @@ class RoleController extends ApiController
 {
     use RoleTrait;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
@@ -30,6 +29,9 @@ class RoleController extends ApiController
         $this->middleware('permission:store-any-institution-type-role')->only(['create', 'store']);
         $this->middleware('permission:update-any-institution-type-role')->only(['edit', 'update']);
         $this->middleware('permission:destroy-any-institution-type-role')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
+
     }
 
 
@@ -57,6 +59,8 @@ class RoleController extends ApiController
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -64,7 +68,17 @@ class RoleController extends ApiController
 
         $this->verifiedStore($request);
 
-        return response()->json($this->createRole($request), 201);
+        $role = $this->createRole($request);
+
+        $this->activityLogService->store("Enregistrement d'un rôle.",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'role',
+            $this->user(),
+            $role
+        );
+
+        return response()->json($role, 201);
 
     }
 
@@ -96,6 +110,8 @@ class RoleController extends ApiController
      * @param $role
      * @return JsonResponse
      * @throws ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function update(Request $request, $role)
     {
@@ -107,7 +123,17 @@ class RoleController extends ApiController
 
         $this->verifiedStore($request);
 
-        return response()->json($this->updateRole($request, $role), 201);
+        $role = $this->updateRole($request, $role);
+
+        $this->activityLogService->store("Modification d'un rôle.",
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'role',
+            $this->user(),
+            $role
+        );
+
+        return response()->json($role, 201);
 
     }
 
@@ -115,6 +141,8 @@ class RoleController extends ApiController
     /**
      * @param $role
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function destroy($role)
     {
@@ -122,6 +150,15 @@ class RoleController extends ApiController
         $role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
         $this->checkIsEditableRole($role);
         $role->delete();
+
+        $this->activityLogService->store("Suppression d'un rôle.",
+            $this->institution()->id,
+            $this->activityLogService::DELETED,
+            'role',
+            $this->user(),
+            $role
+        );
+
         return response()->json($role,200);
 
     }
