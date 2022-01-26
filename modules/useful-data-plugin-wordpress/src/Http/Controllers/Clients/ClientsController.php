@@ -33,8 +33,7 @@ class ClientsController extends Controller
 
         $identityWithClientAccount['account'] = [
             'id' => $account->id,
-            'mask_number' => $account->number,
-            'number' => $accountNumber
+            'number' => $account->number
         ];
 
         return response()->json($identityWithClientAccount,200);
