@@ -254,6 +254,13 @@ class AuthService
     public function checkIfUserIsAlreadyConnected()
     {
         $user = $this->getUser();
+
+        //revoke all user expired tokens
+        $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+        $user->tokens()
+            ->where('expires_at','<',$now)
+            ->update(['revoked'=>1]);
+
         $user->tokens()->limit(1)->get()->map(function ($token) use ($user) {
             if (!$token->revoked){
                 throw new TwoSessionNotAllowed("Désolé, vous êtes déjà connecté sur un autre appareil");
