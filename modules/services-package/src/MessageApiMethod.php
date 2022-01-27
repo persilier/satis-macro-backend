@@ -98,4 +98,20 @@ class MessageApiMethod
         return $response->body;
     }
 
+    /**
+     * SONIBANK SMS Gateway
+     *
+     * @param $username
+     * @param $password
+     * @param $to
+     * @param $text
+     * @return array|mixed
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    static function sonibankSMSGateway($username, $password, $to, $text)
+    {
+        return Http::get("http://192.168.1.92:13013/cgi-bin/sendsms?username=$username&password=$password&dr-mask=18&charset=ISO8859-1&coding=2&to=$to&text=$text")
+            ->throw()->json();
+    }
+
 }
