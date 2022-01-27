@@ -47,7 +47,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 500;
+        return 1000;
     }
 
     /***
@@ -67,7 +67,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             $identity = Identite::query()
                 ->whereJsonContains('telephone', $row['telephone'])
                 ->orWhereJsonContains('email', $row['email'])
-                ->first();
+                ->first(['id']);
 
             if ($identity) {
                 $identity->update([
@@ -148,7 +148,9 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $institutionId = $this->myInstitution->id;
 
         if (array_key_exists('institution', $data)) {
-            $institution = Institution::where('name', $data['institution'])->first();
+            $institution = Institution::query()
+                ->where('name', $data['institution'])
+                ->first(["id"]);
 
             if ($institution) {
                 $institutionId = $institution->id;
@@ -170,11 +172,11 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         }
 
         $data['category_client'] = optional(
-            CategoryClient::where('name->' . App::getLocale(), $data['category_client'])->first()
+            CategoryClient::where('name->' . App::getLocale(), $data['category_client'])->first(['id'])
         )->id;
 
         $data['account_type'] = optional(
-            AccountType::where('name->' . App::getLocale(), $data['account_type'])->first()
+            AccountType::where('name->' . App::getLocale(), $data['account_type'])->first(['id'])
         )->id;
 
         return $data;
