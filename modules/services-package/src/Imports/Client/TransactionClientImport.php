@@ -3,7 +3,6 @@
 namespace Satis2020\ServicePackage\Imports\Client;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -13,12 +12,9 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Row;
 use Satis2020\ServicePackage\Models\Account;
-use Satis2020\ServicePackage\Models\AccountType;
-use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
@@ -26,20 +22,16 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 {
 
     protected $myInstitution;
-    protected $stopIdentityExist;
-    protected $updateIdentity;
+    protected $data;
 
     /***
      * TransactionClientImport constructor.
      * @param $myInstitution
-     * @param $updateIdentity
-     * @param $stopIdentityExist
      */
-    public function __construct($myInstitution, $updateIdentity, $stopIdentityExist)
+    public function __construct($myInstitution, $data)
     {
         $this->myInstitution = $myInstitution;
-        $this->stopIdentityExist = $stopIdentityExist;
-        $this->updateIdentity = $updateIdentity;
+        $this->data = $data;
     }
 
     /***
@@ -64,10 +56,28 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         if (!$validator->fails()) {
 
-            $identity = Identite::query()
-                ->whereJsonContains('telephone', $row['telephone'])
-                ->orWhereJsonContains('email', $row['email'])
-                ->first(['id']);
+            $identity = $this->data['identities']->first(function ($value, $key) use ($row) {
+
+                foreach ($row['telephone'] as $telephone) {
+                    try {
+                        if (in_array($telephone, $value->telephone)) {
+                            return true;
+                        }
+                    } catch (\Exception $exception) {
+                    }
+                }
+
+                foreach ($row['email'] as $email) {
+                    try {
+                        if (in_array($email, $value->email)) {
+                            return true;
+                        }
+                    }catch (\Exception $exception) {
+                    }
+                }
+
+                return false;
+            });
 
             if ($identity) {
                 $identity->update([
@@ -148,9 +158,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $institutionId = $this->myInstitution->id;
 
         if (array_key_exists('institution', $data)) {
-            $institution = Institution::query()
-                ->where('name', $data['institution'])
-                ->first(["id"]);
+
+            $institution = $this->data['institutions']->firstWhere('name', $data['institution']);
 
             if ($institution) {
                 $institutionId = $institution->id;
@@ -172,11 +181,11 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         }
 
         $data['category_client'] = optional(
-            CategoryClient::where('name->' . App::getLocale(), $data['category_client'])->first(['id'])
+            $this->data['categoryClients']->firstWhere('name', $data['category_client'])
         )->id;
 
         $data['account_type'] = optional(
-            AccountType::where('name->' . App::getLocale(), $data['account_type'])->first(['id'])
+            $this->data['accountTypes']->firstWhere('name', $data['account_type'])
         )->id;
 
         return $data;
