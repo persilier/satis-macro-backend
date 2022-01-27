@@ -38,7 +38,7 @@ class ImportController extends ApiController
 
         $staff = Staff::query()
             ->where('identite_id', Auth::user()->identite_id)
-            ->first(['id']);
+            ->first(['institution_id']);
 
         $myInstitution = Institution::query()
             ->where('id', $staff->institution_id)
