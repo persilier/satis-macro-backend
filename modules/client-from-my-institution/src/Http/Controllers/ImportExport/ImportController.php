@@ -8,6 +8,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
+use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\AccountType;
+use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Models\Client;
+use Satis2020\ServicePackage\Models\ClientInstitution;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
@@ -44,11 +50,17 @@ class ImportController extends ApiController
             ->where('id', $staff->institution_id)
             ->first(['id']);
 
+        $institutions = Institution::query()->get(['id', 'name']);
+        $categoryClients = CategoryClient::query()->get(['id', 'name']);
+        $accountTypes = AccountType::query()->get(['id', 'name']);
+        $identities = Identite::query()->get(['id', 'telephone', 'email']);
+
+        $data = compact('institutions', 'categoryClients', 'accountTypes', 'identities');
+
         Excel::import(
             new TransactionClientImport(
                 $myInstitution,
-                $request->etat_update,
-                $request->stop_identite_exist
+                $data
             ),
             $request->file('file')
         );
