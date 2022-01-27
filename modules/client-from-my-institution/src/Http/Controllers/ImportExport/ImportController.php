@@ -3,10 +3,13 @@
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
 
 /**
@@ -32,7 +35,14 @@ class ImportController extends ApiController
      */
     public function importClients(ImportClientRequest $request)
     {
-        $myInstitution = $this->institution();
+
+        $staff = Staff::query()
+            ->where('identite_id', Auth::user()->identite_id)
+            ->first(['id']);
+
+        $myInstitution = Institution::query()
+            ->where('id', $staff->institution_id)
+            ->first(['id']);
 
         Excel::import(
             new TransactionClientImport(
