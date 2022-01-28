@@ -2,26 +2,14 @@
 
 namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Channel;
-use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
-use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
-use Satis2020\ServicePackage\Rules\EmailArray;
-use Satis2020\ServicePackage\Rules\TelephoneArray;
-use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
-use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
@@ -51,16 +39,17 @@ class ClaimController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function create()
     {
         $institution = $this->institution();
-        $institution->client_institutions->load(['client.identite', 'accounts']);
+//        $institution->client_institutions->load(['client.identite', 'accounts']);
+
         return response()->json([
             'claimCategories' => ClaimCategory::all(),
-            'client_institutions' => $institution->only('client_institutions')['client_institutions'],
+//            'client_institutions' => $institution->only('client_institutions')['client_institutions'],
             'units' => $institution->units()
                 ->whereHas('unitType', function ($q) {
                     $q->where('can_be_target', true);
@@ -112,7 +101,7 @@ class ClaimController extends ApiController
 
         $claim = $this->createClaim($request);
 
-        return response()->json([ 'claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
+        return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
 
     }
 
