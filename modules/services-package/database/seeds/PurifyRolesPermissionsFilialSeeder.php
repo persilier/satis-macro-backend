@@ -75,6 +75,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'list-notification-proof'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [

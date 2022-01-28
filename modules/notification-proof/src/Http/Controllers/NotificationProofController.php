@@ -11,13 +11,14 @@ use Satis2020\ServicePackage\Repositories\InstitutionRepository;
 use Satis2020\ServicePackage\Requests\NotificationProofRequest;
 use Satis2020\ServicePackage\Services\Auth\AuthConfigService;
 use Satis2020\ServicePackage\Services\NotificationProof\NotificationProofService;
+use Satis2020\ServicePackage\Traits\ActivePilot;
 
 class NotificationProofController extends ApiController
 {
+    use ActivePilot;
     /**
      * @var AuthConfigService
      */
-    private $authConfigService;
     protected $activityLogService;
     /**
      * @var NotificationProofService
@@ -33,23 +34,34 @@ class NotificationProofController extends ApiController
         parent::__construct();
         $this->notificationProofService = $proofService;
         $this->middleware('auth:api');
-        $this->middleware('permission:list-any-notification-proof')->only(['index']);
-        $this->middleware('permission:list-any-notification-proof')->only(['create']);
+        $this->middleware('permission:list-any-notification-proof')->only(['index','create']);
     }
 
     /**
      * @param NotificationProofRequest $request
      * @param int $pagination
-     * @return Application|ResponseFactory|Response
+     * @return mixed
      */
     public function index(NotificationProofRequest $request,$pagination=NotificationConsts::PAGINATION_LIMIT)
     {
         $institutionRepository = app(InstitutionRepository::class);
 
-        return response([
-            "proofs"=>$this->notificationProofService->filterNotificationProofs($request,$pagination),
-            "filter-data"=>$institutionRepository->getAll()]
-            ,Response::HTTP_OK);
+        if($this->checkIfStaffIsPilot($this->staff()))
+        {
+            if (!$this->staff()->is_active_pilot) {
+                return $this->errorResponse('L\'utilisateur n\'a pas la bonne autorisation', 401);
+            }else{
+                return response([
+                        "proofs"=>$this->notificationProofService->filterNotificationProofs($request,$pagination),
+                        "filter-data"=>$institutionRepository->getAll()]
+                    ,Response::HTTP_OK);
+            }
+        }else{
+            return response([
+                    "proofs"=>$this->notificationProofService->filterNotificationProofs($request,$pagination),
+                    "filter-data"=>$institutionRepository->getAll()]
+                ,Response::HTTP_OK);
+        }
     }
 
     /**
@@ -58,7 +70,16 @@ class NotificationProofController extends ApiController
     public function create()
     {
         $institutionRepository = app(InstitutionRepository::class);
-        return \response($institutionRepository->getAll(),Response::HTTP_OK);
+
+        if($this->checkIfStaffIsPilot($this->staff())) {
+            if (!$this->staff()->is_active_pilot) {
+                return $this->errorResponse('L\'utilisateur n\'a pas la bonne autorisation', 401);
+            } else {
+                return \response($institutionRepository->getAll(),Response::HTTP_OK);
+            }
+        }else{
+            return \response($institutionRepository->getAll(),Response::HTTP_OK);
+        }
     }
 
 

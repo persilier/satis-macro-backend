@@ -103,6 +103,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'list-any-notification-proof'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
