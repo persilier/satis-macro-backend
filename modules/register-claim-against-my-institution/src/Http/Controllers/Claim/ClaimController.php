@@ -45,11 +45,9 @@ class ClaimController extends ApiController
     public function create()
     {
         $institution = $this->institution();
-//        $institution->client_institutions->load(['client.identite', 'accounts']);
 
         return response()->json([
             'claimCategories' => ClaimCategory::all(),
-//            'client_institutions' => $institution->only('client_institutions')['client_institutions'],
             'units' => $institution->units()
                 ->whereHas('unitType', function ($q) {
                     $q->where('can_be_target', true);
