@@ -5,9 +5,9 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
+use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Staff;
@@ -38,6 +38,7 @@ trait VerifyUnicity
 
         return $identite;
     }
+
     /**
      * Verify if an attribute is uniq in a table
      *
@@ -54,16 +55,21 @@ trait VerifyUnicity
 
             $value = strtolower($value);
 
-            $collection = DB::table($table)
-                ->whereNull('deleted_at')
-                ->get();
+            $query = DB::table($table)->whereJsonContains("$column", "$value");
 
-            $search = $collection->search(function ($item, $key) use ($value, $column, $idColumn, $idValue) {
-                return $item->{$column} ? (is_null($idValue) ? in_array($value, json_decode($item->{$column}))
-                        : $item->{$idColumn} !== $idValue && in_array($value, json_decode($item->{$column}))) : false;
-            });
+            if ($idColumn && $idValue) {
+                $query = $query->whereNotIn("$idColumn", [$idValue]);
+            }
 
-            if ($search !== false) return ['status' => false, 'conflictValue' => $value, 'entity' => $collection->get($search)];
+            $entity = $query->first();
+
+            if ($entity) {
+                return [
+                    'status' => false,
+                    'conflictValue' => $value,
+                    'entity' => $entity
+                ];
+            }
         }
 
         return ['status' => true];
@@ -140,7 +146,7 @@ trait VerifyUnicity
     protected function handleIdentityPhoneNumberAndEmailVerificationStore($request, $idValue = null)
     {
 
-        if($request->has('telephone')){
+        if ($request->has('telephone')) {
             // Identity PhoneNumber Unicity Verification
             $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
             if (!$verifyPhone['status']) {
@@ -151,7 +157,7 @@ trait VerifyUnicity
         }
 
         // Identity Email Unicity Verification
-        if($request->has('email')){
+        if ($request->has('email')) {
             $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
 
             if (!$verifyEmail['status']) {
@@ -173,14 +179,14 @@ trait VerifyUnicity
         // Staff PhoneNumber Unicity Verification
         $verifyPhone = $this->handleStaffIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', 'id', $identite->id);
         if (!$verifyPhone['status']) {
-            $verifyPhone['message'] = "Nous ne pouvons pas traiter votre demande. Le numéro de téléphone ".$verifyPhone['verify']['conflictValue']." appartient à quelqu'un d'autre";
+            $verifyPhone['message'] = "Nous ne pouvons pas traiter votre demande. Le numéro de téléphone " . $verifyPhone['verify']['conflictValue'] . " appartient à quelqu'un d'autre";
             throw new CustomException($verifyPhone, 409);
         }
 
         // Staff Email Unicity Verification
         $verifyEmail = $this->handleStaffIdentityVerification($request->email, 'identites', 'email', 'email', 'id', $identite->id);
         if (!$verifyEmail['status']) {
-            $verifyEmail['message'] = "Nous ne pouvons pas traiter votre demande. L'adresse email ".$verifyEmail['verify']['conflictValue']." appartient à quelqu'un d'autre";
+            $verifyEmail['message'] = "Nous ne pouvons pas traiter votre demande. L'adresse email " . $verifyEmail['verify']['conflictValue'] . " appartient à quelqu'un d'autre";
             throw new CustomException($verifyEmail, 409);
         }
     }
@@ -237,9 +243,9 @@ trait VerifyUnicity
 
         if (!$verify['status']) {
 
-            $client = Client::with(['identite', 'client_institutions'])->where(function ($query) use ($idInstitution){
+            $client = Client::with(['identite', 'client_institutions'])->where(function ($query) use ($idInstitution) {
 
-                $query->whereHas('client_institutions', function ($q) use ($idInstitution){
+                $query->whereHas('client_institutions', function ($q) use ($idInstitution) {
 
                     $q->where('institution_id', $idInstitution);
 
