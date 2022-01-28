@@ -101,7 +101,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'list-notification-proof'
+                    'pilot-list-notification-proof'
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [
