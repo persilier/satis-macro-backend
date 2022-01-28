@@ -3,10 +3,19 @@
 namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
+use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\AccountType;
+use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Models\Client;
+use Satis2020\ServicePackage\Models\ClientInstitution;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
 
 /**
@@ -34,13 +43,25 @@ class ImportController extends ApiController
      */
     public function importClients(ImportClientRequest $request)
     {
-        $myInstitution = $this->institution();
+
+        $staff = Staff::query()
+            ->where('identite_id', Auth::user()->identite_id)
+            ->first(['institution_id']);
+
+        $myInstitution = Institution::query()
+            ->where('id', $staff->institution_id)
+            ->first(['id']);
+
+        $institutions = Institution::query()->get(['id', 'name']);
+        $categoryClients = CategoryClient::query()->get(['id', 'name']);
+        $accountTypes = AccountType::query()->get(['id', 'name']);
+
+        $data = compact('institutions', 'categoryClients', 'accountTypes');
 
         Excel::import(
             new TransactionClientImport(
                 $myInstitution,
-                $request->etat_update,
-                $request->stop_identite_exist
+                $data
             ),
             $request->file('file')
         );
