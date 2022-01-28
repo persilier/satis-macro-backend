@@ -27,7 +27,7 @@ class UserRoleController extends ApiController
      */
     public function index(User $user)
     {
-        return response()->json($user->roles, 200);
+        return response()->json($user->roles, -200);
     }
 
     /**

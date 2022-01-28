@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Requirement;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
@@ -20,6 +21,7 @@ use Satis2020\ServicePackage\Notifications\Recurrence;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
+use Satis2020\ServicePackage\Repositories\FileRepository;
 use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
@@ -316,13 +318,17 @@ trait CreateClaim
     {
         if ($request->hasfile('file')) {
             foreach ($request->file('file') as $file) {
-
+                $file = $request->file('file');
                 $title = $file->getClientOriginalName();
-                $path = $file->store('claim-attachments', 'public');
-                $url = Storage::url("$path");
-
-                // insert the file into database
-                $claim->files()->create(['title' => $title, 'url' => $url]);
+                //check if file already exist
+                $fileRepository = app(FileRepository::class);
+                $eventualFile = $fileRepository->getFileByTitleAndAttachId($title,$claim->id);
+                if ($eventualFile==null){
+                    $path =$file->store('claim-attachments', 'public');
+                    $url = Storage::url("$path");
+                    // insert the file into database
+                    $claim->files()->create(['title' => $title, 'url' => $url]);
+                }
             }
         }
     }

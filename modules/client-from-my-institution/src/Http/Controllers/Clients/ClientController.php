@@ -21,7 +21,9 @@ class ClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
@@ -30,6 +32,8 @@ class ClientController extends ApiController
         $this->middleware('permission:show-client-from-my-institution')->only(['show']);
         $this->middleware('permission:update-client-from-my-institution')->only(['edit', 'update']);
         $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
     }
 
 
@@ -55,7 +59,7 @@ class ClientController extends ApiController
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id),
+            'client_institutions' => $this->getAllClientByInstitution($institution->id,false),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);
@@ -131,6 +135,10 @@ class ClientController extends ApiController
             'client_institution.institution'
         ])->find($accountId);
 
+        $account->makeVisible(['account_number']);
+        $account->makeHidden(['number']);
+
+
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id)
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
@@ -142,7 +150,7 @@ class ClientController extends ApiController
     /**
      * @param Request $request
      * @param $clientId
-     * @return void
+     * @return JsonResponse
      */
     public function show(Request $request, $clientId)
     {
@@ -218,6 +226,14 @@ class ClientController extends ApiController
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
+        $this->activityLogService->store('Mise à jour des informations du compte d\'un client',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'account',
+            $this->user(),
+            $account
+        );
+
         return response()->json($client, 201);
     }
 
@@ -243,6 +259,14 @@ class ClientController extends ApiController
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
 
         $account->secureDelete('claims');
+
+        $this->activityLogService->store('Suppression du compte d\'un client',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'account',
+            $this->user(),
+            $account
+        );
 
         return response()->json($account, 201);
     }

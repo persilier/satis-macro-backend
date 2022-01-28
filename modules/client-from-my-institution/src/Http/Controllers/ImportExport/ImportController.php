@@ -24,7 +24,9 @@ use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 

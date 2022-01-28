@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\CategoryClient\Http\Controllers\CategoryClients;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -8,6 +9,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 use Satis2020\ServicePackage\Traits\SecureDelete;
+
 class CategoryClientController extends ApiController
 {
     use SecureDelete;
@@ -26,7 +28,7 @@ class CategoryClientController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
 
     public function index()
@@ -86,6 +88,7 @@ class CategoryClientController extends ApiController
     /**
      * @param CategoryClient $category_client
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
     public function destroy(CategoryClient $category_client)
     {

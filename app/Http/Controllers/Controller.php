@@ -9,12 +9,15 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Satis2020\ServicePackage\MessageApiMethod;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\InstitutionMessageApi;
 use Satis2020\ServicePackage\Models\Message;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Requests\UpdatePasswordRequest;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
@@ -27,39 +30,32 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
+    public function testPassword(UpdatePasswordRequest $request)
+    {
+        dd($request);
+    }
+
     public function index()
     {
-//        $sendMail = $this->londoSMSApi(
-//            "BciGatewayLogin",
-//            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
-//            "BCI",
-//            "SATISPROBCI",
-//            "TEST001",
-//            1,
-//            "242064034953",
-//            'TEST SMS API BCI'
-//        );
-//        dd($sendMail->json());
+        $institution = Institution::query()->first();
+        $params = InstitutionMessageApi::query()
+            ->where('institution_id',$institution->id)
+            ->first()->params;
 
-//        $claim = Claim::findOrFail("a63dfbec-f8ef-4bb5-9f97-2933ab3b4073");
-//
-//        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-//        $notifiable =$this->getInstitutionPilot($claim->createdBy->institution);
-//
-//        dd($this->getFeedBackChannels($notifiable->staff));
-//
-//        dump($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high'));
-//        dd($this->getInstitutionPilot($claim->createdBy->institution));
-//
-//        $identities = $this->getStaffToReviveIdentities($claim);
 
-        //$identities[1]->notify(new ReviveStaff($claim, "CC"));
-        
-//        Notification::send($this->getStaffToReviveIdentities($claim), new ReviveStaff($claim, "CC"));
-//
-//        dd($identities[1]);
-//
-//        return response()->json([], 200);
+        $text = "Hello this is an example sms from Satis";
+
+        $response = MessageApiMethod::toOceanicsms(
+            "satisuimcec",
+            $params['password'],
+            $params['from'],
+            "22996475848",
+            $text,
+            $params['api'],
+            $institution->id
+        );
+
+        dd(is_string($response->body()));
     }
 
     public function download(File $file)
