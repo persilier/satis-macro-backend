@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Rules\EmailValidationRules;
-use Satis2020\ServicePackage\Models\ClientInstitution;
-use Satis2020\ServicePackage\Models\Client;
-use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Client;
+use Satis2020\ServicePackage\Models\ClientInstitution;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Rules\EmailValidationRules;
 
 /**
  * Trait ClientTrait
@@ -43,7 +43,7 @@ trait ClientTrait
             'other_attributes' => 'array',
         ];
 
-        if ($requestInstitution){
+        if ($requestInstitution) {
 
             $rules['institution_id'] = 'required|exists:institutions,id';
 
@@ -64,7 +64,7 @@ trait ClientTrait
             'account_type_id' => 'required|exists:account_types,id',
         ];
 
-        if ($requestInstitution){
+        if ($requestInstitution) {
 
             $rules['institution_id'] = 'required|exists:institutions,id';
 
@@ -83,11 +83,11 @@ trait ClientTrait
         $store = [
 
             'firstname' => $request->firstname,
-            'lastname'  => $request->lastname,
-            'sexe'      => $request->sexe,
+            'lastname' => $request->lastname,
+            'sexe' => $request->sexe,
             'telephone' => $request->telephone,
-            'email'     => $request->email,
-            'ville'     => $request->ville,
+            'email' => $request->email,
+            'ville' => $request->ville,
             'other_attributes' => $request->other_attributes
         ];
 
@@ -104,19 +104,19 @@ trait ClientTrait
     {
         $store = [
             'identites_id' => $identiteId,
-            'others'  => $request->others
+            'others' => $request->others
         ];
 
 
-        if($identityConfirm){
+        if ($identityConfirm) {
 
-            if(!$client = Client::where('identites_id', $identiteId)->first()){
+            if (!$client = Client::where('identites_id', $identiteId)->first()) {
 
                 $client = Client::create($store);
 
             }
 
-        }else{
+        } else {
 
             $client = Client::create($store);
 
@@ -136,20 +136,20 @@ trait ClientTrait
     protected function storeClientInstitution($request, $clientId, $institutionId, $identityConfirm = false)
     {
         $store = [
-            'category_client_id'  => $request->category_client_id,
+            'category_client_id' => $request->category_client_id,
             'client_id' => $clientId,
-            'institution_id'  => $institutionId
+            'institution_id' => $institutionId
         ];
 
-        if($identityConfirm){
+        if ($identityConfirm) {
 
-            if(!$clientInstitution = ClientInstitution::where('client_id', $clientId)->where('institution_id', $institutionId)->first()){
+            if (!$clientInstitution = ClientInstitution::where('client_id', $clientId)->where('institution_id', $institutionId)->first()) {
 
                 $clientInstitution = ClientInstitution::create($store);
 
             }
 
-        }else{
+        } else {
 
             $clientInstitution = ClientInstitution::create($store);
         }
@@ -167,8 +167,8 @@ trait ClientTrait
         $store = [
 
             'client_institution_id' => $clientInstitutionId,
-            'account_type_id'  => $request->account_type_id,
-            'number'  => $request->number
+            'account_type_id' => $request->account_type_id,
+            'number' => $request->number
         ];
 
         $account = Account::create($store);
@@ -189,14 +189,15 @@ trait ClientTrait
      * @param $clientId
      * @return Builder|Model
      */
-    protected  function getOneClientByInstitution($institutionId, $clientId){
+    protected function getOneClientByInstitution($institutionId, $clientId)
+    {
 
         return ClientInstitution::with(
             'client.identite',
             'category_client',
             'institution',
             'accounts.accountType'
-        )->where('institution_id', $institutionId)->where('client_id',$clientId)->firstOrFail();
+        )->where('institution_id', $institutionId)->where('client_id', $clientId)->firstOrFail();
 
     }
 
@@ -205,28 +206,20 @@ trait ClientTrait
      * @return Builder[]|Collection
      * @throws CustomException
      */
-    protected  function getAllClientByInstitution($institutionId,$hideAccountNumber=true){
-        try{
-
-            $clients = ClientInstitution::with(
-                'client.identite',
-                'category_client',
-                'institution',
-                'accounts.accountType'
-            )->where('institution_id',$institutionId)->get();
-
-            if (!$hideAccountNumber){
-                $clients->each(function ($client,$index){
-                    $client->accounts->each(function ($account,$ik){
-                        $account->makeVisible(['account_number']);
-                    });
-                });
-            }
-        }catch (\Exception $exception){
-
-            throw new CustomException("Impossible de retrouver une liste de clients.");
-
-        }
+    protected function getAllClientByInstitution($institutionId)
+    {
+        $clients = ClientInstitution::query()
+            ->with([
+                'client:id,identites_id',
+                'client.identite:id,firstname,lastname,email,telephone',
+                'category_client:id,name',
+                'institution:id,name',
+                'accounts',
+                'accounts.accountType:id,name',
+            ])
+            ->where('institution_id', $institutionId)
+            ->take(15)
+            ->get();
 
         return $clients;
     }
@@ -237,21 +230,22 @@ trait ClientTrait
      * @return Builder|Model
      * @throws CustomException
      */
-    protected  function getOneAccountClientByInstitution($institutionId, $accountId){
+    protected function getOneAccountClientByInstitution($institutionId, $accountId)
+    {
 
-        try{
+        try {
 
             $client = ClientInstitution::with([
                 'client.identite',
                 'category_client',
                 'institution',
-                'accounts.accountType' => function($query) use ($accountId){
+                'accounts.accountType' => function ($query) use ($accountId) {
                     $query->where('id', $accountId);
                 }
 
-            ])->where('institution_id',$institutionId)->firstOrFail();
+            ])->where('institution_id', $institutionId)->firstOrFail();
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
         }
@@ -265,22 +259,23 @@ trait ClientTrait
      * @return Builder|Model
      * @throws CustomException
      */
-    protected  function getOneAccountClient($accountId){
+    protected function getOneAccountClient($accountId)
+    {
 
-        try{
+        try {
 
             $client = ClientInstitution::with([
                 'client.identite',
                 'category_client',
                 'institution',
                 'accounts.accountType'
-            ])->where(function ($query) use ($accountId){
-                $query->whereHas('accounts', function ($q) use ($accountId){
+            ])->where(function ($query) use ($accountId) {
+                $query->whereHas('accounts', function ($q) use ($accountId) {
                     $q->where('id', $accountId);
                 });
             })->firstOrFail();
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
 
@@ -297,17 +292,17 @@ trait ClientTrait
      */
     protected function handleAccountClient($number)
     {
-        try{
+        try {
 
             $account = Account::where('number', $number)->first();
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
 
         }
 
-        if (!is_null($account)){
+        if (!is_null($account)) {
 
             return ['code' => 409, 'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
 
@@ -322,7 +317,8 @@ trait ClientTrait
      * @param $clientId
      * @return Builder|Model
      */
-    protected function getOneClient($request, $clientId){
+    protected function getOneClient($request, $clientId)
+    {
         return ClientInstitution::with([
             'client.identite',
             'institution',
