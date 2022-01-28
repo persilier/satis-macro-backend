@@ -27,6 +27,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     /***
      * TransactionClientImport constructor.
      * @param $myInstitution
+     * @param $data
      */
     public function __construct($myInstitution, $data)
     {
@@ -56,28 +57,10 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         if (!$validator->fails()) {
 
-            $identity = $this->data['identities']->first(function ($value, $key) use ($row) {
-
-                foreach ($row['telephone'] as $telephone) {
-                    try {
-                        if (in_array($telephone, $value->telephone)) {
-                            return true;
-                        }
-                    } catch (\Exception $exception) {
-                    }
-                }
-
-                foreach ($row['email'] as $email) {
-                    try {
-                        if (in_array($email, $value->email)) {
-                            return true;
-                        }
-                    }catch (\Exception $exception) {
-                    }
-                }
-
-                return false;
-            });
+            $identity = Identite::query()
+                ->whereJsonContains('telephone', $row['telephone'])
+                ->orWhereJsonContains('email', $row['email'])
+                ->first(['id']);
 
             if ($identity) {
                 $identity->update([

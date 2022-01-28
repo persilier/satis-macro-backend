@@ -53,9 +53,8 @@ class ImportController extends ApiController
         $institutions = Institution::query()->get(['id', 'name']);
         $categoryClients = CategoryClient::query()->get(['id', 'name']);
         $accountTypes = AccountType::query()->get(['id', 'name']);
-        $identities = Identite::query()->get(['id', 'telephone', 'email']);
 
-        $data = compact('institutions', 'categoryClients', 'accountTypes', 'identities');
+        $data = compact('institutions', 'categoryClients', 'accountTypes');
 
         Excel::import(
             new TransactionClientImport(
