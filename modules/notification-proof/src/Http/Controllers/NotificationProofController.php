@@ -28,13 +28,19 @@ class NotificationProofController extends ApiController
     /**
      * AuthConfigController constructor.
      * @param NotificationProofService $proofService
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function __construct(NotificationProofService $proofService)
     {
         parent::__construct();
         $this->notificationProofService = $proofService;
         $this->middleware('auth:api');
-        $this->middleware('permission:list-any-notification-proof')->only(['index','create']);
+        if($this->checkIfStaffIsPilot($this->staff())) {
+            $this->middleware('permission:pilot-list-any-notification-proof')->only(['index','create']);
+            $this->middleware('active.pilot')->only(['index']);
+        }else{
+            $this->middleware('permission:list-any-notification-proof')->only(['index','create']);
+        }
     }
 
     /**

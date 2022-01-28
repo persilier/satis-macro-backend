@@ -30,13 +30,19 @@ class IndependantNotificationProofController extends ApiController
     /**
      * AuthConfigController constructor.
      * @param NotificationProofService $proofService
+     * @throws RetrieveDataUserNatureException
      */
     public function __construct(NotificationProofService $proofService)
     {
         parent::__construct();
         $this->notificationProofService = $proofService;
         $this->middleware('auth:api');
-        $this->middleware('permission:list-notification-proof')->only(['index']);
+        if($this->checkIfStaffIsPilot($this->staff())) {
+            $this->middleware('permission:pilot-list-notification-proof')->only(['index']);
+            $this->middleware('active.pilot')->only(['index']);
+        }else{
+            $this->middleware('permission:list-notification-proof')->only(['index']);
+        }
 
     }
 
@@ -48,16 +54,7 @@ class IndependantNotificationProofController extends ApiController
      */
     public function index(NotificationProofRequest $request,$pagination=NotificationConsts::PAGINATION_LIMIT)
     {
-        if($this->checkIfStaffIsPilot($this->staff()))
-        {
-            if (!$this->staff()->is_active_pilot) {
-                return $this->errorResponse('L\'utilisateur n\'a pas la bonne autorisation', 401);
-            }else{
-                return response($this->notificationProofService->filterInstitutionNotificationProofs($this->institution()->id,$request,$pagination),Response::HTTP_OK);
-            }
-        }else{
-            return response($this->notificationProofService->filterInstitutionNotificationProofs($this->institution()->id,$request,$pagination),Response::HTTP_OK);
-        }
+        return response($this->notificationProofService->filterInstitutionNotificationProofs($this->institution()->id,$request,$pagination),Response::HTTP_OK);
     }
 
 
