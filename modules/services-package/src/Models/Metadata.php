@@ -11,6 +11,9 @@ use Spatie\Translatable\HasTranslations;
 class Metadata extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+
+    const AUTH_PARAMETERS="auth-parameters";
+
     /**
      * The attributes that are translatable
      *
