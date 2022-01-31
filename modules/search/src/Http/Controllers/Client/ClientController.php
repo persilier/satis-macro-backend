@@ -2,8 +2,10 @@
 
 namespace Satis2020\Search\Http\Controllers\Client;
 
-use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\Search;
@@ -23,68 +25,77 @@ class ClientController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param Institution $institution
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
 
-    public function index(Institution $institution)
+    public function index(Request $request, $institution)
     {
-        $institution->client_institutions->load(['client.identite', 'accounts']);
+        $recherche = $request->query('r');
 
-        $clients = collect([]);
+        $columnSelected = ['id', 'firstname', 'lastname', 'telephone', 'email', 'ville', 'sexe'];
 
-        $institution->client_institutions->map(function ($item, $key) use ($clients) {
+        $identitiesQueries = [
+            'clientsQuery' => Identite::query()
+                ->with([
+                    'client:id,identites_id',
+                    'client.client_institutions' => function ($query) use ($institution) {
+                        $query->where('institution_id', '=', $institution)
+                            ->select('id', 'institution_id', 'client_id');
+                    },
+                    'client.client_institutions.accounts:id,number,client_institution_id',
+                ]),
+            'claimersQuery' => Identite::query()
+                ->select($columnSelected)
+                ->whereHas('claims', function ($query) use ($institution) {
+                    $query->where('institution_targeted_id', $institution);
+                })
+        ];
 
-            $fullName = $item->client->identite->firstname . ' ' . $item->client->identite->lastname . ' / ';
+        foreach ($identitiesQueries as $key => $query) {
+            $identitiesQueries[$key] = $query
+                ->where(function ($query) use ($recherche) {
+                    $query->where('firstname', 'like', "%$recherche%")
+                        ->orWhere('lastname', 'like', "%$recherche%");
+                });
+        }
 
-            $i = 0;
-            foreach ($item->client->identite->telephone as $telephone) {
-                $i++;
-                $fullName .= ($i == count($item->client->identite->telephone)) ? $telephone : $telephone . ' , ';
+        $identities = $identitiesQueries['clientsQuery']
+            ->union($identitiesQueries['claimersQuery'])
+            ->distinct()
+            ->take(10)
+            ->get($columnSelected);
+
+        $filtered = [];
+
+        foreach ($identities as $identity) {
+
+            $fullName = $identity->firstname . ' ' . $identity->lastname;
+
+            if ($identity->telephone) {
+                $fullName .= ' / ';
+                $counter = 0;
+                foreach ($identity->telephone as $telephone) {
+                    $fullName .= ($counter == count($identity->telephone) - 1) ? $telephone : $telephone . ' , ';
+                }
             }
 
-            $clients->push([
-                'identityId' => $item->client->identite->id,
-                'identity' => $item->client->identite,
-                'client' => $item->client,
-                'accounts' => $item->accounts,
-                'fullName' => $fullName,
-                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
-            ]);
-
-            return $item;
-
-        });
-
-        // get the claimers of the institution
-        $institution->claims->map(function ($item, $key) use ($clients) {
-
-            $fullName = $item->claimer->firstname . ' ' . $item->claimer->lastname . ' / ';
-
-            $i = 0;
-            foreach ($item->claimer->telephone as $telephone) {
-                $i++;
-                $fullName .= ($i == count($item->claimer->telephone)) ? $telephone : $telephone . ' , ';
+            try {
+                $accounts = $identity->client->client_institutions->pluck('accounts')->collapse();
+            } catch (\Exception $exception) {
+                $accounts = [];
             }
 
-            $clients->push([
-                'identityId' => $item->claimer->id,
-                'identity' => $item->claimer,
-                'client' => null,
-                'accounts' => [],
+            $filtered[] = [
+                'identityId' => $identity->id,
+                'identity' => $identity->only($columnSelected),
+                'accounts' => $accounts,
                 'fullName' => $fullName,
-                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
-            ]);
+            ];
+        }
 
-            return $item;
-
-        });
-
-        $filtered = $clients->filter(function ($value, $key) {
-            return $value['contains'];
-        });
-
-        return response()->json($filtered->unique('identityId')->take(10)->values(), 200);
+        return response()->json($filtered, JsonResponse::HTTP_OK);
     }
 
 }
