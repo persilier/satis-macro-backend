@@ -2,14 +2,10 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
-use Exception;
+
+use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Unit;
@@ -28,12 +24,13 @@ trait ProcessingCircuit
     /**
      * @param $institutionId | Id institution
      * @return array
+     * @throws CustomException
      */
     protected function getAllProcessingCircuits($institutionId = null)
     {
         try {
 
-            $circuits =   ClaimCategory::with(['claimObjects.units' => function ($rel) use ($institutionId){
+            $circuits = ClaimCategory::with(['claimObjects.units' => function ($rel) use ($institutionId) {
 
                 $rel->wherePivot('institution_id', $institutionId);
 
@@ -53,11 +50,12 @@ trait ProcessingCircuit
      * @param null $institutionId
      * @return mixed
      */
-    protected function getAllUnits($institutionId = null){
+    protected function getAllUnits($institutionId = null)
+    {
 
         try {
 
-            $units = Unit::where('institution_id', $institutionId)->whereHas('unitType', function ($q){
+            $units = Unit::where('institution_id', $institutionId)->whereHas('unitType', function ($q) {
 
                 $q->where('can_treat', 1);
 
@@ -77,17 +75,32 @@ trait ProcessingCircuit
      * @param $collection
      * @param null $institutionId
      * @return mixed
+     * @throws RetrieveDataUserNatureException
      */
-    protected function rules($request, $collection, $institutionId = NULL){
+    protected function rules($request, $collection, $institutionId = NULL)
+    {
+
+        $claimObjects = ClaimObject::query()->get();
+
+        $units = Unit::query()
+            ->where('institution_id', $institutionId)
+            ->whereHas('unitType', function ($q) {
+                $q->where('can_treat', 1);
+            })
+            ->get();
 
         foreach ($request as $claim_object_id => $units_ids) {
-            // Check if claim_object_id exists
-            $claim_object = ClaimObject::findOrFail($claim_object_id);
-            // Check if requirement_ids don't contain same values and exist
+
+            $claim_object = $claimObjects->find($claim_object_id);
+
+            if (!$claim_object) {
+                throw new RetrieveDataUserNatureException($claim_object_id . " does not reference a valid claim object");
+            }
+
             $unit_ids_collection = collect([]);
             $unitsSync = [];
 
-            if(!is_null($units_ids)){
+            if (!is_null($units_ids)) {
 
                 foreach ($units_ids as $unit_id) {
 
@@ -95,11 +108,11 @@ trait ProcessingCircuit
                         throw new RetrieveDataUserNatureException($unit_id . " is sent more than once");
                     }
 
-                    Unit::where('institution_id', $institutionId)->whereHas('unitType', function ($q){
+                    $unit = $units->find($unit_id);
 
-                        $q->where('can_treat', 1);
-
-                    })->findOrFail($unit_id);
+                    if (!$unit) {
+                        throw new RetrieveDataUserNatureException($unit_id . " is not a valid unit with unitType can treat");
+                    }
 
                     $unit_ids_collection->push($unit_id);
 
@@ -123,25 +136,26 @@ trait ProcessingCircuit
      * @param $collection
      * @param null $institutionId
      * @return bool
+     * @throws CustomException
      */
-    protected function detachAttachUnits($collection , $institutionId = NULL){
+    protected function detachAttachUnits($collection, $institutionId = NULL)
+    {
 
-        try{
+        try {
+
+            DB::table('claim_object_unit')->where('institution_id', '=', $institutionId)
+                ->delete();
 
             foreach ($collection as $key => $item) {
 
-                $item['claim_object']->units()->whereHas('unitType', function ($q){
-
-                    $q->where('can_treat', 1);
-
-                })->wherePivot('institution_id', $institutionId)->sync($item['units_ids']);
+                $item['claim_object']->units()->sync($item['units_ids']);
 
             }
 
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Impossible de mettre à jour les circuits de traitements.");
+            throw new CustomException($exception->getMessage());
         }
 
         return true;

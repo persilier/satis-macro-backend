@@ -1,11 +1,11 @@
 <?php
 
 namespace Satis2020\ClaimObject\Http\Controllers\ImportExport;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\ClaimObject;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 /**
@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ImportController extends ApiController
 {
     use \Satis2020\ServicePackage\Traits\ClaimObject;
+
     public function __construct()
     {
         parent::__construct();
@@ -25,16 +26,16 @@ class ImportController extends ApiController
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function importClaimObjects(Request $request){
+    public function importClaimObjects(Request $request)
+    {
 
         $request->validate([
-
             'file' => 'required|file|max:2048|mimes:xls,xlsx',
         ]);
 
         $datas = [
-
             'status' => true,
             'claimObjects' => '',
         ];
@@ -49,16 +50,15 @@ class ImportController extends ApiController
 
         $imports->import($file);
 
-        if($imports->getErrors()){
+        if ($imports->getErrors()) {
 
             $datas = [
-
                 'status' => false,
                 'claimObjects' => $imports->getErrors()
             ];
         }
 
-        return response()->json($datas,201);
+        return response()->json($datas, 201);
 
     }
 
