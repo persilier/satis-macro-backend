@@ -57,7 +57,7 @@ class ImportController extends ApiController
 
         $this->activityLogService->store("Importation des unités et types d'unités par excel",
             $this->institution()->id,
-            $this->activityLogService::CREATED,
+            $this->activityLogService::IMPORTATION,
             'unit',
             $this->user()
         );

@@ -69,7 +69,7 @@ class ImportController extends ApiController
 
         $this->activityLogService->store('Importation des comptes clients par fichier excel',
             $this->institution()->id,
-            $this->activityLogService::CREATED,
+            $this->activityLogService::IMPORTATION,
             'account',
             $this->user()
         );

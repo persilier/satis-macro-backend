@@ -59,7 +59,7 @@ class ImportController extends ApiController
 
         $this->activityLogService->store("Importation des institutions par excel",
             $this->institution()->id,
-            $this->activityLogService::DELETED,
+            $this->activityLogService::IMPORTATION,
             'institution',
             $this->user()
         );

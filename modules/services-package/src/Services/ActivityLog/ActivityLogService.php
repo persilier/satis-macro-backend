@@ -34,6 +34,7 @@ class ActivityLogService
     const LOGOUT = 'LOGOUT';
     const LOGIN = 'LOGIN';
     const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
+    const IMPORTATION = 'IMPORTATION';
     /***
      * @var $activityLogRepository
      */

@@ -20,6 +20,7 @@ use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
@@ -33,13 +34,20 @@ class ClaimController extends ApiController
 
     use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
 
-    public function __construct()
+    /**
+     * @var ActivityLogService
+     */
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
 
         $this->middleware('permission:store-claim-against-any-institution')->only(['store', 'create']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -96,6 +104,14 @@ class ClaimController extends ApiController
         $request->merge(['status' => $statusOrErrors['status']]);
 
         $claim = $this->createClaim($request);
+
+        $this->activityLogService->store("Enrégistrement d'une reclamation.",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return response()->json([ 'claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
 
