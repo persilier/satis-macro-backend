@@ -35,6 +35,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
     /**
      * @param Collection $collection
      * @return void
+     * @throws CustomException
      */
     public function collection(Collection $collection)
     {
@@ -42,13 +43,10 @@ class ClaimObject implements ToCollection, WithHeadingRow
         $collection = $collection->toArray();
 
         if(empty($collection)){
-
             throw new CustomException("Le fichier excel d'import des objects de réclamations est vide.", 404);
         }
-        // iterating each row and validating it:
+
         foreach ($collection as $key => $row) {
-
-
 
             if ($this->myInstitution) {
                 $row['institution'] = $this->myInstitution;
@@ -70,7 +68,6 @@ class ClaimObject implements ToCollection, WithHeadingRow
                 }
 
                 $this->errors[$key] = [
-
                     'error' => $errors_validations,
                     'data' => $row
                 ];
@@ -78,6 +75,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
             } else {
 
                 $data = $this->getIds($row, 'claim_categories', 'category', 'name');
+
                 $this->storeImportClaimObject($data, $row['category']);
 
             }

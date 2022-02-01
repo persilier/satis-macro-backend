@@ -21,6 +21,7 @@ class ImportController extends ApiController
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function importClaims(Request $request){
 
@@ -29,8 +30,7 @@ class ImportController extends ApiController
             'etat_update' => 'required|boolean',
         ]);
 
-        $datas = [
-
+        $data = [
             'status' => true,
             'claims' => ''
         ];
@@ -49,14 +49,14 @@ class ImportController extends ApiController
 
         if($imports->getErrors()){
 
-            $datas = [
-
+            $data = [
                 'status' => false,
                 'claims' => $imports->getErrors()
             ];
+
         }
 
-        return response()->json($datas,201);
+        return response()->json($data,201);
 
     }
 
