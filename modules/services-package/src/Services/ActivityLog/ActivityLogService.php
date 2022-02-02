@@ -13,6 +13,9 @@ use Spatie\Activitylog\Contracts\Activity;
  */
 class ActivityLogService
 {
+    const CLAIM_REGISTERED = 'CLAIM_REGISTERED';
+    const CLAIM_REVOKED = 'CLAIM_REVOKED';
+    const MEASURE_SATISFACTION = 'MEASURE_SATISFACTION';
     const CREATED = 'CREATED';
     const UPDATED = 'UPDATED';
     const DELETED = 'DELETED';

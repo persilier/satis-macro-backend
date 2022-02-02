@@ -34,12 +34,9 @@ class ClaimController extends ApiController
 
     use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
 
-    /**
-     * @var ActivityLogService
-     */
-    private $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+
+    public function __construct()
     {
         parent::__construct();
 
@@ -47,7 +44,6 @@ class ClaimController extends ApiController
 
         $this->middleware('permission:store-claim-against-any-institution')->only(['store', 'create']);
 
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -104,14 +100,6 @@ class ClaimController extends ApiController
         $request->merge(['status' => $statusOrErrors['status']]);
 
         $claim = $this->createClaim($request);
-
-        $this->activityLogService->store("Enrégistrement d'une reclamation.",
-            $this->institution()->id,
-            $this->activityLogService::CREATED,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         return response()->json([ 'claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
 

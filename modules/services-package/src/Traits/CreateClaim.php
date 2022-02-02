@@ -30,6 +30,7 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
 use Faker\Factory as Faker;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Trait CreateClaim
@@ -306,6 +307,17 @@ trait CreateClaim
 
         }
 
+        $activityLogService = app(ActivityLogService::class);
+        $institutionId = isset($data['institution_targeted_id'])?
+            $data['institution_targeted_id']:
+            $this->institution()->id;
+        $activityLogService->store("Enrégistrement d'une reclamation.",
+            $institutionId,
+            $this->activityLogService::CLAIM_REGISTERED,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return $claim;
     }
