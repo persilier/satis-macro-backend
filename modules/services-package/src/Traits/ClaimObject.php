@@ -96,13 +96,18 @@ trait ClaimObject
             $row['institution'] = null;
         }
 
-        if ($institution = Institution::where('name', $row['institution'])->first()) {
+        $institution = Institution::query()
+            ->where('name', $row['institution'])
+            ->first();
+
+        if ($institution) {
             $institutionId = $institution->id;
         }
 
         if (is_null($category)) {
             $category = \Satis2020\ServicePackage\Models\ClaimCategory::query()
-                ->create(['name' => $nameCategory])->id;
+                ->create(['name' => $nameCategory])
+                ->id;
         }
 
         $severityLevelId = SeverityLevel::query()->where('status', $row['severity_level'])->first()->id;
@@ -132,35 +137,54 @@ trait ClaimObject
 
             foreach ($treatmentUnits as $unitName) {
 
-                $unit = Unit::query()
-                    ->with('unitType')
+                $unitType = UnitType::query()
+                    ->with('units')
                     ->where('name->' . $lang, $unitName)
-                    ->where('institution_id', $institutionId)
                     ->first();
 
-                if (!$unit) {
+                if ($unitType) {
 
-                    $unitType = UnitType::query()->where('name->' . $lang, 'Autres')->first();
+                    if ($unitType->can_treat) {
+                        foreach ($unitType->units as $unit) {
+                            $units[$unit->id] = ['institution_id' => $institutionId];
+                        }
+                    }
 
-                    if (!$unitType) {
-                        $unitType = UnitType::query()->create([
-                            'name' => 'Autres',
-                            'can_be_target' => 1,
-                            'is_editable' => 1,
-                            'can_treat' => 1
+                } else {
+
+                    $unit = Unit::query()
+                        ->with('unitType')
+                        ->where('name->' . $lang, $unitName)
+                        ->where('institution_id', $institutionId)
+                        ->first();
+
+                    if (!$unit) {
+
+                        $unitType = UnitType::query()->where('name->' . $lang, 'Autres')->first();
+
+                        if (!$unitType) {
+                            $unitType = UnitType::query()->create([
+                                'name' => 'Autres',
+                                'can_be_target' => 1,
+                                'is_editable' => 1,
+                                'can_treat' => 1
+                            ]);
+                        }
+
+                        $unit = Unit::query()->create([
+                            'name' => $unitName,
+                            'unit_type_id' => $unitType->id,
+                            'institution_id' => $institutionId,
                         ]);
                     }
 
-                    $unit = Unit::query()->create([
-                        'name' => $unitName,
-                        'unit_type_id' => $unitType->id,
-                        'institution_id' => $institutionId,
-                    ]);
+                    if ($unit->unitType->can_treat) {
+                        $units[$unit->id] = ['institution_id' => $institutionId];
+                    }
+
                 }
 
-                if ($unit->unitType->can_treat) {
-                    $units[$unit->id] = ['institution_id' => $institutionId];
-                }
+
             }
         }
 

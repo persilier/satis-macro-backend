@@ -2,8 +2,8 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
+
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Role;
@@ -25,27 +25,27 @@ trait ImportStaff
      * @param $row
      * @return mixed
      */
-    public function rules($row){
+    public function rules($row)
+    {
 
         $rules = $this->rulesIdentite();
 
         $rules['position'] = ['required'];
 
-        if ($this->unitRequired){
+        if ($this->unitRequired) {
 
             $rules['unite'] = ['required',
-                new NameModelRules(['table' => 'units', 'column'=> 'name']),
+                new NameModelRules(['table' => 'units', 'column' => 'name']),
             ];
 
-        }else{
+        } else {
 
             $rules['unite'] = [
-                new NameModelRules(['table' => 'units', 'column'=> 'name']),
+                new NameModelRules(['table' => 'units', 'column' => 'name']),
             ];
         }
 
-        if (!$this->myInstitution){
-
+        if (!$this->myInstitution) {
             $rules['institution'] = 'required|exists:institutions,name';
         }
 
@@ -57,15 +57,14 @@ trait ImportStaff
     }
 
 
-
-    public function rulesAddProfilToRole(){
+    public function rulesAddProfilToRole()
+    {
 
         return [
             "profil" => 'required|exists:roles,name',
-            "roles" =>  ['required', new AddProfilToRoleValidation()]
+            "roles" => ['required', new AddProfilToRoleValidation()]
         ];
     }
-
 
 
     /**
@@ -74,9 +73,9 @@ trait ImportStaff
      */
     protected function handleUnitVerification($row)
     {
-        if($this->unitRequired){
+        if ($this->unitRequired) {
 
-            if(Unit::find($row['unite'])->institution_id !== $row['institution']){
+            if (Unit::find($row['unite'])->institution_id !== $row['institution']) {
 
                 return [
                     'status' => false,
@@ -104,42 +103,42 @@ trait ImportStaff
 
         $verifyEmail = $this->handleInArrayUnicityVerification($row['email'], 'identites', 'email');
 
-        if(!$verifyPhone['status']){
+        if (!$verifyPhone['status']) {
 
             $identite = $verifyPhone['entity'];
 
         }
 
-        if(!$verifyEmail['status']){
+        if (!$verifyEmail['status']) {
 
             $identite = $verifyEmail['entity'];
         }
 
 
-        if(!$identite){
+        if (!$identite) {
 
             $identite = $this->storeIdentite($row);
             $staff = $this->storeStaff($row, $identite);
 
-        }else{
+        } else {
 
-            if(!$this->stop_identite_exist){
+            if (!$this->stop_identite_exist) {
 
                 $status = false;
                 $message = 'Un identité a été retrouvé avec les informations du staff.';
 
-            }else{
+            } else {
 
                 if ($this->etat) {
                     $identite = Identite::find($identite->id);
                     $identite->update($this->fillableIdentite($row));
                 }
 
-                if(! $staff = Staff::where('identite_id', $identite->id)->where('institution_id', $row['institution'])
-                    ->first()){
+                if (!$staff = Staff::where('identite_id', $identite->id)->where('institution_id', $row['institution'])
+                    ->first()) {
                     $staff = $this->storeStaff($row, $identite);
 
-                }else{
+                } else {
 
                     $status = false;
                     $message = 'A Staff already exist in the institution';
@@ -163,14 +162,15 @@ trait ImportStaff
      * @param $identite
      * @return mixed
      */
-    protected function storeStaff($row, $identite){
+    protected function storeStaff($row, $identite)
+    {
 
         $lang = app()->getLocale();
 
         $position = DB::table('positions')->whereNull('deleted_at')->get();
         if (!$position = $position->filter(function ($item) use ($lang, $row) {
             $name = json_decode($item->name)->{$lang};
-            if($name === $row['position'])
+            if ($name === $row['position'])
                 return $item;
         })->first()) {
             $position = Position::create([
@@ -187,14 +187,14 @@ trait ImportStaff
             'others' => null
         ];
 
-        if($this->unitRequired){
+        if ($this->unitRequired) {
 
             $data['unit_id'] = $row['unite'];
         }
 
-        $store =  Staff::create($data);
+        $store = Staff::create($data);
 
-        if (! User::where('username', $identite->email[0])->first()) {
+        if (!User::where('username', $identite->email[0])->first()) {
 
             $user = User::create([
                 'username' => $identite->email[0],
@@ -212,15 +212,16 @@ trait ImportStaff
      * @param $data
      * @return mixed
      */
-    protected function modifiedDataKeysInId($data){
+    protected function modifiedDataKeysInId($data)
+    {
 
         $data = $this->mergeMyInstitution($data);
 
         $data = $this->getIdInstitution($data, 'institution', 'name');
 
-        if($this->unitRequired){
+        if ($this->unitRequired) {
 
-            $data = $this->getIds($data, 'units', 'unite','name');
+            $data = $this->getIds($data, 'units', 'unite', 'name');
         }
 
         return $data;
