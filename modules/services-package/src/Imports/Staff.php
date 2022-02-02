@@ -1,11 +1,13 @@
 <?php
+
 namespace Satis2020\ServicePackage\Imports;
+
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
@@ -44,12 +46,13 @@ class Staff implements ToCollection, WithHeadingRow
     /**
      * @param Collection $collection
      * @return Collection
+     * @throws CustomException
      */
     public function collection(Collection $collection)
     {
 
         $collection = $collection->toArray();
-        if(empty($collection)){
+        if (empty($collection)) {
 
             throw new CustomException("Le fichier excel d'import des staffs est vide.", 404);
         }
@@ -87,11 +90,11 @@ class Staff implements ToCollection, WithHeadingRow
                     $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                     $this->errors[$key]['conflits']['unite'] = $verifiedUnit['message'];
 
-                }else{
+                } else {
 
                     $staff = $this->verificationAndStoreStaff($data);
 
-                    if($staff['status'] === false){
+                    if ($staff['status'] === false) {
 
                         $this->errors[$key] = ['data' => $row] ?? (!$this->errors[$key]);
                         $this->errors[$key]['conflits']['staff'] = $staff['message'];
@@ -112,6 +115,7 @@ class Staff implements ToCollection, WithHeadingRow
     }
 
     // this function returns all validation errors after import
+
     /**
      * @return array
      */
