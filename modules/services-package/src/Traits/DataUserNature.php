@@ -3,13 +3,13 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Models\User;
 
 /**
  * Trait DataUserNature
@@ -167,31 +167,15 @@ trait DataUserNature
      */
     public function getIds($row, $table, $keyRow, $column)
     {
-        if(array_key_exists($keyRow, $row)) {
-            // put keywords into array
-            try {
+        if (array_key_exists($keyRow, $row)) {
 
-                $lang = app()->getLocale();
+            $model = DB::table($table)
+                ->whereNull('deleted_at')
+                ->where($column . '->' . App::getLocale(), $row[$keyRow])
+                ->first();
 
-                $data = DB::table($table)->whereNull('deleted_at')->get();
+            $row[$keyRow] = optional($model)->id;
 
-                $data = $data->filter(function ($item) use ($row, $column, $keyRow, $lang) {
-
-                    $name = json_decode($item->{$column})->{$lang};
-
-                    if($name === $row[$keyRow])
-
-                        return $item;
-
-                })->first()->id;
-
-            } catch (\Exception $exception) {
-
-                $data = null;
-
-            }
-
-            $row[$keyRow] = $data;
         }
 
         return $row;
@@ -203,36 +187,37 @@ trait DataUserNature
      * @param $data
      * @return mixed
      */
-    protected function libellePeriode($data){
+    protected function libellePeriode($data)
+    {
 
         $start = $data['startDate'];
         $end = $data['endDate'];
 
-        if($start === $end){
+        if ($start === $end) {
 
-            $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
+            $libelle = $end->day . " " . $end->shortMonthName . " " . $end->year;
 
-        }else{
+        } else {
 
-            if($start->year !== $end->year){
+            if ($start->year !== $end->year) {
 
-                $libelle = $start->day." ".$start->shortMonthName." ".$start->year." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                $libelle = $start->day . " " . $start->shortMonthName . " " . $start->year . " au " . $end->day . " " . $end->shortMonthName . " " . $end->year;
 
-            }else{
+            } else {
 
-                if($start->month !== $end->month){
+                if ($start->month !== $end->month) {
 
-                    $libelle = $start->day." ".$start->shortMonthName." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                    $libelle = $start->day . " " . $start->shortMonthName . " au " . $end->day . " " . $end->shortMonthName . " " . $end->year;
 
-                }else{
+                } else {
 
-                    if($start->day !== $end->day){
+                    if ($start->day !== $end->day) {
 
-                        $libelle = $start->day." au ".$end->day." ".$end->shortMonthName." ".$end->year;
+                        $libelle = $start->day . " au " . $end->day . " " . $end->shortMonthName . " " . $end->year;
 
-                    }else{
+                    } else {
 
-                        $libelle = $end->day." ".$end->shortMonthName." ".$end->year;
+                        $libelle = $end->day . " " . $end->shortMonthName . " " . $end->year;
                     }
 
                 }
@@ -255,7 +240,7 @@ trait DataUserNature
         }
         file_put_contents($path . $safeName, $data);
 
-        return ["ext" => $extension, "link" =>  "/storage/" . $link_store . $safeName];
+        return ["ext" => $extension, "link" => "/storage/" . $link_store . $safeName];
     }
 
 
@@ -264,7 +249,7 @@ trait DataUserNature
         if ($request->has('attach_files')) {
             for ($i = 0; $i < sizeof($request->attach_files); $i++) {
                 $save_img = $this->base64SaveImg($request->attach_files[$i], 'claim-attachments/', $i);
-                $claim->files()->create(['title' => "attachement portal web".$claim->reference, 'url' => $save_img['link']]);
+                $claim->files()->create(['title' => "attachement portal web" . $claim->reference, 'url' => $save_img['link']]);
             }
         }
     }
@@ -273,16 +258,17 @@ trait DataUserNature
     /**
      * @param $request
      */
-    protected function convertEmailInStrToLower($request){
+    protected function convertEmailInStrToLower($request)
+    {
 
         try {
-            if($request->has('email') && !empty($request->has('email') )){
-                $request->merge(['email' => array_map('strtolower',$request->email)]);
+            if ($request->has('email') && !empty($request->has('email'))) {
+                $request->merge(['email' => array_map('strtolower', $request->email)]);
             }
-        } catch (\Exception $exception) { }
+        } catch (\Exception $exception) {
+        }
 
     }
-
 
 
 }

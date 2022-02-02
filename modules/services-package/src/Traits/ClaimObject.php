@@ -3,12 +3,11 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
-use Satis2020\ServicePackage\Models\Claim;
+use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\SeverityLevel;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\UnitType;
-use Satis2020\ServicePackage\Rules\NameModelRules;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 
@@ -22,12 +21,13 @@ trait ClaimObject
      * @param bool $claimObject
      * @return array
      */
-    protected function rules($claimObject = false){
+    protected function rules($claimObject = false)
+    {
 
 
-        if($claimObject){
+        if ($claimObject) {
 
-            $data =  [
+            $data = [
 
                 'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name', 'id', "{$claimObject->id}")],
                 'description' => 'nullable',
@@ -37,9 +37,9 @@ trait ClaimObject
                 'others' => 'array',
             ];
 
-        }else{
+        } else {
 
-            $data  =  [
+            $data = [
 
                 'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
                 'description' => 'nullable',
@@ -56,9 +56,10 @@ trait ClaimObject
     /**
      * @return array
      */
-    protected function rulesImport(){
+    protected function rulesImport()
+    {
 
-         $rules = [
+        $rules = [
             'category' => ['required', 'string'],
             'object' => ['required'],
             'description' => 'nullable',
@@ -67,11 +68,11 @@ trait ClaimObject
             'time_limit' => 'required|integer|min:0',
         ];
 
-         if (!$this->withoutInstitution) {
-             $rules['institution'] = 'required|exists:institutions,name';
-         }
+        if (!$this->withoutInstitution) {
+            $rules['institution'] = 'required|exists:institutions,name';
+        }
 
-         return $rules;
+        return $rules;
     }
 
 
@@ -80,11 +81,12 @@ trait ClaimObject
      * @param $nameCategory
      * @return mixed
      */
-    protected function storeImportClaimObject($row, $nameCategory){
+    protected function storeImportClaimObject($row, $nameCategory)
+    {
 
         $lang = app()->getLocale();
 
-        $units = collect([]);
+        $units = [];
 
         $category = $row['category'];
 
@@ -98,32 +100,50 @@ trait ClaimObject
             $institutionId = $institution->id;
         }
 
-        if(is_null($category)){
-
-            $category = \Satis2020\ServicePackage\Models\ClaimCategory::create(['name' => $nameCategory])->id;
+        if (is_null($category)) {
+            $category = \Satis2020\ServicePackage\Models\ClaimCategory::query()
+                ->create(['name' => $nameCategory])->id;
         }
 
-        if ($object = \Satis2020\ServicePackage\Models\ClaimObject::where('name->'.$lang)->first()) {
+        $severityLevelId = SeverityLevel::query()->where('status', $row['severity_level'])->first()->id;
 
-            $object->update(['claim_category_id' => $category]);
+        $object = \Satis2020\ServicePackage\Models\ClaimObject::query()
+            ->where('name->' . $lang, $row['object'])
+            ->first();
 
+        if ($object) {
+            $object->update([
+                'claim_category_id' => $category,
+                'description' => $row['description'],
+                'severity_levels_id' => $severityLevelId,
+                'time_limit' => $row['time_limit']
+            ]);
         } else {
-
             $object = \Satis2020\ServicePackage\Models\ClaimObject::create([
                 'name' => $row['object'],
                 'description' => $row['description'],
                 'claim_category_id' => $category,
-                'severity_levels_id' => SeverityLevel::where('status', $row['severity_level'])->first()->id,
+                'severity_levels_id' => $severityLevelId,
                 'time_limit' => $row['time_limit']
             ]);
         }
 
         if (isset($row['treatment_units']) && $treatmentUnits = explode("/", $row['treatment_units'])) {
+
             foreach ($treatmentUnits as $unitName) {
 
-                if (!$unit = Unit::where('name->'.$lang, $unitName)->where('institution_id', $institutionId)->first()) {
-                    if (!$unitype = UnitType::where('name->'.$lang, 'Autres')->first()) {
-                        $unitype = UnitType::create([
+                $unit = Unit::query()
+                    ->with('unitType')
+                    ->where('name->' . $lang, $unitName)
+                    ->where('institution_id', $institutionId)
+                    ->first();
+
+                if (!$unit) {
+
+                    $unitType = UnitType::query()->where('name->' . $lang, 'Autres')->first();
+
+                    if (!$unitType) {
+                        $unitType = UnitType::query()->create([
                             'name' => 'Autres',
                             'can_be_target' => 1,
                             'is_editable' => 1,
@@ -131,21 +151,27 @@ trait ClaimObject
                         ]);
                     }
 
-                    $unit = Unit::create([
+                    $unit = Unit::query()->create([
                         'name' => $unitName,
-                        'unit_type_id' => $unitype->id,
+                        'unit_type_id' => $unitType->id,
                         'institution_id' => $institutionId,
                     ]);
                 }
 
-                $units->push($unit);
+                if ($unit->unitType->can_treat) {
+                    $units[$unit->id] = ['institution_id' => $institutionId];
+                }
             }
         }
 
-        if ($units->isNotEmpty()) {
-            $object->units()->whereHas('unitType', function ($q){
-                $q->where('can_treat', 1);
-            })->wherePivot('institution_id', $institutionId)->sync($units->pluck('id'));
+        if ($units) {
+
+            DB::table('claim_object_unit')
+                ->where('claim_object_id', $object->id)
+                ->where('institution_id', '=', $institutionId)
+                ->delete();
+
+            $object->units()->sync($units);
         }
 
         return $object;
