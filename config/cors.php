@@ -19,7 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        config("allowed_domains.frontend_url"),
+        config("allowed_domains.email_service_url"),
+        config("allowed_domains.mobile_backoffice_url"),
+        config("allowed_domains.wordpress_plugin_url"),
+    ],
 
     'allowed_origins_patterns' => [],
 
