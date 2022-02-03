@@ -36,8 +36,7 @@ class ImportController extends ApiController
             'etat_update' => 'required|boolean',
         ]);
 
-        $datas = [
-
+        $data = [
             'status' => true,
             'claims' => ''
         ];
@@ -56,8 +55,7 @@ class ImportController extends ApiController
 
         if($imports->getErrors()){
 
-            $datas = [
-
+            $data = [
                 'status' => false,
                 'claims' => $imports->getErrors()
             ];
@@ -70,7 +68,7 @@ class ImportController extends ApiController
             );
         }
 
-        return response()->json($datas,201);
+        return response()->json($data,201);
 
     }
 

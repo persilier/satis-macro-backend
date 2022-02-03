@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Services;
 
 
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\MessageApiMethod;
 use Satis2020\ServicePackage\Traits\Notification;
@@ -42,7 +43,7 @@ class SendSMService
             }
             return $messageSent;
         } catch (\Exception $exception) {
-
+            Log::debug($exception);
             return $exception->getMessage();
 
         }

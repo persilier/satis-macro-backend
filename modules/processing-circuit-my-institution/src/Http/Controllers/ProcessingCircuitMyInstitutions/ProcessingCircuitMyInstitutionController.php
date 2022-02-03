@@ -34,7 +34,7 @@ class ProcessingCircuitMyInstitutionController extends ApiController
 
     /**
      * Edit the form for creating a new resource.
-     * @return Response
+     * @return JsonResponse
      */
     public function edit()
     {
@@ -50,6 +50,7 @@ class ProcessingCircuitMyInstitutionController extends ApiController
      * @param Request $request
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
     public function update(Request $request)
     {
