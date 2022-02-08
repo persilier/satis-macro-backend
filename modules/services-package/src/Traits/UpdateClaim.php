@@ -27,6 +27,7 @@ use Satis2020\ServicePackage\Rules\IdentiteBelongsToStaffRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Trait UpdateClaim
@@ -469,6 +470,15 @@ trait UpdateClaim
         if (!is_null($this->getInstitutionPilot($institution))) {
             $this->getInstitutionPilot($institution)->notify(new RegisterAClaim($claim));
         }
+
+        $activityLogService = app(ActivityLogService::class);
+        $activityLogService->store("Plainte mise à jour.",
+            $this->institution()->id,
+            ActivityLogService::CLAIM_UPDATED,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return $claim;
     }

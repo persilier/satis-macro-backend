@@ -313,7 +313,7 @@ trait CreateClaim
             $this->institution()->id;
         $activityLogService->store("Enrégistrement d'une reclamation.",
             $institutionId,
-            $this->activityLogService::CLAIM_REGISTERED,
+            ActivityLogService::REGISTER_CLAIM,
             'claim',
             $this->user(),
             $claim
