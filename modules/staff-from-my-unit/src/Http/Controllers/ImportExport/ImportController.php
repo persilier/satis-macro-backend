@@ -5,6 +5,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Staff;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class ImportExportController
@@ -12,11 +13,15 @@ use Satis2020\ServicePackage\Imports\Staff;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:store-staff-from-my-unit')->only(['importStaffs']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -59,6 +64,13 @@ class ImportController extends ApiController
                 'status' => false,
                 'staffs' => $imports->getErrors()
             ];
+        }else{
+            $this->activityLogService->store("Importation des staffs",
+                $this->institution()->id,
+                ActivityLogService::IMPORTATION,
+                'staff',
+                $this->user()
+            );
         }
 
         return response()->json($datas,201);

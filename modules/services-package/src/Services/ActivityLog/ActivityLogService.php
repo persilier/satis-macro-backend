@@ -13,13 +13,15 @@ use Spatie\Activitylog\Contracts\Activity;
  */
 class ActivityLogService
 {
-    const CLAIM_REGISTERED = 'CLAIM_REGISTERED';
     const CLAIM_REVOKED = 'CLAIM_REVOKED';
+    const CLAIM_UPDATED = 'CLAIM_UPDATED';
     const MEASURE_SATISFACTION = 'MEASURE_SATISFACTION';
     const CREATED = 'CREATED';
+    const STAFF_CREATED = 'STAFF_CREATED';
     const UPDATED = 'UPDATED';
     const DELETED = 'DELETED';
     const UPDATE_PILOT_ACTIVE = 'UPDATE_PILOT_ACTIVE';
+    const UPDATE_STAFF = 'UPDATE_STAFF';
     const REGISTER_CLAIM = 'REGISTER_CLAIM';
     const COMPLETION_CLAIM = 'COMPLETION_CLAIM';
     const TRANSFER_TO_INSTITUTION = 'TRANSFER_TO_INSTITUTION';
@@ -38,6 +40,7 @@ class ActivityLogService
     const LOGIN = 'LOGIN';
     const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
     const IMPORTATION = 'IMPORTATION';
+    const NEW_USER_CREATED = 'NEW_USER_CREATED';
     /***
      * @var $activityLogRepository
      */
@@ -99,14 +102,13 @@ class ActivityLogService
      */
     protected function getAllAction()
     {
-        return [
+         $actions = [
             self::CREATED => 'Enregistrement',
             self::UPDATED => 'Modification',
             self::DELETED => 'Suppression',
             self::UPDATE_PILOT_ACTIVE => 'Mise à jour du pilot actif',
             self::REGISTER_CLAIM => "Enregistrement d'une réclamation",
             self::COMPLETION_CLAIM => "Complétion d'une réclamation",
-            self::TRANSFER_TO_INSTITUTION => "Transfert vers une institution",
             self::TRANSFER_TO_UNIT => "Transfert vers une unité",
             self::FUSION_CLAIM => "Fusion",
             self::TREATMENT_CLAIM => 'Traitement',
@@ -117,8 +119,20 @@ class ActivityLogService
             self::REASSIGNMENT_CLAIM => 'Réaffectation',
             self::VALIDATED_CLAIM => 'Validation',
             self::INVALIDATED_CLAIM => 'Invalidation',
-            self::AUTH => 'Authentification'
+            self::AUTH => 'Authentification',
+            self::NEW_USER_CREATED => "Nouvel uitilisateur créé",
+            self::LOGIN => "Connexion",
+            self::LOGOUT => "Déconnexion",
+            self::STAFF_CREATED => "Création de staff",
+            self::MEASURE_SATISFACTION => "Mésure de satisfaction",
+            self::UPDATE_STAFF => "Mise à jour de staff",
         ];
+
+         if (config('services.app_nature')=="MACRO") {
+             $actions[self::TRANSFER_TO_INSTITUTION] = "Transfert vers une institution";
+         }
+
+         return $actions;
     }
 
     /***
