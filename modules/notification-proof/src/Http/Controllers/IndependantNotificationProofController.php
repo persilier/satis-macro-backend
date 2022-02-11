@@ -37,7 +37,7 @@ class IndependantNotificationProofController extends ApiController
         parent::__construct();
         $this->notificationProofService = $proofService;
         $this->middleware('auth:api');
-        if($this->checkIfStaffIsPilot($this->staff())) {
+        if(Auth::check() &&  $this->checkIfStaffIsPilot($this->staff())) {
             $this->middleware('permission:pilot-list-notification-proof')->only(['index']);
             $this->middleware('active.pilot')->only(['index']);
         }else{

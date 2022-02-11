@@ -5,6 +5,7 @@ namespace Satis2020\NotificationProof\Http\Controllers;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Repositories\InstitutionRepository;
@@ -35,7 +36,7 @@ class NotificationProofController extends ApiController
         parent::__construct();
         $this->notificationProofService = $proofService;
         $this->middleware('auth:api');
-        if($this->checkIfStaffIsPilot($this->staff())) {
+        if(Auth::check() && $this->checkIfStaffIsPilot($this->staff())) {
             $this->middleware('permission:pilot-list-any-notification-proof')->only(['index','create']);
             $this->middleware('active.pilot')->only(['index']);
         }else{
