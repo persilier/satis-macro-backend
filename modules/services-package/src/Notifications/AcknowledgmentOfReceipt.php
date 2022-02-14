@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 
 /**
@@ -18,6 +19,7 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 
     public $claim;
     public $event;
+    public $institution;
 
     /**
      * Create a new notification instance.
@@ -35,6 +37,9 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
         $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
 
         $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
+
+        $this->institution = is_null($this->claim->createdBy) ? $this->claim->institutionTargeted
+            :  $this->claim->createdBy->institution;
     }
 
     /**
@@ -46,8 +51,8 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         return ($this->claim->response_channel_slug == 'sms' || is_null($this->claim->response_channel_slug))
-            ? [MessageChannel::class]
-            : ['mail'];
+            ? [MessageChannel::class,'database']
+            : ['mail','database'];
     }
 
     /**
@@ -58,6 +63,7 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+
         return (new MailMessage)
             ->subject('Accusé de reception')
             ->markdown('ServicePackage::mail.claim.feedback', [
@@ -87,12 +93,17 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      */
     public function toMessage($notifiable)
     {
+
         return [
             'to' => is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->iso_code
                 .$notifiable->telephone[0] :  $this->claim->createdBy->institution->iso_code .$notifiable->telephone[0],
             'text' => $this->event->text,
             'institutionMessageApi' => is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->institutionMessageApi :
-                 $this->claim->createdBy->institution->institutionMessageApi
+                 $this->claim->createdBy->institution->institutionMessageApi,
+            'institution_id'=> is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->id
+                 :  $this->claim->createdBy->institution->id,
+            'notifiable_id'=>$notifiable->id
         ];
     }
+
 }
