@@ -35,12 +35,16 @@ class ClientController extends ApiController
 
         $institution->client_institutions->map(function ($item, $key) use ($clients) {
 
-            $fullName = $item->client->identite->firstname . ' ' . $item->client->identite->lastname . ' / ';
+            $fullName = $item->client->identite->firstname . ' ' . $item->client->identite->lastname ;
 
             $i = 0;
-            foreach ($item->client->identite->telephone as $telephone) {
-                $i++;
-                $fullName .= ($i == count($item->client->identite->telephone)) ? $telephone : $telephone . ' , ';
+
+            if ($item->client->identite->telephone) {
+                $fullName .= ' / ';
+                foreach ($item->client->identite->telephone as $telephone) {
+                    $i++;
+                    $fullName .= ($i == count($item->client->identite->telephone)) ? $telephone : $telephone . ' , ';
+                }
             }
 
             if (!is_null($item->accounts)){
@@ -66,12 +70,14 @@ class ClientController extends ApiController
         // get the claimers of the institution
         $institution->claims->map(function ($item, $key) use ($clients) {
 
-            $fullName = $item->claimer->firstname . ' ' . $item->claimer->lastname . ' / ';
-
+            $fullName = $item->claimer->firstname . ' ' . $item->claimer->lastname;
             $i = 0;
-            foreach ($item->claimer->telephone as $telephone) {
-                $i++;
-                $fullName .= ($i == count($item->claimer->telephone)) ? $telephone : $telephone . ' , ';
+            if ($item->claimer->telephone) {
+                $fullName .= ' / ';
+                foreach ($item->claimer->telephone as $telephone) {
+                    $i++;
+                    $fullName .= ($i == count($item->claimer->telephone)) ? $telephone : $telephone . ' , ';
+                }
             }
 
             $clients->push([
