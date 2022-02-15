@@ -45,7 +45,8 @@ class ClientController extends ApiController
                             ->select('id', 'institution_id', 'client_id');
                     },
                     'client.client_institutions.accounts:id,number,client_institution_id',
-                ]),
+                ])
+                ->whereHas('client'),
             'claimersQuery' => Identite::query()
                 ->select($columnSelected)
                 ->whereHas('claims', function ($query) use ($institution) {
