@@ -66,8 +66,8 @@ trait CreateClaim
                     }
                 }
             ],
-            'amount_disputed' => ['nullable','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
-            'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
+            'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
+            'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',

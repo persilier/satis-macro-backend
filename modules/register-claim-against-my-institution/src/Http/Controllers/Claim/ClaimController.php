@@ -71,6 +71,7 @@ class ClaimController extends ApiController
     public function store(Request $request)
     {
 
+
         $request->merge(['created_by' => $this->staff()->id]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
 
