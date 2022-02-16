@@ -83,7 +83,7 @@ class ClaimController extends ApiController
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // create claimer if claimer_id is null
-        if (is_null($request->claimer_id)) {
+        if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
             // register claimer

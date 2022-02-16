@@ -75,7 +75,7 @@ trait CreateClaim
         ];
 
         if ($with_client) {
-            $data['claimer_id'] = ['nullable', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
+            $data['claimer_id'] = ['nullable','filled', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
             $data['firstname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['lastname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['sexe'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), Rule::in(['M', 'F', 'A'])];

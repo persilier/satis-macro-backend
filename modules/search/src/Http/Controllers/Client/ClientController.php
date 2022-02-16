@@ -49,6 +49,7 @@ class ClientController extends ApiController
                 [$institution, $institution]
             )
             ->select([
+                'identites.id as id',
                 'identites.id as identityId',
                 'identites.firstname',
                 'identites.lastname',
