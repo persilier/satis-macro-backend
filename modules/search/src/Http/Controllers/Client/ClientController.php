@@ -29,62 +29,68 @@ class ClientController extends ApiController
 
     public function index(Institution $institution)
     {
-        $institution->client_institutions->load(['client.identite', 'accounts']);
+        $recherche = $request->query('r');
 
-        $clients = collect([]);
+        $identities = Identite::query()
+            ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
+            ->leftJoin('client_institution', 'clients.id', '=', 'client_institution.client_id')
+            ->leftJoin('accounts', 'client_institution.id', '=', 'accounts.client_institution_id')
+            ->leftJoin('claims', 'identites.id', '=', 'claims.claimer_id')
+            ->where(function ($query) use ($recherche) {
+                $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orwhereJsonContains('telephone', $recherche);
+            })
+            ->whereRaw(
+                '( (`claims`.`id` IS NOT NULL AND `claims`.`institution_targeted_id` = ?) OR (`client_institution`.`id` IS NOT NULL AND `client_institution`.`institution_id` = ?) )',
+                [$institution, $institution]
+            )
+            ->select([
+                'identites.id as identityId',
+                'identites.firstname',
+                'identites.lastname',
+                'identites.telephone',
+                'identites.email',
+                'identites.ville',
+                'identites.sexe',
+                'accounts.id as accountId',
+                'accounts.number as accountNumber',
+            ])
+            ->get()
+            ->groupBy('identityId')
+            ->take(5);
 
         $institution->client_institutions->map(function ($item, $key) use ($clients) {
 
-            $fullName = $item->client->identite->firstname . ' ' . $item->client->identite->lastname ;
+        foreach ($identities as $identityId => $identityAccounts) {
 
-            $i = 0;
+            $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
 
-            if ($item->client->identite->telephone) {
+            if ($identityAccounts[0]->telephone) {
                 $fullName .= ' / ';
-                foreach ($item->client->identite->telephone as $telephone) {
-                    $i++;
-                    $fullName .= ($i == count($item->client->identite->telephone)) ? $telephone : $telephone . ' , ';
+                $counter = 0;
+                foreach ($identityAccounts[0]->telephone as $telephone) {
+                    $fullName .= ($counter == count($identityAccounts[0]->telephone) - 1) ? $telephone : $telephone . ' , ';
+                    $counter++;
                 }
             }
 
-            if (!is_null($item->accounts)){
-                $item->accounts->each(function ($account,$k){
-                    $account->makeVisible('account_number');
-                    $account->makeHidden('number');
-                });
-            }
-
-            $clients->push([
-                'identityId' => $item->client->identite->id,
-                'identity' => $item->client->identite,
-                'client' => $item->client,
-                'accounts' => $item->accounts,
-                'fullName' => $fullName,
-                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
-            ]);
-
-            return $item;
-
-        });
-
-        // get the claimers of the institution
-        $institution->claims->map(function ($item, $key) use ($clients) {
-
-            $fullName = $item->claimer->firstname . ' ' . $item->claimer->lastname;
-            $i = 0;
-            if ($item->claimer->telephone) {
-                $fullName .= ' / ';
-                foreach ($item->claimer->telephone as $telephone) {
-                    $i++;
-                    $fullName .= ($i == count($item->claimer->telephone)) ? $telephone : $telephone . ' , ';
+            $accounts = [];
+            foreach ($identityAccounts as $identityAccount) {
+                if ($identityAccount->accountId) {
+                    $account = new \stdClass();
+                    $account->id = $identityAccount->accountId;
+                    $account->number = $identityAccount->accountNumber;
+                    $accounts[] = $account;
                 }
             }
 
-            $clients->push([
-                'identityId' => $item->claimer->id,
-                'identity' => $item->claimer,
-                'client' => null,
-                'accounts' => [],
+            $identity = $identityAccounts[0];
+
+            $filtered[] = [
+                'identityId' => $identityId,
+                'identity' => $identity,
+                'accounts' => $accounts,
                 'fullName' => $fullName,
                 'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
             ]);

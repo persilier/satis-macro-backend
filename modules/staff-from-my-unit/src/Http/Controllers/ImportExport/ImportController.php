@@ -33,7 +33,6 @@ class ImportController extends ApiController
         $institution = $this->institution();
 
         $request->validate([
-
             'file' => 'required|file|max:2048|mimes:xls,xlsx',
             'etat_update' => 'required|boolean',
             'stop_identite_exist' => 'required|boolean'
