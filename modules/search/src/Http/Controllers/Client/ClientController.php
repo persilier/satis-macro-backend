@@ -34,63 +34,65 @@ class ClientController extends ApiController
     {
         $recherche = $request->query('r');
 
-        $columnSelected = ['id', 'firstname', 'lastname', 'telephone', 'email', 'ville', 'sexe'];
-
-        $identitiesQueries = [
-            'clientsQuery' => Identite::query()
-                ->with([
-                    'client:id,identites_id',
-                    'client.client_institutions' => function ($query) use ($institution) {
-                        $query->where('institution_id', '=', $institution)
-                            ->select('id', 'institution_id', 'client_id');
-                    },
-                    'client.client_institutions.accounts:id,number,client_institution_id',
-                ])
-                ->whereHas('client'),
-            'claimersQuery' => Identite::query()
-                ->select($columnSelected)
-                ->whereHas('claims', function ($query) use ($institution) {
-                    $query->where('institution_targeted_id', $institution);
-                })
-        ];
-
-        foreach ($identitiesQueries as $key => $query) {
-            $identitiesQueries[$key] = $query
-                ->where(function ($query) use ($recherche) {
-                    $query->where('firstname', 'like', "%$recherche%")
-                        ->orWhere('lastname', 'like', "%$recherche%");
-                });
-        }
-
-        $identities = $identitiesQueries['clientsQuery']
-            ->union($identitiesQueries['claimersQuery'])
-            ->distinct()
-            ->take(10)
-            ->get($columnSelected);
+        $identities = Identite::query()
+            ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
+            ->leftJoin('client_institution', 'clients.id', '=', 'client_institution.client_id')
+            ->leftJoin('accounts', 'client_institution.id', '=', 'accounts.client_institution_id')
+            ->leftJoin('claims', 'identites.id', '=', 'claims.claimer_id')
+            ->where(function ($query) use ($recherche) {
+                $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orwhereJsonContains('telephone', $recherche);
+            })
+            ->whereRaw(
+                '( (`claims`.`id` IS NOT NULL AND `claims`.`institution_targeted_id` = ?) OR (`client_institution`.`id` IS NOT NULL AND `client_institution`.`institution_id` = ?) )',
+                [$institution, $institution]
+            )
+            ->select([
+                'identites.id as identityId',
+                'identites.firstname',
+                'identites.lastname',
+                'identites.telephone',
+                'identites.email',
+                'identites.ville',
+                'identites.sexe',
+                'accounts.id as accountId',
+                'accounts.number as accountNumber',
+            ])
+            ->get()
+            ->groupBy('identityId')
+            ->take(5);
 
         $filtered = [];
 
-        foreach ($identities as $identity) {
+        foreach ($identities as $identityId => $identityAccounts) {
 
-            $fullName = $identity->firstname . ' ' . $identity->lastname;
+            $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
 
-            if ($identity->telephone) {
+            if ($identityAccounts[0]->telephone) {
                 $fullName .= ' / ';
                 $counter = 0;
-                foreach ($identity->telephone as $telephone) {
-                    $fullName .= ($counter == count($identity->telephone) - 1) ? $telephone : $telephone . ' , ';
+                foreach ($identityAccounts[0]->telephone as $telephone) {
+                    $fullName .= ($counter == count($identityAccounts[0]->telephone) - 1) ? $telephone : $telephone . ' , ';
+                    $counter++;
                 }
             }
 
-            try {
-                $accounts = $identity->client->client_institutions->pluck('accounts')->collapse();
-            } catch (\Exception $exception) {
-                $accounts = [];
+            $accounts = [];
+            foreach ($identityAccounts as $identityAccount) {
+                if ($identityAccount->accountId) {
+                    $account = new \stdClass();
+                    $account->id = $identityAccount->accountId;
+                    $account->number = $identityAccount->accountNumber;
+                    $accounts[] = $account;
+                }
             }
 
+            $identity = $identityAccounts[0];
+
             $filtered[] = [
-                'identityId' => $identity->id,
-                'identity' => $identity->only($columnSelected),
+                'identityId' => $identityId,
+                'identity' => $identity,
                 'accounts' => $accounts,
                 'fullName' => $fullName,
             ];
