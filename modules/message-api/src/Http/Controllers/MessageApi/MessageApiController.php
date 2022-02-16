@@ -8,13 +8,16 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\MessageApi;
 use Satis2020\ServicePackage\Rules\MessageApiMethodRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class MessageApiController extends ApiController
 {
 
     use \Satis2020\ServicePackage\Traits\MessageApi;
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -24,6 +27,8 @@ class MessageApiController extends ApiController
         $this->middleware('permission:store-message-apis')->only(['store', 'create']);
         $this->middleware('permission:update-message-apis')->only(['update', 'edit']);
         $this->middleware('permission:destroy-message-apis')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -56,6 +61,7 @@ class MessageApiController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws \ReflectionException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -70,6 +76,14 @@ class MessageApiController extends ApiController
         $request->merge(['params' => $this->getParameters($request->get('method'))]);
 
         $messageApi = MessageApi::create($request->all());
+
+        $this->activityLogService->store("Enregistrement d'une Api de message",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'message_api',
+            $this->user(),
+            $messageApi
+        );
 
         return response()->json($messageApi, 201);
 
