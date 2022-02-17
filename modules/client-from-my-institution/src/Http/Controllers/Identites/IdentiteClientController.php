@@ -9,7 +9,6 @@ use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Client;
 use Satis2020\ClientPackage\Http\Resources\Client as ClientResource;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\ClientTrait;
@@ -18,17 +17,13 @@ class IdentiteClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait;
 
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
         $this->middleware('auth:api');
 
         $this->middleware('permission:store-client-from-my-institution')->only(['store']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -36,7 +31,7 @@ class IdentiteClientController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param Identite $identite
-     * @return \Illuminate\Http\JsonResponse
+     * @return ClientResource
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Identite $identite)

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('mail', 'Controller@index');
 Route::get('download/{file}', 'Controller@download');
 Route::get('download-uemoa-reports/{file}', 'Controller@downloadExcelReports');

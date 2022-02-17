@@ -20,7 +20,6 @@ use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
@@ -34,8 +33,6 @@ class ClaimController extends ApiController
 
     use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
 
-
-
     public function __construct()
     {
         parent::__construct();
@@ -43,7 +40,6 @@ class ClaimController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:store-claim-against-any-institution')->only(['store', 'create']);
-
     }
 
     /**

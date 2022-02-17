@@ -9,26 +9,21 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Requirement;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class ClaimObjectRequirementController extends ApiController
 {
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
         $this->middleware('auth:api');
 
         $this->middleware('permission:update-claim-object-requirement')->only(['update', 'edit']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Edit the form for creating a new resource.
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function edit()
     {
@@ -42,7 +37,7 @@ class ClaimObjectRequirementController extends ApiController
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      * @throws RetrieveDataUserNatureException
      */
@@ -85,19 +80,10 @@ class ClaimObjectRequirementController extends ApiController
             $item['claim_object']->requirements()->sync($item['requirement_ids']);
         });
 
-        $requirements = [
+        return response()->json([
             'claimCategories' => ClaimCategory::with('claimObjects.requirements')->get(),
             'requirements' => Requirement::all()
-        ];
-
-        $this->activityLogService->store('Configuration des requirements',
-            $this->institution()->id,
-            $this->activityLogService::UPDATED,
-            'requirement',
-            $this->user()
-        );
-
-        return response()->json($requirements, 201);
+        ], 201);
 
     }
 

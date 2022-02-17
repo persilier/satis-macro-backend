@@ -11,7 +11,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\User;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\UserPackage\Http\Resources\UserCollection;
@@ -25,18 +24,6 @@ class UserController extends ApiController
     use IdentiteVerifiedTrait, VerifyUnicity;
 
     /**
-     * @var ActivityLogService
-     */
-    private $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
-    {
-        parent::__construct();
-
-        $this->activityLogService = $activityLogService;
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return UserCollection
@@ -46,6 +33,7 @@ class UserController extends ApiController
         $users =  User::all();
         return new UserCollection($users);
     }
+
 
 
     /**
@@ -66,7 +54,6 @@ class UserController extends ApiController
      * @param Request $request
      * @return UserResource
      * @throws ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -86,17 +73,9 @@ class UserController extends ApiController
 
         $user = User::create($data);
         event(new SendMail(new UserCreated($user->load('identite'))));
-
-        $this->activityLogService->store("Nouvel utilisateur créé.",
-            $this->institution()->id,
-            ActivityLogService::NEW_USER_CREATED,
-            'user',
-            $this->user(),
-            $user
-        );
-
         return new UserResource($user);
     }
+
 
     public function create(){
         $identites = Identite::has('staff')->get();
