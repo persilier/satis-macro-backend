@@ -4,13 +4,17 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
 class UnitType extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
+
+    protected static $logName = 'unit_type';
 
     /**
      * The attributes that are translatable

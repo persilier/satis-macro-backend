@@ -7,11 +7,14 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Rules\SmtpParametersRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class MailController extends ApiController
 {
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -19,12 +22,14 @@ class MailController extends ApiController
 
         $this->middleware('permission:show-mail-parameters')->only(['show']);
         $this->middleware('permission:update-mail-parameters')->only(['update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show()
     {
@@ -36,7 +41,7 @@ class MailController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request)
@@ -67,7 +72,15 @@ class MailController extends ApiController
 
         $new_parameters = $request->only(['senderID', 'username', 'password', 'from', 'server', 'port', 'security', 'state']);
 
-        Metadata::where('name', 'mail-parameters')->first()->update(['data' => json_encode($new_parameters)]);
+        $metadata = Metadata::where('name', 'mail-parameters')->first()->update(['data' => json_encode
+        ($new_parameters)]);
+
+        $this->activityLogService->store('Configuration des paramètres smtp pour l\'envoie de mail',
+            $this->institution()->id,
+            'metadata',
+            $this->activityLogService::UPDATED,
+            $this->user(), $metadata
+        );
 
         return response()->json($new_parameters, 200);
     }

@@ -18,7 +18,7 @@ class Verification
     {
         if($user = Auth::user()){
             if(!$user->isVerified()){
-                return $this->errorResponse('Non vérifié. L\'utilisateur doit confirmer son compte.', 401);
+                return $this->errorResponse('Non 40vérifié. L\'utilisateur doit confirmer son compte.', 401);
             }
         }
         return $next($request);
