@@ -13,7 +13,7 @@ use Satis2020\ServicePackage\Channels\MessageChannel;
  * Class AcknowledgmentOfReceipt
  * @package Satis2020\ServicePackage\Notifications
  */
-class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
+class AcknowledgmentOfReceipt extends Notification
 {
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
