@@ -79,8 +79,6 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'search-claim-any-reference',
                     'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
                     "any-email-claim-configuration",
-                    'list-auth-config','update-auth-config',
-                    'activity-log',
                     'list-notification-proof'
                 ],
                 "pilot" => [

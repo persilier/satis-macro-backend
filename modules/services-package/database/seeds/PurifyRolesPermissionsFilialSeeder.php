@@ -54,7 +54,6 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'update-active-pilot',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
-                    'list-auth-config','update-auth-config',
                     'list-notification-proof'
                 ],
                 "pilot-filial" => [
