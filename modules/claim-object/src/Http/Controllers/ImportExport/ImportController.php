@@ -6,8 +6,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\ClaimObject;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 /**
@@ -17,14 +15,12 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ImportController extends ApiController
 {
     use \Satis2020\ServicePackage\Traits\ClaimObject;
-    protected $activityLogService;
-    public function __construct(ActivityLogService $activityLogService)
 
+    public function __construct()
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:store-claim-object')->only(['importClaimObjects', 'downloadFile']);
-        $this->activityLogService =  $activityLogService;
     }
 
     /**
@@ -62,14 +58,8 @@ class ImportController extends ApiController
             ];
         }
 
-        $this->activityLogService->store("Importation d'une liste de catégories et d'objets de réclamation",
-            $this->institution()->id,
-            $this->activityLogService::CREATED,
-            'claim_object',
-            $this->user()
-        );
+        return response()->json($datas, 201);
 
-        return response()->json($datas,201);
     }
 
 }

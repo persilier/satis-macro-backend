@@ -5,10 +5,8 @@ namespace Satis2020\ServicePackage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Permission;
 use Spatie\Translatable\HasTranslations;
 
@@ -18,9 +16,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class Module extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
-
-    protected static $logName = 'module';
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
     /**
      * The attributes that are translatable

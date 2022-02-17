@@ -5,13 +5,11 @@ namespace Satis2020\Configuration\Http\Controllers\Sms;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class SmsController extends ApiController
 {
-    protected $activityLogService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -19,8 +17,6 @@ class SmsController extends ApiController
 
         $this->middleware('permission:show-sms-parameters')->only(['show']);
         $this->middleware('permission:update-sms-parameters')->only(['update']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -38,7 +34,7 @@ class SmsController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request)
@@ -62,14 +58,7 @@ class SmsController extends ApiController
 
         $new_parameters = $request->only(['senderID', 'username', 'password', 'indicatif', 'api']);
         
-        $metadata = Metadata::where('name', 'sms-parameters')->first()->update(['data'=> json_encode($new_parameters)]);
-
-        $this->activityLogService->store('Configuration sms pour l\'envoie de mail',
-            $this->institution()->id,
-            $this->activityLogService::UPDATED,
-            'metadata',
-            $this->user(), $metadata
-        );
+        Metadata::where('name', 'sms-parameters')->first()->update(['data'=> json_encode($new_parameters)]);
 
         return response()->json($new_parameters, 200);
     }
