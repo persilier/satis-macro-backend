@@ -8,7 +8,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Http\Request;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 
 class AwaitingAssignmentController extends ApiController
@@ -16,9 +15,7 @@ class AwaitingAssignmentController extends ApiController
 
     use AwaitingAssignment;
 
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -29,14 +26,13 @@ class AwaitingAssignmentController extends ApiController
         $this->middleware('permission:merge-claim-awaiting-assignment')->only(['merge']);
 
         $this->middleware('active.pilot')->only(['index', 'show', 'merge']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
@@ -70,7 +66,7 @@ class AwaitingAssignmentController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function show(Claim $claim)
@@ -84,7 +80,7 @@ class AwaitingAssignmentController extends ApiController
      * @param Request $request
      * @param Claim $claim
      * @param Claim $duplicate
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
     public function merge(Request $request, Claim $claim, Claim $duplicate)
@@ -116,13 +112,6 @@ class AwaitingAssignmentController extends ApiController
             $claim->delete();
             $redirect = $duplicate;
         }
-
-        $this->activityLogService->store("Fusion de réclamation pour les cas de doublon",
-            $this->institution()->id,
-            $this->activityLogService::FUSION_CLAIM,
-            'claim',
-            $this->user()
-        );
 
         return response()->json($this->showClaim($redirect), 200);
     }

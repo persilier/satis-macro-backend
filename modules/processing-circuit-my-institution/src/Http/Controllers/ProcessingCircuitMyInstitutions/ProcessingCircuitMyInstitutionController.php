@@ -8,7 +8,6 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
 
 /**
@@ -18,17 +17,12 @@ use Satis2020\ServicePackage\Traits\ProcessingCircuit;
 class ProcessingCircuitMyInstitutionController extends ApiController
 {
     use ProcessingCircuit;
-
-    private $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
         $this->middleware('auth:api');
         $this->middleware('permission:update-processing-circuit-my-institution')->only(['update', 'edit']);
-
-        $this->activityLogService = $activityLogService;
     }
 
 
@@ -61,13 +55,6 @@ class ProcessingCircuitMyInstitutionController extends ApiController
         $collection = $this->rules($request->all(), $collection, $institution->id);
 
         $this->detachAttachUnits($collection ,  $institution->id);
-
-        $this->activityLogService->store("Mise à jour des circuits de traitements.",
-            $this->institution()->id,
-            $this->activityLogService::UPDATED,
-            'circuit',
-            $this->user()
-        );
 
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institution->id),

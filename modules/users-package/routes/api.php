@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Satis2020\UserPackage\Http\Controllers\Auth\AuthController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,7 +44,7 @@ Route::name('logout')->get('logout', 'Auth\AuthController@logout');
  */
 Route::name('edit.profil')->get('edit-profil', 'Profile\ProfileController@edit');
 Route::name('update.profil')->put('update-profil', 'Profile\ProfileController@update');
-Route::name('change.password')->put('change-password', 'Profile\UpdatePasswordController@update');
+Route::name('change.password')->post('change-password', 'Profile\ProfileController@changePassword');
 
 /**
  * Password Reset
@@ -55,6 +53,4 @@ Route::name('change.password')->put('change-password', 'Profile\UpdatePasswordCo
 Route::name('forgot.password')->post('/forgot-password', 'Auth\PasswordResetController@create');
 Route::name('reset.password')->get('/forgot-password/{token}', 'Auth\PasswordResetController@find');
 Route::name('reset.password.post')->post('/reset-password', 'Auth\PasswordResetController@reset');
-Route::name('reset.password.expired')->put('/reset-password-expired', 'Auth\PasswordExpiredResetController@update');
 
-Route::post("/login",[AuthController::class,"store"])->name("issue.token");

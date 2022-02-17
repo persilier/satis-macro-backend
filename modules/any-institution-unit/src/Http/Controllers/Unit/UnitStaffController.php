@@ -18,7 +18,6 @@ class UnitStaffController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param $institution
      * @return \Illuminate\Http\JsonResponse
      */
     public function index($institution)

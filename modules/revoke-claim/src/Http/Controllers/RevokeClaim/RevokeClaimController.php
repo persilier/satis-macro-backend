@@ -9,7 +9,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Notifications\RevokeClaimClaimerNotification;
 use Satis2020\ServicePackage\Notifications\RevokeClaimStaffNotification;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Symfony\Component\HttpFoundation\Response;
 
 class RevokeClaimController extends ApiController
@@ -17,9 +16,7 @@ class RevokeClaimController extends ApiController
 
     use \Satis2020\ServicePackage\Traits\Notification;
 
-    private $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -27,7 +24,6 @@ class RevokeClaimController extends ApiController
 
         $this->middleware('permission:revoke-claim')->only(['update']);
 
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -69,14 +65,6 @@ class RevokeClaimController extends ApiController
         $claim->update(['revoked_at' => Carbon::now(), 'revoked_by' => $this->staff()->id]);
 
         $claim->refresh();
-
-        $this->activityLogService->store("Reclamation revoquée.",
-            $this->institution()->id,
-            $this->activityLogService::CLAIM_REVOKED,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         return response()->json($claim, Response::HTTP_OK);
     }

@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 /**
@@ -20,9 +19,7 @@ class QualificationController extends ApiController
 {
     use ReportingClaim;
 
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -32,8 +29,6 @@ class QualificationController extends ApiController
         $this->middleware('permission:show-delai-qualification-parameters')->only(['show']);
         $this->middleware('permission:store-delai-qualification-parameters')->only(['store']);
         $this->middleware('permission:destroy-delai-qualification-parameters')->only(['destroy']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -72,14 +67,6 @@ class QualificationController extends ApiController
         }
         $this->verifiedStore($request, $parameters, $infinite);
         $data = $this->storeParameters($request, $parameters, 'delai-qualification-parameters');
-
-        $this->activityLogService->store('Configuration des paramètres de bornes pour les délais de qualifications',
-            $this->institution()->id,
-            'metadata',
-            $this->activityLogService::CREATED,
-            $this->user()
-        );
-
         return response()->json($data, 201);
     }
 
@@ -91,14 +78,6 @@ class QualificationController extends ApiController
     protected function destroy($parameter){
 
         $parameter = $this->destroyDelaiParameters('delai-qualification-parameters', $parameter);
-
-        $this->activityLogService->store('Suppression des paramètres de bornes pour les délais de qualifications',
-            $this->institution()->id,
-            'metadata',
-            $this->activityLogService::DELETED,
-            $this->user()
-        );
-
         return response()->json($parameter, 200);
     }
 
