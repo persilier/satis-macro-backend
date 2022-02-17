@@ -2,7 +2,12 @@
 
 namespace Satis2020\ServicePackage\Providers;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
+use Illuminate\Support\Facades\Event;
+use Satis2020\ServicePackage\Listeners\LogNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -12,11 +17,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Illuminate\Notifications\Events\NotificationSent' => [
-            'Satis2020\ServicePackage\Listeners\LogNotification',
+        NotificationSent::class=> [
+            LogNotification::class,
         ],
     ];
-
 
     /**
      * Register any events for your application.

@@ -35,7 +35,7 @@ class LogNotification
         if
         (
             (get_class($notification) == AcknowledgmentOfReceipt::class ||
-            get_class($notification) == CommunicateTheSolution::class)
+                get_class($notification) == CommunicateTheSolution::class)
             && $event->channel == "mail"
         )
         {
