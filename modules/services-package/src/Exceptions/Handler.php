@@ -85,6 +85,14 @@ class Handler
             return $this->errorResponse($exception->getMessage(), $exception->getCode());
         }
 
+        if($exception instanceof TwoSessionNotAllowed){
+            $response = [
+                'status'=>$exception->getCode(),
+                'message'=>$exception->getMessage()
+            ];
+            return \response()->json($response,$exception->getCode());
+        }
+
         if($exception instanceof CustomException){
             return $this->errorResponse($exception->getData(), $exception->getCode());
         }
@@ -140,5 +148,14 @@ class Handler
     private function isFrontend($request)
     {
         return $request->acceptsHtml() && collect($request->route()->middleware())->contains('web');
+    }
+
+    public function report(Exception $exception)
+    {
+        // Kill reporting if this is an "access denied" (code 9) OAuthServerException.
+        if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
+            return;
+        }
+
     }
 }

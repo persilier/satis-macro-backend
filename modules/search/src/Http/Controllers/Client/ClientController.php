@@ -2,10 +2,8 @@
 
 namespace Satis2020\Search\Http\Controllers\Client;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\Search;
@@ -25,12 +23,11 @@ class ClientController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @param Institution $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
 
-    public function index(Request $request, $institution)
+    public function index(Institution $institution)
     {
         $recherche = $request->query('r');
         $rechercheType = $request->query('type', 'name_or_phone');
@@ -105,10 +102,18 @@ class ClientController extends ApiController
                 'identity' => $identity,
                 'accounts' => $accounts,
                 'fullName' => $fullName,
-            ];
-        }
+                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
+            ]);
 
-        return response()->json($filtered, JsonResponse::HTTP_OK);
+            return $item;
+
+        });
+
+        $filtered = $clients->filter(function ($value, $key) {
+            return $value['contains'];
+        });
+
+        return response()->json($filtered->unique('identityId')->take(10)->values(), 200);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Repositories;
 
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Institution;
 /**
  * Class InstitutionRepository
@@ -9,12 +10,17 @@ use Satis2020\ServicePackage\Models\Institution;
  */
 class InstitutionRepository
 {
-    /***
+    /**
      * @var Institution
      */
-    protected $institution;
+    private $file;
+    /**
+     * @var Institution
+     */
+    private $institution;
 
-    /***
+
+    /**
      * InstitutionRepository constructor.
      * @param Institution $institution
      */
@@ -23,30 +29,15 @@ class InstitutionRepository
         $this->institution = $institution;
     }
 
-    /****
-     * @param $id
-     * @return mixed
-     */
-    public function getById($id) {
-        return $this->institution->find($id);
-    }
-
-    /****
-     * @param $data
-     * @return mixed
-     */
-    public function create($data)
-    {
-        return $this->institution->create($data);
-    }
-
     /***
-     * @param $name
+     *
      * @return mixed
      */
-    public function getByName($name)
-    {
-        return $this->institution->where('name' , $name)->first();
+    public function getAll() {
+        return $this->institution->newQuery()->get();
     }
+
+
+
 
 }

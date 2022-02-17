@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class MeasurePreventiveController
@@ -14,18 +15,22 @@ use Satis2020\ServicePackage\Models\Metadata;
 class MeasurePreventiveController extends ApiController
 {
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
         $this->middleware('permission:update-measure-preventive-parameters')->only(['show','update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show()
     {
@@ -46,7 +51,15 @@ class MeasurePreventiveController extends ApiController
 
         $this->validate($request, $rules);
 
-        Metadata::where('name', 'measure-preventive')->firstOrFail()->update(['data' => json_encode($request->measure_preventive)]);
+        $metadata = Metadata::where('name', 'measure-preventive')->firstOrFail()->update(['data' => json_encode
+        ($request->measure_preventive)]);
+
+        $this->activityLogService->store('Configuration pour l\'activation/désactivation de la mesure préventive',
+            $this->institution()->id,
+            'metadata',
+            $this->activityLogService::UPDATED,
+            $this->user(), $metadata
+        );
 
         return response()->json($request->only('measure_preventive'), 200);
     }

@@ -2,18 +2,21 @@
 
 namespace Satis2020\UnitPackage\Http\Controllers\Unit;
 
+use Illuminate\Http\Response;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Unit;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\UnitType;
+use Satis2020\ServicePackage\Rules\StateExistRule;
+use Satis2020\ServicePackage\Services\CountryService;
 
 class UnitController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -23,13 +26,16 @@ class UnitController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param CountryService $countryService
+     * @return Response
      */
-    public function create()
+    public function create(CountryService $countryService)
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
-            'institutions' => Institution::all()
+            'institutions' => Institution::all(),
+            'countries'=>$countryService->getCountries()
+
         ], 200);
     }
 
@@ -37,7 +43,7 @@ class UnitController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
@@ -46,12 +52,13 @@ class UnitController extends ApiController
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'institution_id' => 'required|exists:institutions,id'
+            'institution_id' => 'required|exists:institutions,id',
+            'state_id'=>['nullable','numeric',new StateExistRule]
         ];
 
         $this->validate($request, $rules);
 
-        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'others']));
+        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'others','state_id']));
 
         return response()->json($unit, 201);
     }
@@ -59,8 +66,8 @@ class UnitController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param Unit $unit
+     * @return Response
      */
     public function show(Unit $unit)
     {
@@ -70,15 +77,18 @@ class UnitController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param Unit $unit
+     * @param CountryService $countryService
+     * @return Response
      */
-    public function edit(Unit $unit)
+    public function edit(Unit $unit,CountryService $countryService)
     {
         return response()->json([
             'unit' => $unit->load('unitType', 'institution'),
             'unitTypes' => UnitType::all(),
-            'institutions' => Institution::all()
+            'institutions' => Institution::all(),
+            'countries'=>$countryService->getCountries()
+
         ], 200);
     }
 
@@ -86,8 +96,8 @@ class UnitController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param Unit $unit
+     * @return Response
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Unit $unit)
@@ -96,12 +106,13 @@ class UnitController extends ApiController
             'name' => 'required',
             'description' => 'required',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'institution_id' => 'required|exists:institutions,id'
+            'institution_id' => 'required|exists:institutions,id',
+            'state_id'=>['nullable','numeric',new StateExistRule]
         ];
 
         $this->validate($request, $rules);
 
-        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'others']));
+        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'others','state_id']));
 
         return response()->json($unit, 201);
     }
@@ -109,8 +120,8 @@ class UnitController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param Unit $unit
+     * @return Response
      * @throws \Exception
      */
     public function destroy(Unit $unit)

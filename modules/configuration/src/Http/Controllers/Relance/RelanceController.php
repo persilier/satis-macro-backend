@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class RelanceController
@@ -13,19 +14,21 @@ use Satis2020\ServicePackage\Models\Metadata;
  */
 class RelanceController extends ApiController
 {
-
-    public function __construct()
+    protected $activityLogService;
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
         $this->middleware('permission:update-relance-parameters')->only(['show','update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show()
     {
@@ -46,7 +49,15 @@ class RelanceController extends ApiController
 
         $this->validate($request, $rules);
 
-        Metadata::where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode($request->coef)]);
+        $metadata = Metadata::where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode
+        ($request->coef)]);
+
+        $this->activityLogService->store('Configuration du coefficient applicable pour l\'envoie de relance',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'metadata',
+            $this->user(), $metadata
+        );
 
         return response()->json($request->only('coef'), 200);
     }
