@@ -66,28 +66,6 @@ trait DataUserNature
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
-     * @throws RetrieveDataUserNatureException
-     */
-    protected function connectedInstitution()
-    {
-
-        $message = "Unable to find the user institution";
-
-        try {
-            $this->institution = Institution::with('institutionType')->findOrFail($this->staff()->institution_id);
-        } catch (\Exception $exception) {
-            throw new RetrieveDataUserNatureException($message);
-        }
-
-        if (is_null($this->institution)) {
-            throw new RetrieveDataUserNatureException($message);
-        }
-
-        return $this->institution;
-    }
-
-    /**
      * @return mixed
      * @throws RetrieveDataUserNatureException
      */

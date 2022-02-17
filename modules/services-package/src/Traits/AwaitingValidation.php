@@ -84,19 +84,12 @@ trait AwaitingValidation
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
         }
 
-        $this->activityLogService->store("Une réclamation a été validée",
-            $this->institution()->id,
-            $this->activityLogService::VALIDATED_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
-
         if (!is_null($claim->activeTreatment->responsibleStaff)) {
             if (!is_null($claim->activeTreatment->responsibleStaff->identite)) {
                 $claim->activeTreatment->responsibleStaff->identite->notify(new \Satis2020\ServicePackage\Notifications\ValidateATreatment($claim));
             }
         }
+
 
         return $claim;
     }
@@ -126,13 +119,6 @@ trait AwaitingValidation
             }
         }
 
-        $this->activityLogService->store("Une réclamation a été invalide",
-            $this->institution()->id,
-            $this->activityLogService::INVALIDATED_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         return $claim;
     }

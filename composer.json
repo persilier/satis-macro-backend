@@ -19,7 +19,6 @@
     "laravel/tinker": "^2.0",
     "satis2020/account-type": "^1.0",
     "satis2020/active-pilot": "^1.0",
-    "satis2020/activity-log": "^1.0",
     "satis2020/any-claim-archived": "^1.0",
     "satis2020/any-claim-incoming-by-email": "^1.0",
     "satis2020/any-institution": "^1.0",
@@ -27,7 +26,6 @@
     "satis2020/any-institution-unit": "^1.0",
     "satis2020/any-user": "^1.0",
     "satis2020/attach-files-to-claim": "^1.0",
-    "satis2020/auth-config": "^1.0",
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
@@ -57,7 +55,6 @@
     "satis2020/my-institution-unit": "^1.0",
     "satis2020/my-user": "^1.0",
     "satis2020/notification": "^1.0",
-    "satis2020/notification-proof": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
     "satis2020/position": "^1.0",
     "satis2020/processing-circuit-any-institution": "^1.0",
@@ -97,8 +94,7 @@
     "satis2020/useful-data-for-backoffice": "^1.0",
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0",
-    "satis2020/notification-proof": "^1.0"
+    "satis2020/without-link-with-institution-unit": "^1.0"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -716,13 +712,6 @@
     {
       "type": "path",
       "url": "modules/register-claim-against-my-institution-by-portal/",
-      "options": {
-        "symlink": true
-      }
-    },
-    {
-      "type": "path",
-      "url": "modules/notification-proof/",
       "options": {
         "symlink": true
       }

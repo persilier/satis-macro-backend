@@ -89,7 +89,6 @@ class AccountTypeController extends ApiController
     /**
      * @param AccountType $accountType
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\SecureDeleteException
      */
     public function destroy(AccountType $accountType)
     {

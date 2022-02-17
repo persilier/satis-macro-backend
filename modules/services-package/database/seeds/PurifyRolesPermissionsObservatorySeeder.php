@@ -78,8 +78,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
                     'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
-                    "any-email-claim-configuration",
-                    'list-notification-proof'
+                    "any-email-claim-configuration"
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -99,7 +98,6 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'pilot-list-notification-proof'
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [

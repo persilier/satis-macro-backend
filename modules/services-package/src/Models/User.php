@@ -44,7 +44,7 @@ class User extends Authenticate
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'identite_id', 'password_updated_at', 'disabled_at'
+        'username', 'password', 'identite_id', 'disabled_at'
     ];
 
     /**
@@ -106,14 +106,6 @@ class User extends Authenticate
     {
         // Return name and email address...
         return $this->username;
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function historyPasswords()
-    {
-        return $this->hasMany(HistoryPassword::class);
     }
 
 }
