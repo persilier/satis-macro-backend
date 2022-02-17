@@ -100,7 +100,7 @@ trait ProcessingCircuit
             $unit_ids_collection = collect([]);
             $unitsSync = [];
 
-            if (!is_null($units_ids)) {
+            if ($units_ids) {
 
                 foreach ($units_ids as $unit_id) {
 
