@@ -5,7 +5,11 @@ namespace Satis2020\ServicePackage\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
+use Laravel\Passport\Events\AccessTokenCreated;
+use Satis2020\ServicePackage\Listeners\LogNotification;
+use Satis2020\ServicePackage\Listeners\RevokeExistingTokens;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,11 +19,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Laravel\Passport\Events\AccessTokenCreated' => [
-            'Satis2020\ServicePackage\Listeners\RevokeExistingTokens',
+        AccessTokenCreated::class => [
+            RevokeExistingTokens::class,
         ],
-        'Illuminate\Notifications\Events\NotificationSent' => [
-            'Satis2020\ServicePackage\Listeners\LogNotification',
+        NotificationSent::class => [
+            LogNotification::class,
         ],
     ];
 
