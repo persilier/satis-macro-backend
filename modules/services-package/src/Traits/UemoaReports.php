@@ -282,6 +282,7 @@ trait UemoaReports
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
+
     protected function resultatsStateAnalytique($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true)
     {
         $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->groupBy([
