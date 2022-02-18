@@ -105,7 +105,7 @@ class ClientController extends ApiController
                 'identityId' => $identityId,
                 'identity' => $identity,
                 'accounts' => $accounts,
-                'fullName' => $fullName,
+                'fullName' => $fullName
             ];
         }
 
