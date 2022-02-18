@@ -95,6 +95,7 @@ class ClaimAssignmentToStaffController extends ApiController
         $rules = [
             'amount_returned' => [
                 'nullable',
+                'filled',
                 'integer',
                 Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug)),
                 'min:0'
