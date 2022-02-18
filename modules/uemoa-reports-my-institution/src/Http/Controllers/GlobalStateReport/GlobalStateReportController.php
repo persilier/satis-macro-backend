@@ -31,18 +31,16 @@ class GlobalStateReportController extends ApiController
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function index(Request $request)
     {
-
         $this->validate($request, $this->rulePeriode());
 
         $claims = $this->resultatsGlobalState($request, true);
 
         return response()->json($claims, 200);
-
     }
 
     /**
