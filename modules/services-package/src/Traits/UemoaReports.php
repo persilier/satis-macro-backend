@@ -308,7 +308,7 @@ trait UemoaReports{
      */
     protected function resultatsStateAnalytique($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->groupBy([
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->whereNotNull('claim_object_id')->get()->groupBy([
             function ($item) {
                 return $item->institutionTargeted->name;
             },
@@ -356,7 +356,7 @@ trait UemoaReports{
 
             });
 
-      });
+        });
 
         return $claimCollection;
 
@@ -379,8 +379,8 @@ trait UemoaReports{
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
             'telephone' => $this->telephone($claim),
             'agence' =>  $this->agence($claim),
-            'claimCategorie' => $claim->claimObject->claimCategory->name,
-            'claimObject' => $claim->claimObject->name,
+            'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
+            'claimObject' => optional($claim->claimObject)->name,
             'requestChannel' => $claim->requestChannel->name,
             'commentClient' => $claim->description,
             'functionTreating' => ($claim->activeTreatment && $claim->activeTreatment->responsibleUnit) ? $claim->activeTreatment->responsibleUnit->name : null,
@@ -837,7 +837,7 @@ trait UemoaReports{
      */
     protected function colorTableHeader(){
 
-       return "#7F9CF5";
+        return "#7F9CF5";
     }
 
 
