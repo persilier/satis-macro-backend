@@ -3,16 +3,14 @@ namespace Satis2020\UserPackage\Http\Controllers\Profile;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Illuminate\Http\Response;
-use Satis2020\ServicePackage\Requests\UpdatePasswordRequest;
+use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
+use Satis2020\ServicePackage\Rules\MatchOldPassword;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
-use Satis2020\ServicePackage\Services\Auth\UpdatePasswordService;
 
 
 /**
@@ -22,7 +20,6 @@ use Satis2020\ServicePackage\Services\Auth\UpdatePasswordService;
 class ProfileController extends ApiController
 {
     use VerifyUnicity, IdentityManagement;
-
     public function __construct()
     {
         parent::__construct();
@@ -32,8 +29,7 @@ class ProfileController extends ApiController
     /**
      * @return JsonResponse
      */
-    public function edit()
-    {
+    public function edit(){
 
         return response()->json($this->user()->load('identite'), 200);
 
@@ -45,8 +41,7 @@ class ProfileController extends ApiController
      * @return JsonResponse
      * @throws ValidationException
      */
-    public function update(Request $request)
-    {
+    public function update(Request $request){
 
         $this->validate($request, $this->rulesProfile());
 
@@ -73,6 +68,26 @@ class ProfileController extends ApiController
         $this->updateIdentity($request, $identite);
 
         return response()->json($identite, 201);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    protected function changePassword(Request $request){
+
+        $request->validate([
+            'current_password' => ['required', new MatchOldPassword],
+            'new_password' => ['required','confirmed', new IsValidPasswordRules],
+            'new_password_confirmation' => 'required'
+        ]);
+
+        $user = $this->user();
+
+        $user->update(['password'=> bcrypt($request->new_password)]);
+
+        return response()->json($user->load('identite'),201);
     }
 
 }

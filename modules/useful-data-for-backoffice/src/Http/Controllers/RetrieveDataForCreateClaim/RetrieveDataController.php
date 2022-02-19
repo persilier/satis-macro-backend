@@ -3,7 +3,6 @@
 namespace Satis2020\UsefulDataForBackoffice\Http\Controllers\RetrieveDataForCreateClaim;
 
 use Satis2020\ServicePackage\Http\Controllers\Controller;
-use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
@@ -28,7 +27,6 @@ class RetrieveDataController extends Controller
             "institutions" => Institution::withTrashed()->get(),
             "categories" => ClaimCategory::withTrashed()->get(),
             "objects" => ClaimObject::withTrashed()->get(),
-            "categoryClients" => CategoryClient::withTrashed()->get(),
             "units" => Unit::withTrashed()->get()->map(function ($item) use ($unitTypes) {
                 $item['can_be_target'] = $unitTypes->firstWhere('id', $item->unit_type_id)->can_be_target;
                 return $item;

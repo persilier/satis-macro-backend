@@ -13,7 +13,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
@@ -25,9 +24,7 @@ class ClaimAwaitingTreatmentController extends ApiController
 {
     use ClaimAwaitingTreatment, SeveralTreatment;
 
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -39,7 +36,6 @@ class ClaimAwaitingTreatmentController extends ApiController
         $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);
         //$this->middleware('permission:assignment-claim-awaiting-treatment')->only(['edit', 'assignmentClaimStaff']);
         //$this->middleware('permission:unfounded-claim-awaiting-treatment')->only(['unfoundedClaim']);
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -138,14 +134,6 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $claim = $this->rejectedClaimUpdate($claim, $request);
 
-        $this->activityLogService->store("Une réclamation a été rejetée",
-            $this->institution()->id,
-            $this->activityLogService::REJECTED_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
-
         return response()->json($claim, 200);
 
     }
@@ -165,14 +153,6 @@ class ClaimAwaitingTreatmentController extends ApiController
         $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
         $claim = $this->assignmentClaim($claim, $staff->id);
-
-        $this->activityLogService->store("Une réclamation a été s'est auto affecté à un staff",
-            $this->institution()->id,
-            $this->activityLogService::AUTO_ASSIGNMENT_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         return response()->json($claim, 200);
     }
@@ -202,14 +182,6 @@ class ClaimAwaitingTreatmentController extends ApiController
         $claim = $this->assignmentClaim($claim, $request->staff_id);
 
         Staff::with('identite')->find($request->staff_id)->identite->notify(new \Satis2020\ServicePackage\Notifications\AssignedToStaff($claim));
-
-        $this->activityLogService->store("Une réclamation a été affecté à un staff",
-            $this->institution()->id,
-            $this->activityLogService::ASSIGNMENT_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         return response()->json($claim, 200);
     }

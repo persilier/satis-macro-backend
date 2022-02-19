@@ -11,7 +11,6 @@ use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Trait StaffManagement
@@ -74,15 +73,6 @@ trait StaffManagement
 
         }
 
-        $activityLogService = app(ActivityLogService::class);
-        $activityLogService->store("Création d'un staff.",
-            $this->institution()->id,
-            ActivityLogService::STAFF_CREATED,
-            'staff',
-            $this->user(),
-            $staff
-        );
-
         return $staff;
     }
 
@@ -129,15 +119,6 @@ trait StaffManagement
             }
 
         }
-
-        $activityLogService = app(ActivityLogService::class);
-        $activityLogService->store("Mise à jour d'un staff",
-            $this->institution()->id,
-            ActivityLogService::UPDATE_STAFF,
-            'staff',
-            $this->user(),
-            $staff
-        );
 
         return $staff->update($data);
     }

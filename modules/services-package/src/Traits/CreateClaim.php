@@ -69,8 +69,8 @@ trait CreateClaim
                     }
                 }
             ],
-            'amount_disputed' => ['nullable','integer', 'min:1' , Rule::requiredIf(!is_null($request->amount_currency_slug))],
-            'amount_currency_slug' => ['nullable', 'exists:currencies,slug', Rule::requiredIf(!is_null($request->amount_disputed))],
+            'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
+            'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
@@ -78,11 +78,11 @@ trait CreateClaim
         ];
 
         if ($with_client) {
-            $data['claimer_id'] = ['nullable', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
-            $data['firstname'] = [Rule::requiredIf(is_null($request->claimer_id))];
-            $data['lastname'] = [Rule::requiredIf(is_null($request->claimer_id))];
-            $data['sexe'] = [Rule::requiredIf(is_null($request->claimer_id)), Rule::in(['M', 'F', 'A'])];
-            $data['telephone'] = [Rule::requiredIf(is_null($request->claimer_id)), 'array', new TelephoneArray];
+            $data['claimer_id'] = ['nullable','filled', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
+            $data['firstname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
+            $data['lastname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
+            $data['sexe'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), Rule::in(['M', 'F', 'A'])];
+            $data['telephone'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
             $data['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
         } else {
@@ -190,11 +190,11 @@ trait CreateClaim
         $requirements = collect([]);
 
         if(!empty($errors)){
-             foreach ($errors as $key => $error){
+            foreach ($errors as $key => $error){
 
-                 ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
+                ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
 
-             }
+            }
 
         }
         return $requirements;

@@ -10,7 +10,6 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Treatment;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 
 /**
@@ -21,9 +20,7 @@ class UnfoundedClaimController extends ApiController
 {
     use ClaimAwaitingTreatment;
 
-    protected $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
@@ -32,8 +29,6 @@ class UnfoundedClaimController extends ApiController
         $this->middleware('permission:unfounded-claim-awaiting-assignment')->only(['update']);
 
         $this->middleware('active.pilot')->only(['update']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -100,14 +95,6 @@ class UnfoundedClaimController extends ApiController
         $claim->update(['status' => 'archived']);
 
         $claim->load(['createdBy', 'activeTreatment']);
-
-        $this->activityLogService->store("Une réclamation a été déclarée non fondé par le pilot actif",
-            $this->institution()->id,
-            $this->activityLogService::UNFOUNDED_CLAIM,
-            'claim',
-            $this->user(),
-            $claim
-        );
 
         // send notification to claimer
         $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
