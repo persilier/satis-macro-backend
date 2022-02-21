@@ -23,6 +23,5 @@ Route::prefix('any')->group(function () {
 
         // Route for import excel data to database.
         Route::post('import-staffs', 'ImportExport\ImportController@importStaffs');
-        Route::post('import-staffs-restore-role', 'ImportExport\ImportAndRestoreController@update');
     });
 });

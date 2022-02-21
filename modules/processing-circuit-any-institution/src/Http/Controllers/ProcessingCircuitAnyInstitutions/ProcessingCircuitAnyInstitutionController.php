@@ -10,7 +10,6 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ProcessingCircuit;
 
 /**
@@ -20,17 +19,12 @@ use Satis2020\ServicePackage\Traits\ProcessingCircuit;
 class ProcessingCircuitAnyInstitutionController extends ApiController
 {
     use ProcessingCircuit;
-
-    private $activityLogService;
-
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct()
     {
         parent::__construct();
 
         $this->middleware('auth:api');
         $this->middleware('permission:update-processing-circuit-any-institution')->only(['update', 'edit']);
-
-        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -67,7 +61,6 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
      * @param Request $request
      * @param $institutionId
      * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
      */
     public function update(Request $request, $institutionId){
 
@@ -76,13 +69,6 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
         $collection = $this->rules($request->all(), $collection, $institutionId);
 
         $this->detachAttachUnits($collection , $institutionId);
-
-        $this->activityLogService->store("Mise à jour des circuits de traitements.",
-            $this->institution()->id,
-            $this->activityLogService::UPDATED,
-            'circuit',
-            $this->user()
-        );
 
         return response()->json([
             'claimCategories' => $this->getAllProcessingCircuits($institutionId),

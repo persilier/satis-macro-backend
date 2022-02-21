@@ -3,19 +3,14 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
-
 class FaqCategory extends Model
 {
-    use HasTranslations, Sluggable, UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
-
-    protected static $logName = 'faq_category';
+    use HasTranslations, Sluggable, UuidAsId, SoftDeletes, SecureDelete;
 
     /**
      * The attributes that are translatable
@@ -64,5 +59,4 @@ class FaqCategory extends Model
             ]
         ];
     }
-
 }

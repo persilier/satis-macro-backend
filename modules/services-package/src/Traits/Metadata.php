@@ -8,14 +8,12 @@ use ReflectionClass;
 use ReflectionException;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Metadata as MetadataModel;
-use Satis2020\ServicePackage\Repositories\MetadataRepository;
 use Satis2020\ServicePackage\Rules\HeaderValidationRules;
 use Satis2020\ServicePackage\Rules\LayoutValidationRules;
 
 trait Metadata
 {
     protected $layout = ['layout-1', 'layout-2', 'layout-3', 'layout-4'];
-
 
     // validation de la description
     protected function rulesUpdateDescription()
@@ -70,7 +68,7 @@ trait Metadata
             ];
 
         if ($type == 'installation-steps') {
-            $number_steps = collect(json_decode(MetadataModel::where('name', 'installation-steps')->first()->data))->count();
+            $number_steps = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->count();
             return [
                 'name' => 'required|integer|size:' . ($number_steps + 1),
                 'family' => ['required', Rule::in(["nature", "register-form", "register-header"])],
@@ -81,7 +79,7 @@ trait Metadata
 
         if ($type == 'app-nature') {
             return [
-                'nature' => ['required', Rule::in(collect(json_decode(MetadataModel::where('name', 'app-types')->first()->data))->pluck('libelle')->all())]
+                'nature' => ['required', Rule::in(collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-types')->first()->data))->pluck('libelle')->all())]
             ];
         }
 
@@ -199,19 +197,19 @@ trait Metadata
         if ($type == 'installation-steps') {
             $message = "la valeur de content est en inadéquation avec la famille choisi";
 
-            if ($request->family === "nature" && $request->content !== collect(json_decode(MetadataModel::where('name', 'app-types')->first()->data))->pluck('libelle')->all()) {
+            if ($request->family === "nature" && $request->content !== collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'app-types')->first()->data))->pluck('libelle')->all()) {
                 return $message;
             }
             if ($request->family === "register-form") {
-                $forms_name = collect(json_decode(MetadataModel::where('name', 'forms')->first()->data))->pluck('name')->all();
-                $forms_registered_in_installation_names = collect(json_decode(MetadataModel::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-form')->pluck('content.name')->all();
+                $forms_name = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'forms')->first()->data))->pluck('name')->all();
+                $forms_registered_in_installation_names = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-form')->pluck('content.name')->all();
                 if (!isset($request->content["name"]) || !in_array($request->content["name"], $forms_name) || in_array($request->content["name"], $forms_registered_in_installation_names)) {
                     return $message;
                 }
             }
             if ($request->family === "register-header") {
-                $headers_name = collect(json_decode(MetadataModel::where('name', 'headers')->first()->data))->pluck('name')->all();
-                $headers_registered_in_installation_names = collect(json_decode(MetadataModel::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-header')->pluck('content.name')->all();
+                $headers_name = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'headers')->first()->data))->pluck('name')->all();
+                $headers_registered_in_installation_names = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'installation-steps')->first()->data))->where('family', '=', 'register-header')->pluck('content.name')->all();
                 if (!isset($request->content["name"]) || !in_array($request->content["name"], $headers_name) || in_array($request->content["name"], $headers_registered_in_installation_names)) {
                     return $message;
                 }
@@ -381,15 +379,5 @@ trait Metadata
     public function insertFormulaire()
     {
 
-    }
-
-    /**
-     * @param $name
-     * @return mixed
-     */
-    public function getMetadataByName($name)
-    {
-       $metadataRepository = new MetadataRepository(new MetadataModel());
-       return json_decode($metadataRepository->getByName($name)->data);
     }
 }

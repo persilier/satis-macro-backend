@@ -48,7 +48,7 @@ class InstitutionController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      * @throws RetrieveDataUserNatureException
      */
     public function create()
@@ -63,7 +63,7 @@ class InstitutionController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param Institution $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      * @throws RetrieveDataUserNatureException
      */
     public function edit(Institution $institution)
@@ -128,7 +128,7 @@ class InstitutionController extends ApiController
      * Display the specified resource.
      *
      * @param $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return void
      */
     public function show(Institution $institution)
     {
@@ -192,7 +192,7 @@ class InstitutionController extends ApiController
      *
      * @param Request $request
      * @param $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
     public function updateLogo(Request $request, Institution $institution)

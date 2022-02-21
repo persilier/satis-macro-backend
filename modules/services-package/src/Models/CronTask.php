@@ -4,10 +4,8 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -16,9 +14,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class CronTask extends Model
 {
-    use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
-
-    protected static $logName = 'cron_task';
+    use UuidAsId, SoftDeletes, SecureDelete;
 
     protected $primaryKey = 'cron_id';
     /**
