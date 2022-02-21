@@ -80,6 +80,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-measure-preventive-parameters',
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
+                    'list-any-notification-proof',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -100,6 +101,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'pilot-list-any-notification-proof'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
