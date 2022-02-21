@@ -10,6 +10,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Currency;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
@@ -27,6 +28,11 @@ class ClaimController extends ApiController
 
     use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
 
+    /**
+     * @var ActivityLogService
+     */
+    private $activityLogService;
+
     public function __construct()
     {
         parent::__construct();
@@ -34,6 +40,7 @@ class ClaimController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
+
     }
 
     /**
@@ -71,6 +78,7 @@ class ClaimController extends ApiController
     public function store(Request $request)
     {
 
+
         $request->merge(['created_by' => $this->staff()->id]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
 
@@ -82,9 +90,9 @@ class ClaimController extends ApiController
 
         // create reference
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
-
         // create claimer if claimer_id is null
-        if (is_null($request->claimer_id)) {
+//        if (is_null($request->claimer_id)) {
+        if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
 

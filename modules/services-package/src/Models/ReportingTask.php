@@ -5,13 +5,17 @@ namespace Satis2020\ServicePackage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Translatable\HasTranslations;
 
 class ReportingTask extends Model
 {
-    use UuidAsId, SoftDeletes, SecureDelete;
+    use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
+
+    protected static $logName = 'reporting_task';
     /**
      * The attributes that should be cast to native types.
      *

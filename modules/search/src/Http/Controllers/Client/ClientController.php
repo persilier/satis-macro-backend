@@ -2,10 +2,8 @@
 
 namespace Satis2020\Search\Http\Controllers\Client;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\Search;
@@ -25,77 +23,97 @@ class ClientController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @param Institution $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
 
-    public function index(Request $request, $institution)
+    public function index(Institution $institution)
     {
         $recherche = $request->query('r');
+        $rechercheType = $request->query('type', 'name_or_phone');
 
-        $columnSelected = ['id', 'firstname', 'lastname', 'telephone', 'email', 'ville', 'sexe'];
+        $query = Identite::query()
+            ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
+            ->leftJoin('client_institution', 'clients.id', '=', 'client_institution.client_id')
+            ->leftJoin('accounts', 'client_institution.id', '=', 'accounts.client_institution_id')
+            ->leftJoin('claims', 'identites.id', '=', 'claims.claimer_id')
+            ->whereRaw(
+                '( (`claims`.`id` IS NOT NULL AND `claims`.`institution_targeted_id` = ?) OR (`client_institution`.`id` IS NOT NULL AND `client_institution`.`institution_id` = ?) )',
+                [$institution, $institution]
+            );
 
-        $identitiesQueries = [
-            'clientsQuery' => Identite::query()
-                ->with([
-                    'client:id,identites_id',
-                    'client.client_institutions' => function ($query) use ($institution) {
-                        $query->where('institution_id', '=', $institution)
-                            ->select('id', 'institution_id', 'client_id');
-                    },
-                    'client.client_institutions.accounts:id,number,client_institution_id',
-                ]),
-            'claimersQuery' => Identite::query()
-                ->select($columnSelected)
-                ->whereHas('claims', function ($query) use ($institution) {
-                    $query->where('institution_targeted_id', $institution);
-                })
-        ];
-
-        foreach ($identitiesQueries as $key => $query) {
-            $identitiesQueries[$key] = $query
-                ->where(function ($query) use ($recherche) {
-                    $query->where('firstname', 'like', "%$recherche%")
-                        ->orWhere('lastname', 'like', "%$recherche%");
-                });
+        if ($rechercheType == 'account_number') {
+            $query = $query->whereRaw(
+                '`accounts`.`number` = ?',
+                [$recherche]
+            );
+        } else {
+            $query = $query->where(function ($query) use ($recherche) {
+                $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orwhereJsonContains('telephone', $recherche);
+            });
         }
 
-        $identities = $identitiesQueries['clientsQuery']
-            ->union($identitiesQueries['claimersQuery'])
-            ->distinct()
-            ->take(10)
-            ->get($columnSelected);
+        $identities = $query->select([
+            'identites.id as identityId',
+            'identites.firstname',
+            'identites.lastname',
+            'identites.telephone',
+            'identites.email',
+            'identites.ville',
+            'identites.sexe',
+            'accounts.id as accountId',
+            'accounts.number as accountNumber',
+        ])
+            ->get()
+            ->groupBy('identityId')
+            ->take(5);
 
         $filtered = [];
 
-        foreach ($identities as $identity) {
+        foreach ($identities as $identityId => $identityAccounts) {
 
-            $fullName = $identity->firstname . ' ' . $identity->lastname;
+            $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
 
-            if ($identity->telephone) {
+            if ($identityAccounts[0]->telephone) {
                 $fullName .= ' / ';
                 $counter = 0;
-                foreach ($identity->telephone as $telephone) {
-                    $fullName .= ($counter == count($identity->telephone) - 1) ? $telephone : $telephone . ' , ';
+                foreach ($identityAccounts[0]->telephone as $telephone) {
+                    $fullName .= ($counter == count($identityAccounts[0]->telephone) - 1) ? $telephone : $telephone . ' , ';
+                    $counter++;
                 }
             }
 
-            try {
-                $accounts = $identity->client->client_institutions->pluck('accounts')->collapse();
-            } catch (\Exception $exception) {
-                $accounts = [];
+            $accounts = [];
+            foreach ($identityAccounts as $identityAccount) {
+                if ($identityAccount->accountId) {
+                    $account = new \stdClass();
+                    $account->id = $identityAccount->accountId;
+                    $account->number = $identityAccount->accountNumber;
+                    $accounts[] = $account;
+                }
             }
 
+            $identity = $identityAccounts[0];
+
             $filtered[] = [
-                'identityId' => $identity->id,
-                'identity' => $identity->only($columnSelected),
+                'identityId' => $identityId,
+                'identity' => $identity,
                 'accounts' => $accounts,
                 'fullName' => $fullName,
-            ];
-        }
+                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
+            ]);
 
-        return response()->json($filtered, JsonResponse::HTTP_OK);
+            return $item;
+
+        });
+
+        $filtered = $clients->filter(function ($value, $key) {
+            return $value['contains'];
+        });
+
+        return response()->json($filtered->unique('identityId')->take(10)->values(), 200);
     }
 
 }

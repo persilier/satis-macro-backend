@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Notifications\TransferredToTargetedInstitution;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Traits\Notification;
 
@@ -20,7 +21,9 @@ class TransferToInstitutionController extends ApiController
 
     use AwaitingAssignment, Notification;
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct( ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -29,6 +32,8 @@ class TransferToInstitutionController extends ApiController
         $this->middleware('permission:transfer-claim-to-targeted-institution')->only(['update']);
 
         $this->middleware('active.pilot')->only(['update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -53,6 +58,14 @@ class TransferToInstitutionController extends ApiController
         if(!is_null($this->getInstitutionPilot(Institution::find($claim->institution_targeted_id)))){
             $this->getInstitutionPilot(Institution::find($claim->institution_targeted_id))->notify(new TransferredToTargetedInstitution($claim));
         }
+
+        $this->activityLogService->store("Plainte transférée à une institution",
+            $this->institution()->id,
+            ActivityLogService::TRANSFER_TO_INSTITUTION,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return response()->json($claim, 201);
     }

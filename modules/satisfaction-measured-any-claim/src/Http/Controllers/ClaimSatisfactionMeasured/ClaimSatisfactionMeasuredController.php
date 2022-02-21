@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 
 
@@ -19,7 +20,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
 {
     use ClaimSatisfactionMeasured;
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -27,6 +30,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('permission:list-satisfaction-measured-any-claim')->only(['index']);
         $this->middleware('permission:update-satisfaction-measured-any-claim')->only(['show', 'satisfactionMeasured']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -76,6 +81,14 @@ class ClaimSatisfactionMeasuredController extends ApiController
         ]);
 
         $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
+
+        $this->activityLogService->store("Mesure de satisfaction",
+            $this->institution()->id,
+            $this->activityLogService::MEASURE_SATISFACTION,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return response()->json($claim, 200);
     }
