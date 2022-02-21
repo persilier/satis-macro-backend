@@ -59,7 +59,6 @@ class ClientController extends ApiController
         }
 
         $identities = $query->select([
-            'identites.id as id',
             'identites.id as identityId',
             'identites.firstname',
             'identites.lastname',
