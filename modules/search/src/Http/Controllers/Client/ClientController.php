@@ -68,7 +68,7 @@ class ClientController extends ApiController
             'identites.ville',
             'identites.sexe',
             'accounts.id as accountId',
-            'accounts.number as accountNumber'
+            'accounts.number as accountNumber',
         ])
             ->get()
             ->groupBy('identityId')
