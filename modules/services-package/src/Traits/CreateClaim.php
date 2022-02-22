@@ -187,11 +187,11 @@ trait CreateClaim
         $requirements = collect([]);
 
         if(!empty($errors)){
-            foreach ($errors as $key => $error){
+             foreach ($errors as $key => $error){
 
-                ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
+                 ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
 
-            }
+             }
 
         }
         return $requirements;
