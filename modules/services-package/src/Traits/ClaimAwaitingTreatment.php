@@ -188,8 +188,8 @@ trait ClaimAwaitingTreatment
 
         if ($assignment === 'treatment') {
             $data['amount_returned'] = ['nullable','filled', 'integer'];
-            $data['solution'] = ['required', 'string'];
-            $data['comments'] = ['required', 'string'];
+            $data['solution'] = ['required','filled', 'string'];
+            $data['comments'] = ['required','filled', 'string'];
             $data['preventive_measures'] = ['string'];
         }
 
