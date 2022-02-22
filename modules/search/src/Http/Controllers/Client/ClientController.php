@@ -70,6 +70,7 @@ class ClientController extends ApiController
             'accounts.id as accountId',
             'accounts.number as accountNumber'
         ])
+            ->distinct()
             ->get()
             ->groupBy('identityId')
             ->take(5);

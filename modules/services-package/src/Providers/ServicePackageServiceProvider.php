@@ -43,6 +43,8 @@ class ServicePackageServiceProvider extends ServiceProvider
     public function register()
     {
         config(['app.timezone' => 'Africa/Porto-Novo']);
+
+        $this->app->register(EventServiceProvider::class);
     }
 
     /**

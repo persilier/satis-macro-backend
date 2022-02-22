@@ -7,10 +7,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
+use Satis2020\ServicePackage\Consts\NotificationConsts;
+use Satis2020\ServicePackage\Traits\NotificationProof;
 
 class CommunicateTheSolution extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification,NotificationProof;
 
     public $claim;
     public $event;
@@ -89,7 +91,9 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
         return [
             'to' => $this->institution->iso_code.$notifiable->telephone[0],
             'text' => $this->event->text,
-            'institutionMessageApi' => $this->getStaffInstitutionMessageApi($this->institution)
+            'institutionMessageApi' => $this->getStaffInstitutionMessageApi($this->institution),
+            'institution_id'=>$this->institution->id,
+            'notifiable_id'=>$notifiable->id
         ];
     }
 }
