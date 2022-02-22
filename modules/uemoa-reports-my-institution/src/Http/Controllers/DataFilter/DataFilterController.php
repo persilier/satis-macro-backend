@@ -2,16 +2,10 @@
 
 namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\DataFilter;
 
-use Carbon\Carbon;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\TypeClient;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
@@ -33,7 +27,7 @@ class DataFilterController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -42,17 +36,13 @@ class DataFilterController extends ApiController
         return response()->json([
             'categories' => ClaimCategory::with('claimObjects')->get(),
             'requestChannels' => Channel::all(),
-            'clientTypes' => TypeClient::all(),
+            'clientTypes' => AccountType::all(),
             'agences' => Unit::where('institution_id', $instittion->id)->whereHas('unitType', function ($q){
-
                 $q->where('can_be_target', 1);
-
             })->get(),
 
             'functionTreating' => Unit::where('institution_id', $instittion->id)->whereHas('unitType', function ($q){
-
                 $q->where('can_treat', 1);
-
             })->get(),
             'status' => $this->allStatus()
 
