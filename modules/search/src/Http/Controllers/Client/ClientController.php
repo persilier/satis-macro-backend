@@ -33,33 +33,44 @@ class ClientController extends ApiController
     public function index(Request $request, $institution)
     {
         $recherche = $request->query('r');
+        $rechercheType = $request->query('type', 'name_or_phone');
 
-        $identities = Identite::query()
+        $query = Identite::query()
             ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
             ->leftJoin('client_institution', 'clients.id', '=', 'client_institution.client_id')
             ->leftJoin('accounts', 'client_institution.id', '=', 'accounts.client_institution_id')
             ->leftJoin('claims', 'identites.id', '=', 'claims.claimer_id')
-            ->where(function ($query) use ($recherche) {
-                $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
-                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
-                    ->orwhereJsonContains('telephone', $recherche);
-            })
             ->whereRaw(
                 '( (`claims`.`id` IS NOT NULL AND `claims`.`institution_targeted_id` = ?) OR (`client_institution`.`id` IS NOT NULL AND `client_institution`.`institution_id` = ?) )',
                 [$institution, $institution]
-            )
-            ->select([
-                'identites.id as id',
-                'identites.id as identityId',
-                'identites.firstname',
-                'identites.lastname',
-                'identites.telephone',
-                'identites.email',
-                'identites.ville',
-                'identites.sexe',
-                'accounts.id as accountId',
-                'accounts.number as accountNumber',
-            ])
+            );
+
+        if ($rechercheType == 'account_number') {
+            $query = $query->whereRaw(
+                '`accounts`.`number` = ?',
+                [$recherche]
+            );
+        } else {
+            $query = $query->where(function ($query) use ($recherche) {
+                $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orwhereJsonContains('telephone', $recherche);
+            });
+        }
+
+        $identities = $query->select([
+            'identites.id as id',
+            'identites.id as identityId',
+            'identites.firstname',
+            'identites.lastname',
+            'identites.telephone',
+            'identites.email',
+            'identites.ville',
+            'identites.sexe',
+            'accounts.id as accountId',
+            'accounts.number as accountNumber'
+        ])
+            ->distinct()
             ->get()
             ->groupBy('identityId')
             ->take(5);
