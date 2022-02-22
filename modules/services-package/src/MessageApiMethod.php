@@ -4,9 +4,7 @@
 namespace Satis2020\ServicePackage;
 
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class MessageApiMethod
 {
@@ -33,7 +31,7 @@ class MessageApiMethod
             'api' => $api
         ])->body();
 
-        return is_string($response) && str_contains(strtolower($response),"id:");
+        return is_string($response) && str_contains(strtolower($response), "id:");
     }
 
     /***
@@ -64,10 +62,10 @@ class MessageApiMethod
                 'app' => $app
             ]
         ];
-        $response =  Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data)
-            ->json();
+        $response = Http::withHeaders($headers)
+            ->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
 
-        return  isset($response['status']) && $response['status'] == Response::HTTP_OK;
+        return $response->successful() && optional($response->json())['message'] == "message sent successfully.";
     }
 
     static function orangeSMSApi($login, $api_access_key, $token, $subject, $signature, $to, $text)
