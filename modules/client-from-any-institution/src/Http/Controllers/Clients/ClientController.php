@@ -14,6 +14,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Models\ClientInstitution;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -28,7 +29,9 @@ class ClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
@@ -37,6 +40,8 @@ class ClientController extends ApiController
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['edit', 'update']);
         $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
     }
 
 
@@ -56,7 +61,7 @@ class ClientController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function create()
@@ -154,7 +159,7 @@ class ClientController extends ApiController
      *
      * @param Request $request
      * @param $clientId
-     * @return void
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function show(Request $request, $clientId)
@@ -229,6 +234,14 @@ class ClientController extends ApiController
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
+        $this->activityLogService->store('Mise à jour des informations du compte d\'un client',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'account',
+            $this->user(),
+            $account
+        );
+
         return response()->json($client, 201);
     }
 
@@ -251,6 +264,15 @@ class ClientController extends ApiController
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
 
         $account->secureDelete('claims');
+
+        $this->activityLogService->store('Suppression du numéro de compte d\'un client',
+            $this->institution()->id,
+            $this->activityLogService::DELETED,
+            'account',
+            $this->user(),
+            $account
+        );
+
         return response()->json($account, 201);
     }
 

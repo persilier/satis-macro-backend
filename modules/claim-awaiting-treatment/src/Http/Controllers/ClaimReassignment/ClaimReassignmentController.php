@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
@@ -23,12 +24,15 @@ class ClaimReassignmentController extends ApiController
 {
     use ClaimAwaitingTreatment, SeveralTreatment;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
         $this->middleware('permission:assignment-claim-awaiting-treatment')->except(['store', 'destroy']);
+        $this->activityLogService = $activityLogService;
     }
 
 
@@ -71,6 +75,8 @@ class ClaimReassignmentController extends ApiController
      * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
     protected function update(Request $request, $claim){
@@ -81,6 +87,14 @@ class ClaimReassignmentController extends ApiController
         $claim->activeTreatment->update([
             'responsible_staff_id' => $request->staff_id,
         ]);
+
+        $this->activityLogService->store("Une réclamation a été réaffecté à un autre staff",
+            $this->institution()->id,
+            $this->activityLogService::REASSIGNMENT_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return response()->json($claim, 201);
     }

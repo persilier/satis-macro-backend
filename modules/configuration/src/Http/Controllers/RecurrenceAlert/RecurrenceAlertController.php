@@ -5,23 +5,28 @@ namespace Satis2020\Configuration\Http\Controllers\RecurrenceAlert;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class RecurrenceAlertController extends ApiController
 {
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
 
         $this->middleware('permission:update-recurrence-alert-settings')->only(['show', 'update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show()
     {
@@ -33,7 +38,7 @@ class RecurrenceAlertController extends ApiController
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request)
@@ -50,7 +55,15 @@ class RecurrenceAlertController extends ApiController
 
         $new_parameters = $request->only(['recurrence_period', 'max']);
         
-        Metadata::where('name', 'recurrence-alert-settings')->first()->update(['data'=> json_encode($new_parameters)]);
+        $metadata = Metadata::where('name', 'recurrence-alert-settings')->first()->update(['data'=> json_encode
+        ($new_parameters)]);
+
+        $this->activityLogService->store('Configuration du nombre minimum toléré pour la récurrence',
+            $this->institution()->id,
+            'metadata',
+            $this->activityLogService::UPDATED,
+            $this->user(), $metadata
+        );
 
         return response()->json($new_parameters, 200);
     }
