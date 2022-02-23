@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Http;
 use Satis2020\ServicePackage\Models\File;
@@ -17,7 +18,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
-    public function index()
+    public function index(Request $request)
     {
 //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
@@ -30,28 +31,30 @@ class Controller extends BaseController
 //            'TEST SMS API BCI'
 //        );
 
-        $headers = [
-            "Authorization" => "Basic " . base64_encode("BciGatewayLogin:k6cfThDiZKKRFYgH63RKL49jD604xF4M16K")
-        ];
-        $data = [
-            '_id' => "TEST001",
-            'priority' => 1,
-            'telephone' => "24205593171",
-            'message' => "TEST",
-            'source' => [
-                'client' => "BCI",
-                'app' => "SATIS PRO BCI"
-            ]
-        ];
-        $response = Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+//        $headers = [
+//            "Authorization" => "Basic " . base64_encode("BciGatewayLogin:k6cfThDiZKKRFYgH63RKL49jD604xF4M16K")
+//        ];
+//        $data = [
+//            '_id' => "TEST001",
+//            'priority' => 1,
+//            'telephone' => "24205593171",
+//            'message' => "TEST",
+//            'source' => [
+//                'client' => "BCI",
+//                'app' => "SATIS PRO BCI"
+//            ]
+//        ];
+//        $response = Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+//
+//        if ($response->successful() && optional($response->json())['message'] == "message sent successfully."){
+//            dd("good");
+//        }else {
+//            dd("not good");
+//        }
 
-        if ($response->successful() && optional($response->json())['message'] == "message sent successfully."){
-            dd("good");
-        }else {
-            dd("not good");
-        }
+        $request->merge(['query' => '']);
 
-        dd($response);
+        dd($request->filled('query') ? 'oui' : 'non');
 
     }
 
