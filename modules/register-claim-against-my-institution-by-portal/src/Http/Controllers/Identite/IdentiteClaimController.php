@@ -2,6 +2,7 @@
 
 namespace Satis2020\RegisterClaimAgainstMyInstitutionByPortal\Http\Controllers\Identite;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\Identite;
@@ -43,9 +44,14 @@ class IdentiteClaimController extends Controller
             $request->request->remove('amount_currency_slug');
         }
 
-        $rulesRequest = $this->rules($request, false);
+        $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
         $request->merge(['claimer_id' => $identite->id]);
+
+        Log::info('debug', [
+            'identite' => $identite,
+            'requestAll' => $request->all()
+        ]);
 
         $this->convertEmailInStrToLower($request);
 
