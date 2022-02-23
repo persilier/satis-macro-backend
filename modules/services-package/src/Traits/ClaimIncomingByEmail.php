@@ -135,7 +135,8 @@ trait ClaimIncomingByEmail
         if ($subscriber['error']) {
             return [
                 "error" => true,
-                "message" => $subscriber['message']
+                "message" => "Les paramètres ne sont pas valides. L'adresse email saisie et/ou le nom (nom de l'intituion) de votre application est déjà utilisé par une autre institution.",
+                "serviceErrors" => $subscriber['message']
             ];
         }
 
