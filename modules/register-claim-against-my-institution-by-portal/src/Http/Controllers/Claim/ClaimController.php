@@ -3,6 +3,7 @@
 namespace Satis2020\RegisterClaimAgainstMyInstitutionByPortal\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
@@ -51,6 +52,11 @@ class ClaimController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Hello', [
+            'amount_disputed' => $request->amount_disputed,
+            'amount_currency_slug' => $request->amount_currency_slug
+        ]);
+
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
         $this->convertEmailInStrToLower($request);
