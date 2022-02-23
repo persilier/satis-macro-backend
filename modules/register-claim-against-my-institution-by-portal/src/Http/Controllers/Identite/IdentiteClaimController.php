@@ -46,6 +46,7 @@ class IdentiteClaimController extends Controller
 
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
+
         $request->merge(['claimer_id' => $identite->id]);
         $request->merge(['telephone' => $identite->telephone]);
         $request->merge(['email' => $identite->email]);
