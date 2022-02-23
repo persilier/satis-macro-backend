@@ -2,8 +2,10 @@
 
 namespace Satis2020\Search\Http\Controllers\Client;
 
-use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\Search;
@@ -23,11 +25,12 @@ class ClientController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param Institution $institution
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
 
-    public function index(Institution $institution)
+    public function index(Request $request, $institution)
     {
         $recherche = $request->query('r');
         $rechercheType = $request->query('type', 'name_or_phone');
@@ -56,6 +59,7 @@ class ClientController extends ApiController
         }
 
         $identities = $query->select([
+            'identites.id as id',
             'identites.id as identityId',
             'identites.firstname',
             'identites.lastname',
@@ -64,8 +68,9 @@ class ClientController extends ApiController
             'identites.ville',
             'identites.sexe',
             'accounts.id as accountId',
-            'accounts.number as accountNumber',
+            'accounts.number as accountNumber'
         ])
+            ->distinct()
             ->get()
             ->groupBy('identityId')
             ->take(5);
@@ -101,19 +106,11 @@ class ClientController extends ApiController
                 'identityId' => $identityId,
                 'identity' => $identity,
                 'accounts' => $accounts,
-                'fullName' => $fullName,
-                'contains' => Str::contains(Str::lower($this->remove_accent($fullName)), Str::lower($this->remove_accent(request()->r)))
-            ]);
+                'fullName' => $fullName
+            ];
+        }
 
-            return $item;
-
-        });
-
-        $filtered = $clients->filter(function ($value, $key) {
-            return $value['contains'];
-        });
-
-        return response()->json($filtered->unique('identityId')->take(10)->values(), 200);
+        return response()->json($filtered, JsonResponse::HTTP_OK);
     }
 
 }
