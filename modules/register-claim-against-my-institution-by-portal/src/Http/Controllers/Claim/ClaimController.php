@@ -57,11 +57,6 @@ class ClaimController extends Controller
             $request->request->remove('amount_currency_slug');
         }
 
-        Log::info('Hello', [
-            'amount_disputed' => $request->amount_disputed,
-            'amount_currency_slug' => $request->amount_currency_slug
-        ]);
-
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
         $this->convertEmailInStrToLower($request);

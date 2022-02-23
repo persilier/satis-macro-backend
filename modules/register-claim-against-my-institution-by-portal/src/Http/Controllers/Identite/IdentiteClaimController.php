@@ -38,6 +38,11 @@ class IdentiteClaimController extends Controller
      */
     public function store(Request $request, Identite $identite)
     {
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
+
         $rulesRequest = $this->rules($request, false);
         $rulesRequest['created_by'] = 'nullable';
         $request->merge(['claimer_id' => $identite->id]);
