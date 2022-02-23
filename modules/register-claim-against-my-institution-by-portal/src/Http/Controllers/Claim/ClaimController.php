@@ -43,10 +43,14 @@ class ClaimController extends Controller
     }
 
 
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     */
     public function store(Request $request)
     {
-
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
         $this->convertEmailInStrToLower($request);
@@ -59,7 +63,7 @@ class ClaimController extends Controller
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // create claimer if claimer_id is null
-        if (is_null($request->claimer_id)) {
+        if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
 
