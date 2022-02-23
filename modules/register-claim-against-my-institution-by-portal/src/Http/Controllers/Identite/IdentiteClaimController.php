@@ -48,8 +48,6 @@ class IdentiteClaimController extends Controller
         $rulesRequest['created_by'] = 'nullable';
 
         $request->merge(['claimer_id' => $identite->id]);
-        $request->merge(['telephone' => $identite->telephone]);
-        $request->merge(['email' => $identite->email]);
 
         $this->convertEmailInStrToLower($request);
 
@@ -59,9 +57,8 @@ class IdentiteClaimController extends Controller
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // Verify phone number and email unicity
-        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request, $identite->id);
-
-        $this->updateIdentity($request, $identite);
+//        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request, $identite->id);
+//        $this->updateIdentity($request, $identite);
 
         $status = $this->getStatus($request, false);
 
