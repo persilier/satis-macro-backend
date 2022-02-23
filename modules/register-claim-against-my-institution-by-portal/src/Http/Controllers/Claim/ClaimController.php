@@ -52,6 +52,11 @@ class ClaimController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
+
         Log::info('Hello', [
             'amount_disputed' => $request->amount_disputed,
             'amount_currency_slug' => $request->amount_currency_slug
