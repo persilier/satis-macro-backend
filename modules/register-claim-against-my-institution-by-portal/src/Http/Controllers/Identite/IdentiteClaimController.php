@@ -46,18 +46,14 @@ class IdentiteClaimController extends Controller
 
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
-        $request->merge(['claimer_id' => $identite->id]);
 
-        Log::info('debug', [
-            'identite' => $identite,
-            'requestAll' => $request->all()
-        ]);
+        $request->merge(['claimer_id' => $identite->id]);
+        $request->merge(['telephone' => $identite->telephone]);
+        $request->merge(['email' => $identite->email]);
 
         $this->convertEmailInStrToLower($request);
 
         $this->validate($request, $rulesRequest);
-
-        $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // create reference
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
