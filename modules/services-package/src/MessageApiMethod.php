@@ -69,7 +69,7 @@ class MessageApiMethod
 
         $proxyConfigs = Config::get('proxy');
 
-        if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']) {
+        if ($proxyConfigs['http'] || $proxyConfigs['https']) {
             $request = $request->withOptions([
                 'proxy' => $proxyConfigs
             ]);
