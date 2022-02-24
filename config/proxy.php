@@ -11,10 +11,10 @@ return [
     |
     */
 
-    'http_proxy' => env('HTTP_PROXY', ''),
+    'http' => env('HTTP_PROXY', ''),
 
-    'https_proxy' => env('HTTPS_PROXY', ''),
+    'https' => env('HTTPS_PROXY', ''),
 
-    'no_proxy' => env('NO_PROXY') ? explode(',', env('NO_PROXY')) : [],
+    'no' => env('NO_PROXY') ? explode(',', env('NO_PROXY')) : [],
 
 ];
