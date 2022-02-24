@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage;
 
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -63,15 +64,18 @@ class MessageApiMethod
                 'app' => $app
             ]
         ];
-        $response = Http::withHeaders($headers)
-            ->withOptions([
-                'proxy' => [
-                    'http' => 'http://172.16.11.155:8080', // Use this proxy with "http"
-                    'https' => 'http://172.16.11.155:8080', // Use this proxy with "https",
-                    'no' => ['127.0.0.1', 'localhost']    // Don't use a proxy with these
-                ]
-            ])
-            ->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+
+        $request = Http::withHeaders($headers);
+
+        $proxyConfigs = Config::get('proxy');
+
+        if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']) {
+            $request = $request->withOptions([
+                'proxy' => $proxyConfigs
+            ]);
+        }
+
+        $response = $request->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
 
         Log::debug('londoSMSApiResponse', [
             'messageSent' => ($response->successful() && optional($response->json())['message'] == "message sent successfully.") ? 'yes' : 'no',
