@@ -64,6 +64,13 @@ class MessageApiMethod
             ]
         ];
         $response = Http::withHeaders($headers)
+            ->withOptions([
+                'proxy' => [
+                    'http' => 'http://172.16.11.155:8080', // Use this proxy with "http"
+                    'https' => 'http://172.16.11.155:8080', // Use this proxy with "https",
+                    'no' => ['127.0.0.1', 'localhost']    // Don't use a proxy with these
+                ]
+            ])
             ->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
 
         Log::debug('londoSMSApiResponse', [
