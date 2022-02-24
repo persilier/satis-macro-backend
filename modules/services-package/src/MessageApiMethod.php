@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage;
 
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class MessageApiMethod
 {
@@ -64,6 +65,11 @@ class MessageApiMethod
         ];
         $response = Http::withHeaders($headers)
             ->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
+
+        Log::debug('londoSMSApiResponse', [
+            'messageSent' => ($response->successful() && optional($response->json())['message'] == "message sent successfully.") ? 'yes' : 'no',
+            'responseJson' => $response->json()
+        ]);
 
         return $response->successful() && optional($response->json())['message'] == "message sent successfully.";
     }
