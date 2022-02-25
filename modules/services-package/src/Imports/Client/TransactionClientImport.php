@@ -18,7 +18,7 @@ use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
 {
 
     protected $myInstitution;
@@ -158,7 +158,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         foreach ($data['telephone'] as $key => $value) {
             $value = preg_replace("/\s+/", "", $value);
             $value = preg_replace("/-/", "", $value);
-            $value = preg_replace("/./", "", $value);
+            $value = preg_replace("/\./", "", $value);
 
             if (empty($value)) {
                 unset($data['telephone'][$key]);
