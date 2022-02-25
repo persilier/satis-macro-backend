@@ -123,7 +123,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     new TelephoneArray
                 ],
                 'email' => [
-                    'required',
                     'array',
                     new EmailValidationRules
                 ],
