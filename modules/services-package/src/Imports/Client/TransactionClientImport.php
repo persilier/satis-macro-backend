@@ -154,7 +154,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         $data['institution'] = $institutionId;
 
-        $data['telephone'] = !is_null($data['telephone']) ? explode('/', $data['telephone']) : [];
+        $data['telephone'] = !empty($data['telephone']) ? explode('/', $data['telephone']) : [];
 
         foreach ($data['telephone'] as $key => $value) {
             $data['telephone'][$key] = preg_replace("/\s+/", "", $value);
@@ -162,7 +162,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             $data['telephone'][$key] = preg_replace("/./", "", $data['telephone'][$key]);
         }
 
-        $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
+        $data['email'] = !empty($data['email']) ? explode('/', $data['email']) : [];
 
         foreach ($data['email'] as $key => $value) {
             $data['email'][$key] = trim($value);
