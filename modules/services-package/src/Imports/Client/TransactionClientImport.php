@@ -156,16 +156,28 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $data['telephone'] = !empty($data['telephone']) ? explode('/', $data['telephone']) : [];
 
         foreach ($data['telephone'] as $key => $value) {
-            $data['telephone'][$key] = preg_replace("/\s+/", "", $value);
-            $data['telephone'][$key] = preg_replace("/-/", "", $data['telephone'][$key]);
-            $data['telephone'][$key] = preg_replace("/./", "", $data['telephone'][$key]);
+            $value = preg_replace("/\s+/", "", $value);
+            $value = preg_replace("/-/", "", $value);
+            $value = preg_replace("/./", "", $value);
+
+            if (empty($value)) {
+                unset($data['telephone'][$key]);
+            } else {
+                $data['telephone'][$key] = $value;
+            }
         }
 
         $data['email'] = !empty($data['email']) ? explode('/', $data['email']) : [];
 
         foreach ($data['email'] as $key => $value) {
-            $data['email'][$key] = trim($value);
-            $data['email'][$key] = Str::lower($value);
+            $value = trim($value);
+            $value = Str::lower($value);
+
+            if (empty($value)) {
+                unset($data['email'][$key]);
+            } else {
+                $data['email'][$key] = $value;
+            }
         }
 
         $data['category_client'] = optional(
