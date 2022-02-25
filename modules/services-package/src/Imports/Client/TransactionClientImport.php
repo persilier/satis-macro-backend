@@ -138,10 +138,13 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     protected function transformRowBeforeStoring($data)
     {
+        foreach ($data as $key => $value) {
+            $data[$key] = trim($value);
+        }
+
         $institutionId = $this->myInstitution->id;
 
         if (array_key_exists('institution', $data)) {
-
             $institution = $this->data['institutions']->firstWhere('name', $data['institution']);
 
             if ($institution) {
@@ -162,6 +165,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
 
         foreach ($data['email'] as $key => $value) {
+            $data['email'][$key] = trim($value);
             $data['email'][$key] = Str::lower($value);
         }
 
