@@ -155,6 +155,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         foreach ($data['telephone'] as $key => $value) {
             $data['telephone'][$key] = preg_replace("/\s+/", "", $value);
+            $data['telephone'][$key] = preg_replace("-", "", $data['telephone'][$key]);
+            $data['telephone'][$key] = preg_replace(".", "", $data['telephone'][$key]);
         }
 
         $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
