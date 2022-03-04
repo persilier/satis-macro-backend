@@ -31,6 +31,7 @@ trait ImportStaff
         $rules = $this->rulesIdentite();
 
         $rules['position'] = ['required'];
+        $rules['email'] = ['required',];
 
         if ($this->unitRequired) {
 
