@@ -20,7 +20,7 @@ use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
-class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
+class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
     use Importable, SkipsFailures, DataUserNature, ImportIdentite, ImportStaff, VerifyUnicity;
 
