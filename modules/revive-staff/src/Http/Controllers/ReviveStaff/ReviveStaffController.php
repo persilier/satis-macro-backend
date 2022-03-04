@@ -28,7 +28,7 @@ class ReviveStaffController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Claim $claim)

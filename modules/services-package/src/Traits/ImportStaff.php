@@ -134,15 +134,15 @@ trait ImportStaff
                     $identite->update($this->fillableIdentite($row));
                 }
 
-                if (!$staff = Staff::where('identite_id', $identite->id)->where('institution_id', $row['institution'])
-                    ->first()) {
+                /*if (!$staff = Staff::where('identite_id', $identite->id)->where('institution_id', $row['institution'])
+                    ->first()) {*/
                     $staff = $this->storeStaff($row, $identite);
 
-                } else {
+                /*} else {
 
                     $status = false;
                     $message = 'A Staff already exist in the institution';
-                }
+                }*/
 
             }
 
@@ -192,7 +192,9 @@ trait ImportStaff
             $data['unit_id'] = $row['unite'];
         }
 
-        $store = Staff::create($data);
+        $store = Staff::query()->updateOrCreate([
+            'identite_id' => $identite->id,
+        ],$data);
 
         if (!User::where('username', $identite->email[0])->first()) {
 

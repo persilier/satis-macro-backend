@@ -123,7 +123,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     new TelephoneArray
                 ],
                 'email' => [
-                    'required',
                     'array',
                     new EmailValidationRules
                 ],
@@ -138,10 +137,13 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     protected function transformRowBeforeStoring($data)
     {
+        foreach ($data as $key => $value) {
+            $data[$key] = trim($value);
+        }
+
         $institutionId = $this->myInstitution->id;
 
         if (array_key_exists('institution', $data)) {
-
             $institution = $this->data['institutions']->firstWhere('name', $data['institution']);
 
             if ($institution) {
@@ -151,16 +153,31 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         $data['institution'] = $institutionId;
 
-        $data['telephone'] = !is_null($data['telephone']) ? explode('/', $data['telephone']) : [];
+        $data['telephone'] = !empty($data['telephone']) ? explode('/', $data['telephone']) : [];
 
         foreach ($data['telephone'] as $key => $value) {
-            $data['telephone'][$key] = preg_replace("/\s+/", "", $value);
+            $value = preg_replace("/\s+/", "", $value);
+            $value = preg_replace("/-/", "", $value);
+            $value = preg_replace("/\./", "", $value);
+
+            if (empty($value)) {
+                unset($data['telephone'][$key]);
+            } else {
+                $data['telephone'][$key] = $value;
+            }
         }
 
-        $data['email'] = !is_null($data['email']) ? explode('/', $data['email']) : [];
+        $data['email'] = !empty($data['email']) ? explode('/', $data['email']) : [];
 
         foreach ($data['email'] as $key => $value) {
-            $data['email'][$key] = Str::lower($value);
+            $value = trim($value);
+            $value = Str::lower($value);
+
+            if (empty($value)) {
+                unset($data['email'][$key]);
+            } else {
+                $data['email'][$key] = $value;
+            }
         }
 
         $data['category_client'] = optional(

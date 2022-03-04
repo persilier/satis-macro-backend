@@ -5,29 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Message;
-use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Notifications\Recurrence;
-use Illuminate\Support\Facades\Notification;
-use Satis2020\ServicePackage\Notifications\ReviveStaff;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
-    public function index()
+    public function index(Request $request)
     {
 //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
@@ -39,27 +31,17 @@ class Controller extends BaseController
 //            "242064034953",
 //            'TEST SMS API BCI'
 //        );
-//        dd($sendMail->json());
 
-//        $claim = Claim::findOrFail("a63dfbec-f8ef-4bb5-9f97-2933ab3b4073");
-//
-//        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-//        $notifiable =$this->getInstitutionPilot($claim->createdBy->institution);
-//
-//        dd($this->getFeedBackChannels($notifiable->staff));
-//
-//        dump($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high'));
-//        dd($this->getInstitutionPilot($claim->createdBy->institution));
-//
-//        $identities = $this->getStaffToReviveIdentities($claim);
+        $proxyConfigs = Config::get('proxy');
 
-        //$identities[1]->notify(new ReviveStaff($claim, "CC"));
-        
-//        Notification::send($this->getStaffToReviveIdentities($claim), new ReviveStaff($claim, "CC"));
-//
-//        dd($identities[1]);
-//
-//        return response()->json([], 200);
+        if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']){
+            dump('yes');
+        }else{
+            dump('no');
+        }
+
+        dd($proxyConfigs);
+
     }
 
     public function download(File $file)
@@ -102,15 +84,16 @@ class Controller extends BaseController
      * @param $file
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function downloadExcelReports($file){
+    public function downloadExcelReports($file)
+    {
 
-        return response()->download(storage_path('app/'.$file));
+        return response()->download(storage_path('app/' . $file));
     }
 
-    public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
+    public function londoSMSApi($username, $password, $client, $app, $id, $priority, $to, $text)
     {
         $headers = [
-            "Authorization" => "Basic ".base64_encode("$username:$password")
+            "Authorization" => "Basic " . base64_encode("$username:$password")
         ];
         $data = [
             '_id' => $id,

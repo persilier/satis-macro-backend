@@ -93,8 +93,6 @@ class ClaimController extends ApiController
             $request->merge(['claimer_id' => $claimer->id]);
         }
 
-
-
         // Check if the claim is complete
         $statusOrErrors = $this->getStatus($request);
         $request->merge(['status' => $statusOrErrors['status']]);
