@@ -3,6 +3,7 @@
 namespace Satis2020\RegisterClaimAgainstMyInstitutionByPortal\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
@@ -43,9 +44,18 @@ class ClaimController extends Controller
     }
 
 
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     */
     public function store(Request $request)
     {
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
 
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
@@ -59,7 +69,7 @@ class ClaimController extends Controller
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // create claimer if claimer_id is null
-        if (is_null($request->claimer_id)) {
+        if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
 

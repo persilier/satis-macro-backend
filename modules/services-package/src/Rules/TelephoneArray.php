@@ -33,6 +33,11 @@ class TelephoneArray implements Rule
             $this->message = " :attribute is not an array ";
             return false;
         }
+
+        if (empty($value)){
+            $this->message = " :attribute is empty ";
+            return false;
+        }
         
         foreach ($value as $phone) {
 

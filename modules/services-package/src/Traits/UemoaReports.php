@@ -50,7 +50,7 @@ trait UemoaReports{
         $data = [
 
             'date_start' => 'required|date_format:Y-m-d',
-            'date_end' => 'required|date_format:Y-m-d|after:date_start',
+            'date_end' => 'required|date_format:Y-m-d|after_or_equal:date_start',
             'institution_id' => 'exists:institutions,id'
         ];
 
@@ -306,9 +306,11 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return array
      */
-    protected function resultatsStateAnalytique($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
-        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->whereNotNull('claim_object_id')->get()->groupBy([
+
+    protected function resultatsStateAnalytique($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true)
+    {
+        $claims = $this->getAllClaimByPeriode($request, $myInstitution, $with_client, $with_relationship, $with_unit)->get()->groupBy([
             function ($item) {
                 return $item->institutionTargeted->name;
             },

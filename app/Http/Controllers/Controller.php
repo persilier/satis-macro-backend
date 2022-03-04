@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Satis2020\ServicePackage\MessageApiMethod;
@@ -21,41 +22,35 @@ use Satis2020\ServicePackage\Requests\UpdatePasswordRequest;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Notifications\Recurrence;
-use Illuminate\Support\Facades\Notification;
-use Satis2020\ServicePackage\Notifications\ReviveStaff;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
-    public function testPassword(UpdatePasswordRequest $request)
+
+    public function index(Request $request)
     {
-        dd($request);
-    }
+//        $sendMail = $this->londoSMSApi(
+//            "BciGatewayLogin",
+//            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
+//            "BCI",
+//            "SATISPROBCI",
+//            "TEST001",
+//            1,
+//            "242064034953",
+//            'TEST SMS API BCI'
+//        );
 
-    public function index()
-    {
-        $institution = Institution::query()->first();
-        $params = InstitutionMessageApi::query()
-            ->where('institution_id',$institution->id)
-            ->first()->params;
+        $proxyConfigs = Config::get('proxy');
 
+        if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']){
+            dump('yes');
+        }else{
+            dump('no');
+        }
 
-        $text = "Hello this is an example sms from Satis";
+        dd($proxyConfigs);
 
-        $response = MessageApiMethod::toOceanicsms(
-            "satisuimcec",
-            $params['password'],
-            $params['from'],
-            "22996475848",
-            $text,
-            $params['api'],
-            $institution->id
-        );
-
-        dd(is_string($response->body()));
     }
 
     public function download(File $file)
@@ -98,15 +93,16 @@ class Controller extends BaseController
      * @param $file
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function downloadExcelReports($file){
+    public function downloadExcelReports($file)
+    {
 
-        return response()->download(storage_path('app/'.$file));
+        return response()->download(storage_path('app/' . $file));
     }
 
-    public function londoSMSApi($username, $password ,$client, $app, $id, $priority, $to, $text)
+    public function londoSMSApi($username, $password, $client, $app, $id, $priority, $to, $text)
     {
         $headers = [
-            "Authorization" => "Basic ".base64_encode("$username:$password")
+            "Authorization" => "Basic " . base64_encode("$username:$password")
         ];
         $data = [
             '_id' => $id,

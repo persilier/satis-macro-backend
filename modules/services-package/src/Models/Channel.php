@@ -26,7 +26,8 @@ class Channel extends Model
         'slug',
         'name',
         'is_editable',
-        'is_response'
+        'is_response',
+        'can_be_response'
     ];
 
     /**

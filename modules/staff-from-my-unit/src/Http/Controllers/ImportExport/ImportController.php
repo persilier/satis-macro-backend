@@ -3,9 +3,13 @@
 namespace Satis2020\StaffFromMyUnit\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Imports\Staff;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Imports\Staff\TransactionStaffImport;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Requests\Imports\ImportStaffRequest;
 
 /**
  * Class ImportExportController
@@ -25,55 +29,48 @@ class ImportController extends ApiController
     }
 
     /**
-     * @param Request $request
+     * @param ImportStaffRequest $request
      * @return JsonResponse
+     * @throws RetrieveDataUserNatureException
      */
-    public function importStaffs(Request $request){
+    public function importStaffs(ImportStaffRequest $request){
 
         $institution = $this->institution();
 
-        $request->validate([
-            'file' => 'required|file|max:2048|mimes:xls,xlsx',
-            'etat_update' => 'required|boolean',
-            'stop_identite_exist' => 'required|boolean'
-        ]);
 
         $datas = [
             'status' => true,
             'staffs' => ''
         ];
 
-        $file = $request->file('file');
+        $institutions = Institution::query()->get(['id', 'name']);
 
-        $myInstitution = $institution->name;
+        $myInstitution = $institution;
 
         $unitRequired = true;
 
         $stop_identite_exist = $request->stop_identite_exist;
 
-        $etat = $request->etat;
+        $etat = $request->etat_update;
 
-        $imports = new Staff($etat, $unitRequired, $myInstitution, $stop_identite_exist);
+        $data = compact("etat","unitRequired","myInstitution","stop_identite_exist","institutions");
+        $transaction =  new TransactionStaffImport(
+            $myInstitution,
+            $data
+        );
 
-        $imports->import($file);
+        Excel::import($transaction, $request->file('file'));
 
-        if($imports->getErrors()){
-            $datas = [
+        $this->activityLogService->store("Importation des staffs",
+            $this->institution()->id,
+            ActivityLogService::IMPORTATION,
+            'staff',
+            $this->user()
+        );
 
-                'status' => false,
-                'staffs' => $imports->getErrors()
-            ];
-        }else{
-            $this->activityLogService->store("Importation des staffs",
-                $this->institution()->id,
-                ActivityLogService::IMPORTATION,
-                'staff',
-                $this->user()
-            );
-        }
+        $datas['errors'] = $transaction->getImportErrors();
 
         return response()->json($datas,201);
-
     }
 
 

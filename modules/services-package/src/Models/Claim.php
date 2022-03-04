@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Claim extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
-
+    const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     /**
      * The "booted" method of the model.
      *
@@ -118,7 +118,7 @@ class Claim extends Model
     public function getaccountTypeAttribute()
     {
 
-        return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id)->name : 'A TITRE PERSONNEL';
+        return $this->accountTargeted ? AccountType::find($this->accountTargeted->account_type_id)->name : self::PERSONAL_ACCOUNT;
     }
 
 

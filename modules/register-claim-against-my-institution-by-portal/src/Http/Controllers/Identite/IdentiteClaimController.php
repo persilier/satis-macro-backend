@@ -2,6 +2,7 @@
 
 namespace Satis2020\RegisterClaimAgainstMyInstitutionByPortal\Http\Controllers\Identite;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\Identite;
@@ -38,23 +39,26 @@ class IdentiteClaimController extends Controller
      */
     public function store(Request $request, Identite $identite)
     {
-        $rulesRequest = $this->rules($request, false);
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
+
+        $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
+
         $request->merge(['claimer_id' => $identite->id]);
 
         $this->convertEmailInStrToLower($request);
 
         $this->validate($request, $rulesRequest);
 
-        $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
-
         // create reference
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
 
         // Verify phone number and email unicity
-        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request, $identite->id);
-
-        $this->updateIdentity($request, $identite);
+//        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request, $identite->id);
+//        $this->updateIdentity($request, $identite);
 
         $status = $this->getStatus($request, false);
 

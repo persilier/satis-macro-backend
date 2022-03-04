@@ -102,6 +102,7 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
                  $this->claim->createdBy->institution->institutionMessageApi,
             'institution_id'=> is_null($this->claim->createdBy) ? $this->claim->institutionTargeted->id
                  :  $this->claim->createdBy->institution->id,
+
             'notifiable_id'=>$notifiable->id
         ];
     }
