@@ -83,9 +83,9 @@ class AuthService
             $response =  false;
         }else{
             if ($lastLog!=null){
-
+                $lastLogDate = date("Y-m-d",strtotime($lastLog->created_at));
                 if (
-                    Carbon::parse($lastLog->created_at)->diffInWeekdays(now())>=
+                    Carbon::parse($lastLogDate)->diffInWeekdays(date("Y-m-d",strtotime(now())))>=
                     $this->configs->inactivity_time_limit){
                     $this->disableAccount();
                     $response =  false;
@@ -172,7 +172,9 @@ class AuthService
     public function getDurationSinceLastAttempt()
     {
         return  Carbon::parse($this->getAttempts()
-            ->last_attempt_at)->diffInSeconds(now()->addSeconds(5));
+            //->last_attempt_at)->diffInSeconds(now()->addSeconds(5));
+            ->last_attempt_at)->diffInSeconds(now());
+
     }
 
     /**
