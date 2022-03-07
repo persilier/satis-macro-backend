@@ -31,6 +31,7 @@ trait ImportStaff
         $rules = $this->rulesIdentite();
 
         $rules['position'] = ['required'];
+        $rules['email'] = ['required',];
 
         if ($this->unitRequired) {
 
@@ -167,12 +168,16 @@ trait ImportStaff
 
         $lang = app()->getLocale();
 
-        $position = DB::table('positions')->whereNull('deleted_at')->get();
-        if (!$position = $position->filter(function ($item) use ($lang, $row) {
+        $positions = DB::table('positions')->whereNull('deleted_at')->get();
+        $position = $positions->filter(function ($item) use ($lang, $row) {
             $name = json_decode($item->name)->{$lang};
             if ($name === $row['position'])
                 return $item;
-        })->first()) {
+            else
+                return null;
+        })->first();
+
+        if ($position==null) {
             $position = Position::create([
                 'name' => $row['position'],
                 'description' => null,
