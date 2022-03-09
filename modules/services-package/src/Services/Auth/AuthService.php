@@ -82,7 +82,20 @@ class AuthService
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
+
             if ($lastLog!=null){
+
+                $desactiveDate = Carbon::parse($lastLog->created_at)->addDays($this->configs->inactivity_time_limit);
+
+                if ( Carbon::parse(now()) > $desactiveDate ){
+
+                    $this->disableAccount();
+                    $response =  false;
+
+                }
+            }
+
+            /*if ($lastLog!=null){
                 $lastLogDate = date("Y-m-d",strtotime($lastLog->created_at));
                 if (
                     Carbon::parse($lastLogDate)->diffInWeekdays(date("Y-m-d",strtotime(now())))>=
@@ -90,7 +103,7 @@ class AuthService
                     $this->disableAccount();
                     $response =  false;
                 }
-            }
+            }*/
         }
         return $response;
     }

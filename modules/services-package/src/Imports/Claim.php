@@ -106,7 +106,6 @@ class Claim implements ToCollection, WithHeadingRow
                 }else{
 
                    if($this->etat){
-
                        $identite->update($this->fillableIdentite($data));
                    }
 
@@ -120,6 +119,11 @@ class Claim implements ToCollection, WithHeadingRow
 
         }
 
+    }
+
+    public function headingRow(): int
+    {
+        return 2;
     }
 
     // this function returns all validation errors after import
