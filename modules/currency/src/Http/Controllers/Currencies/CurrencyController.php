@@ -93,7 +93,7 @@ class CurrencyController extends ApiController
      */
     public function destroy(Currency $currency)
     {
-        $currency->delete();
+        $currency->secureDelete('claims');
         return response()->json($currency, 200);
     }
 }

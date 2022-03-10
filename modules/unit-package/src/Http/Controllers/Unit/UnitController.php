@@ -126,7 +126,7 @@ class UnitController extends ApiController
      */
     public function destroy(Unit $unit)
     {
-        $unit->delete();
+        $unit->secureDelete('staffs','children','claims','treatments');
 
         return response()->json($unit, 200);
     }

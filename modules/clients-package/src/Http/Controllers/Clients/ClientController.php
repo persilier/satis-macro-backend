@@ -255,7 +255,7 @@ class ClientController extends ApiController
      */
     public function destroy(Client $client)
     {
-        $client->delete();
+        $client->secureDelete('client_institutions');
         return new ClientResource($client);
     }
 
