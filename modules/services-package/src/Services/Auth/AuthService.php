@@ -14,11 +14,12 @@ use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Requests\LoginRequest;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Traits\CheckInactivityDuration;
 
 class AuthService
 {
 
-    use \Satis2020\ServicePackage\Traits\Metadata;
+    use \Satis2020\ServicePackage\Traits\Metadata, CheckInactivityDuration;
 
     /**
      * @var mixed
@@ -82,28 +83,14 @@ class AuthService
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
+                if ( $this->inactivityTimeIsPassed($this->getUser(),$this->configs) ){
 
-            if ($lastLog!=null){
-
-                $desactiveDate = Carbon::parse($lastLog->created_at)->addDays($this->configs->inactivity_time_limit);
-
-                if ( Carbon::parse(now()) > $desactiveDate ){
-
-                    $this->disableAccount();
-                    $response =  false;
+                    if($this->inactivityTimeIsPassedAfReactivation($this->getUser(),$this->configs)){
+                        $this->disableAccount();
+                        $response = false;
+                    }
 
                 }
-            }
-
-            /*if ($lastLog!=null){
-                $lastLogDate = date("Y-m-d",strtotime($lastLog->created_at));
-                if (
-                    Carbon::parse($lastLogDate)->diffInWeekdays(date("Y-m-d",strtotime(now())))>=
-                    $this->configs->inactivity_time_limit){
-                    $this->disableAccount();
-                    $response =  false;
-                }
-            }*/
         }
         return $response;
     }

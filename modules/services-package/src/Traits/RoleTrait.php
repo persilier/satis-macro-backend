@@ -220,7 +220,7 @@ trait RoleTrait
 
         if($role->is_editable == 0){
 
-            throw new CustomException("Impossible de modifier ce rôle.");
+            throw new CustomException("Impossible de modifier ou de supprimer ce rôle.");
 
         }
 
