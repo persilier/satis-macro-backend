@@ -83,7 +83,7 @@ trait ClaimIncomingByEmail
             $params = Config::get('email-claim-configuration');
 
             $response = Http::put($params['api_subscriber'], [
-                "url" => route($routeName, $request->email),
+                "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
                 "mail_server_password" => $request->password,

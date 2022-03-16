@@ -21,7 +21,7 @@ class Controller extends BaseController
 
     public function index(Request $request)
     {
-//        $sendMail = $this->londoSMSApi(
+       //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
 //            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
 //            "BCI",
