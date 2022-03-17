@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -21,7 +22,8 @@ class Controller extends BaseController
 
     public function index(Request $request)
     {
-       //        $sendMail = $this->londoSMSApi(
+        //dd(Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false));
+        //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
 //            "k6cfThDiZKKRFYgH63RKL49jD604xF4M16K" ,
 //            "BCI",
@@ -32,15 +34,15 @@ class Controller extends BaseController
 //            'TEST SMS API BCI'
 //        );
 
-        $proxyConfigs = Config::get('proxy');
+        //$proxyConfigs = Config::get('proxy');
 
-        if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']){
-            dump('yes');
-        }else{
-            dump('no');
-        }
+        //if ($proxyConfigs['http_proxy'] || $proxyConfigs['https_proxy']){
+        //    dump('yes');
+        //}else{
+       //     dump('no');
+       // }
 
-        dd($proxyConfigs);
+       // dd($proxyConfigs);
 
     }
 

@@ -89,7 +89,7 @@ trait ClaimIncomingByEmail
                 "mail_server_password" => $request->password,
                 "mail_server_port" => $request->port,
                 "mail_server_protocol" => $request->protocol,
-                "app_login_url" => route('passport.token'),
+                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false),
                 "app_id" => $emailClaimConfiguration->subscriber_id,
                 "app_login_params" => [
                     "grant_type" => $params['grant_type'],
