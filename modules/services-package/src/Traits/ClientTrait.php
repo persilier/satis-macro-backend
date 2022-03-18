@@ -207,8 +207,11 @@ trait ClientTrait
                 'accounts',
                 'accounts.accountType:id,name',
             ])
+            ->whereHas("accounts",function (Builder $builder){
+                $builder->whereNull("deleted_at");
+            })
             ->where('institution_id', $institutionId)
-            ->take(15)
+            //->take(15)
             ->get();
 
         return $clients;

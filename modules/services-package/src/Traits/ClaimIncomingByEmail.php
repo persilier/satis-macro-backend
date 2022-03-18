@@ -42,13 +42,13 @@ trait ClaimIncomingByEmail
 
             $response = Http::post($params['api_subscriber'], [
                 "app_name" => Institution::findOrFail($request->institution_id)->name,
-                "url" => route($routeName, $request->email),
+                "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
                 "mail_server_password" => $request->password,
                 "mail_server_port" => $request->port,
                 "mail_server_protocol" => $request->protocol,
-                "app_login_url" => route('passport.token'),
+                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false),
                 "app_login_params" => [
                     "grant_type" => $params['grant_type'],
                     "client_id" => $params['client_id'],
@@ -83,13 +83,13 @@ trait ClaimIncomingByEmail
             $params = Config::get('email-claim-configuration');
 
             $response = Http::put($params['api_subscriber'], [
-                "url" => route($routeName, $request->email),
+                "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
                 "mail_server_password" => $request->password,
                 "mail_server_port" => $request->port,
                 "mail_server_protocol" => $request->protocol,
-                "app_login_url" => route('passport.token'),
+                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false),
                 "app_id" => $emailClaimConfiguration->subscriber_id,
                 "app_login_params" => [
                     "grant_type" => $params['grant_type'],
