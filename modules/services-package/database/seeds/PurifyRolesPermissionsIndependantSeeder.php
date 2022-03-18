@@ -81,6 +81,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
+                    'list-auth-config','update-auth-config',
+                    'activity-log',
                     'list-notification-proof'
                 ],
                 "pilot" => [

@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Listeners;
 
 use Illuminate\Notifications\Events\NotificationSent;
+
 use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
@@ -35,6 +36,7 @@ class LogNotification
         if
         (
             (get_class($notification) == AcknowledgmentOfReceipt::class ||
+
                 get_class($notification) == CommunicateTheSolution::class)
             && $event->channel == "mail"
         )
@@ -53,4 +55,5 @@ class LogNotification
 
         }
     }
+
 }

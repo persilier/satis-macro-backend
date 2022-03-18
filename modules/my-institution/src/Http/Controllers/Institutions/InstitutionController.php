@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UploadFile;
@@ -16,17 +17,24 @@ class InstitutionController extends ApiController
 {
     use UploadFile,SecureDelete, InstitutionTrait;
 
-    public function __construct()
+    /**
+     * @var ActivityLogService
+     */
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:update-my-institution')->only(['getMyInstitution','updateMyInstitution','updateLogo']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
     public function getMyInstitution(){
@@ -75,6 +83,15 @@ class InstitutionController extends ApiController
 
         $institution->slug = null;
         $institution->update($datas);
+
+        $this->activityLogService->store("Mise à jour des informations de l'institution",
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'institution',
+            $this->user(),
+            $institution
+        );
+
         return response()->json($institution, 201);
     }
 

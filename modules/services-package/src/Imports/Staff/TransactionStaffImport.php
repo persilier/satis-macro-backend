@@ -67,6 +67,9 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
+
+        //dd($row);
+
         $validator = $this->validateRow($row);
 
         $row = $this->transformRowBeforeStoring($row);
@@ -99,7 +102,8 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
             } else {
             Log::error($validator->errors());
             //throw ValidationException::withMessages($validator->getMessageBag()->getMessages());
-            $error['message'] =  $validator->getMessageBag()->getMessages();
+            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
+            $this->errors['data'] =  $row;
             $this->hasError = true;
         }
 
@@ -143,7 +147,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
 
         foreach ($data['roles'] as $key => $value) {
             $value = preg_replace("/\s+/", "", $value);
-            $value = preg_replace("/-/", "", $value);
+     //       $value = preg_replace("/-/", "", $value);
             $value = preg_replace("/\./", "", $value);
 
             if (empty($value)) {
@@ -180,6 +184,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
             }
         }
 
+       // dd($data);
         return $data;
     }
 

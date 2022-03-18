@@ -148,6 +148,11 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
 
 //         $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateOrUpdateComponentSeeder::class);
+        //$this->call(\Satis2020\ServicePackage\Database\Seeds\RestoreUsersProfilSeeder::class);
+
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AuthConfigSeeder::class);
+
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\ActivityLogSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\NotificationsProofsSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\VerifyChannelsWhichCanBeTargetedSeeder::class);
 

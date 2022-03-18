@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage;
 
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +33,7 @@ class MessageApiMethod
             'text' => $text,
             'api' => $api
         ])->body();
+
 
         return is_string($response) && str_contains(strtolower($response), "id:");
     }
@@ -64,6 +66,7 @@ class MessageApiMethod
                 'app' => $app
             ]
         ];
+
 
         $request = Http::withHeaders($headers);
 

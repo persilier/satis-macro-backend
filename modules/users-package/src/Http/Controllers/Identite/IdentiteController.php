@@ -116,7 +116,7 @@ class IdentiteController extends ApiController
      */
     public function destroy(Identite $identite)
     {
-        $identite->secureDelete('user');
+        $identite->secureDelete('user','claims');
         return new IdentiteResource($identite);
     }
 }

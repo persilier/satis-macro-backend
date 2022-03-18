@@ -119,7 +119,7 @@ class ClaimObjectController extends ApiController
      */
     public function destroy(ClaimObject $claimObject)
     {
-        $claimObject->delete();
+        $claimObject->secureDelete('claims');
         return response()->json($claimObject, 201);
     }
 }

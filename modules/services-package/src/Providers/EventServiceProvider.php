@@ -7,7 +7,9 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
+use Laravel\Passport\Events\AccessTokenCreated;
 use Satis2020\ServicePackage\Listeners\LogNotification;
+use Satis2020\ServicePackage\Listeners\RevokeExistingTokens;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,7 +19,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        NotificationSent::class=> [
+        AccessTokenCreated::class => [
+            RevokeExistingTokens::class,
+        ],
+        NotificationSent::class => [
+
             LogNotification::class,
         ],
     ];
@@ -30,7 +36,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

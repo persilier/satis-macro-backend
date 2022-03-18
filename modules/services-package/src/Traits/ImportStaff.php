@@ -166,6 +166,7 @@ trait ImportStaff
     protected function storeStaff($row, $identite)
     {
 
+
         $lang = app()->getLocale();
 
         $positions = DB::table('positions')->whereNull('deleted_at')->get();
@@ -201,15 +202,14 @@ trait ImportStaff
             'identite_id' => $identite->id,
         ],$data);
 
-        if (!User::where('username', $identite->email[0])->first()) {
-
-            $user = User::create([
+            $user = User::updateOrCreate(
+                ['username'=>$identite->email[0]],
+                [
                 'username' => $identite->email[0],
                 'password' => bcrypt('satis'),
                 'identite_id' => $identite->id
             ]);
-            $user->assignRole(Role::whereIn('name', $row['roles'])->where('guard_name', 'api')->get());
-        }
+            $user->syncRoles(Role::whereIn('name', $row['roles'])->where('guard_name', 'api')->get());
 
         return $store;
     }
