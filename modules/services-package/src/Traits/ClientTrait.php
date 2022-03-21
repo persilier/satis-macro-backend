@@ -204,10 +204,10 @@ trait ClientTrait
 
     /**
      * @param $institutionId
-     * @return Builder[]|Collection
+     *
      * @throws CustomException
      */
-    protected function getAllClientByInstitution($institutionId)
+    protected function getAllClientByInstitution($institutionId,$paginate=false)
     {
         $clients = ClientInstitution::query()
             ->with([
@@ -221,11 +221,11 @@ trait ClientTrait
             ->whereHas("accounts",function (Builder $builder){
                 $builder->whereNull("deleted_at");
             })
-            ->where('institution_id', $institutionId)
-            //->take(15)
-            ->paginate(Constants::PAGINATION_SIZE);
+            ->where('institution_id', $institutionId);
 
-        return $clients;
+        return $paginate?
+            $clients->paginate(Constants::PAGINATION_SIZE):
+            $clients->get();
     }
 
     /**

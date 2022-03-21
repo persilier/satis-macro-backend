@@ -47,7 +47,7 @@ class ClientController extends ApiController
     public function index()
     {
         $institution = $this->institution();
-        $clients = $this->getAllClientByInstitution($institution->id);
+        $clients = $this->getAllClientByInstitution($institution->id,true);
         return response()->json($clients, 200);
     }
 
