@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -205,9 +206,11 @@ trait ClientTrait
     /**
      * @param $institutionId
      *
-     * @throws CustomException
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @return LengthAwarePaginator|Builder[]|Collection
      */
-    protected function getAllClientByInstitution($institutionId,$paginate=false)
+    protected function getAllClientByInstitution($institutionId,$paginate=false,$paginationSize=Constants::PAGINATION_SIZE)
     {
         $clients = ClientInstitution::query()
             ->with([
@@ -224,7 +227,7 @@ trait ClientTrait
             ->where('institution_id', $institutionId);
 
         return $paginate?
-            $clients->paginate(Constants::PAGINATION_SIZE):
+            $clients->paginate($paginationSize):
             $clients->get();
     }
 
