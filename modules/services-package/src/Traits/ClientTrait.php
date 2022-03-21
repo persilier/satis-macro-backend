@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Consts\Variables;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Client;
@@ -223,7 +223,7 @@ trait ClientTrait
             })
             ->where('institution_id', $institutionId)
             //->take(15)
-            ->paginate(Variables::PAGINATION_SIZE);
+            ->paginate(Constants::PAGINATION_SIZE);
 
         return $clients;
     }
