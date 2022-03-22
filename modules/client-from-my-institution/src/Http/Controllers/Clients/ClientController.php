@@ -26,6 +26,7 @@ class ClientController extends ApiController
 
     public function __construct(ActivityLogService $activityLogService)
     {
+
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-client-from-my-institution')->only(['index']);
@@ -46,7 +47,9 @@ class ClientController extends ApiController
     public function index()
     {
         $institution = $this->institution();
-        $clients = $this->getAllClientByInstitution($institution->id);
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+        $clients = $this->getAllClientByInstitution($institution->id, true, $paginationSize,$recherche);
         return response()->json($clients, 200);
     }
 
@@ -60,7 +63,7 @@ class ClientController extends ApiController
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id,false),
+            'client_institutions' => $this->getAllClientByInstitution($institution->id, false),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);

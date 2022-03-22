@@ -3,10 +3,12 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Client;
@@ -203,10 +205,13 @@ trait ClientTrait
 
     /**
      * @param $institutionId
-     * @return Builder[]|Collection
-     * @throws CustomException
+     *
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @return LengthAwarePaginator|Builder[]|Collection
      */
-    protected function getAllClientByInstitution($institutionId)
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null)
     {
         $clients = ClientInstitution::query()
             ->with([
@@ -217,14 +222,25 @@ trait ClientTrait
                 'accounts',
                 'accounts.accountType:id,name',
             ])
-            ->whereHas("accounts",function (Builder $builder){
+            ->whereHas("accounts",function (Builder $builder) use ($key){
                 $builder->whereNull("deleted_at");
             })
             ->where('institution_id', $institutionId)
-            ->take(15)
-            ->get();
+            ->when($key!=null,function(Builder $query) use ($key) {
+                $query
+                    ->leftJoin('clients','clients.id' , '=', 'client_institution.client_id')
+                    ->leftJoin('identites', 'identites.id', '=', 'clients.identites_id')
+                    ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
+                    ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                    ->orWhereRaw('`accounts`.`number` = ?', [$key])
+                    ->orwhereJsonContains('telephone', $key)
+                    ->orwhereJsonContains('email', $key);
+        });
 
-        return $clients;
+        return $paginate?
+            $clients->paginate($paginationSize):
+            $clients->get();
     }
 
     /**

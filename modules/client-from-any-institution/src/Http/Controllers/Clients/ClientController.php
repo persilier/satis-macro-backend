@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
@@ -55,7 +56,7 @@ class ClientController extends ApiController
             'category_client',
             'institution',
             'accounts.accountType'
-        )->get(), 200);
+        )->paginate(Constants::PAGINATION_SIZE), 200);
     }
 
     /**
