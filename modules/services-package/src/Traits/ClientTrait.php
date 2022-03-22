@@ -222,14 +222,14 @@ trait ClientTrait
                 'accounts',
                 'accounts.accountType:id,name',
             ])
-            ->whereHas("accounts",function (Builder $builder){
+            ->whereHas("accounts",function (Builder $builder) use ($key){
                 $builder->whereNull("deleted_at");
             })
             ->where('institution_id', $institutionId)
             ->when($key!=null,function(Builder $query) use ($key) {
                 $query
-                    ->leftJoin('clients', 'client_institution.client_id', '=', 'clients.id')
-                    ->leftJoin('identites', 'clients.identites_id', '=', 'identites.id')
+                    ->leftJoin('clients','clients.id' , '=', 'client_institution.client_id')
+                    ->leftJoin('identites', 'identites.id', '=', 'clients.identites_id')
                     ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
                     ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
                     ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
