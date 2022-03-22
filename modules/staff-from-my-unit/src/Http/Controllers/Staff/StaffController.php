@@ -2,10 +2,12 @@
 
 namespace Satis2020\StaffFromMyUnit\Http\Controllers\Staff;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
@@ -47,10 +49,20 @@ class StaffController extends ApiController
      */
     public function index()
     {
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
-                ->get()
+                ->when($recherche !=null,function(Builder $query) use ($recherche ) {
+                    $query
+                        ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })
+                ->paginate($paginationSize)
             , 200);
     }
 
