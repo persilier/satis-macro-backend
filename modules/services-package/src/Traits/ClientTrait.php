@@ -208,9 +208,10 @@ trait ClientTrait
      *
      * @param bool $paginate
      * @param int $paginationSize
+     * @param null $key
      * @return LengthAwarePaginator|Builder[]|Collection
      */
-    protected function getAllClientByInstitution($institutionId,$paginate=false,$paginationSize=Constants::PAGINATION_SIZE)
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null)
     {
         $clients = ClientInstitution::query()
             ->with([
@@ -224,7 +225,18 @@ trait ClientTrait
             ->whereHas("accounts",function (Builder $builder){
                 $builder->whereNull("deleted_at");
             })
-            ->where('institution_id', $institutionId);
+            ->where('institution_id', $institutionId)
+            ->when($key!=null,function(Builder $query) use ($key) {
+                $query
+                    ->leftJoin('clients', 'client_institution.client_id', '=', 'clients.id')
+                    ->leftJoin('identites', 'clients.identites_id', '=', 'identites.id')
+                    ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
+                    ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                    ->orWhereRaw('`accounts`.`number` = ?', [$key])
+                    ->orwhereJsonContains('telephone', $key)
+                    ->orwhereJsonContains('email', $key);
+        });
 
         return $paginate?
             $clients->paginate($paginationSize):
