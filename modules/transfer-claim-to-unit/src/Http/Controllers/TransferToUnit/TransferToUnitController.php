@@ -9,12 +9,14 @@ use Satis2020\ServicePackage\Rules\UnitBelongsToCircuitRules;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanTreatRules;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\HandleTreatment;
+use Satis2020\ServicePackage\Traits\UnitTrait;
 
 class TransferToUnitController extends ApiController
 {
 
-    use HandleTreatment, AwaitingAssignment;
+    use HandleTreatment, AwaitingAssignment,UnitTrait;
 
     public function __construct()
     {
@@ -31,14 +33,16 @@ class TransferToUnitController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit(Claim $claim)
     {
         $claim->load('claimObject.units');
         
         return response()->json([
-            'units' => $claim->claimObject->units
+            'units' => count($claim->claimObject->units)>0
+                ?$claim->claimObject->units
+                :$this->getAllUnitByInstitution($this->institution()->id)
         ], 200);
     }
 

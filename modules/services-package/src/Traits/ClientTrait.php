@@ -229,8 +229,8 @@ trait ClientTrait
             ->when($key!=null,function(Builder $query) use ($key) {
                 $query
                     ->leftJoin('clients','clients.id' , '=', 'client_institution.client_id')
-                    ->leftJoin('identites', 'identites.id', '=', 'clients.identites_id')
                     ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
+                    ->leftJoin('identites', 'identites.id', '=', 'clients.identites_id')
                     ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
                     ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
                     ->orWhereRaw('`accounts`.`number` = ?', [$key])
