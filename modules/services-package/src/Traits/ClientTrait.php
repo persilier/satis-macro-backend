@@ -226,17 +226,18 @@ trait ClientTrait
                 $builder->whereNull("deleted_at");
             })
             ->where('institution_id', $institutionId)
-            ->when($key!=null,function(Builder $query) use ($key) {
-                $query
-                    ->leftJoin('clients','clients.id' , '=', 'client_institution.client_id')
-                    ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
-                    ->leftJoin('identites', 'identites.id', '=', 'clients.identites_id')
-                    ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
-                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
-                    ->orWhereRaw('`accounts`.`number` = ?', [$key])
-                    ->orwhereJsonContains('telephone', $key)
-                    ->orwhereJsonContains('email', $key);
-        });
+            ->when($key,function (Builder $query1) use ($key) {
+                    $query1->whereHas("client",function ($query2) use ($key){
+                        $query2->whereHas("identite",function ($query3) use($key){
+                            $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
+                                ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        });
+                    })->orWhereHas("accounts",function ($query4) use ($key){
+                        $query4->where('number', $key);
+                    });
+            });
 
         return $paginate?
             $clients->paginate($paginationSize):
