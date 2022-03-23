@@ -29,7 +29,9 @@ class ClientInstitutionController extends ApiController
      */
     public function index($institutionId)
     {
-        $clients = $this->getAllClientByInstitution($institutionId);
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+        $clients = $this->getAllClientByInstitution($institutionId,true,$paginationSize,$recherche);
         return response()->json($clients, 200);
     }
 

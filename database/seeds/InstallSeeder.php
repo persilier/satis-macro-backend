@@ -25,5 +25,7 @@ class InstallSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallSeverityLevelSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AuthConfigSeeder::class);
+
     }
 }
