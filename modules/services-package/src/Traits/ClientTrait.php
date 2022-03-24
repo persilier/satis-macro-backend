@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Client;
@@ -196,7 +197,7 @@ trait ClientTrait
      * @return Builder[]|Collection
      * @throws CustomException
      */
-    protected function getAllClientByInstitution($institutionId)
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null)
     {
         $clients = ClientInstitution::query()
             ->with([
@@ -207,15 +208,28 @@ trait ClientTrait
                 'accounts',
                 'accounts.accountType:id,name',
             ])
-            ->whereHas("accounts",function (Builder $builder){
+            ->whereHas("accounts",function (Builder $builder) use ($key){
                 $builder->whereNull("deleted_at");
             })
             ->where('institution_id', $institutionId)
-            //->take(15)
-            ->get();
+            ->when($key,function (Builder $query1) use ($key) {
+                $query1->whereHas("client",function ($query2) use ($key){
+                    $query2->whereHas("identite",function ($query3) use($key){
+                        $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
+                            ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                })->orWhereHas("accounts",function ($query4) use ($key){
+                    $query4->where('number', $key);
+                });
+            });
 
-        return $clients;
+        return $paginate?
+            $clients->paginate($paginationSize):
+            $clients->get();
     }
+
 
     /**
      * @param $institutionId
