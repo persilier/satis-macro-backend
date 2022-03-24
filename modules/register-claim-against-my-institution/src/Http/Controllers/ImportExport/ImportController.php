@@ -19,7 +19,7 @@ class ImportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:store-claim-against-my-institution')->only(['importClaims']);
+       // $this->middleware('permission:store-claim-against-my-institution')->only(['importClaims']);
 
         $this->activityLogService = $activityLogService;
     }

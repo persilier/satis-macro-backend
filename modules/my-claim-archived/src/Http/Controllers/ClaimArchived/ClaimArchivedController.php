@@ -25,7 +25,7 @@ class ClaimArchivedController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-my-claim-archived')->only(['index']);
+       // $this->middleware('permission:list-my-claim-archived')->only(['index']);
         $this->middleware('permission:show-my-claim-archived')->only(['show']);
     }
 
@@ -35,7 +35,11 @@ class ClaimArchivedController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getAllMyClaim('archived');
+
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+
+        $claims = $this->getAllMyClaim('archived',true, $paginationSize,$recherche);
         return response()->json($claims, 200);
     }
 
