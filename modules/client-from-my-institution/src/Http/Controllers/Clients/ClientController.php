@@ -26,6 +26,7 @@ class ClientController extends ApiController
 
     public function __construct(ActivityLogService $activityLogService)
     {
+
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-client-from-my-institution')->only(['index']);
