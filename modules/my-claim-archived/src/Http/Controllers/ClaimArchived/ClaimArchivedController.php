@@ -25,7 +25,7 @@ class ClaimArchivedController extends ApiController
 
         $this->middleware('auth:api');
 
-       // $this->middleware('permission:list-my-claim-archived')->only(['index']);
+        $this->middleware('permission:list-my-claim-archived')->only(['index']);
         $this->middleware('permission:show-my-claim-archived')->only(['show']);
     }
 
