@@ -11,5 +11,11 @@ class Constants
     const BENIN_COUNTRY_ID=24;
     const PAGINATION_SIZE = 10;
 
+   static public function  paginationSize()
+    {
+        return self::PAGINATION_SIZE;
+    }
+
+
 
 }

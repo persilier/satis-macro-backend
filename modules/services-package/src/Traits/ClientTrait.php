@@ -197,8 +197,9 @@ trait ClientTrait
      * @return Builder[]|Collection
      * @throws CustomException
      */
-    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null)
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize= 10,$key=null)
     {
+
         $clients = ClientInstitution::query()
             ->with([
                 'client:id,identites_id',
