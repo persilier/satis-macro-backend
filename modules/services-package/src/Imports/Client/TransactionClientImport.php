@@ -23,6 +23,9 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
     protected $myInstitution;
     protected $data;
+    private $hasError = false;
+    private $errors; // array to accumulate errors
+
 
     /***
      * TransactionClientImport constructor.
@@ -33,6 +36,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         $this->myInstitution = $myInstitution;
         $this->data = $data;
+        $this->errors = collect([]);
+
     }
 
     /***
@@ -48,6 +53,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function onRow(Row $row)
     {
+
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
@@ -100,7 +106,9 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         } else {
 
             Log::error($validator->errors());
-
+            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
+            $this->errors['data'] =  $row;
+            $this->hasError = true;
         }
 
     }
@@ -189,6 +197,12 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         )->id;
 
         return $data;
+    }
+
+
+    public function getImportErrors()
+    {
+        return $this->errors;
     }
 
 }

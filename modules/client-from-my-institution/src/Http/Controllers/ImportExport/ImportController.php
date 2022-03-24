@@ -42,6 +42,13 @@ class ImportController extends ApiController
     public function importClients(ImportClientRequest $request)
     {
 
+
+
+        $datas = [
+            'status' => true,
+            'clients' => ''
+        ];
+
         $staff = Staff::query()
             ->where('identite_id', Auth::user()->identite_id)
             ->first(['institution_id']);
@@ -56,13 +63,17 @@ class ImportController extends ApiController
 
         $data = compact('institutions', 'categoryClients', 'accountTypes');
 
+        $transaction = new TransactionClientImport(
+            $myInstitution,
+            $data
+        );
         Excel::import(
-            new TransactionClientImport(
-                $myInstitution,
-                $data
-            ),
+            $transaction,
             $request->file('file')
         );
+
+        $datas['errors'] = $transaction->getImportErrors();
+
 
         return response()->json(['status' => true, 'clients' => ''], 201);
     }
