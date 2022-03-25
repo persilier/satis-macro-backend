@@ -75,7 +75,7 @@ class ImportController extends ApiController
         $datas['errors'] = $transaction->getImportErrors();
 
 
-        return response()->json(['status' => true, 'clients' => ''], 201);
+        return response()->json($datas, 201);
     }
 
 
