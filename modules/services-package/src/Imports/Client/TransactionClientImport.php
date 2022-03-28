@@ -17,6 +17,8 @@ use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
+use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
+use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
 class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
@@ -130,9 +132,14 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     'array',
                     new TelephoneArray
                 ],
+                'telephone.*'=>[new UniqueTelephoneRule()],
                 'email' => [
                     'array',
                     new EmailValidationRules
+                ],
+                'email.*'=>[
+                    "sometimes",
+                    new UniqueEmailInIdentiteRule()
                 ],
                 'ville' => 'nullable|string',
             ]
