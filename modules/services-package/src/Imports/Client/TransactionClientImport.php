@@ -20,7 +20,7 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
 use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
 
     protected $myInstitution;
