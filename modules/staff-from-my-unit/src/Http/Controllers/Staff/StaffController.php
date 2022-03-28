@@ -4,6 +4,7 @@ namespace Satis2020\StaffFromMyUnit\Http\Controllers\Staff;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
@@ -185,8 +186,8 @@ class StaffController extends ApiController
      */
     public function destroy(Staff $staff)
     {
+        abort(Response::HTTP_FORBIDDEN);
         $staff->delete();
-
         return response()->json($staff, 200);
     }
 
