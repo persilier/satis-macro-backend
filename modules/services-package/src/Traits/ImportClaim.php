@@ -331,7 +331,7 @@ trait ImportClaim
 
         if($with_client){
 
-            $data = $this->getIds($data, 'accounts', 'numero_compte_concerne', 'number');
+            $data = $this->getAccountIds($data, 'accounts', 'numero_compte_concerne', 'number');
 
         }
 

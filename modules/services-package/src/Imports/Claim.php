@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\ImportClaim;
@@ -106,7 +107,9 @@ class Claim implements ToCollection, WithHeadingRow
                 }else{
 
                    if($this->etat){
-                       $identite->update($this->fillableIdentite($data));
+                       Identite::query()
+                           ->where("id",$identite->id)
+                           ->update($this->fillableIdentite($data));
                    }
 
                 }
