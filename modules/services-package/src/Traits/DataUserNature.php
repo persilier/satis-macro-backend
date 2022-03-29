@@ -184,6 +184,32 @@ trait DataUserNature
 
 
     /**
+     * @param $row
+     * @param $table
+     * @param $keyRow
+     * @param $column
+     * @param bool $id
+     * @return mixed
+     */
+    public function getAccountIds($row, $table, $keyRow, $column)
+    {
+        if (array_key_exists($keyRow, $row)) {
+
+            $model = DB::table($table)
+                ->whereNull('deleted_at')
+                ->where($column, $row[$keyRow])
+                ->first();
+
+            $row[$keyRow] = optional($model)->id;
+
+        }
+
+        return $row;
+
+    }
+
+
+    /**
      * @param $data
      * @return mixed
      */
