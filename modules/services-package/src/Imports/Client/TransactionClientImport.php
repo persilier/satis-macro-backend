@@ -36,7 +36,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         $this->myInstitution = $myInstitution;
         $this->data = $data;
-        $this->errors = collect([]);
+        $this->errors = [];
 
     }
 
@@ -47,6 +47,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         return 1000;
     }
+
+
 
     /***
      * @param Row $row
@@ -66,7 +68,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             $identity = Identite::query()
                 ->whereJsonContains('telephone', $row['telephone'])
                 ->orWhereJsonContains('email', $row['email'])
-                ->first(['id']);
+                ->first();
 
             if ($identity) {
                 $identity->update([
@@ -77,6 +79,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     'email' => $row['email'],
                     'ville' => $row['ville'],
                 ]);
+
+
             } else {
                 $identity = Identite::query()
                     ->create([
@@ -87,6 +91,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                         'email' => $row['email'],
                         'ville' => $row['ville'],
                     ]);
+
             }
 
             $client = Client::query()->updateOrCreate(
@@ -106,8 +111,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         } else {
 
             Log::error($validator->errors());
-            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
-            $this->errors['data'] =  $row;
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row];
+            array_push($this->errors,$error);
             $this->hasError = true;
         }
 
@@ -203,6 +208,11 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     public function getImportErrors()
     {
         return $this->errors;
+    }
+
+    public function headingRow(): int
+    {
+        return 2;
     }
 
 }
