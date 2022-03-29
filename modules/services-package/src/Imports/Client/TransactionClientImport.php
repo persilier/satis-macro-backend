@@ -47,7 +47,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 1000;
+        return 100;
     }
 
     /***
