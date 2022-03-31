@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Row;
+use Satis2020\ServicePackage\Rules\RoleValidationForImport;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
@@ -66,9 +67,6 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
     {
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
-
-
-        //dd($row);
 
         $validator = $this->validateRow($row);
 

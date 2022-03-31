@@ -206,7 +206,7 @@ return [
         'unfounded_claim_awaiting_assignment' => 'Voir les reclamations non fondees en attente d\'affectation ',
         'attach_files_to_claim' => 'Joindre un fichier a une reclamation',
         'revive_staff' => 'Relancer un personnel',
-        'pilot_list_any_notification_proof' => 'Les preuves de notification du pilot',
+        'pilot_list_any_notification_proof' => 'Toutes preuves de notification du pilot',
         'store_claim_against_my_institution' => 'Ajouter une reclamation contre mon institution',
         'list_my_claim_archived' => 'Voir mes reclamations archivees',
         'show_my_claim_archived' => 'Afficher une reclamation archivee',

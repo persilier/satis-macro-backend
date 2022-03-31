@@ -29,7 +29,7 @@ class NotificationProofRequest extends FormRequest
         return [
             'channel' => ['nullable',Rule::in([NotificationConsts::EMAIL_CHANNEL,NotificationConsts::SMS_CHANEL,])],
             'date_start' => ['date_format:Y-m-d',new RequiredIf($this->has('date_end'))],
-            'date_end' => ['date_format:Y-m-d','after:date_start',new RequiredIf($this->has('date_start'))]
+            'date_end' => ['date_format:Y-m-d','after_or_equal:date_start',new RequiredIf($this->has('date_start'))]
         ];
     }
 
