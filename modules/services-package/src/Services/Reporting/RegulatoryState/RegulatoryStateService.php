@@ -15,7 +15,7 @@ class RegulatoryStateService
     public function generateReport($request)
     {
         $relations = [
-            'claimObject.claimCategory', 'unitTargeted',
+            'claimObject.claimCategory',
         ];
         $receivedClaims = $this->getAllClaimsByPeriod($request,$relations)->get();
         $treatedClaims = $this->getClaimsByStatus($request,$relations,Claim::CLAIM_VALIDATED)->get();
@@ -28,10 +28,10 @@ class RegulatoryStateService
         return [
             'receivedClaims'=>$receivedClaims,
             'treatedClaims'=>$treatedClaims,
+            'unresolvedClaims'=>$unresolvedClaims,
             'institution'=>$this->institution(),
             'number_of_claims_litigated_in_court'=>$request->number_of_claims_litigated_in_court,
             'total_amount_of_claims_litigated_in_court'=>$request->total_amount_of_claims_litigated_in_court,
-            'unresolvedClaims'=>$unresolvedClaims,
             'libellePeriode'=>$libellePeriode
         ];
     }
