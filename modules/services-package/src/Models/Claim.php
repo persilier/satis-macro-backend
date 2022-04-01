@@ -20,6 +20,14 @@ class Claim extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
+    const CLAIM_INCOMPLETE = "incomplete";
+    const CLAIM_FULL = "full";
+    const CLAIM_TRANSFERRED_TO_UNIT = "transferred_to_unit";
+    const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
+    const CLAIM_TREATED = "treated";
+    const CLAIM_VALIDATED = "validated";
+
+
     /**
      * The "booted" method of the model.
      *
