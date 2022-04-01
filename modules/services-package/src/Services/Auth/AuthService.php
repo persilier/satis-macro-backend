@@ -75,15 +75,18 @@ class AuthService
      */
     public function isAccountActive()
     {
+
         $lastLog = $this->activityLogService
             ->getLastLogByUserAndAction(
                 $this->userRepository->getByEmail($this->request->username)->id,
                 ActivityLogService::LOGOUT);
             $response = true;
+
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
-                if ( $this->inactivityTimeIsPassed($this->getUser(),$this->configs) ){
+
+            if ( $this->inactivityTimeIsPassed($this->getUser(),$this->configs) ){
 
                     if($this->inactivityTimeIsPassedAfReactivation($this->getUser(),$this->configs)){
                         $this->disableAccount();
@@ -156,6 +159,8 @@ class AuthService
                 $this->getUser(),
                 $this->getUser()
             );
+
+
         }
         return $response;
     }

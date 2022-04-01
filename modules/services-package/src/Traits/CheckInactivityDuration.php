@@ -7,6 +7,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Models\InactivityReactivationHistory;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\UserPackage\Http\Resources\User;
 
 trait CheckInactivityDuration
 {
@@ -41,6 +42,12 @@ trait CheckInactivityDuration
         }
 
         return false;
+    }
+
+
+    public function accountHasBeenReactivated($user,$configs)
+    {
+
     }
 
 }
