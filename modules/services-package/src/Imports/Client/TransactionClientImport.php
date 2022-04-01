@@ -39,7 +39,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->myInstitution = $myInstitution;
         $this->data = $data;
         $this->errors = collect([]);
-
     }
 
     /***
@@ -47,7 +46,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 100;
+        return 500;
     }
 
     /***
@@ -55,7 +54,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function onRow(Row $row)
     {
-
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
@@ -71,14 +69,23 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 ->first(['id']);
 
             if ($identity) {
-                $identity->update([
-                    'firstname' => $row['firstname'],
-                    'lastname' => $row['lastname'],
-                    'sexe' => $row['sexe'],
-                    'telephone' => $row['telephone'],
-                    'email' => $row['email'],
-                    'ville' => $row['ville'],
-                ]);
+
+                if (!$newIdentityExist = Identite::query()
+                    ->where('id', '!=', $identity->id)
+                    ->orWhereJsonContains('telephone', $row['telephone'])
+                    ->orWhereJsonContains('email', $row['email'])
+                    ->first()) {
+
+                    $identity->update([
+                        'firstname' => $row['firstname'],
+                        'lastname' => $row['lastname'],
+                        'sexe' => $row['sexe'],
+                        'telephone' => $row['telephone'],
+                        'email' => $row['email'],
+                        'ville' => $row['ville'],
+                    ]);
+                }
+
             } else {
                 $identity = Identite::query()
                     ->create([
@@ -106,7 +113,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             );
 
         } else {
-
             Log::error($validator->errors());
             $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
             $this->errors['data'] =  $row;
@@ -132,15 +138,15 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     'array',
                     new TelephoneArray
                 ],
-                'telephone.*'=>[new UniqueTelephoneRule()],
+                #'telephone.*'=>[new UniqueTelephoneRule()],
                 'email' => [
                     'array',
                     new EmailValidationRules
                 ],
-                'email.*'=>[
-                    "sometimes",
-                    new UniqueEmailInIdentiteRule()
-                ],
+                #'email.*'=>[
+                #    "sometimes",
+                #    new UniqueEmailInIdentiteRule()
+                #],
                 'ville' => 'nullable|string',
             ]
         );
