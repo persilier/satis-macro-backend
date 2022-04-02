@@ -45,9 +45,26 @@ trait CheckInactivityDuration
     }
 
 
-    public function accountHasBeenReactivated($user,$configs)
+    public function accountHasBeenReactivated($user)
     {
+        $lastReactivation = InactivityReactivationHistory::query()
+            ->where('user_id',$user->id)
+            ->where('action',InactivityReactivationHistory::ACTIVATION)
+            ->latest()
+            ->first();
+        $lastDeactivation = InactivityReactivationHistory::query()
+            ->where('user_id',$user->id)
+            ->where('action',InactivityReactivationHistory::DEACTIVATION)
+            ->latest()
+            ->first();
 
+        if ($lastDeactivation!=null && $lastReactivation!=null ){
+            $deactivationDate = Carbon::parse($lastDeactivation->created_at);
+            $reactivationDate = Carbon::parse($lastReactivation->created_at);
+            return $reactivationDate->gt($deactivationDate);
+        }
+
+        return false;
     }
 
 }

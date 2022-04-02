@@ -13,4 +13,7 @@ class InactivityReactivationHistory extends Model
         'user_id',
     ];
 
+    const DEACTIVATION = "deactivation";
+    const ACTIVATION = "activation";
+
 }
