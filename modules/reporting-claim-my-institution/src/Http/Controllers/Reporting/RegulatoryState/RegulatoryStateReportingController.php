@@ -21,8 +21,8 @@ class RegulatoryStateReportingController extends ApiController
     {
         parent::__construct();
 
-        //$this->middleware('auth:api');
-        //$this->middleware('permission:list-reporting-claim-my-institution')->only(['index']);
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-regulatory-reporting-claim-my-institution')->only(['index']);
     }
 
     /**

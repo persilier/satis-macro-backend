@@ -32,7 +32,9 @@ class RegulatoryStateService
             'institution'=>$this->institution(),
             'number_of_claims_litigated_in_court'=>$request->number_of_claims_litigated_in_court,
             'total_amount_of_claims_litigated_in_court'=>$request->total_amount_of_claims_litigated_in_court,
-            'libellePeriode'=>$libellePeriode
+            'libellePeriode'=>$libellePeriode,
+            'country'=>$this->institution()->name,
+            'report_title'=>"ANNEXE - CIRCULAIRE Nº 002-2020/CB/C RELATIVE AU TRAITEMENT DES RÉCLAMATIONS DES CLIENTS DES ETABLISSEMENTS ASSUJETTIS AU CONTRÔLE DE LA COMMISSION BANCAIRE DE L'UMOA",
         ];
     }
 }

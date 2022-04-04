@@ -103,7 +103,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             'list-auth-config','update-auth-config',
             'activity-log',
-            'list-any-notification-proof','pilot-list-any-notification-proof'
+            'list-any-notification-proof','pilot-list-any-notification-proof',
+            'list-regulatory-reporting-claim-my-institution'
         ];
 
         $filialPermissions = [
@@ -136,6 +137,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             "my-email-claim-configuration",
             'list-auth-config','update-auth-config',
             'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution'
 
         ];
 
@@ -194,7 +196,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             "any-email-claim-configuration",
             'list-auth-config','update-auth-config',
             'activity-log',
-            'list-notification-proof','pilot-list-notification-proof'
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution'
         ];
 
         $memberPermissions = [
@@ -261,7 +264,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             "my-email-claim-configuration",
             'list-auth-config','update-auth-config',
             'activity-log',
-            'list-notification-proof','pilot-list-notification-proof'
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution'
 
         ];
 
