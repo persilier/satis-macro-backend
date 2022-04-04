@@ -34,7 +34,7 @@ trait CheckInactivityDuration
     public function inactivityTimeIsPassedAfReactivation($user,$configs)
     {
 
-        $lastReactivationDate = InactivityReactivationHistory::where('user_id', $user->id)->orderByDesc('created_at')->first();;
+        $lastReactivationDate = InactivityReactivationHistory::where('user_id', $user->id)->where('action',InactivityReactivationHistory::ACTIVATION)->orderByDesc('created_at')->first();;
 
         if ($lastReactivationDate!=null){
             $nextDeactivationDate = Carbon::parse($lastReactivationDate->created_at)->addDays($configs->inactivity_time_limit);
@@ -61,8 +61,11 @@ trait CheckInactivityDuration
         if ($lastDeactivation!=null && $lastReactivation!=null ){
             $deactivationDate = Carbon::parse($lastDeactivation->created_at);
             $reactivationDate = Carbon::parse($lastReactivation->created_at);
+
             return $reactivationDate->gt($deactivationDate);
         }
+
+
 
         return false;
     }

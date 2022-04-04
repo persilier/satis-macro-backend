@@ -81,6 +81,7 @@ class AuthService
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
+
             if ($this->inactivityTimeIsPassed($this->getUser(),$this->configs)){
                 if ($this->accountHasBeenReactivated($this->getUser())){
                     if ($this->inactivityTimeIsPassedAfReactivation($this->getUser(),$this->configs)){
