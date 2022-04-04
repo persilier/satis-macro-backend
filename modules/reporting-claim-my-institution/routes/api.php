@@ -27,4 +27,8 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::post('/reporting-claim/config', 'Config\ReportingTasksController@store')->name('reporting-claim.config.store');
     Route::put('/reporting-claim/config/{reportingTask}', 'Config\ReportingTasksController@update')->name('reporting-claim.config.update');
     Route::delete('/reporting-claim/config/{reportingTask}', 'Config\ReportingTasksController@destroy')->name('reporting-claim.config.destroy');
+
+
+    //regulatory state reporting
+    Route::post("/reporting-claim/regulatory-state","Reporting\RegulatoryState\RegulatoryStateReportingController@index")->name("reporting-claim.regulatory-state");
 });

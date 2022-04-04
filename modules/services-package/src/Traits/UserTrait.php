@@ -243,7 +243,7 @@ trait UserTrait
 
         } else {
             /*
-             * update of the user's last logout date if the account has been inactive
+             *
              */
             $configs = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
 

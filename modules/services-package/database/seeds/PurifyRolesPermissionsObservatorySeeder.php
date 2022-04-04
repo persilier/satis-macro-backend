@@ -81,7 +81,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     "any-email-claim-configuration",
                     'list-auth-config','update-auth-config',
                     'activity-log',
-                    'list-notification-proof'
+                    'list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -101,7 +102,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'pilot-list-notification-proof'
+                    'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution'
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [

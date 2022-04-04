@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Satis2020\ReportingClaimMyInstitution\Http\Controllers\Reporting\RegulatoryState\RegulatoryStateReportingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,4 @@ Route::get('download/{file}', 'Controller@download');
 Route::get('download-uemoa-reports/{file}', 'Controller@downloadExcelReports');
 Route::get('download-excel/{file}', 'Controller@downloadExcels');
 Route::get('new-claim-reference/{institution}', 'Controller@claimReference');
+Route::get("test-pdf-generation",[RegulatoryStateReportingController::class,"index"]);

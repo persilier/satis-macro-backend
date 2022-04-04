@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rules\In;
 use Satis2020\ServicePackage\Exceptions\TwoSessionNotAllowed;
+use Satis2020\ServicePackage\Models\InactivityReactivationHistory;
 use Satis2020\ServicePackage\Models\LoginAttempt;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
@@ -75,23 +77,29 @@ class AuthService
      */
     public function isAccountActive()
     {
-        $lastLog = $this->activityLogService
-            ->getLastLogByUserAndAction(
-                $this->userRepository->getByEmail($this->request->username)->id,
-                ActivityLogService::LOGOUT);
-            $response = true;
+
         if ($this->isAccountDisabled()){
             $response =  false;
         }else{
-                if ( $this->inactivityTimeIsPassed($this->getUser(),$this->configs) ){
 
-                    if($this->inactivityTimeIsPassedAfReactivation($this->getUser(),$this->configs)){
-                        $this->disableAccount();
+            if ($this->inactivityTimeIsPassed($this->getUser(),$this->configs)){
+                if ($this->accountHasBeenReactivated($this->getUser())){
+                    if ($this->inactivityTimeIsPassedAfReactivation($this->getUser(),$this->configs)){
                         $response = false;
+                        $this->disableAccount();
+                    }else{
+                        $response = true;
                     }
-
+                }else{
+                    $response = false;
+                    $this->disableAccount();
                 }
+            }else{
+                $response = true;
+            }
+
         }
+
         return $response;
     }
 
@@ -156,6 +164,8 @@ class AuthService
                 $this->getUser(),
                 $this->getUser()
             );
+
+
         }
         return $response;
     }
@@ -229,8 +239,14 @@ class AuthService
      */
     public function disableAccount()
     {
+        $user = $this->userRepository->getByEmail($this->request->username);
         $this->userRepository->update(['disabled_at'=>now()]
-            ,$this->userRepository->getByEmail($this->request->username)->id);
+            ,$user->id);
+        InactivityReactivationHistory::query()
+            ->create([
+                "action"=>InactivityReactivationHistory::DEACTIVATION,
+                "user_id"=>$user->id
+            ]);
     }
 
     /**
