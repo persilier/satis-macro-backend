@@ -71,7 +71,8 @@ trait CreateClaim
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
-            'attach_files' => 'nullable'
+            'attach_files' => 'nullable',
+            'account_number'=>'sometimes|numeric|exists:accounts,number'
         ];
 
         if ($with_client) {
@@ -220,7 +221,8 @@ trait CreateClaim
             'created_by',
             'status',
             'reference',
-            'claimer_expectation'
+            'claimer_expectation',
+            'account_number'
         ];
 
         if ($request->has('amount_disputed')) {
