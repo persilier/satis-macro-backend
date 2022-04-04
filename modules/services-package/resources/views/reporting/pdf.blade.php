@@ -145,7 +145,7 @@
                                 <td>{{ $valueObject['toAssignementToStaff'] }}</td>
                                 <td>{{ $valueObject['awaitingTreatment'] }}</td>
                                 <td>{{ $valueObject['toValidate'] }}</td>
-                                <td>{{ $valueObject['toMeasureSatisfaction'] }}</td>
+                                <td>{{ $vainstitutionTargetedlueObject['toMeasureSatisfaction'] }}</td>
                                 <td>{{ $valueObject['percentage'] }} %</td>
                             </tr>
                         @endforeach
