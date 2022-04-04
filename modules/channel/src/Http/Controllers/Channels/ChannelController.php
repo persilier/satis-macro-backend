@@ -14,7 +14,7 @@ class ChannelController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-channel')->only(['index']);
+       // $this->middleware('permission:list-channel')->only(['index']);
         $this->middleware('permission:store-channel')->only(['store']);
         $this->middleware('permission:show-channel')->only(['show']);
         $this->middleware('permission:update-channel')->only(['update']);
