@@ -90,7 +90,8 @@ class Claim extends Model
         'status',
         'time_limit',
         'revoked_at',
-        'revoked_by'
+        'revoked_by',
+        'account_number'
     ];
 
 

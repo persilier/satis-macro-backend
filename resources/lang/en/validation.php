@@ -147,5 +147,7 @@ return [
     */
 
     'attributes' => [],
+    'unique_telephone'=>"This phone number is already used",
+
 
 ];
