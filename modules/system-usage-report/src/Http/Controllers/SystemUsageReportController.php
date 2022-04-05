@@ -1,24 +1,22 @@
 <?php
 
-namespace Satis2020\SystemUsageReport\Http\Controllers\SystemUsageReportController;
+namespace Satis2020\SystemUsageReport\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Requests\SystemUsageReportRequest;
+use Satis2020\ServicePackage\Requests\Reporting\SystemUsageReportRequest;
+use Satis2020\ServicePackage\Services\Reporting\SystemUsageReportService;
+
 
 class SystemUsageReportController extends ApiController
 {
-    public function __construct()
+    public function index(SystemUsageReportRequest $request, SystemUsageReportService $service)
     {
-        parent::__construct();
-//        $this->middleware('auth');
-//        $this->middleware('permission:store-staff')->only(['store']);
-    }
+        $request->merge([
+            "institution_id"=>$this->institution()->id
+        ]);
 
-    public function index(SystemUsageReportRequest $request)
-    {
-
-
+        $systemUsageReport = $service->SystemUsageReport($request);
+        return response()->json($systemUsageReport, 200);
 
     }
 }

@@ -34,13 +34,11 @@ trait FilterClaims
     {
 
         $data = [
-
             'date_start' => 'date_format:Y-m-d',
             'date_end' => 'date_format:Y-m-d|after:date_start'
         ];
 
         if($institution){
-
             $data['institution_id'] = 'sometimes|exists:institutions,id';
         }
 
@@ -69,7 +67,50 @@ trait FilterClaims
         return $claims;
     }
 
+    function getClaimsTreatedByPeriod($request,$status,$relations=[])
+    {
+        $claims = Claim::query()->with($relations);
 
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+         $claims->join('treatments', function ($join) {
+                $join->on('claims.id', '=', 'treatments.claim_id');
+         })->select('claims.*');
+
+        $claims ->where('validated_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('validated_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims->where('status', $status);
+
+        return $claims;
+    }
+
+    protected function getClaimsSatisfactionMeasured($request,$status,$relations=[]){
+
+        $claims = Claim::query()->with($relations);
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id');
+        })->select('claims.*');
+
+        $claims ->where('satisfaction_measured_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        //$claims->where('status', $status);
+
+        return $claims;
+
+    }
 
     function getClaimsByStatus($request,$status,$relations=[],$treatment=false)
     {
