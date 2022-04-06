@@ -23,6 +23,8 @@ trait CheckInactivityDuration
             if ($lastLog!=null){
                 $desactivationDate = Carbon::parse($lastLog->created_at)->addDays($configs->inactivity_time_limit);
                 return Carbon::parse(now()) > $desactivationDate;
+            }else{
+                return false;
             }
 
         return true;
