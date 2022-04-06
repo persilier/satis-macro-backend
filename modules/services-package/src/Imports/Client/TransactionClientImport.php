@@ -17,6 +17,8 @@ use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
+use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
+use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
 class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
 {
@@ -38,6 +40,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->data = $data;
         $this->errors = [];
 
+
     }
 
     /***
@@ -45,7 +48,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 1000;
+        return 500;
     }
 
 
@@ -71,15 +74,23 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 ->first();
 
             if ($identity) {
-                $identity->update([
-                    'firstname' => $row['firstname'],
-                    'lastname' => $row['lastname'],
-                    'sexe' => $row['sexe'],
-                    'telephone' => $row['telephone'],
-                    'email' => $row['email'],
-                    'ville' => $row['ville'],
-                ]);
 
+
+                if (!$newIdentityExist = Identite::query()
+                    ->where('id', '!=', $identity->id)
+                    ->orWhereJsonContains('telephone', $row['telephone'])
+                    ->orWhereJsonContains('email', $row['email'])
+                    ->first()) {
+
+                    $identity->update([
+                        'firstname' => $row['firstname'],
+                        'lastname' => $row['lastname'],
+                        'sexe' => $row['sexe'],
+                        'telephone' => $row['telephone'],
+                        'email' => $row['email'],
+                        'ville' => $row['ville'],
+                    ]);
+                }
 
             } else {
                 $identity = Identite::query()
@@ -109,7 +120,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             );
 
         } else {
-
             Log::error($validator->errors());
             $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row];
             array_push($this->errors,$error);
@@ -135,10 +145,15 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     'array',
                     new TelephoneArray
                 ],
+                #'telephone.*'=>[new UniqueTelephoneRule()],
                 'email' => [
                     'array',
                     new EmailValidationRules
                 ],
+                #'email.*'=>[
+                #    "sometimes",
+                #    new UniqueEmailInIdentiteRule()
+                #],
                 'ville' => 'nullable|string',
             ]
         );
@@ -214,5 +229,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         return 2;
     }
+
 
 }

@@ -5,6 +5,7 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Request;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
@@ -45,6 +46,10 @@ class ImportController extends ApiController
      */
     public function importClients(ImportClientRequest $request)
     {
+        $datas = [
+            'status' => true,
+            'clients' => ''
+        ];
 
         $datas = [
             'status' => true,
@@ -69,6 +74,7 @@ class ImportController extends ApiController
             $myInstitution,
             $data
         );
+
         Excel::import(
             $transaction,
             $request->file('file')
@@ -82,6 +88,7 @@ class ImportController extends ApiController
         );
 
         $datas['errors'] = $transaction->getImportErrors();
+
 
         return response()->json($datas, 201);
     }
