@@ -42,22 +42,32 @@ class StaffController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
-                ->get()
+                ->when($recherche !=null,function(Builder $query) use ($recherche ) {
+                    $query
+                        ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })
+                ->paginate($paginationSize)
             , 200);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function create()
@@ -72,7 +82,7 @@ class StaffController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
@@ -104,7 +114,7 @@ class StaffController extends ApiController
      * Display the specified resource.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Staff $staff)
     {
@@ -115,7 +125,7 @@ class StaffController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function edit(Staff $staff)

@@ -48,6 +48,10 @@ class IdentiteClaimController extends Controller
             $request->request->remove("account_number");
         }
 
+        if ($request->isNotFilled("claimer_id")){
+            $request->request->remove("claimer_id");
+        }
+
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
 
