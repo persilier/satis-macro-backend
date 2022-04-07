@@ -36,7 +36,7 @@ trait ReportingClaim
         $data = [
 
             'date_start' => 'date_format:Y-m-d',
-            'date_end' => 'date_format:Y-m-d|after:date_start'
+            'date_end' => 'date_format:Y-m-d|after_or_equal:date_start'
         ];
 
         if($institution){

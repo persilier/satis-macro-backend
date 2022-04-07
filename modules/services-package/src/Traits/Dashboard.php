@@ -84,7 +84,7 @@ trait Dashboard
     public function incrementTotalRegistered($claim, $subKeys)
     {
         // allInstitution
-        if (array_key_exists('allInstitution', $subKeys)) {
+        if ($subKeys!=null && array_key_exists('allInstitution', $subKeys)) {
             $subKeys['allInstitution']++;
         }
 
@@ -98,7 +98,8 @@ trait Dashboard
             }
         } catch (\Exception $exception) {
             if (
-                array_key_exists('myInstitution', $subKeys)
+                $subKeys!=null
+                && array_key_exists('myInstitution', $subKeys)
                 && is_null($claim->createdBy)
                 && ($claim->institution_targeted_id == $this->institution()->id)
             ) {
