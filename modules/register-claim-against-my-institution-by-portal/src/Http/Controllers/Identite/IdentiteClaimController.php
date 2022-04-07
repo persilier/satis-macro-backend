@@ -48,14 +48,10 @@ class IdentiteClaimController extends Controller
             $request->request->remove("account_number");
         }
 
-        if ($request->isNotFilled("claimer_id")){
-            $request->request->remove("claimer_id");
-        }
+        $request->merge(['claimer_id' => $identite->id]);
 
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
-
-        $request->merge(['claimer_id' => $identite->id]);
 
         $this->convertEmailInStrToLower($request);
 
