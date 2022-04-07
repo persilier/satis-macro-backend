@@ -32,9 +32,6 @@ class ClientBelongsToInstitutionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        if (empty($value)) {
-            return true;
-        }
 
         $institution = DB::table('institutions')
             ->join('client_institution', function ($join) {
