@@ -77,7 +77,7 @@ trait FilterClaims
 
         }
 
-         $claims->join('treatments', function ($join) {
+        $claims->join('treatments', function ($join) {
                 $join->on('claims.id', '=', 'treatments.claim_id');
          })->select('claims.*');
 
