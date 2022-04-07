@@ -97,7 +97,8 @@
     "satis2020/useful-data-for-backoffice": "^1.0",
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0"
+    "satis2020/without-link-with-institution-unit": "^1.0",
+    "satis2020/system-usage-report": "^1.0"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -736,6 +737,13 @@
     {
       "type": "path",
       "url": "modules/notification-proof/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/system-usage-report/",
       "options": {
         "symlink": true
       }
