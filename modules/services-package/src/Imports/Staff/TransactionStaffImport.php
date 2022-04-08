@@ -48,7 +48,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $this->unitRequired = $data['unitRequired'];
         $this->stop_identite_exist = $data['stop_identite_exist'];
         $this->etat = $data['etat'];
-        $this->errors = collect([]);
+        $this->errors = [];
     }
 
     /***
@@ -99,9 +99,8 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
 
             } else {
             Log::error($validator->errors());
-            //throw ValidationException::withMessages($validator->getMessageBag()->getMessages());
-            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
-            $this->errors['data'] =  $row;
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row];
+            array_push($this->errors,$error);
             $this->hasError = true;
         }
 

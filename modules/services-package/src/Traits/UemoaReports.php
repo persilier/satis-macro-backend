@@ -315,10 +315,10 @@ trait UemoaReports{
                 return $item->institutionTargeted->name;
             },
             function($item){
-                return $item->claimObject->claimCategory->name;
+                return optional(optional($item->claimObject)->claimCategory)->name;
             },
             function($item){
-                return $item->claimObject->name;
+                return optional($item->claimObject)->name;
             }
         ]);
 
@@ -339,7 +339,7 @@ trait UemoaReports{
                         'totalUnfounded' => (string) $this->totalUnfounded($claims),
                         'totalNoValidated' => (string) $this->totalNoValidated($claims),
                         'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
-                        'delayPlanned' => (string) $claims->first()->claimObject->time_limit,
+                        'delayPlanned' => (string) optional( $claims->first()->claimObject)->time_limit,
                         'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),

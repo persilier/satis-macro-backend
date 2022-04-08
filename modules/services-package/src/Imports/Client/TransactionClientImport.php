@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Imports\Client;
 
+use Faker\Factory;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +21,7 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
 use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
 
     protected $myInstitution;
@@ -39,6 +40,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->myInstitution = $myInstitution;
         $this->data = $data;
         $this->errors = [];
+
 
     }
 
@@ -61,24 +63,65 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
+
         $row = $this->transformRowBeforeStoring($row);
 
         $validator = $this->validateRow($row);
 
         if (!$validator->fails()) {
 
-            $identity = Identite::query()
-                ->whereJsonContains('telephone', $row['telephone'])
-                ->orWhereJsonContains('email', $row['email'])
+            //verify if an account with the provided account_number already exist
+            $account = Account::query()
+                ->where('number' , $row['account_number'])
+                ->leftJoin("client_institution","client_institution.id","=","accounts.client_institution_id")
+                ->where("client_institution.institution_id",$this->myInstitution->id)
                 ->first();
 
-            if ($identity) {
-                if (!$newIdentityExist = Identite::query()
-                    ->where('id', '!=', $identity->id)
-                    ->orWhereJsonContains('telephone', $row['telephone'])
-                    ->orWhereJsonContains('email', $row['email'])
-                    ->first()) {
+            if ($row['telephone']==null && $row['email']==null){
+                if ($account==null){
+                    $faker = Factory::create();
+                    $row['email'] = [$faker->email];
+                }
+            }
 
+            $identity = null;
+            $newIdentityExist = null;
+
+            if ($row['telephone']){
+                foreach ($row['telephone'] as $phone){
+                    $identity = Identite::query()
+                        ->whereJsonContains('telephone', $phone)
+                        ->first();
+
+                    if ($identity!=null){
+                        $newIdentityExist = Identite::query()
+                            ->where('id', '!=', $identity->id)
+                            ->orWhereJsonContains('telephone', $phone)
+                            ->first();
+                        break;
+                    }
+                }
+            }
+
+            if ($identity==null &&  $row['email']){
+                foreach ($row['email'] as $email){
+                    $identity = Identite::query()
+                        ->orWhereJsonContains('email', $email)
+                        ->first();
+
+                    if ($identity!=null){
+                        $newIdentityExist = Identite::query()
+                            ->where('id', '!=', $identity->id)
+                            ->orWhereJsonContains('email', $email)
+                            ->first();
+                        break;
+                    }
+                }
+            }
+
+
+            if ($identity) {
+                if (!$newIdentityExist) {
                     $identity->update([
                         'firstname' => $row['firstname'],
                         'lastname' => $row['lastname'],
@@ -101,7 +144,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     ]);
 
             }
-
             $client = Client::query()->updateOrCreate(
                 ['identites_id' => $identity->id]
             );
@@ -111,16 +153,18 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 ['category_client_id' => $row['category_client']]
             );
 
-            $account = Account::query()->updateOrCreate(
+            Account::query()->updateOrCreate(
                 ['number' => $row['account_number'], 'client_institution_id' => $clientInstitution->id],
                 ['account_type_id' => $row['account_type']]
             );
+
+
+
 
         } else {
             Log::error($validator->errors());
             $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row];
             array_push($this->errors,$error);
-
             $this->hasError = true;
         }
 
@@ -139,7 +183,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 'lastname' => 'required|string',
                 'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
                 'telephone' => [
-                    'required',
                     'array',
                     new TelephoneArray
                 ],
@@ -222,6 +265,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         return $this->errors;
     }
+
 
     public function headingRow(): int
     {

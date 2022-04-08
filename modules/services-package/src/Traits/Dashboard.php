@@ -98,7 +98,8 @@ trait Dashboard
             }
         } catch (\Exception $exception) {
             if (
-                array_key_exists('myInstitution', $subKeys)
+                $subKeys!=null
+                && array_key_exists('myInstitution', $subKeys)
                 && is_null($claim->createdBy)
                 && ($claim->institution_targeted_id == $this->institution()->id)
             ) {

@@ -74,16 +74,13 @@ class ImportController extends ApiController
             $myInstitution,
             $data
         );
-<<<<<<< HEAD
-=======
 
->>>>>>> c15d8cc45d9b0d2a9358a54a704f7247227b9296
         Excel::import(
             $transaction,
             $request->file('file')
         );
 
-<<<<<<< HEAD
+
         $this->activityLogService->store("Importation des clients",
             $this->institution()->id,
             $this->activityLogService::IMPORTATION,
@@ -93,11 +90,9 @@ class ImportController extends ApiController
 
         $datas['errors'] = $transaction->getImportErrors();
 
-=======
+
         $datas['errors'] = $transaction->getImportErrors();
 
-
->>>>>>> c15d8cc45d9b0d2a9358a54a704f7247227b9296
         return response()->json($datas, 201);
     }
 
