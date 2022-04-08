@@ -154,7 +154,7 @@ trait CreateClaim
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Can't retrieve the claimObject requirements");
+            throw new CustomException(__('errors.retrieve_claim_object',[],app()->getLocale()));
 
         }
 
