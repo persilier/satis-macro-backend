@@ -335,7 +335,7 @@ trait ImportClaim
 
         }
 
-        if($data['relance'] =='OUI'){
+        if(strtolower($data['relance']) =='oui'){
 
             $data['relance'] = true;
 
