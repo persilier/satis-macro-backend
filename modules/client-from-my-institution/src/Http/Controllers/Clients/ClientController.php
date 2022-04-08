@@ -5,6 +5,7 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -49,8 +50,14 @@ class ClientController extends ApiController
         $institution = $this->institution();
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
+
+
+        if ($paginationSize==null)
+            $paginationSize = Constants::PAGINATION_SIZE;
+
         $clients = $this->getAllClientByInstitution($institution->id, true, $paginationSize,$recherche);
         return response()->json($clients, 200);
+
     }
 
 

@@ -162,8 +162,8 @@ class DashboardController extends ApiController
                     }
 
                     // channelsUse
-                    $channelsUse->put($claim->requestChannel->name,
-                        $this->incrementTotalRegistered($claim, $channelsUse->get($claim->requestChannel->name)));
+                    $channelsUse->put(optional($claim->requestChannel)->name,
+                        $this->incrementTotalRegistered($claim, $channelsUse->get(optional($claim->requestChannel)->name)));
 
                     // channelsUse
                     if (!is_null($claim->claimObject)) {

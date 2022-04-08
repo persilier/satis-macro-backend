@@ -77,18 +77,19 @@ trait ClaimSatisfactionMeasured
      * @param string $status
      * @return array
      */
-    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null){
 
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
         return $paginate
             ?$this->getClaim($status)
                 ->where('institution_targeted_id', $this->institution()->id)
                 ->when($key,function (Builder $query1) use ($key) {
                     $query1->where('reference' , 'LIKE', "%$key%")
-                    ->orWhereHas("claimer",function ($query2) use ($key){
-                        $query2->where('firstname' , 'LIKE', "%$key%")
-                               ->orWhere('lastname' , 'LIKE', "%$key%")
-                               ->orwhereJsonContains('telephone', $key)
-                               ->orwhereJsonContains('email', $key);
+
+                        ->orWhereHas("claimer",function ($query2) use ($key){
+                            $query2->where('firstname' , 'LIKE', "%$key%")
+                                ->orWhere('lastname' , 'LIKE', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
                         })->orWhereHas("claimObject",function ($query3) use ($key){
                             $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
                         })->orWhereHas("unitTargeted",function ($query4) use ($key){

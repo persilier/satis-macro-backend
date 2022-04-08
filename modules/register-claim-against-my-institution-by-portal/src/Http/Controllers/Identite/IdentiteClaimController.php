@@ -44,6 +44,10 @@ class IdentiteClaimController extends Controller
             $request->request->remove('amount_currency_slug');
         }
 
+        if ($request->isNotFilled("account_number")){
+            $request->request->remove("account_number");
+        }
+
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
 

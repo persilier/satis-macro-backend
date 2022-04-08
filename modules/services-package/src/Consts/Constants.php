@@ -12,4 +12,9 @@ class Constants
     const PAGINATION_SIZE = 10;
 
 
+   static public function  paginationSize()
+    {
+        return self::PAGINATION_SIZE;
+    }
+
 }

@@ -211,8 +211,10 @@ trait ClientTrait
      * @param null $key
      * @return LengthAwarePaginator|Builder[]|Collection
      */
-    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = Constants::PAGINATION_SIZE,$key=null)
+
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize= 10,$key=null)
     {
+
         $clients = ClientInstitution::query()
             ->with([
                 'client:id,identites_id',
@@ -227,22 +229,23 @@ trait ClientTrait
             })
             ->where('institution_id', $institutionId)
             ->when($key,function (Builder $query1) use ($key) {
-                    $query1->whereHas("client",function ($query2) use ($key){
-                        $query2->whereHas("identite",function ($query3) use($key){
-                            $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
-                                ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
-                                ->orwhereJsonContains('telephone', $key)
-                                ->orwhereJsonContains('email', $key);
-                        });
-                    })->orWhereHas("accounts",function ($query4) use ($key){
-                        $query4->where('number', $key);
+                $query1->whereHas("client",function ($query2) use ($key){
+                    $query2->whereHas("identite",function ($query3) use($key){
+                        $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
+                            ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
                     });
+                })->orWhereHas("accounts",function ($query4) use ($key){
+                    $query4->where('number', $key);
+                });
             });
 
         return $paginate?
             $clients->paginate($paginationSize):
             $clients->get();
     }
+
 
     /**
      * @param $institutionId

@@ -22,8 +22,8 @@ class ClientsController extends Controller
     public function show($accountNumber)
     {
         $account = Account::with('client_institution.client.identite')
-                            ->where('number', $accountNumber)
-                            ->firstOrFail();
+            ->where('number', $accountNumber)
+            ->firstOrFail();
         $identityWithClientAccount = Identite::with('client.client_institution.accounts')
             ->whereHas('client', function ($q) use ($account){
                 $q->whereHas('client_institution', function ($p) use ($account){
