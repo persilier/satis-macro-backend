@@ -69,7 +69,7 @@ class IdentiteClaimController extends Controller
         // Check if the claim is complete
         $request->merge(['status' => $status['status']]);
 
-        $claim = $this->createClaim($request, false);
+        $claim = $this->createClaim($request, true);
 
         $this->attachFilesToClaimBase64($claim, $request);
 
