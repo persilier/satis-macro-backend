@@ -163,7 +163,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
 
         } else {
             Log::error($validator->errors());
-            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row];
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,'line'=>$rowIndex];
             array_push($this->errors,$error);
             $this->hasError = true;
         }
