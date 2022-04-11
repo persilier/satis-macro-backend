@@ -15,6 +15,8 @@ class ReportingTask extends Model
 {
     use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
 
+    const BIANNUAL_REPORT="biannual";
+
     protected static $logName = 'reporting_task';
     /**
      * The attributes that should be cast to native types.

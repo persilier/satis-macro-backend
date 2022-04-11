@@ -7,6 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Mail;
+use Satis2020\ServicePackage\Mail\PdfRegulatoryStateReportingMail;
 use Satis2020\ServicePackage\Mail\PdfReportingMail;
 use Exception;
 
@@ -41,7 +42,7 @@ class PdfRegulatoryStateReportingSendMail implements ShouldQueue
 
         foreach ($this->details['email'] as $recipient) {
 
-            Mail::to($recipient)->send(new PdfReportingMail($this->details));
+            Mail::to($recipient)->send(new PdfRegulatoryStateReportingMail($this->details));
 
         }
 

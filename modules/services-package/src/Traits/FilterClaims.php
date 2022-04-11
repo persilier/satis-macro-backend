@@ -26,27 +26,6 @@ use Satis2020\ServicePackage\Models\Metadata;
  */
 trait FilterClaims
 {
-    /**
-     * @param bool $institution
-     * @return array
-     */
-    protected function rules($institution = true)
-    {
-
-        $data = [
-
-            'date_start' => 'date_format:Y-m-d',
-            'date_end' => 'date_format:Y-m-d|after:date_start'
-        ];
-
-        if($institution){
-
-            $data['institution_id'] = 'sometimes|exists:institutions,id';
-        }
-
-        return $data;
-    }
-
 
     /**
      * @param $request
@@ -69,11 +48,24 @@ trait FilterClaims
         return $claims;
     }
 
+    protected function getAllClaimsBySemester($institution_id,$relations=[]){
+
+        $dateStart =  Carbon::now()->startOfDay()->subMonths(6);
+        $dateEnd = $dateStart->copy()->addMonths(6)->endOfDay();
+
+        $claims = Claim::query()
+            ->with($relations)
+            ->where('institution_targeted_id', $institution_id);
+
+        $claims->where('created_at', '>=', $dateStart)
+            ->where('created_at', '<=', $dateEnd);
+
+        return $claims;
+    }
 
 
-    function getClaimsByStatus($request,$status,$relations=[],$treatment=false)
+    function getClaimsByStatus($claims,$status,$relations=[],$treatment=false)
     {
-        $claims = $this->getAllClaimsByPeriod($request,$relations);
 
         if ($treatment) {
 
@@ -83,7 +75,6 @@ trait FilterClaims
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })->select('claims.*');
         }
-
 
         if ($status === 'transferred_to_targeted_institution') {
 
