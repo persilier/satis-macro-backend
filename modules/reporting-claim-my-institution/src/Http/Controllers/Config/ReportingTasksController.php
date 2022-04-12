@@ -2,14 +2,12 @@
 
 namespace Satis2020\ReportingClaimMyInstitution\Http\Controllers\Config;
 
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
+
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
-use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ReportingTask;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
@@ -26,7 +24,8 @@ class ReportingTasksController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:config-reporting-claim-any-institution')->only(['show']);
+        $this->middleware('permission:config-reporting-claim-any-institution');
+        $this->middleware('permission:config-reporting-claim-my-institution');
     }
 
 
@@ -48,11 +47,13 @@ class ReportingTasksController extends ApiController
     {
 
         $period = $this->periodList();
+        $types = $this->typeList();
 
         $staffs = $this->getAllStaffsReportingTasks();
 
         return response()->json([
             'period' => $period,
+            'types' => $types,
             'staffs' => $staffs
         ],200);
     }

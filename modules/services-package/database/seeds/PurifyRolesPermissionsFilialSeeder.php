@@ -56,7 +56,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     "my-email-claim-configuration",
                     'list-auth-config','update-auth-config',
                     'list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'config-reporting-claim-my-institution'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

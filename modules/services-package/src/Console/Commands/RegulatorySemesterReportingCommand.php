@@ -51,6 +51,7 @@ class RegulatorySemesterReportingCommand extends Command
 
             foreach ($reportinTasks as $reportingTask){
                 $institutions = Institution::query()->get();
+        $reportingTask = ReportingTask::first();
 
                 foreach ($institutions as $institution){
                     $request->merge(['institution_id'=>$institution->id]);

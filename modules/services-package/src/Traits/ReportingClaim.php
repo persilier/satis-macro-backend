@@ -506,6 +506,24 @@ trait ReportingClaim
         ];
     }
 
+    /**
+     * @return array
+     */
+    protected function typeList(){
+
+        return [
+            [
+                'value' => 'uemoa', 'label' => 'Rapport UEAMOA'
+            ],
+            [
+                'value' => 'satis', 'label' => 'Rapport SATIS'
+            ],
+            [
+                'value' => 'regulatory', 'label' => 'Rapport Règlementaire'
+            ],
+        ];
+    }
+
 
     /**
      * @return Builder[]|Collection
