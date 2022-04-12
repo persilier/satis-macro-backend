@@ -9,6 +9,8 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Services\CountryService;
+use Satis2020\ServicePackage\Services\InstitutionService;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UploadFile;
@@ -37,8 +39,8 @@ class InstitutionController extends ApiController
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function getMyInstitution(){
-        return response()->json($this->institution()->load('defaultCurrency'), 200);
+    public function getMyInstitution(CountryService $countryService){
+        return response()->json(["institution"=>$this->institution()->load('defaultCurrency'),"countries"=>$countryService->getCountries()], 200);
     }
 
     /**
@@ -60,6 +62,7 @@ class InstitutionController extends ApiController
             'default_currency_slug' => ['nullable', 'exists:currencies,slug'],
             'logo' => 'file|image|mimes:jpeg,png,jpg,gif|max:2048',
             'orther_attributes' => 'array',
+            'country_id'=>'numeric'
         ];
         $this->validate($request, $rules);
 
@@ -77,6 +80,7 @@ class InstitutionController extends ApiController
         $datas['iso_code'] = $request->iso_code;
         $datas['default_currency_slug'] = $request->default_currency_slug;
         $datas['other_attributes'] = $request->other_attributes;
+        $datas['country_id'] = $request->country_id;
 
         if(isset($filePath))
             $datas['logo'] = $filePath;

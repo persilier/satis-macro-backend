@@ -37,7 +37,7 @@ class ReportingTask extends Model
      * @var array
      */
     protected $fillable = [
-        'period', 'staffs' , 'institution_id', 'institution_targeted_id'
+        'period', 'staffs' , 'institution_id', 'institution_targeted_id','report_type'
     ];
 
 
