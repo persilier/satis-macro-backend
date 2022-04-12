@@ -593,7 +593,7 @@ trait ReportingClaim
 
         if(ReportingTask::where('period', $request->period)->where('institution_targeted_id',$request->institution_id)
             ->where('institution_id', $institution->id)->where('id', '!=', $reportingTask)->first()){
-            throw new CustomException("Cette configuration de rapport automatique existe déjà pour la période choisie.");
+            throw new CustomException(__('messages.config_already_exist',[],app()->getLocale()));
         }
     }
 
@@ -613,7 +613,7 @@ trait ReportingClaim
 
             if($institution->id !== $data['filter']['institution']){
 
-                throw new CustomException("Vous n'êtes pas autorité à accéder au reporting de cette insitution.");
+                throw new CustomException(__('messages.not_allowed_to_access_reporting',[],app()->getLocale()));
             }
         }
 
@@ -1493,7 +1493,7 @@ trait ReportingClaim
 
         if(is_null($data)){
 
-            throw new CustomException("Impossible de récupérer cette configuration.");
+            throw new CustomException(__('messages.cant_get_config',[],getAppLang()));
         }
 
         return $data;
@@ -1542,7 +1542,7 @@ trait ReportingClaim
         if(!$infinite){
 
             if($request->borne_sup <= $request->borne_inf)
-                throw new CustomException("La borne supérieur doit être supérieur à la borne inférieur.");
+                throw new CustomException(__('messages.bound_alert',[],getAppLang()));
 
         }
 
@@ -1555,7 +1555,7 @@ trait ReportingClaim
 
                     if(!($request->borne_inf >= $parameter->borne_sup && $request->borne_inf > $parameter->borne_inf) && !($request->borne_sup <= $parameter->borne_inf && $request->borne_inf < $parameter->borne_inf)){
 
-                        throw new CustomException("Cette configuration est invalide.");
+                        throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                     }
 
@@ -1563,13 +1563,13 @@ trait ReportingClaim
 
                     if($infinite){
 
-                        throw new CustomException("Cette configuration est invalide.");
+                        throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                     }else{
 
                         if(!($request->borne_sup <= $parameter->borne_inf && $request->borne_inf < $parameter->borne_inf)){
 
-                            throw new CustomException("Cette configuration est invalide.");
+                            throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                         }
                     }

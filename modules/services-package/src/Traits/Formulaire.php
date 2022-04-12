@@ -35,10 +35,10 @@ trait Formulaire
 
         $data = $this->getOneData($formulaire, $data->name);
         if(false==$data)
-            return $this->errorResponse('La description de ce formulaire n\'existe pas.',422);
+            return $this->errorResponse(__('messages.form_desc_do_not_exist',[],getAppLang()),422);
         $key = $data['key'];
         if(!empty($data['value']->content))
-            return $this->errorResponse('Impossible de créer ce métadata "'.$type.'" car son content n\'est pas vide.',422);
+            return $this->errorResponse(__('messages.unable _to_create_metadata',['type'=>$type],getAppLang()),422);
 
         $value = $data['value'];
 
@@ -47,7 +47,7 @@ trait Formulaire
         $formulaires->update(['data'=> $update]);
         $data_response = $this->getOneData(json_decode($update), $value->name);
         if(false==$data_response)
-            return $this->errorResponse('Aucune valeur métadata formualire trouvée.',422);
+            return $this->errorResponse(__('messages.no_metadata_value_found',[],getAppLang()),422);
         return new FormulaireResource($data_response['value']);
     }
 }
