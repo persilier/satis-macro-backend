@@ -17,7 +17,7 @@ class BenchmarkingReportService
     public function BenchmarkingReport($request)
     {
 
-        //taux des plaintes recues par niveau de gravité
+        //rate of claims received by severity level
         $totalClaims = $this->getAllClaimsByPeriod($request)->count();
         $claimBySeverityLevel = $this->getClaimsReceivedBySeverityLevel($request)->get();
         $dataReceived = [];
@@ -39,9 +39,9 @@ class BenchmarkingReportService
 
         }
 
-        //plaintes recues ayant un object de plainte par severityLevel
+        //claims received with a claimObject by severityLevel
         $claimWithClaimObjBySeverityLevel = $this->getClaimsReceivedWithClaimObjectBySeverityLevel($request)->get();
-        //taux des plaintes traitées par niveau de gravité
+        //rate of claims treated by severity level
         $claimTreatedBySeverityLevel = $this->getClaimsTreatedBySeverityLevel($request)->get();
         $dataTreated = [];
         foreach($claimWithClaimObjBySeverityLevel as $totalWithClaimObjSeverityLevel){
@@ -68,7 +68,7 @@ class BenchmarkingReportService
 
         }
 
-        //objects de plainte les plus reccurentes
+        //recurrent object claim
         $recurringClaimObject = $this->getClaimsReceivedByClaimObject($request)->get();
         $dataRecurringClaimObject = [];
         foreach($recurringClaimObject as $threeRecurringClaimObject){
@@ -87,7 +87,7 @@ class BenchmarkingReportService
 
         }
 
-        //Somme des plaintes recues par categories de client
+        //Sum of claims received by category client
         $claimsByCategoryClient = $this->getClaimsReceivedByClientCategory($request)->get();
         $dataClaimsByCategoryClient = [];
         foreach($claimsByCategoryClient as $byCategoryClient){
@@ -106,7 +106,7 @@ class BenchmarkingReportService
 
         }
 
-        //Somme des plaintes recues par unite
+        //Sum of claims received by unit
         $claimsByUnit = $this->getClaimsReceivedByUnit($request)->get();
         $dataClaimsByUnit = [];
         foreach($claimsByUnit as $byUnit){
@@ -125,7 +125,7 @@ class BenchmarkingReportService
 
         }
 
-        //Somme des plaintes transferees par unite de traitement
+        //Sum of claims treated by unit
         $claimsByTreatmentUnit = $this->getClaimsTreatedByUnit($request)->get();
         $dataClaimsByTreatmentUnit = [];
         foreach($claimsByTreatmentUnit as $byTreatmentUnit){
@@ -144,7 +144,7 @@ class BenchmarkingReportService
 
         }
 
-        //Somme des plaintes par canal de reception
+        //Sum of claims by request channel
         $claimsByRequestChanel = $this->getClaimsByRequestChanel($request)->get();
         $dataClaimsByRequestChanel = [];
         foreach($claimsByRequestChanel as $byRequestChanel){
