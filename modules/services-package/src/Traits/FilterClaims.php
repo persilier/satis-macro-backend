@@ -48,22 +48,6 @@ trait FilterClaims
         return $claims;
     }
 
-    protected function getAllClaimsBySemester($institution_id,$relations=[]){
-
-        $dateStart =  Carbon::now()->startOfDay()->subMonths(6);
-        $dateEnd = $dateStart->copy()->addMonths(6)->endOfDay();
-
-        $claims = Claim::query()
-            ->with($relations)
-            ->where('institution_targeted_id', $institution_id);
-
-        $claims->where('created_at', '>=', $dateStart)
-            ->where('created_at', '<=', $dateEnd);
-
-        return $claims;
-    }
-
-
     function getClaimsByStatus($claims,$status,$relations=[],$treatment=false)
     {
 

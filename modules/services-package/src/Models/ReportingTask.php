@@ -16,6 +16,9 @@ class ReportingTask extends Model
     use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
 
     const BIANNUAL_REPORT="biannual";
+    const UEAMOA_REPORT="uemoa";
+    const SATIS_REPORT="satis";
+    const REGULATORY_REPORT="regulatory";
 
     protected static $logName = 'reporting_task';
     /**
@@ -37,7 +40,7 @@ class ReportingTask extends Model
      * @var array
      */
     protected $fillable = [
-        'period', 'staffs' , 'institution_id', 'institution_targeted_id','report_type'
+        'period', 'staffs' , 'institution_id', 'institution_targeted_id','reporting_type'
     ];
 
 

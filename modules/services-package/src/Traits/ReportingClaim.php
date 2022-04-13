@@ -548,8 +548,8 @@ trait ReportingClaim
     protected function rulesTasksConfig($institution = true)
     {
         $data = [
-
             'period' => ['required', Rule::in(['days', 'weeks', 'months', 'quarterly', 'biannual'])],
+            'type' => ['required', Rule::in(['satis', 'regulatory', 'ueamoa', ])],
             'staffs' => [
                 'required', 'array',
             ],

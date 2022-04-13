@@ -14,8 +14,8 @@ class AddReportTypeColumnToReportingTasksTable extends Migration
     public function up()
     {
         Schema::table('reporting_tasks', function (Blueprint $table) {
-            $table->string("reporting_type")->nullable()
-                ->default("")
+            $table->string("reporting_type")
+                ->nullable()
                 ->after("institution_targeted_id");
         });
     }

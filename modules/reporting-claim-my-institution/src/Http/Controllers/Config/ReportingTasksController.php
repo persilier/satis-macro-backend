@@ -92,9 +92,12 @@ class ReportingTasksController extends ApiController
     {
 
         $period = $this->periodList();
+        $types = $this->typeList();
+
 
         return response()->json([
             'period' => $period,
+            'types' => $types,
             'staffs' => $this->getAllStaffsReportingTasks(),
             'reportingTask' =>  $this->reportingTaskMap($reportingTask),
         ],200);
