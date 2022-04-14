@@ -47,7 +47,6 @@ trait ReportingClaim
         return $data;
     }
 
-
     /**
      * @param $request
      * @param $institution
@@ -503,7 +502,25 @@ trait ReportingClaim
             ],
             [
                 'value' => 'biannual', 'label' => 'Semestriel'
-            ]
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function typeList(){
+
+        return [
+            [
+                'value' => 'uemoa', 'label' => 'Rapport UEAMOA'
+            ],
+            [
+                'value' => 'satis', 'label' => 'Rapport SATIS'
+            ],
+            [
+                'value' => 'regulatory', 'label' => 'Rapport Règlementaire'
+            ],
         ];
     }
 
@@ -531,8 +548,8 @@ trait ReportingClaim
     protected function rulesTasksConfig($institution = true)
     {
         $data = [
-
             'period' => ['required', Rule::in(['days', 'weeks', 'months', 'quarterly', 'biannual'])],
+            'type' => ['required', Rule::in(['satis', 'regulatory', 'ueamoa', ])],
             'staffs' => [
                 'required', 'array',
             ],

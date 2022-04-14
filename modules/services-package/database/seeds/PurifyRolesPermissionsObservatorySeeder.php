@@ -82,7 +82,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-auth-config','update-auth-config',
                     'activity-log',
                     'list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'config-reporting-claim-any-institution'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

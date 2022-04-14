@@ -4,6 +4,8 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Satis2020\ServicePackage\Services\InstitutionService;
+use Satis2020\ServicePackage\Services\StateService;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\SecureForceDeleteWithoutException;
@@ -38,8 +40,13 @@ class Institution extends Model
      */
     protected $fillable = [
         'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id',
-        'orther_attributes', 'active_pilot_id'
+        'orther_attributes', 'active_pilot_id','country_id'
     ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = ['country'];
 
     /**
      * Return the sluggable configuration array for this model.
@@ -150,6 +157,14 @@ class Institution extends Model
     public function emailClaimConfiguration()
     {
         return $this->hasOne(EmailClaimConfiguration::class);
+    }
+
+
+    public function getCountryAttribute()
+    {
+        $institutionService = new InstitutionService();
+
+        return $institutionService->getCountryById($this->attributes['country_id']);
     }
 
 }

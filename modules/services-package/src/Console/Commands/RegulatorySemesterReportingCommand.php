@@ -3,23 +3,25 @@ namespace Satis2020\ServicePackage\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\ReportingTask;
 use Satis2020\ServicePackage\Services\Reporting\RegulatoryState\RegulatoryStateService;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 
 /**
- * Class ReportingBiannualCommand
+ * Class ReportingDaysCommand
  * @package Satis2020\ServicePackage\Console\Commands
  */
-class ReportingBiannualCommand extends Command
+class RegulatorySemesterReportingCommand extends Command
 {
     use ReportingClaim;
 
-    protected $signature = 'service:generate-reporting-biannual';
+    protected $signature = 'service:generate-semester-reporting';
 
-    protected $description = 'Génération automatique par mois des rapporting et l\'envoie par email.';
+    protected $description = "Generate semester reporting";
 
     public function __construct()
     {
@@ -43,35 +45,26 @@ class ReportingBiannualCommand extends Command
 
         $request->merge(['date_start' => $dateStart, 'date_end' => $dateEnd]);
 
-        $reportinTasks = $this->getAllReportingTasks('biannual', $date);
+        $reportinTasks = $this->getAllReportingTasks(ReportingTask::BIANNUAL_REPORT, $date);
 
         if($reportinTasks->isNotEmpty()){
 
             foreach ($reportinTasks as $reportingTask){
+                $institutions = Institution::query()->get();
+        $reportingTask = ReportingTask::first();
 
-                switch ($reportingTask->reporting_type){
-                    /*case ReportingTask::UEAMOA_REPORT :
-                        break;
-                    case ReportingTask::SATIS_REPORT:
-                        break;*/
-                    case ReportingTask::REGULATORY_REPORT:
-                        $institutions = Institution::query()->get();
-
-                        foreach ($institutions as $institution){
-                            $request->merge(['institution_id'=>$institution->id]);
-                            $service->generateAndSendReport($request,$institution,$reportingTask);
-                        }
-                        break;
-                    default:
-                        $this->TreatmentReportingTasks($request, $reportingTask);
-                        break;
+                foreach ($institutions as $institution){
+                    $request->merge(['institution_id'=>$institution->id]);
+                    $service->generateAndSendReport($request,$institution,$reportingTask);
                 }
-
-
             }
 
+        }else{
+            $this->info("Oops! No task found");
         }
-
     }
+
+
+
 
 }

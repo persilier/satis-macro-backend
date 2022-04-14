@@ -26,25 +26,6 @@ use Satis2020\ServicePackage\Models\Metadata;
  */
 trait FilterClaims
 {
-    /**
-     * @param bool $institution
-     * @return array
-     */
-    protected function rules($institution = true)
-    {
-
-        $data = [
-            'date_start' => 'date_format:Y-m-d',
-            'date_end' => 'date_format:Y-m-d|after:date_start'
-        ];
-
-        if($institution){
-            $data['institution_id'] = 'sometimes|exists:institutions,id';
-        }
-
-        return $data;
-    }
-
 
     /**
      * @param $request
@@ -340,15 +321,14 @@ trait FilterClaims
     }
 
     /**
-     * @param $request
+     * @param $claims
      * @param $status
      * @param array $relations
      * @param bool $treatment
      * @return Builder
      */
-    function getClaimsByStatus($request, $status, $relations=[], $treatment=false)
+    function getClaimsByStatus($claims, $status, $relations=[], $treatment=false)
     {
-        $claims = $this->getAllClaimsByPeriod($request,$relations);
 
         if ($treatment) {
 
@@ -358,7 +338,6 @@ trait FilterClaims
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })->select('claims.*');
         }
-
 
         if ($status === 'transferred_to_targeted_institution') {
 

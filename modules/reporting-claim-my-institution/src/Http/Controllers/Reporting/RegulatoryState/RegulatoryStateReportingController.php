@@ -22,7 +22,7 @@ class RegulatoryStateReportingController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:list-regulatory-reporting-claim-my-institution')->only(['index']);
+        //$this->middleware('permission:list-regulatory-reporting-claim-my-institution')->only(['index']);
     }
 
     /**
@@ -36,23 +36,7 @@ class RegulatoryStateReportingController extends ApiController
             "institution_id"=>$this->institution()->id
         ]);
 
-        $data = $service->generateReport($request);
-
-        /*$logo = $this->logo($this->institution());
-        $colorTableHeader = $this->colorTableHeader();
-        $logoSatis = asset('assets/reporting/images/satisLogo.png');
-
-        $view = view('ServicePackage::reporting.pdf-regulatory-state-reporting', compact("data","logo","logoSatis","colorTableHeader"))->render();
-
-        $file = 'rapport-uemoa-etat-global-reclamation-my-institution.pdf';
-
-        $pdf = App::make('dompdf.wrapper');
-
-        $pdf->loadHTML($view);
-
-        $pdf->setPaper('A4', 'landscape');
-
-        return $pdf->download($file);*/
+        $data = $service->generateReportData($request);
 
         return response()->json($data, 200);
     }

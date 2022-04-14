@@ -34,6 +34,6 @@ class PdfRegulatoryStateReportingMail extends Mailable
                     ->attach($this->data['file'], [
                         'mime' => 'application/pdf',
                     ])
-                    ->markdown('ServicePackage::mails.pdf-regulatory-state-reporting');
+                    ->markdown('ServicePackage::mails.pdf-reporting');
     }
 }
