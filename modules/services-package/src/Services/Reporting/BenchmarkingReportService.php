@@ -16,6 +16,7 @@ class BenchmarkingReportService
 
     public function BenchmarkingReport($request)
     {
+        $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
 
         //rate of claims received by severity level
         $totalClaims = $this->getAllClaimsByPeriod($request)->count();
@@ -27,7 +28,7 @@ class BenchmarkingReportService
             $result = ($totalReceived / $totalClaims)*100;
             $rateReceived = number_format((float)$result,2, '.', '');
             if($totalSeverityLevel->name==null){
-                $totalSeverityLevel->name="Autres";
+                $totalSeverityLevel->name=$translateWord;
             }
             array_push(
                 $dataReceived,
@@ -74,7 +75,7 @@ class BenchmarkingReportService
         foreach($recurringClaimObject as $threeRecurringClaimObject){
 
             if($threeRecurringClaimObject->name==null){
-                $threeRecurringClaimObject->name="Autres";
+                $threeRecurringClaimObject->name=$translateWord;
             }
 
             array_push(
@@ -93,7 +94,7 @@ class BenchmarkingReportService
         foreach($claimsByCategoryClient as $byCategoryClient){
 
             if($byCategoryClient->name==null){
-                $byCategoryClient->name="Autres";
+                $byCategoryClient->name=$translateWord;
             }
 
             array_push(
@@ -112,7 +113,7 @@ class BenchmarkingReportService
         foreach($claimsByUnit as $byUnit){
 
             if($byUnit->name==null){
-                $byUnit->name="Autres";
+                $byUnit->name=$translateWord;
             }
 
             array_push(
@@ -131,7 +132,7 @@ class BenchmarkingReportService
         foreach($claimsByTreatmentUnit as $byTreatmentUnit){
 
             if($byTreatmentUnit->name==null){
-                $byTreatmentUnit->name="Autres";
+                $byTreatmentUnit->name=$translateWord;
             }
 
             array_push(
@@ -150,7 +151,7 @@ class BenchmarkingReportService
         foreach($claimsByRequestChanel as $byRequestChanel){
 
             if($byRequestChanel->slug==null){
-                $byRequestChanel->slug="Autres";
+                $byRequestChanel->slug=$translateWord;
             }
 
             array_push(
