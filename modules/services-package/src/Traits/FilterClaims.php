@@ -395,9 +395,54 @@ trait FilterClaims
 
         $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->where('claims.status','=', Claim::CLAIM_VALIDATED)
             ->whereNotNull('satisfaction_measured_at')
-            ->where('is_claimer_satisfied','=','1');
+            ->where('is_claimer_satisfied','=',1);
+
+        return $claims;
+
+    }
+
+    protected function getClaimsDissatisfied($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('satisfaction_measured_at')
+            ->where('is_claimer_satisfied','=',0);
+
+        return $claims;
+
+    }
+
+
+    protected function getClaimsSatisfactionAfterTreatment($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('satisfaction_measured_at');
 
         return $claims;
 
@@ -423,7 +468,6 @@ trait FilterClaims
 
         $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->where('claims.status', '=',Claim::CLAIM_VALIDATED)
             ->whereNotNull('treatments.satisfaction_measured_at');
 
         return $claims;
@@ -450,7 +494,6 @@ trait FilterClaims
 
         $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->where('claims.status', '=',Claim::CLAIM_VALIDATED)
             ->whereNull('treatments.satisfaction_measured_at');
 
         return $claims;
@@ -542,7 +585,6 @@ trait FilterClaims
 
         $claims = $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->where('claims.status','=',Claim::CLAIM_VALIDATED)
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < time_limit');
 
@@ -568,7 +610,6 @@ trait FilterClaims
 
         $claims = $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->where('claims.status','=',Claim::CLAIM_VALIDATED)
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) > time_limit');
 
@@ -596,7 +637,6 @@ trait FilterClaims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
-            ->where('claims.status', '=',Claim::CLAIM_VALIDATED)
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < claims.time_limit')
             ->where('severity_levels.status','=','high');
@@ -625,7 +665,6 @@ trait FilterClaims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
-            ->where('claims.status', '=',Claim::CLAIM_VALIDATED)
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < claims.time_limit')
             ->where('severity_levels.status','=','low')

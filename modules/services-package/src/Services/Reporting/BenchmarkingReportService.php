@@ -20,20 +20,27 @@ class BenchmarkingReportService
 
         //rate of claims received by severity level
         $totalClaims = $this->getAllClaimsByPeriod($request)->count();
+
         $claimBySeverityLevel = $this->getClaimsReceivedBySeverityLevel($request)->get();
         $dataReceived = [];
         foreach($claimBySeverityLevel as $totalSeverityLevel){
 
             $totalReceived = $totalSeverityLevel->total;
-            $result = ($totalReceived / $totalClaims)*100;
-            $rateReceived = number_format((float)$result,2, '.', '');
+            if($totalClaims!=0){
+                $result = ($totalReceived / $totalClaims)*100;
+                $rateReceived = number_format((float)$result);
+            }else{
+                $result  = 0;
+                $rateReceived = 0;
+            }
+
             if($totalSeverityLevel->name==null){
                 $totalSeverityLevel->name=$translateWord;
             }
             array_push(
                 $dataReceived,
                 [
-                    "severityLevel"=>$totalSeverityLevel->name,
+                    "severityLevel"=>json_decode($totalSeverityLevel->name),
                     "rate"=>$rateReceived
                 ]
             );
@@ -51,20 +58,20 @@ class BenchmarkingReportService
 
             if($validateClaims!=null){
                 $result = ($validateClaims->total / $totalWithClaimObjSeverityLevel->total)*100;
-                $rateTreated = number_format((float)$result, 2, '.', '');
+                $rateTreated = number_format((float)$result);
                 $result = [
-                    "severityLevel"=>$totalWithClaimObjSeverityLevel->name,
+                    "severityLevel"=>json_decode($totalWithClaimObjSeverityLevel->name),
                     "rate"=>$rateTreated,
                 ];
             }else{
                     $result = [
-                        "severityLevel"=>$totalWithClaimObjSeverityLevel->name,
+                        "severityLevel"=>json_decode($totalWithClaimObjSeverityLevel->name),
                         "rate"=>0,
                     ];
             }
            array_push(
                $dataTreated,
-                    $result
+                      $result
                 );
 
         }
@@ -81,7 +88,7 @@ class BenchmarkingReportService
             array_push(
                 $dataRecurringClaimObject,
                 [
-                    "ClaimsObject"=>$threeRecurringClaimObject->name,
+                    "ClaimsObject"=>json_decode($threeRecurringClaimObject->name),
                     "total"=>$threeRecurringClaimObject->total
                 ]
             );
@@ -100,7 +107,7 @@ class BenchmarkingReportService
             array_push(
                 $dataClaimsByCategoryClient,
                 [
-                    "CategoryClient"=>$byCategoryClient->name,
+                    "CategoryClient"=>json_decode($byCategoryClient->name),
                     "total"=>$byCategoryClient->total
                 ]
             );
@@ -119,7 +126,7 @@ class BenchmarkingReportService
             array_push(
                 $dataClaimsByUnit,
                 [
-                    "Unit"=>$byUnit->name,
+                    "Unit"=>json_decode($byUnit->name),
                     "total"=>$byUnit->total
                 ]
             );
@@ -138,7 +145,7 @@ class BenchmarkingReportService
             array_push(
                 $dataClaimsByTreatmentUnit,
                 [
-                    "TreatmentUnit"=>$byTreatmentUnit->name,
+                    "TreatmentUnit"=>json_decode($byTreatmentUnit->name),
                     "total"=>$byTreatmentUnit->total
                 ]
             );
