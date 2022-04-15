@@ -174,6 +174,9 @@ return [
             'destroy_staff_from_maybe_no_unit' => 'Supprimer un staff n\'ayant peut etre pas d\'unite',
             'show_staff_from_maybe_no_unit' => 'Afficher un staff n\'ayant peut etre pas d\'unite',
             "any_email_claim_configuration" =>'Voir toute configuration de reclamation par mail',
+            "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
+            "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
+            "list_global_reporting" =>'Voir le rapport global',
         ],
 
     //pilot and collector

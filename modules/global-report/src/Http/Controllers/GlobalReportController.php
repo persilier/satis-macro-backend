@@ -9,6 +9,16 @@ use Satis2020\ServicePackage\Services\Reporting\GlobalReportService;
 
 class GlobalReportController extends ApiController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-global-reporting')->only(['index']);
+
+    }
+
     public function index(GlobalReportRequest $request, GlobalReportService $service)
     {
         $request->merge([

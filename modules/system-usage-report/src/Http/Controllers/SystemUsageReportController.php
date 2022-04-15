@@ -9,6 +9,16 @@ use Satis2020\ServicePackage\Services\Reporting\SystemUsageReportService;
 
 class SystemUsageReportController extends ApiController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-system-usage-reporting')->only(['index']);
+
+    }
+
     public function index(SystemUsageReportRequest $request, SystemUsageReportService $service)
     {
         $request->merge([

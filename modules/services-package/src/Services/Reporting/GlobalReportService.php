@@ -218,8 +218,10 @@ class GlobalReportService
             'ClaimsReceivedByClaimGender'=>$dataClaimReceivedByClientGender,
 
             'ClientContactedAfterTreatment'=>$clientContactedAfterTreatment,
-            'RateOfClientSatisfied'=>$claimsSatisfaction.'==>'.$percentageOfClientSatisfied,
-            'RateOfClientDissatisfied'=>$claimOfClientDissatisfied.'==>'.$percentageOfClientDissatisfied,
+            'NumberOfClientSatisfied'=>$claimsSatisfaction,
+            'PercentageOfClientSatisfied'=>$percentageOfClientSatisfied,
+            'NumberOfClientDissatisfied'=>$claimOfClientDissatisfied,
+            'PercentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
         ];
     }
 

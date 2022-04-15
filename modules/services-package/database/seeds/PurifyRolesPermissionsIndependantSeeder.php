@@ -85,7 +85,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'activity-log',
                     'list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
-                    'config-reporting-claim-my-institution'
+                    'config-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -106,7 +107,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
