@@ -57,6 +57,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-auth-config','update-auth-config',
                     'list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
+                    'config-reporting-claim-my-institution',
+                    'system-my-efficiency-report',
                     'config-reporting-claim-my-institution'
                 ],
                 "pilot-filial" => [
@@ -78,7 +80,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-my-efficiency-report',
+                    'config-reporting-claim-my-institution'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [

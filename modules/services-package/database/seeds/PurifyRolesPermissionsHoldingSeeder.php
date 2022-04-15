@@ -84,7 +84,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'activity-log',
                     'list-any-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
-                    'config-reporting-claim-any-institution'
+                    'config-reporting-claim-any-institution',
+                    'system-any-efficiency-report'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -106,7 +107,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-any-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-any-efficiency-report'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
