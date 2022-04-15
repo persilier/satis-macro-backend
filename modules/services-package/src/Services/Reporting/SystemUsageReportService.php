@@ -15,6 +15,7 @@ class SystemUsageReportService
 
     public function SystemUsageReport($request)
     {
+
         $totalReceivedClaims = $this->getAllClaimsByPeriod($request)->count();
         $totalTreatedClaims = $this->getClaimsTreatedByPeriod($request,Claim::CLAIM_VALIDATED)->count();
         $totalSatisfactionMeasured = $this->getClaimsSatisfactionMeasured($request,Claim::CLAIM_VALIDATED)->count();

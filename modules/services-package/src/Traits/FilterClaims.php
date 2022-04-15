@@ -161,6 +161,35 @@ trait FilterClaims
      * @param $request
      * @return Builder
      */
+    protected function getClaimsReceivedByClaimCategory($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+            ->leftJoin('claim_categories', 'claim_categories.id', '=', 'claim_objects.claim_category_id')
+            ->selectRaw('claim_categories.name, count(*) as total')
+            ->groupBy('claim_categories.name')
+            ->orderByDesc('total');
+           // ->orderBy('total','Asc');
+
+        return $claims;
+
+    }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
     protected function getClaimsReceivedByClientCategory($request){
 
         $claims = Claim::query();
@@ -181,6 +210,32 @@ trait FilterClaims
             ->leftJoin('category_clients', 'category_clients.id', '=', 'client_institution.category_client_id')
             ->selectRaw('category_clients.name, count(*) as total')
             ->groupBy('category_clients.name');
+
+        return $claims;
+    }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsReceivedByClientGender($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->leftJoin('identites', 'identites.id', '=', 'claims.claimer_id')
+            ->selectRaw('identites.sexe, count(*) as total')
+            ->groupBy('identites.sexe')
+            ->orderByDesc('total');
 
         return $claims;
     }
@@ -312,9 +367,134 @@ trait FilterClaims
         })->select('claims.*');
 
         $claims ->where('satisfaction_measured_at', '>=', Carbon::parse($request->date_start)->startOfDay())
-                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay())
+                ->where('claims.status', $status);
 
-        //$claims->where('status', $status);
+        return $claims;
+
+    }
+
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsSatisfaction($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('satisfaction_measured_at')
+            ->where('is_claimer_satisfied','=',1);
+
+        return $claims;
+
+    }
+
+    protected function getClaimsDissatisfied($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('satisfaction_measured_at')
+            ->where('is_claimer_satisfied','=',0);
+
+        return $claims;
+
+    }
+
+
+    protected function getClaimsSatisfactionAfterTreatment($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('satisfaction_measured_at');
+
+        return $claims;
+
+    }
+
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsResolved($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.satisfaction_measured_at');
+
+        return $claims;
+
+    }
+
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsUnresolved($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNull('treatments.satisfaction_measured_at');
 
         return $claims;
 
@@ -500,5 +680,113 @@ trait FilterClaims
 
         return number_format(($totalClaimsTreatmentDuration/$totalTreatedClaims),2);
     }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsResolvedOnTime($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.satisfaction_measured_at')
+            ->whereRaw('DATEDIFF(validated_at,claims.created_at) < time_limit');
+
+        return $claims;
+    }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsResolvedLate($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.satisfaction_measured_at')
+            ->whereRaw('DATEDIFF(validated_at,claims.created_at) > time_limit');
+
+        return $claims;
+    }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getHighlyClaimsResolvedOnTime($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+            ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
+            ->whereNotNull('treatments.satisfaction_measured_at')
+            ->whereRaw('DATEDIFF(validated_at,claims.created_at) < claims.time_limit')
+            ->where('severity_levels.status','=','high');
+
+        return $claims;
+    }
+
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getLowMediumClaimsResolvedOnTime($request){
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+            ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
+            ->whereNotNull('treatments.satisfaction_measured_at')
+            ->whereRaw('DATEDIFF(validated_at,claims.created_at) < claims.time_limit')
+            ->where('severity_levels.status','=','low')
+            ->orWhere('severity_levels.status','=','medium');
+
+        return $claims;
+    }
+
 
 }
