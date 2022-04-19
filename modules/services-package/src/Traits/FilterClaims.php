@@ -664,7 +664,7 @@ trait FilterClaims
         $measuredClaims = $this->getSatisfactionMeasuredClaims($request,$relations)->count();
         $positiveMeasuredClaims = $this->getPositiveSatisfactionMeasuredClaims($request,$relations)->count();
 
-        return number_format(($positiveMeasuredClaims/$measuredClaims)*100,2);
+        return $measuredClaims>0?number_format(($positiveMeasuredClaims/$measuredClaims)*100,2):0;
     }
 
     public function getAverageNumberOfDaysForTreatment($request,$relations)
@@ -678,7 +678,7 @@ trait FilterClaims
             $totalClaimsTreatmentDuration+=$treatmentDuration;
         }
 
-        return number_format(($totalClaimsTreatmentDuration/$totalTreatedClaims),2);
+        return $totalTreatedClaims>0?number_format(($totalClaimsTreatmentDuration/$totalTreatedClaims),2):0;
     }
 
     /**
