@@ -104,6 +104,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-auth-config','update-auth-config',
             'activity-log',
             'list-any-notification-proof','pilot-list-any-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'list-regulatory-reporting-claim-any-institution',
             'config-reporting-claim-any-institution',
             'system-any-efficiency-report'
@@ -141,6 +144,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-notification-proof','pilot-list-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'system-my-efficiency-report'
 
         ];
@@ -201,6 +205,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-auth-config','update-auth-config',
             'activity-log',
             'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'list-regulatory-reporting-claim-any-institution',
             'config-reporting-claim-any-institution',
             'system-any-efficiency-report'
@@ -273,6 +280,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-notification-proof','pilot-list-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'system-my-efficiency-report'
 
         ];
