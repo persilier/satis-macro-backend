@@ -106,7 +106,10 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-any-notification-proof','pilot-list-any-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-any-institution',
-            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report'
         ];
 
         $filialPermissions = [
@@ -141,7 +144,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-notification-proof','pilot-list-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
-            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report'
+
         ];
 
         $observatoryPermissions = [
@@ -202,7 +207,10 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-notification-proof','pilot-list-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-any-institution',
-            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report'
         ];
 
         $memberPermissions = [
@@ -272,7 +280,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-notification-proof','pilot-list-notification-proof',
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
-            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report'
+
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

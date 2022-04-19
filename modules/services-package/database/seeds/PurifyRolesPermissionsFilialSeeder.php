@@ -58,7 +58,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'config-reporting-claim-my-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-my-efficiency-report',
+                    'config-reporting-claim-my-institution'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -80,7 +82,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-my-efficiency-report',
+                    'config-reporting-claim-my-institution'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [

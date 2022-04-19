@@ -84,7 +84,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'config-reporting-claim-any-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-any-efficiency-report'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -106,7 +107,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting'
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-any-efficiency-report'
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [

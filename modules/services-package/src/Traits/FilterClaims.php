@@ -565,6 +565,121 @@ trait FilterClaims
 
     }
 
+    public function getUnTreatedClaims($claims)
+    {
+        return $claims
+            ->where('status','!=',Claim::CLAIM_TREATED);
+    }
+
+
+    public function getRevivalClaims($claims)
+    {
+        return $claims
+            ->where('is_revival',true);
+    }
+
+    public function getTreatedClaims($request,$relations)
+    {
+        $claims =  Claim::query()
+            ->with($relations);
+
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        return $claims->whereHas('activeTreatment',function (Builder $builder) use($request){
+            $builder
+                ->where('validated_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('validated_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+        })->get();
+
+    }
+
+    public function getTreatedInTimeClaims($request,$relations)
+    {
+
+        $claims =  $this->getTreatedClaims($request,$relations);
+
+        $claims->filter(function ($claim){
+            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            return $treatmentDuration<=$claim->time_limit;
+        });
+
+        return $claims;
+    }
+
+    public function getTreatedOutOfTimeClaims($request,$relations)
+    {
+
+        $claims =  $this->getTreatedClaims($request,$relations);
+
+        $claims->filter(function ($claim){
+            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            return $treatmentDuration>$claim->time_limit;
+            });
+
+        return $claims;
+    }
+
+    public function getSatisfactionMeasuredClaims($request,$relations)
+    {
+
+        $claims =  Claim::query()
+            ->with($relations);
+
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        $claims->whereHas('activeTreatment',function (Builder $builder) use($request){
+            $builder
+                ->where('satisfaction_measured_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+        })->get();
+
+        return $claims;
+    }
+
+    public function getPositiveSatisfactionMeasuredClaims($request,$relations)
+    {
+        $claims =  Claim::query()
+            ->with($relations);
+
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        $claims->whereHas('activeTreatment',function (Builder $builder) use($request){
+            $builder
+                ->where('satisfaction_measured_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay())
+                ->where('is_claimer_satisfied',true);
+        })->get();
+
+        return $claims;
+    }
+
+    public function getSatisfactionRate($request,$relations)
+    {
+        $measuredClaims = $this->getSatisfactionMeasuredClaims($request,$relations)->count();
+        $positiveMeasuredClaims = $this->getPositiveSatisfactionMeasuredClaims($request,$relations)->count();
+
+        return $measuredClaims>0?number_format(($positiveMeasuredClaims/$measuredClaims)*100,2):0;
+    }
+
+    public function getAverageNumberOfDaysForTreatment($request,$relations)
+    {
+        $treatedClaims =  $this->getTreatedClaims($request,$relations);
+        $totalTreatedClaims =  $this->getTreatedClaims($request,$relations)->count();
+        $totalClaimsTreatmentDuration = 0;
+
+        foreach ($treatedClaims as $claim){
+            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            $totalClaimsTreatmentDuration+=$treatmentDuration;
+        }
+
+        return $totalTreatedClaims>0?number_format(($totalClaimsTreatmentDuration/$totalTreatedClaims),2):0;
+    }
 
     /**
      * @param $request
