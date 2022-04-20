@@ -371,25 +371,30 @@ trait FilterClaims
         $claims = Claim::query();
 
         if ($request->has('institution_id')) {
-
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
-
+        if ($request->has('unit_targeted_id')) {
+            $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
+        }
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
                ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
-
 
         $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('satisfaction_measured_at')
-            ->where('is_claimer_satisfied','=',1);
+            ->where('is_claimer_satisfied','=',1)
+            ->when($request->has('unit_targeted_id'),function ($query){
+                $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
+                    ->selectRaw('units.name, count(*) as total')
+                    ->groupBy('units.name')
+                    ->orderByDesc('total');
+            });
 
-        return $claims;
+        return $request->has('unit_targeted_id') ? $claims->get():$claims->count();
 
     }
 
-    protected function getClaimsSatisfactionByUnit($request){
+   /* protected function getClaimsSatisfactionByUnit($request){
 
         $claims = Claim::query();
 
@@ -409,7 +414,6 @@ trait FilterClaims
                ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
         $claims
-            ->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('satisfaction_measured_at')
             ->where('is_claimer_satisfied','=',1)
@@ -419,7 +423,7 @@ trait FilterClaims
 
         return $claims;
 
-    }
+    }*/
 
     protected function getClaimsDissatisfied($request){
 
@@ -704,7 +708,7 @@ trait FilterClaims
      * @param $request
      * @return Builder
      */
-    protected function getClaimsResolvedOnTime($request){
+    /*protected function getClaimsResolvedOnTime($request){
 
         $claims = Claim::query();
 
@@ -723,9 +727,9 @@ trait FilterClaims
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < time_limit');
 
         return $claims;
-    }
+    }*/
 
-    protected function getClaimsResolvedOnTimeByUnit($request){
+    protected function getClaimsResolvedOnTime($request){
 
         $claims = Claim::query();
 
@@ -745,15 +749,17 @@ trait FilterClaims
                ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
         $claims = $claims
-            ->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < time_limit')
-            ->selectRaw('units.name, count(*) as total')
-            ->groupBy('units.name')
-            ->orderByDesc('total');
+            ->when($request->has('unit_targeted_id'),function ($query){
+                $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
+                    ->selectRaw('units.name, count(*) as total')
+                    ->groupBy('units.name')
+                    ->orderByDesc('total');
+            });
 
-        return $claims;
+        return $request->has('unit_targeted_id') ? $claims->get():$claims->count();
     }
 
     /**
@@ -785,7 +791,7 @@ trait FilterClaims
      * @param $request
      * @return Builder
      */
-    protected function getHighlyClaimsResolvedOnTime($request){
+    /*protected function getHighlyClaimsResolvedOnTime($request){
 
         $claims = Claim::query();
 
@@ -807,40 +813,39 @@ trait FilterClaims
             ->where('severity_levels.status','=','high');
 
         return $claims;
-    }
+    }*/
 
-    protected function getHighlyClaimsResolvedOnTimeByUnit($request){
+    protected function getHighlyClaimsResolvedOnTime($request){
 
         $claims = Claim::query();
 
         if ($request->has('institution_id')) {
-
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         if ($request->has('unit_targeted_id')) {
-
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
-            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+               ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
         $claims = $claims
             ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-            ->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
             ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < claims.time_limit')
             ->where('severity_levels.status','=','high')
-            ->selectRaw('units.name, count(*) as total')
-            ->groupBy('units.name')
-            ->orderByDesc('total');
+            ->when($request->has('unit_targeted_id'),function($query){
+                $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
+                    ->selectRaw('units.name, count(*) as total')
+                    ->groupBy('units.name')
+                    ->orderByDesc('total');
+            });
 
-        return $claims;
+
+        return $request->has('unit_targeted_id') ? $claims->get():$claims->count();
     }
 
 
