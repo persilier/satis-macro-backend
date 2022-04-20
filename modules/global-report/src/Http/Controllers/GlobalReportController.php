@@ -15,7 +15,7 @@ class GlobalReportController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:list-global-reporting')->only(['index']);
+      //  $this->middleware('permission:list-global-reporting')->only(['index']);
 
     }
 
@@ -27,5 +27,9 @@ class GlobalReportController extends ApiController
 
         $globalReport = $service->GlobalReport($request);
         return response()->json($globalReport, 200);
+    }
+
+    public function create(){
+        return response()->json($this->getAllUnitByInstitution($this->institution()->id), 200);
     }
 }

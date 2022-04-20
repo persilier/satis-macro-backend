@@ -18,21 +18,37 @@ class BenchmarkingReportService
     {
         $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
 
+        $claimBySeverityLevel = $this->RateOfReceivedClaimsBySeverityLevel($request,$translateWord);
+        $claimTreatedBySeverityLevel = $this->RateOfTreatedClaimsBySeverityLevel($request);
+        $recurringClaimObject = $this->RecurringClaimObject($request,$translateWord);
+        $claimsByCategoryClient = $this->ClaimsByCategoryClient($request,$translateWord);
+        $claimsByUnit = $this->ClaimsByUnit($request,$translateWord);
+        $claimsByTreatmentUnit = $this->ClaimsTreatedByUnit($request,$translateWord);
+        $claimsByRequestChanel = $this->ClaimsByRequestChanel($request,$translateWord);
+
+
+        return [
+            'RateOfReceivedClaimsBySeverityLevel'=> $claimBySeverityLevel,
+            'RateOfTreatedClaimsBySeverityLevel'=> $claimTreatedBySeverityLevel,
+            'recurringClaimObject'=> $recurringClaimObject,
+            'ClaimsByCategoryClient'=> $claimsByCategoryClient,
+            'ClaimsByUnit'=> $claimsByUnit,
+            'ClaimsTreatedByUnit'=> $claimsByTreatmentUnit,
+            'ClaimsByRequestChanel'=> $claimsByRequestChanel,
+        ];
+    }
+
+
+    public function RateOfReceivedClaimsBySeverityLevel($request,$translateWord){
+
         //rate of claims received by severity level
         $totalClaims = $this->getAllClaimsByPeriod($request)->count();
 
-        $claimBySeverityLevel = $this->getClaimsReceivedBySeverityLevel($request)->get();
+        $claimBySeverityLevel = $this->getClaimsReceivedBySeverityLevel($this->getAllClaimsByPeriod($request))->get();
         $dataReceived = [];
         foreach($claimBySeverityLevel as $totalSeverityLevel){
-
             $totalReceived = $totalSeverityLevel->total;
-            if($totalClaims!=0){
-                $result = ($totalReceived / $totalClaims)*100;
-                $rateReceived = number_format((float)$result);
-            }else{
-                $result  = 0;
-                $rateReceived = 0;
-            }
+            $rateReceived =  $totalClaims!=0 ?number_format(($totalReceived / $totalClaims)*100,2):0;
 
             if($totalSeverityLevel->name==null){
                 $totalSeverityLevel->name=$translateWord;
@@ -47,34 +63,47 @@ class BenchmarkingReportService
 
         }
 
+        return $dataReceived;
+
+    }
+
+    public function RateOfTreatedClaimsBySeverityLevel($request){
+
         //claims received with a claimObject by severityLevel
         $claimWithClaimObjBySeverityLevel = $this->getClaimsReceivedWithClaimObjectBySeverityLevel($request)->get();
+
         //rate of claims treated by severity level
         $claimTreatedBySeverityLevel = $this->getClaimsTreatedBySeverityLevel($request)->get();
         $dataTreated = [];
+
         foreach($claimWithClaimObjBySeverityLevel as $totalWithClaimObjSeverityLevel){
 
             $validateClaims = collect($claimTreatedBySeverityLevel)->where('id','=',$totalWithClaimObjSeverityLevel->id)->first();
 
             if($validateClaims!=null){
-                $result = ($validateClaims->total / $totalWithClaimObjSeverityLevel->total)*100;
-                $rateTreated = number_format((float)$result);
+                $rateTreated = number_format(($validateClaims->total / $totalWithClaimObjSeverityLevel->total)*100,2);
                 $result = [
                     "severityLevel"=>json_decode($totalWithClaimObjSeverityLevel->name),
                     "rate"=>$rateTreated,
                 ];
             }else{
-                    $result = [
-                        "severityLevel"=>json_decode($totalWithClaimObjSeverityLevel->name),
-                        "rate"=>0,
-                    ];
+                $result = [
+                    "severityLevel"=>json_decode($totalWithClaimObjSeverityLevel->name),
+                    "rate"=>0,
+                ];
             }
-           array_push(
-               $dataTreated,
-                      $result
-                );
+            array_push(
+                $dataTreated,
+                $result
+            );
 
         }
+
+        return $dataTreated;
+
+    }
+
+    public function RecurringClaimObject($request,$translateWord){
 
         //recurrent object claim
         $recurringClaimObject = $this->getClaimsReceivedByClaimObject($request)->get();
@@ -94,6 +123,10 @@ class BenchmarkingReportService
             );
 
         }
+        return $dataRecurringClaimObject;
+    }
+
+    public function ClaimsByCategoryClient($request,$translateWord){
 
         //Sum of claims received by category client
         $claimsByCategoryClient = $this->getClaimsReceivedByClientCategory($request)->get();
@@ -113,6 +146,10 @@ class BenchmarkingReportService
             );
 
         }
+        return $dataClaimsByCategoryClient;
+    }
+
+    public function ClaimsByUnit($request,$translateWord){
 
         //Sum of claims received by unit
         $claimsByUnit = $this->getClaimsReceivedByUnit($request)->get();
@@ -132,6 +169,10 @@ class BenchmarkingReportService
             );
 
         }
+        return $dataClaimsByUnit;
+    }
+
+    public function ClaimsTreatedByUnit($request,$translateWord){
 
         //Sum of claims treated by unit
         $claimsByTreatmentUnit = $this->getClaimsTreatedByUnit($request)->get();
@@ -151,6 +192,10 @@ class BenchmarkingReportService
             );
 
         }
+        return $dataClaimsByTreatmentUnit;
+    }
+
+    public function ClaimsByRequestChanel($request,$translateWord){
 
         //Sum of claims by request channel
         $claimsByRequestChanel = $this->getClaimsByRequestChanel($request)->get();
@@ -170,16 +215,7 @@ class BenchmarkingReportService
             );
 
         }
-
-        return [
-                 'RateOfReceivedClaimsBySeverityLevel'=> $dataReceived,
-                 'RateOfTreatedClaimsBySeverityLevel'=> $dataTreated,
-                 'recurringClaimObject'=> $dataRecurringClaimObject,
-                 'ClaimsByCategoryClient'=> $dataClaimsByCategoryClient,
-                 'ClaimsByUnit'=> $dataClaimsByUnit,
-                 'ClaimsTreatedByUnit'=> $dataClaimsByTreatmentUnit,
-                 'ClaimsByRequestChanel'=> $dataClaimsByRequestChanel,
-               ];
+        return $dataClaimsByRequestChanel;
     }
 
 
