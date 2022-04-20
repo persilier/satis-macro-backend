@@ -68,6 +68,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
     public function satisfactionMeasured(Request $request, $claim)
     {
 
+        if ($request->isNotFilled("note")){
+            $request->request->remove("note");
+        }
         $this->validate($request, $this->rules($request));
 
         $claim = $this->getOneMyClaim($claim);

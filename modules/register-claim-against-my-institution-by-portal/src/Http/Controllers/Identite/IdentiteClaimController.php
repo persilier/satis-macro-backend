@@ -48,10 +48,10 @@ class IdentiteClaimController extends Controller
             $request->request->remove("account_number");
         }
 
+        $request->merge(['claimer_id' => $identite->id]);
+
         $rulesRequest = $this->rules($request);
         $rulesRequest['created_by'] = 'nullable';
-
-        $request->merge(['claimer_id' => $identite->id]);
 
         $this->convertEmailInStrToLower($request);
 
@@ -69,7 +69,7 @@ class IdentiteClaimController extends Controller
         // Check if the claim is complete
         $request->merge(['status' => $status['status']]);
 
-        $claim = $this->createClaim($request, false);
+        $claim = $this->createClaim($request, true);
 
         $this->attachFilesToClaimBase64($claim, $request);
 
