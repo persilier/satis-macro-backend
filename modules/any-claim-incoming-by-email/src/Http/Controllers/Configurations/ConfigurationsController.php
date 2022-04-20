@@ -32,7 +32,7 @@ class ConfigurationsController extends ApiController
             return $this->errorResponse($configuration['message'], 400);
         }
 
-        return response()->json($configuration['data'], 201);
+        return response()->json($configuration, 201);
     }
 
 
