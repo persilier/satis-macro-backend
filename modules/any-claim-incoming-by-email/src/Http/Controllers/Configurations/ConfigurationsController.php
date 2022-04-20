@@ -29,10 +29,10 @@ class ConfigurationsController extends ApiController
         $configuration = $this->storeConfiguration($request, $emailClaimConfiguration, "any.register-email-claim");
 
         if ($configuration['error']) {
-            return $this->errorResponse($configuration['message'], 400);
+            return $this->errorResponse($configuration, 400);
         }
 
-        return response()->json($configuration, 201);
+        return response()->json($configuration['data'], 201);
     }
 
 
