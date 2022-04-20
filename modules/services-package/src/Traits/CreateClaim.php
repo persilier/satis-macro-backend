@@ -72,7 +72,7 @@ trait CreateClaim
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
             'attach_files' => 'nullable',
-            'account_number'=>'numeric|filled'
+            'account_number'=>'filled'
         ];
 
         if ($with_client) {
