@@ -58,6 +58,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'config-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-my-efficiency-report',
                     'config-reporting-claim-my-institution'
                 ],
@@ -81,6 +82,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-my-efficiency-report',
                     'config-reporting-claim-my-institution'
                 ],
