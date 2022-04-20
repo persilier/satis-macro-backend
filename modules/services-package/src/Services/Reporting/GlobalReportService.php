@@ -114,86 +114,162 @@ class GlobalReportService
         return $dataClaimReceivedByClientGender;
     }
 
-    public function ClaimsResolvedOnTimeByUnit($request,$translateWord,$totalClaimsReceived){
+    public function ClaimsResolvedOnTime($request,$translateWord,$totalClaimsReceived){
 
-        $claimsTreatedInTimeByUnit = $this->getClaimsResolvedOnTimeByUnit($request)->get();
+        if ($request->has('unit_targeted_id')) {
 
-        $dataClaimsTreatedInTimeByUnit = [];
+            $claimsTreatedInTimeByUnit = $this->getClaimsResolvedOnTime($request);
+            $dataClaimsTreatedInTime = [];
 
-        foreach($claimsTreatedInTimeByUnit as $treatedInTimeByUnit){
+            foreach($claimsTreatedInTimeByUnit as $treatedInTimeByUnit){
 
-            $percentageOfClaimsTreatedInTimeByUnit  = $totalClaimsReceived!=0 ? number_format(($treatedInTimeByUnit->total / $totalClaimsReceived)*100,2):0;
-            if($treatedInTimeByUnit->name==null){
-                $treatedInTimeByUnit->name=$translateWord;
+                $percentageOfClaimsTreatedInTimeByUnit  = $totalClaimsReceived!=0 ? number_format(($treatedInTimeByUnit->total / $totalClaimsReceived)*100,2):0;
+                if($treatedInTimeByUnit->name==null){
+                    $treatedInTimeByUnit->name=$translateWord;
+                }
+
+                array_push(
+                    $dataClaimsTreatedInTime,
+                    [
+                        "Unit"=>json_decode($treatedInTimeByUnit->name),
+                        "total"=>$treatedInTimeByUnit->total,
+                        "percentage"=>$percentageOfClaimsTreatedInTimeByUnit
+                    ]
+                );
+
             }
 
-            array_push(
-                $dataClaimsTreatedInTimeByUnit,
-                [
-                    "Unit"=>json_decode($treatedInTimeByUnit->name),
-                    "total"=>$treatedInTimeByUnit->total,
-                    "percentage"=>$percentageOfClaimsTreatedInTimeByUnit
-                ]
-            );
+        }else{
+
+            //rate of claims treated in time
+            $claimsTreatedInTime = $this->getClaimsResolvedOnTime($request);
+            $dataClaimsTreatedInTime  = $totalClaimsReceived!=0 ? number_format(($claimsTreatedInTime / $totalClaimsReceived)*100,2):0;
+            $dataClaimsTreatedInTime=[
+                'total'=>$claimsTreatedInTime,
+                'taux'=>$dataClaimsTreatedInTime,
+            ];
 
         }
-        return $dataClaimsTreatedInTimeByUnit;
+
+        return $dataClaimsTreatedInTime;
 
     }
 
-    public function RateOfClaimsSatisfactionByUnit($request,$translateWord,$totalClaimsReceived){
+    public function ClaimsSatisfaction($request,$translateWord,$totalClaimsReceived){
 
-        $claimsSatisfactionByUnit = $this->getClaimsSatisfactionByUnit($request)->get();
+        if ($request->has('unit_targeted_id')) {
 
-        $dataClaimsSatisfactionByUnit = [];
+            $claimsSatisfactionByUnit = $this->getClaimsSatisfaction($request);
+            $dataClaimsSatisfaction = [];
 
-        foreach($claimsSatisfactionByUnit as $satisfactionByUnit){
+            foreach ($claimsSatisfactionByUnit as $satisfactionByUnit) {
 
-            $percentageOfClaimsSatisfactionByUnit  = $totalClaimsReceived!=0 ?number_format(($satisfactionByUnit->total / $totalClaimsReceived)*100,2):0;
+                $percentageOfClaimsSatisfactionByUnit = $totalClaimsReceived != 0 ? number_format(($satisfactionByUnit->total / $totalClaimsReceived) * 100, 2) : 0;
 
-            if($satisfactionByUnit->name==null){
-                $satisfactionByUnit->name=$translateWord;
+                if ($satisfactionByUnit->name == null) {
+                    $satisfactionByUnit->name = $translateWord;
+                }
+
+                array_push(
+                    $dataClaimsSatisfaction,
+                    [
+                        "Unit" => json_decode($satisfactionByUnit->name),
+                        "total" => $satisfactionByUnit->total,
+                        "percentage" => $percentageOfClaimsSatisfactionByUnit
+                    ]
+                );
+
             }
 
-            array_push(
-                $dataClaimsSatisfactionByUnit,
-                [
-                    "Unit"=>json_decode($satisfactionByUnit->name),
-                    "total"=>$satisfactionByUnit->total,
-                    "percentage"=>$percentageOfClaimsSatisfactionByUnit
-                ]
-            );
-
+        }else{
+            //claims satisfaction rate
+            $claimsSatisfaction = $this->getClaimsSatisfaction($request);
+            $percentageOfClaimsSatisfaction  = $totalClaimsReceived!=0 ?number_format(($claimsSatisfaction / $totalClaimsReceived)*100,2):0;
+            $dataClaimsSatisfaction=[
+                'total'=>$claimsSatisfaction,
+                'taux'=>$percentageOfClaimsSatisfaction,
+            ];
         }
-        return $dataClaimsSatisfactionByUnit;
+        return $dataClaimsSatisfaction;
 
     }
 
-    public function RateOfHighlyClaimsTreatedInTimeByUnit($request,$translateWord,$totalClaimsReceived){
+    public function HighlyClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived){
 
-        $highlyClaimsTreatedInTimeByUnit = $this->getHighlyClaimsResolvedOnTimeByUnit($request)->get();
-        $dataHighlyClaimsTreatedInTimeByUnit = [];
+        if ($request->has('unit_targeted_id')) {
 
-        foreach($highlyClaimsTreatedInTimeByUnit as $allHighlyClaimsTreatedInTimeByUnit){
+            $highlyClaimsTreatedInTime = $this->getHighlyClaimsResolvedOnTime($request);
+            $dataHighlyClaimsTreatedInTime = [];
 
-            $percentageOfHighlyClaimsTreatedInTimeByUnit  = $totalClaimsReceived!=0 ?number_format(($allHighlyClaimsTreatedInTimeByUnit->total / $totalClaimsReceived)*100,2):0;
+            foreach ($highlyClaimsTreatedInTime as $allHighlyClaimsTreatedInTimeByUnit) {
 
-            if($allHighlyClaimsTreatedInTimeByUnit->name==null){
-                $allHighlyClaimsTreatedInTimeByUnit->name=$translateWord;
+                $percentageOfHighlyClaimsTreatedInTimeByUnit = $totalClaimsReceived != 0 ? number_format(($allHighlyClaimsTreatedInTimeByUnit->total / $totalClaimsReceived) * 100, 2) : 0;
+
+                if ($allHighlyClaimsTreatedInTimeByUnit->name == null) {
+                    $allHighlyClaimsTreatedInTimeByUnit->name = $translateWord;
+                }
+
+                array_push(
+                    $dataHighlyClaimsTreatedInTime,
+                    [
+                        "Unit" => json_decode($allHighlyClaimsTreatedInTimeByUnit->name),
+                        "total" => $allHighlyClaimsTreatedInTimeByUnit->total,
+                        "percentageOfHighlyClaimsTreatedInTime" => $percentageOfHighlyClaimsTreatedInTimeByUnit
+                    ]
+                );
+
             }
+        }else{
 
-            array_push(
-                $dataHighlyClaimsTreatedInTimeByUnit,
-                [
-                    "Unit"=>json_decode($allHighlyClaimsTreatedInTimeByUnit->name),
-                    "total"=>$allHighlyClaimsTreatedInTimeByUnit->total,
-                    "percentage"=>$percentageOfHighlyClaimsTreatedInTimeByUnit
-                ]
-            );
+            //highly claim treated in time
+            $highlyClaimsTreatedInTime = $this->getHighlyClaimsResolvedOnTime($request);
+            $percentageOfHighlyClaimsTreatedInTime  = $totalClaimsReceived!=0 ?number_format(($highlyClaimsTreatedInTime / $totalClaimsReceived)*100,2):0;
+
+            $dataHighlyClaimsTreatedInTime=[
+                'total'=>$highlyClaimsTreatedInTime,
+                'percentageOfHighlyClaimsTreatedInTime'=>$percentageOfHighlyClaimsTreatedInTime,
+            ];
 
         }
-        return $dataHighlyClaimsTreatedInTimeByUnit;
+        return $dataHighlyClaimsTreatedInTime;
 
+    }
+
+    public function ClientSatisfied($request)
+    {
+
+        if (!$request->has('unit_targeted_id')) {
+
+            $claimsSatisfaction = $this->getClaimsSatisfaction($request);
+            //total of client contacted after treatment
+            $clientContactedAfterTreatment = $this->getClaimsSatisfactionAfterTreatment($request)->count();
+            //rate of satisfied client
+            $percentageOfClientSatisfied = $clientContactedAfterTreatment != 0 ? number_format(($claimsSatisfaction / $clientContactedAfterTreatment) * 100, 2) : 0;
+            $dataClientSatisfied = [
+                'percentageOfClientSatisfied'=>$percentageOfClientSatisfied,
+            ];
+        }else{
+            $dataClientSatisfied = [];
+        }
+        return $dataClientSatisfied;
+    }
+
+    public function ClientDissatisfied($request,$claimOfClientDissatisfied)
+    {
+
+        if (!$request->has('unit_targeted_id')) {
+
+            //total of client contacted after treatment
+            $clientContactedAfterTreatment = $this->getClaimsSatisfactionAfterTreatment($request)->count();
+            $percentageOfClientDissatisfied = $clientContactedAfterTreatment!=0 ?number_format( ($claimOfClientDissatisfied / $clientContactedAfterTreatment)*100,2):0;
+
+            $dataClientDissatisfied = [
+                'percentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
+            ];
+        }else{
+            $dataClientDissatisfied = [];
+        }
+        return $dataClientDissatisfied;
     }
 
 
@@ -201,30 +277,28 @@ class GlobalReportService
     {
 
         $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
-
         //claim received by period
         $totalClaimsReceived = $this->getAllClaimsByPeriod($request)->count();
+        //claims treated in time
+        $claimsTreatedInTime = $this->ClaimsResolvedOnTime($request,$translateWord,$totalClaimsReceived);
+        //claims satisfaction
+        $claimsSatisfaction = $this->ClaimsSatisfaction($request,$translateWord,$totalClaimsReceived);
+        //highly claim treated in time
+        $highlyClaimsTreatedInTime = $this->HighlyClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived);
+        //rate of satisfied client
+        $percentageOfClientSatisfied = $this->ClientSatisfied($request);
+        //total of client dissatisfied
+        $claimOfClientDissatisfied = $this->getClaimsDissatisfied($request)->count();
+        //rate of Dissatisfied client
+        $percentageOfClientDissatisfied = $this->ClientDissatisfied($request,$claimOfClientDissatisfied);
 
-        //rate of claims treated in time
-        $claimsTreatedInTime = $this->getClaimsResolvedOnTime($request)->count();
-        $percentageOfClaimsTreatedInTime  = $totalClaimsReceived!=0 ? number_format(($claimsTreatedInTime / $totalClaimsReceived)*100,2):0;
 
-        //rate of claims treated in time by unit
-        $claimsTreatedInTimeByUnit = $this->ClaimsResolvedOnTimeByUnit($request,$translateWord,$totalClaimsReceived);
 
-        //claims satisfaction rate
-        $claimsSatisfaction = $this->getClaimsSatisfaction($request)->count();
-        $percentageOfClaimsSatisfaction  = $totalClaimsReceived!=0 ?number_format(($claimsSatisfaction / $totalClaimsReceived)*100,2):0;
 
-        //claims satisfaction rate by unit
-        $claimsSatisfactionByUnit = $this->RateOfClaimsSatisfactionByUnit($request,$translateWord,$totalClaimsReceived);
 
-        //rate of treated highly claim in time
-        $highlyClaimsTreatedInTime = $this->getHighlyClaimsResolvedOnTime($request)->count();
-        $percentageOfHighlyClaimsTreatedInTime  = $totalClaimsReceived!=0 ?number_format(($highlyClaimsTreatedInTime / $totalClaimsReceived)*100,2):0;
 
-        //rate of treated highly claim in time by unit
-        $highlyClaimsTreatedInTimeByUnit = $this->RateOfHighlyClaimsTreatedInTimeByUnit($request,$translateWord,$totalClaimsReceived);
+
+
 
         //rate of treated low medium claim in time
         $lowMediumClaimsTreatedInTime = $this->getLowMediumClaimsResolvedOnTime($request)->count();
@@ -235,9 +309,6 @@ class GlobalReportService
 
         //claim received unresolved
         $totalClaimsUnresolved = $this->getClaimsUnresolved($request)->count();
-
-        //claim received resolved on time
-        $totalClaimResolvedOnTime = $this->getClaimsResolvedOnTime($request)->count();
 
         //claim received resolved Late
         $totalClaimResolvedLate = $this->getClaimsResolvedLate($request)->count();
@@ -256,21 +327,17 @@ class GlobalReportService
 
         //total of client contacted after treatment
         $clientContactedAfterTreatment = $this->getClaimsSatisfactionAfterTreatment($request)->count();
-        //total of client dissatisfied and percentage of satisfied client
-        $claimOfClientDissatisfied = $this->getClaimsDissatisfied($request)->count();
-        $percentageOfClientDissatisfied = $clientContactedAfterTreatment!=0 ?number_format( ($claimOfClientDissatisfied / $clientContactedAfterTreatment)*100,2):0;
-        $percentageOfClientSatisfied = $clientContactedAfterTreatment!=0 ?number_format( ($claimsSatisfaction / $clientContactedAfterTreatment)*100,2):0;
 
 
         return [
-            'RateOfClaimsTreatedInTime'=>$percentageOfClaimsTreatedInTime,
-            'RateOfClaimsSatisfaction'=>$percentageOfClaimsSatisfaction,
-            'RateOfHighlyClaimsTreatedInTime'=>$percentageOfHighlyClaimsTreatedInTime,
+            'RateOfClaimsTreatedInTime'=>$claimsTreatedInTime,
+            'RateOfClaimsSatisfaction'=>$claimsSatisfaction,
+            'RateOfHighlyClaimsTreatedInTime'=>$highlyClaimsTreatedInTime,
 
             'TotalClaimsReceived'=>$totalClaimsReceived,
             'TotalClaimsResolved'=>$totalClaimsResolved,
             'TotalClaimsUnresolved'=>$totalClaimsUnresolved,
-            'TotalClaimResolvedOnTime'=>$totalClaimResolvedOnTime,
+            'TotalClaimResolvedOnTime'=>$claimsTreatedInTime,
             'TotalClaimResolvedLate'=>$totalClaimResolvedLate,
             'RateOLowMediumClaimsTreatedInTime'=>$percentageOfLowMediumClaimsTreatedInTime,
             'RecurringClaimsByClaimObject'=>$recurringClaimObject,
@@ -284,10 +351,6 @@ class GlobalReportService
             'PercentageOfClientSatisfied'=>$percentageOfClientSatisfied,
             'NumberOfClientDissatisfied'=>$claimOfClientDissatisfied,
             'PercentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
-
-            'RateOfClaimsTreatedInTimeByUnit'=>$claimsTreatedInTimeByUnit,
-            'RateOfClaimsSatisfactionByUnit'=>$claimsSatisfactionByUnit,
-            'RateOfHighlyClaimsTreatedInTimeByUnit'=>$highlyClaimsTreatedInTimeByUnit,
         ];
     }
 
