@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
@@ -133,6 +134,13 @@ trait ClaimIncomingByEmail
         $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
         if ($subscriber['error']) {
+
+            try {
+                Log::debug("subscribtion error",$subscriber);
+            }catch (\Exception $exception){
+                Log::info( $subscriber['message']);
+            }
+
             return [
                 "error" => true,
                 "message" => "Les paramètres ne sont pas valides. L'adresse email saisie et/ou le nom (nom de l'intituion) de votre application est déjà utilisé par une autre institution.",
