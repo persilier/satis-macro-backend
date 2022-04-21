@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 
@@ -75,13 +76,29 @@ trait ClaimSatisfactionMeasured
      * @param string $status
      * @return array
      */
-    protected function getAllMyClaim($status = 'validated'){
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
 
-        return $claims = $this->getClaim($status)->get()->filter(function ($item){
+        return $paginate
+            ?$this->getClaim($status)
+                ->where('institution_targeted_id', $this->institution()->id)
+                ->when($key,function (Builder $query1) use ($key) {
+                    $query1->where('reference' , 'LIKE', "%$key%")
+                        ->orWhereHas("claimer",function ($query2) use ($key){
+                            $query2->where('firstname' , 'LIKE', "%$key%")
+                                ->orWhere('lastname' , 'LIKE', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        })->orWhereHas("claimObject",function ($query3) use ($key){
+                            $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        })->orWhereHas("unitTargeted",function ($query4) use ($key){
+                            $query4->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        });
+                })->paginate($paginationSize)
 
-            return  ($this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            :$this->getClaim($status)->get()->filter(function ($item){
+                return ($this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            })->values();
 
-        })->values();
     }
 
 
