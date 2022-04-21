@@ -2,7 +2,6 @@
 
 namespace Satis2020\MetadataPackage\Http\Controllers\Reporting;
 
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\MetadataPackage\Http\Resources\Metadata as MetadataResource;
@@ -22,6 +21,9 @@ class ReportingMetadataController extends ApiController
     public function __construct()
     {
         parent::__construct();
+
+        $this->middleware('auth:api');
+
     }
 
     /**
