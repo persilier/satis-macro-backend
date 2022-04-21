@@ -21,5 +21,8 @@ return [
     'unable _to_create_metadata'=>"Impossible de créer ce métadata :type. car son content n'est pas vide.",
     'no_metadata_value_found'=>"Aucune valeur métadata formualire trouvée.",
     'a_client_found'=>"L'un des clients est retrouvé dans l'institution sélectionnée avec ce numéro de compte. 
-                                        Souhaitez vous apporter une modification à ce compte ?"
+                                        Souhaitez vous apporter une modification à ce compte ?",
+    'unit_do_not_exist'=>"L'unité que vous avez choisir n'existe pas dans cette institution.",
+    'unit_found_for_staff'=>"Un identité a été retrouvé avec les informations du staff.",
+    'unable_to_find_unit_type'=>"Impossible d'accéder au type de l'institution de l'utilisateur connecté."
 ];

@@ -81,7 +81,7 @@ trait ImportStaff
 
                 return [
                     'status' => false,
-                    'message' => 'L\'unité que vous avez choisir n\'existe pas dans cette institution.'
+                    'message' => __('messages.unit_do_not_exist',[],getAppLang())
                 ];
             }
         }
@@ -127,7 +127,7 @@ trait ImportStaff
             if (!$this->stop_identite_exist) {
 
                 $status = false;
-                $message = 'Un identité a été retrouvé avec les informations du staff.';
+                $message = __('messages.unit_found_for_staff',[],getAppLang());
 
             } else {
 
