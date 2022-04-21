@@ -65,7 +65,7 @@ class SendMailCommand extends Command
         }
 
         try {
-            Mail::to($options['to'])->send(new SendMail($options['text']));
+            Mail::to($options['to'])->queue(new SendMail($options['text']));
         }catch (\Exception $e){
             Log::debug($e);
             $this->error($e);
