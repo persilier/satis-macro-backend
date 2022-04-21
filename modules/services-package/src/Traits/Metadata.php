@@ -359,6 +359,32 @@ trait Metadata
         return $response_data;
     }
 
+    protected function getAllDataByTypes($types)
+    {
+
+        return MetadataModel::query()
+            ->whereIn("name",$types)
+            ->get();
+    }
+
+    protected function formatReportTitleMetas($types)
+    {
+        $metas = $this->getAllDataByTypes($types);
+        $response = [];
+
+        foreach ($metas as $meta){
+            $title = json_decode($meta->data)->title;
+            $description = json_decode($meta->data)->description;
+            $name = $meta->name;
+            array_push($response,[
+                "name"=>$name,
+                "title"=>$title,
+                "description"=>$description,
+            ]);
+        }
+        return$response;
+    }
+
     /*public function getData(Request $request, $datas){
         $actions = [];
 

@@ -65,7 +65,7 @@ class Constants
     {
         $names = [];
         foreach (self::reportTypes() as $type){
-            array_push($names,$type['name']);
+            array_push($names,$type['value']);
         }
         return $names;
     }

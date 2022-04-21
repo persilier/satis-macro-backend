@@ -20,7 +20,7 @@ class ReportingTitlesSeeder extends Seeder
 
         foreach ($reportsTypes as $type){
             $name = $type['value'];
-            $data = $type['label'];
+            $data = ["title"=>$type['label'],"description"=>$type['label']];
             $meta = Metadata::query()
                 ->where('name',$name)
                 ->first();
