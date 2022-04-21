@@ -16,25 +16,63 @@ class GlobalReportService
 
     public function RecurringClaimsByClaimObject($request,$translateWord){
 
-        $recurringClaimObject = $this->getClaimsReceivedByClaimObject($request)->limit(3)->get();
-        $dataRecurringClaimObject = [];
+        if ($request->has('unit_targeted_id')) {
 
-        foreach($recurringClaimObject as $key => $threeRecurringClaimObject ){
+            //claims by unit
+            $getClaimByUnit = $this->getClaimsReceivedByUnit($request)->whereIn('unit_targeted_id', $request->unit_targeted_id)->get();
+            $dataRecurringClaimObject = [];
+            $index=0;
 
-            if($threeRecurringClaimObject->name==null){
-                $threeRecurringClaimObject->name=$translateWord;
+            foreach($getClaimByUnit as $claimByUnit){
+                array_push($dataRecurringClaimObject,[
+                    "unit"=>json_decode($claimByUnit->name),
+                    "allClaimObject"=>[]
+                ]);
+
+
+                $dataClaimObjectByUnit = $this->getClaimsReceivedByClaimObject($request,$claimByUnit->id)->limit(3)->get();
+
+                foreach ($dataClaimObjectByUnit as $key => $allDataClaimObjectByUnit){
+
+                        $result["ClaimsObject"]=json_decode($allDataClaimObjectByUnit->name);
+                        $result["total"]=$allDataClaimObjectByUnit->total;
+                        $result["rank"]=$key+1;
+
+                    array_push(
+                        $dataRecurringClaimObject[$index]["allClaimObject"],
+                         $result
+                    );
+
+                }
+                $index++;
             }
 
-            array_push(
-                $dataRecurringClaimObject,
-                [
-                    "ClaimsObject"=>json_decode($threeRecurringClaimObject->name),
-                    "total"=>$threeRecurringClaimObject->total,
-                    "rank"=>$key+1
-                ]
-            );
+
+        }else{
+
+            $recurringClaimObject = $this->getClaimsReceivedByClaimObject($request)->limit(3)->get();
+            $dataRecurringClaimObject = [];
+
+            foreach($recurringClaimObject as $key => $threeRecurringClaimObject ){
+
+                if($threeRecurringClaimObject->name==null){
+                    $threeRecurringClaimObject->name=$translateWord;
+                }
+
+                array_push(
+                    $dataRecurringClaimObject,
+                    [
+                        "ClaimsObject"=>json_decode($threeRecurringClaimObject->name),
+                        "total"=>$threeRecurringClaimObject->total,
+                        "rank"=>$key+1
+                    ]
+                );
+
+            }
 
         }
+
+
         return $dataRecurringClaimObject;
     }
 
@@ -55,7 +93,7 @@ class GlobalReportService
                 [
                     "CategoryClaims"=>json_decode($claimReceivedByClaimCategory->name),
                     "total"=>$claimReceivedByClaimCategory->total,
-                    "percentage"=>$percentage
+                    "taux"=>$percentage
                 ]
             );
 
@@ -80,7 +118,7 @@ class GlobalReportService
                 [
                     "ClaimsObject"=>json_decode($receivedByClaimObject->name),
                     "total"=>$receivedByClaimObject->total,
-                    "percentage"=>$percentage
+                    "taux"=>$percentage
                 ]
             );
 
@@ -106,7 +144,7 @@ class GlobalReportService
                 [
                     "ClientGender"=>$receivedByClientGender->sexe,
                     "total"=>$receivedByClientGender->total,
-                    "percentage"=>$percentage
+                    "taux"=>$percentage
                 ]
             );
 
@@ -133,7 +171,7 @@ class GlobalReportService
                     [
                         "Unit"=>json_decode($treatedInTimeByUnit->name),
                         "total"=>$treatedInTimeByUnit->total,
-                        "percentage"=>$percentageOfClaimsTreatedInTimeByUnit
+                        "taux"=>$percentageOfClaimsTreatedInTimeByUnit
                     ]
                 );
 
@@ -175,7 +213,7 @@ class GlobalReportService
                     [
                         "Unit" => json_decode($satisfactionByUnit->name),
                         "total" => $satisfactionByUnit->total,
-                        "percentage" => $percentageOfClaimsSatisfactionByUnit
+                        "taux" => $percentageOfClaimsSatisfactionByUnit
                     ]
                 );
 
@@ -214,7 +252,7 @@ class GlobalReportService
                     [
                         "Unit" => json_decode($allHighlyClaimsTreatedInTimeByUnit->name),
                         "total" => $allHighlyClaimsTreatedInTimeByUnit->total,
-                        "percentageOfHighlyClaimsTreatedInTime" => $percentageOfHighlyClaimsTreatedInTimeByUnit
+                        "taux" => $percentageOfHighlyClaimsTreatedInTimeByUnit
                     ]
                 );
 
@@ -227,7 +265,7 @@ class GlobalReportService
 
             $dataHighlyClaimsTreatedInTime=[
                 'total'=>$highlyClaimsTreatedInTime,
-                'percentageOfHighlyClaimsTreatedInTime'=>$percentageOfHighlyClaimsTreatedInTime,
+                'taux'=>$percentageOfHighlyClaimsTreatedInTime,
             ];
 
         }
@@ -246,7 +284,7 @@ class GlobalReportService
             //rate of satisfied client
             $percentageOfClientSatisfied = $clientContactedAfterTreatment != 0 ? number_format(($claimsSatisfaction / $clientContactedAfterTreatment) * 100, 2) : 0;
             $dataClientSatisfied = [
-                'percentageOfClientSatisfied'=>$percentageOfClientSatisfied,
+                'taux'=>$percentageOfClientSatisfied,
             ];
         }else{
             $dataClientSatisfied = [];
@@ -264,7 +302,7 @@ class GlobalReportService
             $percentageOfClientDissatisfied = $clientContactedAfterTreatment!=0 ?number_format( ($claimOfClientDissatisfied / $clientContactedAfterTreatment)*100,2):0;
 
             $dataClientDissatisfied = [
-                'percentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
+                'taux'=>$percentageOfClientDissatisfied,
             ];
         }else{
             $dataClientDissatisfied = [];
@@ -403,7 +441,7 @@ class GlobalReportService
                     $dataClaimsLowMediumClaimsTreatedInTime,
                     [
                         "Unit"=>json_decode($claimsLowMediumClaimsTreatedInTime->name),
-                        "percentageOfLowMediumClaimsTreatedInTime"=>$percentageOfLowMediumClaimsTreatedInTime
+                        "taux"=>$percentageOfLowMediumClaimsTreatedInTime
                     ]
                 );
             }
@@ -412,7 +450,7 @@ class GlobalReportService
             $lowMediumClaimsTreatedInTime = $this->getLowMediumClaimsResolvedOnTime($request);
             $percentageOfLowMediumClaimsTreatedInTime = $totalClaimsReceived!=0 ? number_format(($lowMediumClaimsTreatedInTime / $totalClaimsReceived)*100,2):0;
             $dataClaimsLowMediumClaimsTreatedInTime = [
-                'percentageOfLowMediumClaimsTreatedInTime'=>$percentageOfLowMediumClaimsTreatedInTime,
+                'taux'=>$percentageOfLowMediumClaimsTreatedInTime,
             ];
         }
         return $dataClaimsLowMediumClaimsTreatedInTime;
@@ -485,7 +523,6 @@ class GlobalReportService
         $claimReceivedByClaimObject = $this->ClaimsReceivedByClaimObject($request,$translateWord,$totalClaimsReceived);
         //claim received by gender
         $claimReceivedByClientGender = $this->ClaimsReceivedByClientGender($request,$totalClaimsReceived);
-
 
         return [
             'RateOfClaimsTreatedInTime'=>$claimsTreatedInTime,
