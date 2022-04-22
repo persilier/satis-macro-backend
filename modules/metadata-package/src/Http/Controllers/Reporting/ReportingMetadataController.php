@@ -54,7 +54,7 @@ class ReportingMetadataController extends ApiController
      */
     public function edit($name,MetadataService $metadataService)
     {
-        if ($metadataService->getMetaByName($name)==null)
+        if ($metadataService->getByName($name)==null)
             abort(Response::HTTP_NOT_FOUND);
 
         $datas = $this->formatReportTitleMetas([$name])[0];

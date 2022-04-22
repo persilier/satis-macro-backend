@@ -18,6 +18,11 @@ class MetadataService
         $this->repository = $repository;
     }
 
+    public function getByName($name)
+    {
+        return $this->repository->getByName($name);
+    }
+
     public function getMetaByName($name)
     {
         return $this->repository->getMetadataByName($name);
