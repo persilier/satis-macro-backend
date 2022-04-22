@@ -23,6 +23,10 @@ class ReportingMetadataController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
+        $this->middleware('permission:list-reporting-titles-configs')->only(['index']);
+        $this->middleware('permission:edit-reporting-titles-configs')->only(['edit']);
+        $this->middleware('permission:update-reporting-titles-configs')->only(['update']);
+
 
     }
 

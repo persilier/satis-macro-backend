@@ -102,7 +102,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             'list-auth-config','update-auth-config',
-            'activity-log'
+            'activity-log',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $filialPermissions = [
@@ -134,6 +135,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-auth-config','update-auth-config',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
 
         ];
 
@@ -191,7 +193,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
             "any-email-claim-configuration",
             'list-auth-config','update-auth-config',
-            'activity-log'
+            'activity-log',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $memberPermissions = [
@@ -257,7 +260,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-auth-config','update-auth-config',
-            'activity-log'
+            'activity-log',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
