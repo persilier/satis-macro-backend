@@ -38,7 +38,6 @@ class BenchmarkingReportService
         ];
     }
 
-
     public function RateOfReceivedClaimsBySeverityLevel($request,$translateWord){
 
         //rate of claims received by severity level
