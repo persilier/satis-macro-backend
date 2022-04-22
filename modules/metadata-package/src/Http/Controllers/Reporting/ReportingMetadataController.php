@@ -40,6 +40,18 @@ class ReportingMetadataController extends ApiController
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @param Metadata $metadata
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function edit($name)
+    {
+        $datas = $this->formatReportTitleMetas([$name])[0];
+        return response()->json($datas);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param Request $request

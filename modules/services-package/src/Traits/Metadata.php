@@ -377,6 +377,7 @@ trait Metadata
             $description = json_decode($meta->data)->description;
             $name = $meta->name;
             array_push($response,[
+                //"id"=>$meta->id,
                 "name"=>$name,
                 "title"=>$title,
                 "description"=>$description,
