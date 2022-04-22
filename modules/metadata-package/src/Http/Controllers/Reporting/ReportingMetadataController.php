@@ -2,7 +2,9 @@
 
 namespace Satis2020\MetadataPackage\Http\Controllers\Reporting;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Satis2020\MetadataPackage\Http\Resources\Metadata as MetadataResource;
 use Satis2020\ServicePackage\Consts\Constants;
@@ -34,7 +36,7 @@ class ReportingMetadataController extends ApiController
      * Display a listing of the resource.
      *
      * @param Metadata $metadata
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
@@ -46,11 +48,15 @@ class ReportingMetadataController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param Metadata $metadata
-     * @return \Illuminate\Http\JsonResponse
+     * @param $name
+     * @param MetadataService $metadataService
+     * @return JsonResponse
      */
-    public function edit($name)
+    public function edit($name,MetadataService $metadataService)
     {
+        if ($metadataService->getMetaByName($name)==null)
+            abort(Response::HTTP_NOT_FOUND);
+
         $datas = $this->formatReportTitleMetas([$name])[0];
         return response()->json($datas);
     }
@@ -60,7 +66,7 @@ class ReportingMetadataController extends ApiController
      *
      * @param Request $request
      * @param MetadataService $metadataService
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws ValidationException
      */
     public function update(Request $request,MetadataService $metadataService)
