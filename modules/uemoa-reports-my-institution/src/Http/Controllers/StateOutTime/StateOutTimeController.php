@@ -86,6 +86,7 @@ class StateOutTimeController extends ApiController
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
             'title' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->description,
             'relationShip' => false,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),

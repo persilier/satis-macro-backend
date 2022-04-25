@@ -87,6 +87,7 @@ class StateAnalytiqueController extends ApiController
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
             'title' => $this->getMetadataByName(Constants::ANALYTICS_STATE_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::ANALYTICS_STATE_REPORTING)->description,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
