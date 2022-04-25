@@ -85,7 +85,7 @@ class GlobalStateReportController extends ApiController
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
-            'title' => $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)['title'],
+            'title' => $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->title,
             'relationShip' => false,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),

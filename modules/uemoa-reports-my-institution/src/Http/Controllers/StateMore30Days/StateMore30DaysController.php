@@ -85,7 +85,7 @@ class StateMore30DaysController extends ApiController
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
-            'title' => $this->getMetadataByName(Constants::OUT_OF_30_DAYS_REPORTING)['title'],
+            'title' => $this->getMetadataByName(Constants::OUT_OF_30_DAYS_REPORTING)->title,
             'relationShip' => false,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),
