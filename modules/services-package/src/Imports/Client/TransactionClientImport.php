@@ -42,6 +42,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->errors = [];
 
 
+
     }
 
     /***

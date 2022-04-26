@@ -85,7 +85,8 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-regulatory-reporting-claim-my-institution',
                     'config-reporting-claim-any-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'system-any-efficiency-report'
+                    'system-any-efficiency-report',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

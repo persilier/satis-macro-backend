@@ -339,7 +339,7 @@ trait UemoaReports{
                         'totalUnfounded' => (string) $this->totalUnfounded($claims),
                         'totalNoValidated' => (string) $this->totalNoValidated($claims),
                         'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
-                        'delayPlanned' => (string) optional( $claims->first()->claimObject)->time_limit,
+                        'delayPlanned' => optional((string) $claims->first()->claimObject)->time_limit,
                         'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),

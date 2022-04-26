@@ -80,16 +80,12 @@ class ImportController extends ApiController
             $request->file('file')
         );
 
-
         $this->activityLogService->store("Importation des clients",
             $this->institution()->id,
             $this->activityLogService::IMPORTATION,
             'client',
             $this->user()
         );
-
-        $datas['errors'] = $transaction->getImportErrors();
-
 
         $datas['errors'] = $transaction->getImportErrors();
 

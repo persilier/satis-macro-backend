@@ -134,11 +134,14 @@ trait ClaimIncomingByEmail
         $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
         if ($subscriber['error']) {
+
+
             try {
-                Log::debug("Service subscribtion error",$subscriber);
-            }catch (\Exception $e){
-                Log::error($subscriber['message']);
+                Log::debug("subscribtion error",$subscriber);
+            }catch (\Exception $exception){
+                Log::info( $subscriber['message']);
             }
+
             return [
                 "error" => true,
                 "message" => "Les paramètres ne sont pas valides. L'adresse email saisie et/ou le nom (nom de l'intituion) de votre application est déjà utilisé par une autre institution.",
