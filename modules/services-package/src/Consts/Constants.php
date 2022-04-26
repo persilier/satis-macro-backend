@@ -62,10 +62,41 @@ class Constants
         ];
     }
 
+    static function periodList(){
+
+        return [
+            [
+                'value' => 'days', 'label' => 'Journalier'
+            ],
+            [
+                'value' => 'weeks', 'label' => 'Hebdomadaire'
+            ],
+            [
+                'value' => 'months', 'label' => 'Mensuel'
+            ],
+            [
+                'value' => 'quarterly', 'label' => 'Trimestriel'
+            ],
+            [
+                'value' => 'biannual', 'label' => 'Semestriel'
+            ],
+        ];
+    }
+
+
     static function getReportTypesNames()
     {
         $names = [];
         foreach (self::reportTypes() as $type){
+            array_push($names,$type['value']);
+        }
+        return $names;
+    }
+
+    static function getPeriodValues()
+    {
+        $names = [];
+        foreach (self::periodList() as $type){
             array_push($names,$type['value']);
         }
         return $names;
