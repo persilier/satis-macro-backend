@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Services\Reporting;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\FilterClaims;
 
@@ -13,6 +14,71 @@ class GlobalReportService
 {
 
     use FilterClaims,DataUserNature;
+
+    public function GlobalReport($request)
+    {
+
+        $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
+        //claim received by period or unit
+        $totalClaimsReceived = $this->getAllClaimsByPeriod($request)->count();
+        $totalClaimsReceivedByUnitOrNo = $this->ClaimsByUnit($request,$translateWord);
+        //claims treated in time
+        $claimsTreatedInTime = $this->ClaimsResolvedOnTime($request,$translateWord,$totalClaimsReceived);
+        //claims satisfaction
+        $claimsSatisfaction = $this->ClaimsSatisfaction($request,$translateWord,$totalClaimsReceived);
+        //highly claim treated in time
+        $highlyClaimsTreatedInTime = $this->HighlyClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived);
+        //rate of satisfied client
+        $percentageOfClientSatisfied = $this->ClientSatisfied($request);
+        //total of client dissatisfied
+        $claimOfClientDissatisfied = $this->getClaimsDissatisfied($request)->count();
+        //rate of Dissatisfied client
+        $percentageOfClientDissatisfied = $this->ClientDissatisfied($request,$claimOfClientDissatisfied);
+        //claim received resolved
+        $totalClaimsResolved = $this->ClaimsResolved($request,$translateWord);
+        //claim received unresolved
+        $totalClaimsUnresolved = $this->ClaimsUnresolved($request,$translateWord);
+        //claim received resolved Late
+        $totalClaimResolvedLate = $this->ClaimResolvedLate($request,$translateWord);
+        //low medium claim treated in time
+        $percentageOfLowMediumClaimsTreatedInTime = $this->ClaimLowMediumClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived);
+        //total of client contacted after treatment
+        $clientContactedAfterTreatment = $this->ClaimsSatisfactionAfterTreatment($request,$translateWord);
+
+        //3 recurrent object claim
+        $recurringClaimObject = $this->RecurringClaimsByClaimObject($request,$translateWord);
+        //claim received by category claim
+        $totalReceivedClaimsByClaimCategory = $this->ClaimsReceivedByClaimCategory($request,$translateWord,$totalClaimsReceived);
+        //claim received by object claim
+        $claimReceivedByClaimObject = $this->ClaimsReceivedByClaimObject($request,$translateWord,$totalClaimsReceived);
+        //claim received by gender
+        $claimReceivedByClientGender = $this->ClaimsReceivedByClientGender($request,$totalClaimsReceived);
+
+        return [
+            'RateOfClaimsTreatedInTime'=>$claimsTreatedInTime,
+            'RateOfClaimsSatisfaction'=>$claimsSatisfaction,
+            'RateOfHighlyClaimsTreatedInTime'=>$highlyClaimsTreatedInTime,
+
+            'TotalClaimsReceived'=>$totalClaimsReceivedByUnitOrNo,
+            'TotalClaimsResolved'=>$totalClaimsResolved,
+            'TotalClaimsUnresolved'=>$totalClaimsUnresolved,
+            'TotalClaimResolvedOnTime'=>$claimsTreatedInTime,
+            'TotalClaimResolvedLate'=>$totalClaimResolvedLate,
+            'RateOLowMediumClaimsTreatedInTime'=>$percentageOfLowMediumClaimsTreatedInTime,
+            'RecurringClaimsByClaimObject'=>$recurringClaimObject,
+
+            'ClaimsReceivedByClaimCategory'=>$totalReceivedClaimsByClaimCategory,
+            'ClaimsReceivedByClaimObject'=>$claimReceivedByClaimObject,
+            'ClaimsReceivedByClientGender'=>$claimReceivedByClientGender,
+
+            'ClientContactedAfterTreatment'=>$clientContactedAfterTreatment,
+            'NumberOfClientSatisfied'=>$claimsSatisfaction,
+            'PercentageOfClientSatisfied'=>$percentageOfClientSatisfied,
+            'NumberOfClientDissatisfied'=>$claimOfClientDissatisfied,
+            'PercentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
+        ];
+    }
+
 
     public function RecurringClaimsByClaimObject($request,$translateWord){
 
@@ -169,12 +235,29 @@ class GlobalReportService
                 array_push(
                     $dataClaimsTreatedInTime,
                     [
+                        "UnitId"=>$treatedInTimeByUnit->id,
                         "Unit"=>json_decode($treatedInTimeByUnit->name),
                         "total"=>$treatedInTimeByUnit->total,
                         "taux"=>$percentageOfClaimsTreatedInTimeByUnit
                     ]
                 );
 
+            }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimsTreatedInTime,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimsTreatedInTime,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0",
+                            "taux"=>"0.00"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -211,12 +294,29 @@ class GlobalReportService
                 array_push(
                     $dataClaimsSatisfaction,
                     [
+                        "UnitId" => $satisfactionByUnit->id,
                         "Unit" => json_decode($satisfactionByUnit->name),
                         "total" => $satisfactionByUnit->total,
                         "taux" => $percentageOfClaimsSatisfactionByUnit
                     ]
                 );
 
+            }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimsSatisfaction,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimsSatisfaction,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0",
+                            "taux"=>"0.00"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -315,6 +415,7 @@ class GlobalReportService
         if ($request->has('unit_targeted_id')) {
 
             $getClaimByUnit = $this->getClaimsReceivedByUnit($request)->whereIn('unit_targeted_id', $request->unit_targeted_id)->get();
+
             $dataClaimByUnit = [];
 
             foreach($getClaimByUnit as $ClaimByUnit ){
@@ -326,11 +427,28 @@ class GlobalReportService
                 array_push(
                     $dataClaimByUnit,
                     [
+                        "UnitId"=>$ClaimByUnit->id,
                         "Unit"=>json_decode($ClaimByUnit->name),
                         "total"=>$ClaimByUnit->total
                     ]
                 );
             }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimByUnit,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimByUnit,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0"
+                        ]
+                    );
+                }
+            }
+
 
         }else{
             $dataClaimByUnit = $this->getAllClaimsByPeriod($request)->count();
@@ -354,10 +472,26 @@ class GlobalReportService
                 array_push(
                     $dataClaimResolved,
                     [
+                        "UnitId"=>$ClaimResolved->id,
                         "Unit"=>json_decode($ClaimResolved->name),
                         "total"=>$ClaimResolved->total
                     ]
                 );
+            }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimResolved,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimResolved,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -382,10 +516,26 @@ class GlobalReportService
                 array_push(
                     $dataClaimUnresolved,
                     [
+                        "UnitId"=>$ClaimUnresolved->id,
                         "Unit"=>json_decode($ClaimUnresolved->name),
                         "total"=>$ClaimUnresolved->total
                     ]
                 );
+            }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimUnresolved,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimUnresolved,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -410,10 +560,27 @@ class GlobalReportService
                 array_push(
                     $dataClaimsResolvedLate,
                     [
+                        "UnitId"=>$claimsResolvedLate->id,
                         "Unit"=>json_decode($claimsResolvedLate->name),
                         "total"=>$claimsResolvedLate->total
                     ]
                 );
+            }
+
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimsResolvedLate,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimsResolvedLate,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "total"=>"0"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -440,11 +607,28 @@ class GlobalReportService
                 array_push(
                     $dataClaimsLowMediumClaimsTreatedInTime,
                     [
+                        "UnitId"=>$claimsLowMediumClaimsTreatedInTime->id,
                         "Unit"=>json_decode($claimsLowMediumClaimsTreatedInTime->name),
                         "taux"=>$percentageOfLowMediumClaimsTreatedInTime
                     ]
                 );
             }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClaimsLowMediumClaimsTreatedInTime,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClaimsLowMediumClaimsTreatedInTime,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "taux"=>"0.00"
+                        ]
+                    );
+                }
+            }
+
 
         }else{
             $lowMediumClaimsTreatedInTime = $this->getLowMediumClaimsResolvedOnTime($request);
@@ -472,10 +656,26 @@ class GlobalReportService
                 array_push(
                     $dataClientContactedAfterTreatment,
                     [
+                        "UnitId"=>$clientContactedAfterTreatment->id,
                         "Unit"=>json_decode($clientContactedAfterTreatment->name),
                         "total"=>$clientContactedAfterTreatment->total
                     ]
                 );
+            }
+
+            foreach ($request->unit_targeted_id as $unitId){
+                $idExistInUnit = $this->checkUnitInArray($dataClientContactedAfterTreatment,$unitId);
+                if(!$idExistInUnit){
+                    $unit =  Unit::findOrFail($unitId);
+                    array_push(
+                        $dataClientContactedAfterTreatment,
+                        [
+                            "UnitId"=>$unit->id,
+                            "Unit"=>["fr"=>$unit->name],
+                            "taux"=>"0.00"
+                        ]
+                    );
+                }
             }
 
         }else{
@@ -485,69 +685,16 @@ class GlobalReportService
     }
 
 
-    public function GlobalReport($request)
-    {
+    public function checkUnitInArray($units, $unitId){
 
-        $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
-        //claim received by period or unit
-        $totalClaimsReceived = $this->getAllClaimsByPeriod($request)->count();
-        $totalClaimsReceivedByUnitOrNo = $this->ClaimsByUnit($request,$translateWord);
-        //claims treated in time
-        $claimsTreatedInTime = $this->ClaimsResolvedOnTime($request,$translateWord,$totalClaimsReceived);
-        //claims satisfaction
-        $claimsSatisfaction = $this->ClaimsSatisfaction($request,$translateWord,$totalClaimsReceived);
-        //highly claim treated in time
-        $highlyClaimsTreatedInTime = $this->HighlyClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived);
-        //rate of satisfied client
-        $percentageOfClientSatisfied = $this->ClientSatisfied($request);
-        //total of client dissatisfied
-        $claimOfClientDissatisfied = $this->getClaimsDissatisfied($request)->count();
-        //rate of Dissatisfied client
-        $percentageOfClientDissatisfied = $this->ClientDissatisfied($request,$claimOfClientDissatisfied);
-        //claim received resolved
-        $totalClaimsResolved = $this->ClaimsResolved($request,$translateWord);
-        //claim received unresolved
-        $totalClaimsUnresolved = $this->ClaimsUnresolved($request,$translateWord);
-        //claim received resolved Late
-        $totalClaimResolvedLate = $this->ClaimResolvedLate($request,$translateWord);
-        //low medium claim treated in time
-        $percentageOfLowMediumClaimsTreatedInTime = $this->ClaimLowMediumClaimsTreatedInTime($request,$translateWord,$totalClaimsReceived);
-        //total of client contacted after treatment
-        $clientContactedAfterTreatment = $this->ClaimsSatisfactionAfterTreatment($request,$translateWord);
-
-        //3 recurrent object claim
-        $recurringClaimObject = $this->RecurringClaimsByClaimObject($request,$translateWord);
-        //claim received by category claim
-        $totalReceivedClaimsByClaimCategory = $this->ClaimsReceivedByClaimCategory($request,$translateWord,$totalClaimsReceived);
-        //claim received by object claim
-        $claimReceivedByClaimObject = $this->ClaimsReceivedByClaimObject($request,$translateWord,$totalClaimsReceived);
-        //claim received by gender
-        $claimReceivedByClientGender = $this->ClaimsReceivedByClientGender($request,$totalClaimsReceived);
-
-        return [
-            'RateOfClaimsTreatedInTime'=>$claimsTreatedInTime,
-            'RateOfClaimsSatisfaction'=>$claimsSatisfaction,
-            'RateOfHighlyClaimsTreatedInTime'=>$highlyClaimsTreatedInTime,
-
-            'TotalClaimsReceived'=>$totalClaimsReceivedByUnitOrNo,
-            'TotalClaimsResolved'=>$totalClaimsResolved,
-            'TotalClaimsUnresolved'=>$totalClaimsUnresolved,
-            'TotalClaimResolvedOnTime'=>$claimsTreatedInTime,
-            'TotalClaimResolvedLate'=>$totalClaimResolvedLate,
-            'RateOLowMediumClaimsTreatedInTime'=>$percentageOfLowMediumClaimsTreatedInTime,
-            'RecurringClaimsByClaimObject'=>$recurringClaimObject,
-
-            'ClaimsReceivedByClaimCategory'=>$totalReceivedClaimsByClaimCategory,
-            'ClaimsReceivedByClaimObject'=>$claimReceivedByClaimObject,
-            'ClaimsReceivedByClientGender'=>$claimReceivedByClientGender,
-
-            'ClientContactedAfterTreatment'=>$clientContactedAfterTreatment,
-            'NumberOfClientSatisfied'=>$claimsSatisfaction,
-            'PercentageOfClientSatisfied'=>$percentageOfClientSatisfied,
-            'NumberOfClientDissatisfied'=>$claimOfClientDissatisfied,
-            'PercentageOfClientDissatisfied'=>$percentageOfClientDissatisfied,
-        ];
+        foreach ($units as $unit){
+            if($unit["UnitId"]==$unitId){
+                return true;break;
+            }
+        }
+        return false;
     }
+
 
 
 }

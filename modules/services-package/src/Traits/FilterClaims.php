@@ -397,8 +397,8 @@ trait FilterClaims
             ->where('is_claimer_satisfied','=',1)
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -458,8 +458,8 @@ trait FilterClaims
             ->whereNotNull('satisfaction_measured_at')
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -492,8 +492,8 @@ trait FilterClaims
             ->whereNotNull('treatments.satisfaction_measured_at')
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -526,8 +526,8 @@ trait FilterClaims
             ->whereNull('treatments.satisfaction_measured_at')
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -787,8 +787,8 @@ trait FilterClaims
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) < time_limit')
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -820,8 +820,8 @@ trait FilterClaims
             ->whereRaw('DATEDIFF(validated_at,claims.created_at) > time_limit')
             ->when($request->has('unit_targeted_id'),function ($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
@@ -896,8 +896,8 @@ trait FilterClaims
             ->orWhere('severity_levels.status','=','medium')
             ->when($request->has('unit_targeted_id'),function($query){
                 $query->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-                    ->selectRaw('units.name, count(*) as total')
-                    ->groupBy('units.name')
+                    ->selectRaw('units.name,units.id, count(*) as total')
+                    ->groupBy('units.name','units.id')
                     ->orderByDesc('total');
             });
 
