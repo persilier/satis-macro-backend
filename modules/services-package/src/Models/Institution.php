@@ -163,8 +163,7 @@ class Institution extends Model
     public function getCountryAttribute()
     {
         $institutionService = new InstitutionService();
-
-        return $institutionService->getCountryById($this->attributes['country_id']);
+        return array_key_exists("country_id",$this->attributes)? $institutionService->getCountryById($this->attributes['country_id']):null;
     }
 
 }
