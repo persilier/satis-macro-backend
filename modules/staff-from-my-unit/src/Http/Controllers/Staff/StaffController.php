@@ -52,10 +52,21 @@ class StaffController extends ApiController
     {
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
+
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
-                ->when($recherche !=null,function(Builder $query) use ($recherche ) {
+                ->whereHas('identite', function($query) use ($recherche) {
+                    return $query
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })->paginate($paginationSize)
+
+           /* Staff::with(['identite', 'position', 'unit', 'institution'])
+                ->where('institution_id', $this->institution()->id)
+                ->when($recherche !=null,function(Builder $query) use ($recherche) {
                     $query
                         ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
                         ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
@@ -63,7 +74,7 @@ class StaffController extends ApiController
                         ->orwhereJsonContains('telephone', $recherche)
                         ->orwhereJsonContains('email', $recherche);
                 })
-                ->paginate($paginationSize)
+                ->paginate($paginationSize)*/
             , 200);
     }
 
