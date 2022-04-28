@@ -25,3 +25,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('plan', 'Plan\PlanController@show')->name('plan.show');
 Route::put('plan', 'Plan\PlanController@update')->name('plan.update');
+Route::get("reporting-metadata",'Reporting\ReportingMetadataController@index')->name('reporting.meta');
+Route::get("reporting-metadata/{name}",'Reporting\ReportingMetadataController@edit')->name('edit.reporting.meta');
+Route::put("reporting-metadata",'Reporting\ReportingMetadataController@update')->name('update.reporting.meta');
