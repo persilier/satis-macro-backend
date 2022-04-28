@@ -81,7 +81,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
-                    'list-notification-proof'
+                    'list-notification-proof',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -101,7 +102,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'pilot-list-notification-proof'
+                    'pilot-list-notification-proof',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
