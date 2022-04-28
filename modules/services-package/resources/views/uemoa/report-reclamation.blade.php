@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RAPPORT PDF UEMOA</title>
     <!-- Bootstrap core CSS -->
-    {{--<link rel="stylesheet" href="{{ asset('assets/reporting/css/bootstrap.min.css') }}">--}}
+    <link rel="stylesheet" href="{{ asset('assets/reporting/css/bootstrap.min.css') }}">
 
-    {{--<style>
+    <style>
         body{
             font-family: Poppins, Helvetica, sans-serif;
 
@@ -88,7 +88,7 @@
             width: 100%
         }
 
-    </style>--}}
+    </style>
 
 </head>
 <body style="background: white">
