@@ -672,7 +672,7 @@ class GlobalReportService
                         [
                             "UnitId"=>$unit->id,
                             "Unit"=>["fr"=>$unit->name],
-                            "taux"=>"0.00"
+                            "total"=>"0"
                         ]
                     );
                 }
