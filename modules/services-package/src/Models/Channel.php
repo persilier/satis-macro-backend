@@ -44,7 +44,12 @@ class Channel extends Model
      *
      * @var array
      */
-    protected $casts = ['name' => 'json'];
+    protected $casts = [
+        'name' => 'json',
+        'is_editable'=>'boolean',
+        'is_response'=>'boolean',
+        'can_be_response'=>'boolean',
+    ];
 
     /**
      * Return the sluggable configuration array for this model.
