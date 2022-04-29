@@ -207,6 +207,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     protected function transformRowBeforeStoring($data)
     {
+
         foreach ($data as $key => $value) {
             $data[$key] = trim($value);
         }
