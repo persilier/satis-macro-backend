@@ -23,6 +23,8 @@ class Constants
     const SYSTEM_USAGE_REPORTING = 'system-usage-report';
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
+    const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
+
 
     static public function  paginationSize()
     {
@@ -45,6 +47,9 @@ class Constants
             ],
             [
                 'value' => self::OUT_OF_TIME_CLAIMS_REPORTING, 'label' => 'Réclamations en retard'
+            ],
+            [
+                'value' => self::REGULATORY_STATE_REPORTING, 'label' => 'Rapports des états réglementaire'
             ],
             [
                 'value' => self::MONTHLY_REPORTING, 'label' => 'Génération automatique par mois'
