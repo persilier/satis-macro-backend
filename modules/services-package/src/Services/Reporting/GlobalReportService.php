@@ -5,15 +5,17 @@ namespace Satis2020\ServicePackage\Services\Reporting;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\FilterClaims;
+use Satis2020\ServicePackage\Traits\Metadata;
 
 class GlobalReportService
 {
 
-    use FilterClaims,DataUserNature;
+    use Metadata,FilterClaims,DataUserNature;
 
     public function GlobalReport($request)
     {
@@ -55,6 +57,9 @@ class GlobalReportService
         $claimReceivedByClientGender = $this->ClaimsReceivedByClientGender($request,$totalClaimsReceived);
 
         return [
+            'title' => $this->getMetadataByName(Constants::GLOBAL_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::GLOBAL_REPORTING)->description,
+
             'RateOfClaimsTreatedInTime'=>$claimsTreatedInTime,
             'RateOfClaimsSatisfaction'=>$claimsSatisfaction,
             'RateOfHighlyClaimsTreatedInTime'=>$highlyClaimsTreatedInTime,

@@ -13,13 +13,16 @@ class Constants
 
     const GLOBAL_STATE_REPORTING = 'global-state-reporting';
     const ANALYTICS_STATE_REPORTING = 'analytics-state-reporting';
-    const OUT_OF_30_DAYS_REPORTING= 'out-of-30-days-reporting';
-    const OUT_OF_TIME_CLAIMS_REPORTING= 'out-of-time-claims-reporting';
-    const MONTHLY_REPORTING= 'monthly-reporting';
-    const DAILY_REPORTING= 'daily-reporting';
-    const WEEKLY_REPORTING= 'weekly-reporting';
-    const BIANNUAL_REPORTING= 'biannual-reporting';
-    const QUARTERLY_REPORTING= 'quarterly-reporting';
+    const OUT_OF_30_DAYS_REPORTING = 'out-of-30-days-reporting';
+    const OUT_OF_TIME_CLAIMS_REPORTING = 'out-of-time-claims-reporting';
+    const MONTHLY_REPORTING = 'monthly-reporting';
+    const DAILY_REPORTING = 'daily-reporting';
+    const WEEKLY_REPORTING = 'weekly-reporting';
+    const BIANNUAL_REPORTING = 'biannual-reporting';
+    const QUARTERLY_REPORTING = 'quarterly-reporting';
+    const SYSTEM_USAGE_REPORTING = 'system-usage-report';
+    const BENCHMARKING_REPORTING = 'benchmarking-report';
+    const GLOBAL_REPORTING = 'global-report';
 
     static public function  paginationSize()
     {
@@ -57,6 +60,15 @@ class Constants
             ],
             [
                 'value' => self::QUARTERLY_REPORTING, 'label' => 'Génération automatique par Trimestriel'
+            ],
+            [
+                'value' => self::SYSTEM_USAGE_REPORTING, 'label' => 'Rapport utilisation système'
+            ],
+            [
+                'value' => self::BENCHMARKING_REPORTING, 'label' => 'Rapport de comparaison de l\'utilisation des fonctionnalités du système'
+            ],
+            [
+                'value' => self::GLOBAL_REPORTING, 'label' => 'Rapport consolidé et rapport spécifique par institution'
             ],
 
         ];
