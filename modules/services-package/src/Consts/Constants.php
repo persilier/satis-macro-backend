@@ -21,6 +21,7 @@ class Constants
     const BIANNUAL_REPORTING = 'biannual-reporting';
     const QUARTERLY_REPORTING = 'quarterly-reporting';
     const SYSTEM_USAGE_REPORTING = 'system-usage-report';
+    const SYSTEM_EFFICIENCY_REPORTING = 'system-efficiency-reporting';
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
@@ -68,6 +69,9 @@ class Constants
             ],
             [
                 'value' => self::SYSTEM_USAGE_REPORTING, 'label' => 'Rapport utilisation système'
+            ],
+            [
+                'value' => self::SYSTEM_EFFICIENCY_REPORTING, 'label' => "Rapport d'éfficacité du système"
             ],
             [
                 'value' => self::BENCHMARKING_REPORTING, 'label' => 'Rapport de comparaison de l\'utilisation des fonctionnalités du système'
