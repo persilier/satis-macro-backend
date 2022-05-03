@@ -1441,6 +1441,8 @@ trait ReportingClaim
         $pdf->save($file);
 
         $details = [
+            'title' => $this->getMetadataByName(Constants::BIANNUAL_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::BIANNUAL_REPORTING)->description,
             'file' => $file,
             'email' => $this->emailDestinatairesReportingTasks($reportinTask),
             'reportingTask' => $reportinTask,

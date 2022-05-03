@@ -2,12 +2,12 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-            {{$data['period']}}
+            {{$data['title']}}
         @endcomponent
     @endslot
 
     {{-- Body --}}
-    Rapport
+    {{$data['description']}}
 
     {{-- Subcopy --}}
     @isset($subcopy)

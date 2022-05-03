@@ -1,8 +1,10 @@
 <?php
 namespace Satis2020\ServicePackage\Console\Commands;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -45,14 +47,13 @@ class RegulatorySemesterReportingCommand extends Command
 
         $request->merge(['date_start' => $dateStart, 'date_end' => $dateEnd]);
 
-        $reportinTasks = $this->getAllReportingTasks(ReportingTask::BIANNUAL_REPORT, $date);
+        $reportinTasks = $this->getAllReportingTasks("biannual", $date);
 
         if($reportinTasks->isNotEmpty()){
 
             foreach ($reportinTasks as $reportingTask){
-                $institutions = Institution::query()->get();
-        $reportingTask = ReportingTask::first();
-
+                $institutions = Institution::query()->limit(1)->get();
+                $reportingTask = ReportingTask::first();
                 foreach ($institutions as $institution){
                     $request->merge(['institution_id'=>$institution->id]);
                     $service->generateAndSendReport($request,$institution,$reportingTask);

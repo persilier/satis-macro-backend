@@ -15,6 +15,7 @@ class Constants
     const ANALYTICS_STATE_REPORTING = 'analytics-state-reporting';
     const OUT_OF_30_DAYS_REPORTING= 'out-of-30-days-reporting';
     const OUT_OF_TIME_CLAIMS_REPORTING= 'out-of-time-claims-reporting';
+    const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
     const MONTHLY_REPORTING= 'monthly-reporting';
     const DAILY_REPORTING= 'daily-reporting';
     const WEEKLY_REPORTING= 'weekly-reporting';
@@ -42,6 +43,9 @@ class Constants
             ],
             [
                 'value' => self::OUT_OF_TIME_CLAIMS_REPORTING, 'label' => 'Réclamations en retard'
+            ],
+            [
+                'value' => self::REGULATORY_STATE_REPORTING, 'label' => 'Rapports des états réglementaire'
             ],
             [
                 'value' => self::MONTHLY_REPORTING, 'label' => 'Génération automatique par mois'

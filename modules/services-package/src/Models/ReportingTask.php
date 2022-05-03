@@ -16,9 +16,7 @@ class ReportingTask extends Model
     use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
 
     const BIANNUAL_REPORT="biannual";
-    const UEAMOA_REPORT="uemoa";
-    const SATIS_REPORT="satis";
-    const REGULATORY_REPORT="regulatory";
+
 
     protected static $logName = 'reporting_task';
     /**
