@@ -117,7 +117,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     $identity = Identite::query()
                         ->orWhereJsonContains('email', $email)
                         ->first();
-                   // dd($email,$identity);
 
                     if ($identity!=null){
                         $newIdentityExist = Identite::query()
