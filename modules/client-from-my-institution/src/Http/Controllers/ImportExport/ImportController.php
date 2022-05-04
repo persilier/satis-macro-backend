@@ -72,7 +72,10 @@ class ImportController extends ApiController
 
         $transaction = new TransactionClientImport(
             $myInstitution,
-            $data
+            $data,
+            $request->stop_identite_exist,
+            $request->etat_update
+
         );
 
         Excel::import(
@@ -94,4 +97,3 @@ class ImportController extends ApiController
 
 
 }
-
