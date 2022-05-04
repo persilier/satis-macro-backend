@@ -109,7 +109,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'list-regulatory-reporting-claim-any-institution',
             'config-reporting-claim-any-institution',
-            'system-any-efficiency-report'
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $filialPermissions = [
@@ -145,7 +146,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-            'system-my-efficiency-report'
+            'system-my-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
 
         ];
 
@@ -210,7 +212,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'list-regulatory-reporting-claim-any-institution',
             'config-reporting-claim-any-institution',
-            'system-any-efficiency-report'
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $memberPermissions = [
@@ -281,8 +284,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-            'system-my-efficiency-report'
-
+            'system-my-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

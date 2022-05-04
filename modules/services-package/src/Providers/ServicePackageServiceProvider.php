@@ -14,6 +14,7 @@ use Illuminate\Validation\Rule;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Satis2020\ServicePackage\Console\Commands\DeletingTestData;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Policies\UserPolicy;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -75,6 +76,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                 \Satis2020\ServicePackage\Console\Commands\SendSMSCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\SendMailCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\RegulatorySemesterReportingCommand::class,
+                DeletingTestData::class
             ]);
 
             $this->app->booted(function () {

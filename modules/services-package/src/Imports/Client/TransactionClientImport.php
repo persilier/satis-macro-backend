@@ -28,18 +28,24 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     protected $data;
     private $hasError = false;
     private $errors; // array to accumulate errors
+    private $stop_identite_exist;
+    private $etat_update;
 
 
     /***
      * TransactionClientImport constructor.
      * @param $myInstitution
      * @param $data
+     * @param $stop_identite_exist
+     * @param $etat_update
      */
-    public function __construct($myInstitution, $data)
+    public function __construct($myInstitution, $data,$stop_identite_exist,$etat_update)
     {
         $this->myInstitution = $myInstitution;
         $this->data = $data;
         $this->errors = [];
+        $this->stop_identite_exist = $stop_identite_exist;
+        $this->etat_update = $etat_update;
 
 
     }
@@ -96,40 +102,51 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     if ($identity!=null){
                         $newIdentityExist = Identite::query()
                             ->where('id', '!=', $identity->id)
-                            ->orWhereJsonContains('telephone', $phone)
+                            ->whereJsonContains('telephone', $phone)
                             ->first();
                         break;
                     }
                 }
             }
 
+
+
             if ($identity==null &&  $row['email']){
+
                 foreach ($row['email'] as $email){
                     $identity = Identite::query()
                         ->orWhereJsonContains('email', $email)
                         ->first();
+                   // dd($email,$identity);
 
                     if ($identity!=null){
                         $newIdentityExist = Identite::query()
                             ->where('id', '!=', $identity->id)
-                            ->orWhereJsonContains('email', $email)
+                            ->whereJsonContains('email', $email)
                             ->first();
                         break;
                     }
                 }
             }
 
-
-            if ($identity) {
+            if ($identity ) {
                 if (!$newIdentityExist) {
-                    $identity->update([
-                        'firstname' => $row['firstname'],
-                        'lastname' => $row['lastname'],
-                        'sexe' => $row['sexe'],
-                        'telephone' => $row['telephone'],
-                        'email' => $row['email'],
-                        'ville' => $row['ville'],
-                    ]);
+                    if ($this->etat_update==1){
+                        $identity->update([
+                            'firstname' => $row['firstname'],
+                            'lastname' => $row['lastname'],
+                            'sexe' => $row['sexe'],
+                            'telephone' => $row['telephone'],
+                            'email' => $row['email'],
+                            'ville' => $row['ville'],
+                        ]);
+                    }
+
+                }else{
+                    Log::error($validator->errors());
+                    $error=['messages'=>"Un compte avec ses informations existe déjà",'data'=>$row,'line'=>$rowIndex];
+                    array_push($this->errors,$error);
+                    $this->hasError = true;
                 }
 
             } else {

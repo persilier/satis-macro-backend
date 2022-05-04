@@ -4,14 +4,16 @@ namespace Satis2020\ServicePackage\Services\Reporting;
 
 
 use Illuminate\Support\Facades\Http;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\FilterClaims;
+use Satis2020\ServicePackage\Traits\Metadata;
 
 class SystemEfficiencyReportService
 {
 
-    use FilterClaims,DataUserNature;
+    use FilterClaims,DataUserNature,Metadata;
 
     public function getReportData($request)
     {
@@ -27,6 +29,8 @@ class SystemEfficiencyReportService
         $averageNumberOfDaysForTreatment = $this->getAverageNumberOfDaysForTreatment($request,$relations);
 
         return [
+            'title' => $this->getMetadataByName(Constants::SYSTEM_EFFICIENCY_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::SYSTEM_EFFICIENCY_REPORTING)->description,
             'totalUntreatedClaims'=>$totalUntreatedClaims,
             'totalTreatedClaimsInTime'=>$totalTreatedClaimsInTime,
             'totalTreatedClaimsOutOfTime'=>$totalTreatedClaimsOutOfTime,

@@ -4,15 +4,17 @@ namespace Satis2020\ServicePackage\Services\Reporting;
 
 
 use Illuminate\Support\Facades\Http;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\FilterClaims;
+use Satis2020\ServicePackage\Traits\Metadata;
 
 
 class BenchmarkingReportService
 {
 
-    use FilterClaims,DataUserNature;
+    use Metadata,FilterClaims,DataUserNature;
 
     public function BenchmarkingReport($request)
     {
@@ -28,6 +30,8 @@ class BenchmarkingReportService
 
 
         return [
+            'title' => $this->getMetadataByName(Constants::BENCHMARKING_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::BENCHMARKING_REPORTING)->description,
             'RateOfReceivedClaimsBySeverityLevel'=> $claimBySeverityLevel,
             'RateOfTreatedClaimsBySeverityLevel'=> $claimTreatedBySeverityLevel,
             'recurringClaimObject'=> $recurringClaimObject,
@@ -37,7 +41,6 @@ class BenchmarkingReportService
             'ClaimsByRequestChanel'=> $claimsByRequestChanel,
         ];
     }
-
 
     public function RateOfReceivedClaimsBySeverityLevel($request,$translateWord){
 

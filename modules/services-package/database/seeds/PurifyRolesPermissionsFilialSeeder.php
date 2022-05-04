@@ -60,7 +60,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'config-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-my-efficiency-report',
-                    'config-reporting-claim-my-institution'
+                    'config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

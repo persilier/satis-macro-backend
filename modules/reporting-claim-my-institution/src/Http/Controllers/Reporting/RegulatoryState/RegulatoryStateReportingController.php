@@ -3,7 +3,6 @@
 namespace Satis2020\ReportingClaimMyInstitution\Http\Controllers\Reporting\RegulatoryState;
 
 
-use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\Reporting\RegulatoryStateReportingRequest;
 use Satis2020\ServicePackage\Services\Reporting\RegulatoryState\RegulatoryStateService;
@@ -22,7 +21,7 @@ class RegulatoryStateReportingController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        //$this->middleware('permission:list-regulatory-reporting-claim-my-institution')->only(['index']);
+        $this->middleware('permission:list-regulatory-reporting-claim-my-institution')->only(['index']);
     }
 
     /**

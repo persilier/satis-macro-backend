@@ -72,7 +72,10 @@ class ImportController extends ApiController
 
         $transaction = new TransactionClientImport(
             $myInstitution,
-            $data
+            $data,
+            $request->stop_identite_exist,
+            $request->etat_update
+            
         );
 
         Excel::import(
@@ -80,16 +83,12 @@ class ImportController extends ApiController
             $request->file('file')
         );
 
-
         $this->activityLogService->store("Importation des clients",
             $this->institution()->id,
             $this->activityLogService::IMPORTATION,
             'client',
             $this->user()
         );
-
-        $datas['errors'] = $transaction->getImportErrors();
-
 
         $datas['errors'] = $transaction->getImportErrors();
 

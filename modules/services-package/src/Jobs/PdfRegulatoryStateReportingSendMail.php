@@ -42,8 +42,6 @@ class PdfRegulatoryStateReportingSendMail implements ShouldQueue
     {
 
         foreach ($this->details['email'] as $recipient) {
-
-            Log::info("recipient $recipient");
             Mail::to($recipient)->send(new PdfRegulatoryStateReportingMail($this->details));
 
         }
