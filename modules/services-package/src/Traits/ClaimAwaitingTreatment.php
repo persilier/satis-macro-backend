@@ -253,6 +253,9 @@ trait ClaimAwaitingTreatment
                 if (is_null($value->identite->user)) {
                     return false;
                 }
+                if ($value->identite->user->disabled_at==null) {
+                    return false;
+                }
                 return $value->identite->user->hasRole('staff');
             })
             ->values();
