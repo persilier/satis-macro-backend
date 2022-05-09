@@ -234,5 +234,14 @@ trait RoleTrait
 
     }
 
+    protected function checkIsUsedRole($role){
+
+        $item = Role::withCount('users')->findOrFail($role->id);
+        if ($item->users_count!=0) {
+            throw new CustomException("Impossible de supprimer ce role car il est déjà attribué.");
+        }
+
+    }
+
 
 }
