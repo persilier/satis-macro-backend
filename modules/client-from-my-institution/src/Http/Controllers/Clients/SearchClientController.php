@@ -49,6 +49,5 @@ class SearchClientController extends ApiController
     }
 
 
-
 }
 
