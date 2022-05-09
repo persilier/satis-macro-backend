@@ -125,10 +125,17 @@ class RoleController extends ApiController
     public function destroy($role)
     {
 
-        $role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
-        $this->checkIsEditableRole($role);
-        $role->delete();
-        return response()->json($role,200);
+            $role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
+            $this->checkIsEditableRole($role);
+            $this->checkIsUsedRole($role);
+            $role->delete();
+            return response()->json($role,200);
+
+            /*$role = Role::whereName($role)->where('guard_name', 'api')->firstOrFail();
+            $this->checkIsEditableRole($role);
+            $role->delete();
+            return response()->json($role,200);*/
 
     }
+
 }
