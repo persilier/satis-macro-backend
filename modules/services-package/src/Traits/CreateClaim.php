@@ -80,7 +80,7 @@ trait CreateClaim
             $data['firstname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['lastname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['sexe'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), Rule::in(['M', 'F', 'A'])];
-            $data['telephone'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), 'array', new TelephoneArray];
+            $data['telephone'] = ["required", 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
             $data['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
         } else {
