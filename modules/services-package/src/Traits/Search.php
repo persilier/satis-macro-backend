@@ -21,6 +21,7 @@ trait Search
         $query = Identite::query()
             ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
             ->leftJoin('client_institution', 'clients.id', '=', 'client_institution.client_id')
+            ->leftJoin('category_clients', 'category_clients.id', '=', 'client_institution.category_client_id')
             ->leftJoin('accounts', 'client_institution.id', '=', 'accounts.client_institution_id')
             ->leftJoin('claims', 'identites.id', '=', 'claims.claimer_id')
             ->whereRaw(
@@ -45,6 +46,7 @@ trait Search
             'identites.id as id',
             'identites.id as identityId',
             'category_client_id',
+            'category_clients.name as category_name',
             'identites.firstname',
             'identites.lastname',
             'identites.telephone',
@@ -91,7 +93,8 @@ trait Search
                 'identity' => $identity,
                 'accounts' => $accounts,
                 'fullName' => $fullName,
-                'category_client_id'=> $identityAccounts[0]->category_client_id
+                'category_client_id'=> $identityAccounts[0]->category_client_id,
+                'category_name'=> $identityAccounts[0]->category_name,
             ];
         }
 
