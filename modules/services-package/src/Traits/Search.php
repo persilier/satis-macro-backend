@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
 
 trait Search
@@ -64,8 +65,8 @@ trait Search
 
         $filtered = [];
 
-
         foreach ($identities as $identityId => $identityAccounts) {
+
             $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
 
             if ($identityAccounts[0]->telephone) {
