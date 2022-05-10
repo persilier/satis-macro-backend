@@ -47,6 +47,7 @@ trait Search
             'identites.id as identityId',
             'category_client_id',
             'category_clients.name as category_name',
+            'client_id',
             'identites.firstname',
             'identites.lastname',
             'identites.telephone',
@@ -95,6 +96,7 @@ trait Search
                 'fullName' => $fullName,
                 'category_client_id'=> $identityAccounts[0]->category_client_id,
                 'category_name'=> $identityAccounts[0]->category_name,
+                'client_id'=> $identityAccounts[0]->client_id,
             ];
         }
 
