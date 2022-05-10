@@ -44,6 +44,7 @@ trait Search
         $identities = $query->select([
             'identites.id as id',
             'identites.id as identityId',
+            'category_client_id',
             'identites.firstname',
             'identites.lastname',
             'identites.telephone',
@@ -89,7 +90,8 @@ trait Search
                 'identityId' => $identityId,
                 'identity' => $identity,
                 'accounts' => $accounts,
-                'fullName' => $fullName
+                'fullName' => $fullName,
+                'category_client_id'=> $identityAccounts[0]->category_client_id
             ];
         }
 
