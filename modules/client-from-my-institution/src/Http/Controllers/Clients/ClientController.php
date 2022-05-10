@@ -144,7 +144,7 @@ class ClientController extends ApiController
             'client_institution.client.identite',
             'client_institution.category_client',
             'client_institution.institution'
-        ])->find($accountId);
+        ])->findOrFail($accountId);
 
         $account->makeVisible(['account_number']);
         $account->makeHidden(['number']);
