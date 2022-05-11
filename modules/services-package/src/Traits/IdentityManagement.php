@@ -20,8 +20,9 @@ trait IdentityManagement
     {
         $userService = app(UserService::class);
 
-        if ($request->has('email'))
-        $userService->updateUserByIdentity($identite->id,["username"=>$request->email[0]]);
+        if ($request->has('email')){
+            $userService->updateUserByIdentity($identite->id,["username"=>$request->email[0]]);
+        }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
     }
