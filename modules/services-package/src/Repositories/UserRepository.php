@@ -65,6 +65,16 @@ class UserRepository
         return $this->user->refresh();
     }
 
+    /**
+     * @param $identityId
+     * @return User
+     */
+    public function getUserByIdentity($identityId)
+    {
+        return $this->user->newQuery()
+            ->where("identite_id",$identityId)->first();
+
+    }
 
     public function getUserByInstitution($institutionId)
     {

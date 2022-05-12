@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
 use Satis2020\ServicePackage\Consts\Constants;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
@@ -171,7 +172,9 @@ class StaffController extends ApiController
 
         $this->convertEmailInStrToLower($request);
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rules(true,$staff->identite_id));
+
+        $institution = $this->institution();
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
