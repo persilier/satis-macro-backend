@@ -91,6 +91,7 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $claim = $this->getOneClaimQuery($staff->unit_id, $claim);
 
+
         return response()->json([
             'claim' => $claim,
             'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)
