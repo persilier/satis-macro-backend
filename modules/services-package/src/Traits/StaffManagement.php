@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
@@ -23,8 +24,9 @@ trait StaffManagement
      * @param bool $required_unit
      * @return array
      */
-    protected function rules($required_unit = true)
+    protected function rules($required_unit = true,$identite_id=null)
     {
+
         $data = [
             'firstname' => 'required',
             'lastname' => 'required',
@@ -42,6 +44,10 @@ trait StaffManagement
             $data['unit_id'] = 'exists:units,id';
         }
 
+        if($identite_id!=null){
+            $userRepositories = app(UserRepository::class);
+            $data['email'] =  ['required', Rule::unique('users','username')->ignore($userRepositories->getUserByIdentity($identite_id)),'array', new EmailArray];
+        }
         return $data;
 
     }
