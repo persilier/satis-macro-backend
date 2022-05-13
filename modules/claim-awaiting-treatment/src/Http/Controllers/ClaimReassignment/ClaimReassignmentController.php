@@ -63,10 +63,14 @@ class ClaimReassignmentController extends ApiController
      */
     protected function edit($claim){
 
+        $staff = $this->staff();
         $this->checkLeadReassignment();
+        $claimToReassign = $this->queryClaimReassignment()->find($claim);
+        $staffs = $claimToReassign->activeTreatment->responsible_staff_id!=null?
+            $this->getTargetedStaffFromUnit($staff->unit_id,true,$claimToReassign->activeTreatment->responsible_staff_id):$this->getTargetedStaffFromUnit($staff->unit_id);
         return response()->json([
-            'claim' => $this->queryClaimReassignment()->find($claim),
-            'staffs' => Staff::with('identite')->where('unit_id', $this->staff()->unit_id)->get()
+            'claim' => $claimToReassign,
+            'staffs' => $staffs,
         ], 200);
     }
 

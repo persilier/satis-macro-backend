@@ -19,7 +19,10 @@ trait IdentityManagement
     protected function updateIdentity($request, $identite)
     {
         $userService = app(UserService::class);
-        $userService->updateUserByIdentity($identite->id,["username"=>$request->email[0]]);
+
+        if ($request->has('email')){
+            $userService->updateUserByIdentity($identite->id,["username"=>$request->email[0]]);
+        }
 
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
     }

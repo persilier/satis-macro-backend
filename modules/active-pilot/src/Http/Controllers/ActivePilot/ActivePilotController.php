@@ -59,11 +59,14 @@ class ActivePilotController extends ApiController
                     return false;
                 }
 
-
                 if(!is_null($value->identite)){
                     if(!is_null($value->identite->user)){
                         return $value->identite->user->hasRole($roleName);
                     }
+                }
+
+                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
+                    return false;
                 }
 
                 return false;
