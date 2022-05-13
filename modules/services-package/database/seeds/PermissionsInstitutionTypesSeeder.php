@@ -148,7 +148,6 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-
         ];
 
         $observatoryPermissions = [

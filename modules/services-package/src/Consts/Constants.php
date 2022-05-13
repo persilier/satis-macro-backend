@@ -32,7 +32,14 @@ class Constants
         return self::PAGINATION_SIZE;
     }
 
-
+    static function getReportTypesNames()
+    {
+        $names = [];
+        foreach (self::reportTypes() as $type){
+            array_push($names,$type['value']);
+        }
+        return $names;
+    }
 
     static function reportTypes()
     {
@@ -102,16 +109,6 @@ class Constants
                 'value' => 'biannual', 'label' => 'Semestriel'
             ],
         ];
-    }
-
-
-    static function getReportTypesNames()
-    {
-        $names = [];
-        foreach (self::reportTypes() as $type){
-            array_push($names,$type['value']);
-        }
-        return $names;
     }
 
     static function getPeriodValues()

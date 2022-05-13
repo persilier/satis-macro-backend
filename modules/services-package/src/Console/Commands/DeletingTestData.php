@@ -31,7 +31,8 @@ class DeletingTestData extends Command
      *
      * @var string
      */
-    protected $description = 'Allow you to test the sms sending feature';
+
+    protected $description = 'test data deletion script';
 
     /**
      * Create a new command instance.
@@ -53,33 +54,32 @@ class DeletingTestData extends Command
         $appNature = Config::get('services.app_nature', 'PRO');
 
         if ($appNature === 'PRO') {
-            Log::info('Suppression de la base de données test en cours...');
-            DB::table('notifications')->truncate();
-            DB::table('jobs')->truncate();
-            File::query()->doesntHaveMorph(
-                'attachmentable',
-                [Component::class]
-            )->forceDelete();
-            Message::query()->forceDelete();
-            DB::table('discussion_staff')->truncate();
-            Discussion::query()->forceDelete();
-            NotificationProof::query()->forceDelete();
-            Claim::query()->update([
-                "active_treatment_id" => NULL
-            ]);
-            Treatment::query()->forceDelete();
-            Claim::query()->forceDelete();
-            Identite::query()->doesntHave('staff')
-                ->doesntHave('user')
-                ->doesntHave('client')
-                ->forceDelete();
-            Log::info('Suppression effectuée...');
-            Account::query()->truncate();
-            $clientIds = Client::query()->pluck("identites_id")->toArray();
-            DB::table("identites")->whereIn("id",$clientIds)
-                ->delete();
-            Client::query()->truncate();
+            $this->info('--------------------------- VIDAGE DES DONNEES TESTS -----------------------------');
+            $this->warn('------------------------ CETTE ACTION EST IRREVERSIBLE --------------------------');
+            if ($this->confirm('êtes-vous sûr de vouloir supprimer les données tests ? (yes|no)[no]',true)) {
+                DB::table('notifications')->truncate();
+                DB::table('jobs')->truncate();
+                File::query()->hasMorph(
+                    'attachmentable',
+                    [Claim::class, Message::class]
+                )->forceDelete();
+                Message::query()->forceDelete();
+                DB::table('discussion_staff')->truncate();
+                Discussion::query()->forceDelete();
+                NotificationProof::query()->forceDelete();
+                Claim::query()->update([
+                    "active_treatment_id" => NULL
+                ]);
+                Treatment::query()->forceDelete();
+                Claim::query()->forceDelete();
+                Identite::query()->doesntHave('staff')
+                    ->doesntHave('user')
+                    ->doesntHave('client')
+                    ->forceDelete();
+                $this->info('Suppression effectuée...');
+            } else {
+                $this->info('Suppression annulée...');
+            }
         }
-        return 0;
     }
 }

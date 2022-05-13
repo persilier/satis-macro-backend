@@ -117,7 +117,7 @@ class Claim extends Model
         if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
 
             $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
-            $diff = now()->diffInDays(($dateExpire), false);
+            $diff = $dateExpire->diffInDays((now()), false);
         }
 
         return $diff;

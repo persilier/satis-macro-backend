@@ -48,6 +48,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $this->etat_update = $etat_update;
 
 
+
     }
 
     /***
@@ -102,14 +103,12 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     if ($identity!=null){
                         $newIdentityExist = Identite::query()
                             ->where('id', '!=', $identity->id)
-                            ->whereJsonContains('telephone', $phone)
+                            ->orWhereJsonContains('telephone', $phone)
                             ->first();
                         break;
                     }
                 }
             }
-
-
 
             if ($identity==null &&  $row['email']){
 
@@ -117,7 +116,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     $identity = Identite::query()
                         ->orWhereJsonContains('email', $email)
                         ->first();
-                    // dd($email,$identity);
 
                     if ($identity!=null){
                         $newIdentityExist = Identite::query()
@@ -147,6 +145,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     $error=['messages'=>"Un compte avec ses informations existe déjà",'data'=>$row,'line'=>$rowIndex];
                     array_push($this->errors,$error);
                     $this->hasError = true;
+
                 }
 
             } else {
@@ -223,6 +222,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     protected function transformRowBeforeStoring($data)
     {
+
         foreach ($data as $key => $value) {
             $data[$key] = trim($value);
         }
@@ -288,6 +288,5 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         return 2;
     }
-
 
 }
