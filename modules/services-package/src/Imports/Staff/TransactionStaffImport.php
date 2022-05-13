@@ -94,7 +94,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
             }
 
             if ($this->hasError){
-                $this->errors->push($error);
+                array_push($this->errors,$error);
             }
 
             } else {
