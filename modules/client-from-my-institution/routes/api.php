@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
  * Clients
  */
 Route::prefix('/my')->name('my.')->group(function () {
+    Route::resource('clients/search', 'Clients\SearchClientController', ['only' => ['index']]);
     Route::resource('clients', 'Clients\ClientController', ['except' => ['show']]);
     Route::post('clients/{client_id}', 'Clients\ClientController@show');
     Route::resource('identites.clients', 'Identites\IdentiteClientController', ['only' => ['store']]);

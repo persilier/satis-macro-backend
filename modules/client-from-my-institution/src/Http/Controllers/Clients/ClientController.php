@@ -5,6 +5,7 @@ namespace Satis2020\ClientFromMyInstitution\Http\Controllers\Clients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -14,13 +15,14 @@ use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
+use Satis2020\ServicePackage\Traits\Search;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
+    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete,Search;
 
     protected $activityLogService;
 
@@ -47,21 +49,28 @@ class ClientController extends ApiController
     public function index()
     {
         $institution = $this->institution();
-        $clients = $this->getAllClientByInstitution($institution->id);
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+
+
+        if ($paginationSize==null)
+            $paginationSize = Constants::PAGINATION_SIZE;
+
+        $clients = $this->getAllClientByInstitution($institution->id, true, $paginationSize,$recherche);
         return response()->json($clients, 200);
+
     }
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
-     * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    public function create()
+    public function create(Request $request)
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id,false),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);
@@ -135,7 +144,7 @@ class ClientController extends ApiController
             'client_institution.client.identite',
             'client_institution.category_client',
             'client_institution.institution'
-        ])->find($accountId);
+        ])->findOrFail($accountId);
 
         $account->makeVisible(['account_number']);
         $account->makeHidden(['number']);

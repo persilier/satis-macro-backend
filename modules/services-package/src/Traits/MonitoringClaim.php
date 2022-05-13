@@ -172,7 +172,7 @@ trait MonitoringClaim
                 $query->where('id', $request->staff_id)->where('institution_id', $request->institution_id);
             }),
             'date_start' => 'sometimes|date_format:Y-m-d',
-            'date_end' => 'sometimes|date_format:Y-m-d|after:date_start'
+            'date_end' => 'sometimes|date_format:Y-m-d|after_or_equal:date_start'
         ];
 
         return $data;

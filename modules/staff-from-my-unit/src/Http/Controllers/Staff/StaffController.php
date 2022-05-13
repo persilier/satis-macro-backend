@@ -2,10 +2,14 @@
 
 namespace Satis2020\StaffFromMyUnit\Http\Controllers\Staff;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
+use Satis2020\ServicePackage\Consts\Constants;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
@@ -42,22 +46,43 @@ class StaffController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
-                ->get()
+                ->whereHas('identite', function($query) use ($recherche) {
+                    return $query
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })->paginate($paginationSize)
+
+           /* Staff::with(['identite', 'position', 'unit', 'institution'])
+                ->where('institution_id', $this->institution()->id)
+                ->when($recherche !=null,function(Builder $query) use ($recherche) {
+                    $query
+                        ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })
+                ->paginate($paginationSize)*/
             , 200);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function create()
@@ -72,7 +97,7 @@ class StaffController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
@@ -104,7 +129,7 @@ class StaffController extends ApiController
      * Display the specified resource.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Staff $staff)
     {
@@ -115,7 +140,7 @@ class StaffController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function edit(Staff $staff)
@@ -147,7 +172,9 @@ class StaffController extends ApiController
 
         $this->convertEmailInStrToLower($request);
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rules(true,$staff->identite_id));
+
+        $institution = $this->institution();
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
@@ -173,8 +200,8 @@ class StaffController extends ApiController
      */
     public function destroy(Staff $staff)
     {
+        abort(Response::HTTP_FORBIDDEN);
         $staff->delete();
-
         return response()->json($staff, 200);
     }
 

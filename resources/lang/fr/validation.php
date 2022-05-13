@@ -176,4 +176,5 @@ return [
         'available'             => 'disponible',
         'size'                  => 'taille',
     ],
+    'unique_telephone'=>"Ce numéro de téléphone est déjà utilisé",
 ];

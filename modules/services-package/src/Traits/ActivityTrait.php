@@ -30,7 +30,7 @@ trait ActivityTrait
     protected function getInstitutionId()
     {
         if (auth()->user()) {
-            return $this->connectedInstitution()->id;
+            return $staff = $this->user()->load('identite.staff')->identite->staff->institution_id;
         }
 
         return null;

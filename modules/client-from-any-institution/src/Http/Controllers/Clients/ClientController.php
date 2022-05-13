@@ -2,10 +2,12 @@
 
 namespace Satis2020\ClientFromAnyInstitution\Http\Controllers\Clients;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
@@ -50,12 +52,26 @@ class ClientController extends ApiController
      */
     public function index()
     {
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
         return response()->json(ClientInstitution::with(
             'client.identite',
             'category_client',
             'institution',
             'accounts.accountType'
-        )->get(), 200);
+        )->when($recherche !=null,function(Builder $query) use ($recherche ) {
+            $query
+                ->leftJoin('clients', 'client_institution.client_id', '=', 'clients.id')
+                ->leftJoin('identites', 'clients.identites_id', '=', 'identites.id')
+                ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
+                ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                ->orWhereRaw('`accounts`.`number` = ?', [$recherche])
+                ->orwhereJsonContains('telephone', $recherche)
+                ->orwhereJsonContains('email', $recherche);
+        })
+            ->paginate($paginationSize),
+            200);
     }
 
     /**

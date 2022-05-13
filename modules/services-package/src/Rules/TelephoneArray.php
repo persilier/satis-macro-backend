@@ -34,10 +34,10 @@ class TelephoneArray implements Rule
             return false;
         }
 
-        if (empty($value)){
+        /*if (empty($value)){
             $this->message = " :attribute is empty ";
             return false;
-        }
+        }*/
         
         foreach ($value as $phone) {
 

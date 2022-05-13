@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Imports\Client;
 
+use Faker\Factory;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -17,26 +18,36 @@ use Satis2020\ServicePackage\Models\ClientInstitution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
+use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
+use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
 {
 
     protected $myInstitution;
     protected $data;
     private $hasError = false;
     private $errors; // array to accumulate errors
+    private $stop_identite_exist;
+    private $etat_update;
 
 
     /***
      * TransactionClientImport constructor.
      * @param $myInstitution
      * @param $data
+     * @param $stop_identite_exist
+     * @param $etat_update
      */
-    public function __construct($myInstitution, $data)
+    public function __construct($myInstitution, $data,$stop_identite_exist,$etat_update)
     {
         $this->myInstitution = $myInstitution;
         $this->data = $data;
-        $this->errors = collect([]);
+        $this->errors = [];
+        $this->stop_identite_exist = $stop_identite_exist;
+        $this->etat_update = $etat_update;
+
+
 
     }
 
@@ -45,8 +56,10 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 1000;
+        return 500;
     }
+
+
 
     /***
      * @param Row $row
@@ -57,26 +70,84 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
+
         $row = $this->transformRowBeforeStoring($row);
 
         $validator = $this->validateRow($row);
 
         if (!$validator->fails()) {
 
-            $identity = Identite::query()
-                ->whereJsonContains('telephone', $row['telephone'])
-                ->orWhereJsonContains('email', $row['email'])
-                ->first(['id']);
+            //verify if an account with the provided account_number already exist
+            $account = Account::query()
+                ->where('number' , $row['account_number'])
+                ->leftJoin("client_institution","client_institution.id","=","accounts.client_institution_id")
+                ->where("client_institution.institution_id",$this->myInstitution->id)
+                ->first();
 
-            if ($identity) {
-                $identity->update([
-                    'firstname' => $row['firstname'],
-                    'lastname' => $row['lastname'],
-                    'sexe' => $row['sexe'],
-                    'telephone' => $row['telephone'],
-                    'email' => $row['email'],
-                    'ville' => $row['ville'],
-                ]);
+            if ($row['telephone']==null && $row['email']==null){
+                if ($account==null){
+                    $faker = Factory::create();
+                    $row['email'] = [$faker->email];
+                }
+            }
+
+            $identity = null;
+            $newIdentityExist = null;
+
+            if ($row['telephone']){
+                foreach ($row['telephone'] as $phone){
+                    $identity = Identite::query()
+                        ->whereJsonContains('telephone', $phone)
+                        ->first();
+
+                    if ($identity!=null){
+                        $newIdentityExist = Identite::query()
+                            ->where('id', '!=', $identity->id)
+                            ->orWhereJsonContains('telephone', $phone)
+                            ->first();
+                        break;
+                    }
+                }
+            }
+
+            if ($identity==null &&  $row['email']){
+
+                foreach ($row['email'] as $email){
+                    $identity = Identite::query()
+                        ->orWhereJsonContains('email', $email)
+                        ->first();
+
+                    if ($identity!=null){
+                        $newIdentityExist = Identite::query()
+                            ->where('id', '!=', $identity->id)
+                            ->whereJsonContains('email', $email)
+                            ->first();
+                        break;
+                    }
+                }
+            }
+
+            if ($identity ) {
+                if (!$newIdentityExist) {
+                    if ($this->etat_update==1){
+                        $identity->update([
+                            'firstname' => $row['firstname'],
+                            'lastname' => $row['lastname'],
+                            'sexe' => $row['sexe'],
+                            'telephone' => $row['telephone'],
+                            'email' => $row['email'],
+                            'ville' => $row['ville'],
+                        ]);
+                    }
+
+                }else{
+                    Log::error($validator->errors());
+                    $error=['messages'=>"Un compte avec ses informations existe déjà",'data'=>$row,'line'=>$rowIndex];
+                    array_push($this->errors,$error);
+                    $this->hasError = true;
+
+                }
+
             } else {
                 $identity = Identite::query()
                     ->create([
@@ -87,8 +158,8 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                         'email' => $row['email'],
                         'ville' => $row['ville'],
                     ]);
-            }
 
+            }
             $client = Client::query()->updateOrCreate(
                 ['identites_id' => $identity->id]
             );
@@ -98,16 +169,18 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 ['category_client_id' => $row['category_client']]
             );
 
-            $account = Account::query()->updateOrCreate(
+            Account::query()->updateOrCreate(
                 ['number' => $row['account_number'], 'client_institution_id' => $clientInstitution->id],
                 ['account_type_id' => $row['account_type']]
             );
 
-        } else {
 
+
+
+        } else {
             Log::error($validator->errors());
-            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
-            $this->errors['data'] =  $row;
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,'line'=>$rowIndex];
+            array_push($this->errors,$error);
             $this->hasError = true;
         }
 
@@ -126,14 +199,18 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 'lastname' => 'required|string',
                 'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
                 'telephone' => [
-                    'required',
                     'array',
                     new TelephoneArray
                 ],
+                #'telephone.*'=>[new UniqueTelephoneRule()],
                 'email' => [
                     'array',
                     new EmailValidationRules
                 ],
+                #'email.*'=>[
+                #    "sometimes",
+                #    new UniqueEmailInIdentiteRule()
+                #],
                 'ville' => 'nullable|string',
             ]
         );
@@ -145,6 +222,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     protected function transformRowBeforeStoring($data)
     {
+
         foreach ($data as $key => $value) {
             $data[$key] = trim($value);
         }
@@ -203,6 +281,12 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     public function getImportErrors()
     {
         return $this->errors;
+    }
+
+
+    public function headingRow(): int
+    {
+        return 2;
     }
 
 }

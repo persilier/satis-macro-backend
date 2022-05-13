@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RAPPORT PDF UEMOA</title>
     <!-- Bootstrap core CSS -->
-    {{--<link rel="stylesheet" href="{{ asset('assets/reporting/css/bootstrap.min.css') }}">--}}
+    <link rel="stylesheet" href="{{ asset('assets/reporting/css/bootstrap.min.css') }}">
 
-    {{--<style>
+    <style>
         body{
             font-family: Poppins, Helvetica, sans-serif;
 
@@ -88,7 +88,7 @@
             width: 100%
         }
 
-    </style>--}}
+    </style>
 
 </head>
 <body style="background: white">
@@ -98,11 +98,11 @@
         <div class="text-center">
             <img src="{{ $logo }}" alt="logo" style="height: 3.5em; border-radius: .1em; border:1px solid #F3F3F3;">
         </div>
-        <div class="text-center" style="font-size: 10px;font-weight: bold">RAPPORT UEMOA</div>
+        <div class="text-center" style="font-size: 10px;font-weight: bold">@if($title) {{ $title  }} @endif</div>
         <div class="text-center" style="font-size: 8px">Période : @if($libellePeriode) {{ $libellePeriode }} @endif</div>
     </div>
     <div style="width: 100%;margin-top: 10px">
-            <div class="titre-stat">@if($title) {{ $title  }} @endif</div>
+            <div class="titre-stat">@if($description) {{ $description  }} @endif</div>
             <table class="table">
                 <thead style="background: {{ $colorTableHeader }};font-size: 0.4em">
                     <tr>

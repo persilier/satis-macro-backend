@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
 
@@ -18,7 +20,7 @@ use Satis2020\ServicePackage\Traits\UemoaReports;
  */
 class StateOutTimeController extends ApiController
 {
-    use UemoaReports;
+    use UemoaReports,Metadata;
 
     public function __construct()
     {
@@ -59,7 +61,9 @@ class StateOutTimeController extends ApiController
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        Excel::store(new StateReportExcel($claims, true, $libellePeriode, 'Réclamations en retard', false), 'rapport-uemoa-etat-hors-delai-my-institution.xlsx');
+        $titleDescription = $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->title.' : '.$this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->description;
+
+        Excel::store(new StateReportExcel($claims, true, $libellePeriode, $titleDescription, false), 'rapport-uemoa-etat-hors-delai-my-institution.xlsx');
 
         return response()->json(['file' => 'rapport-uemoa-etat-hors-delai-my-institution.xlsx'], 200);
     }
@@ -83,7 +87,8 @@ class StateOutTimeController extends ApiController
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
-            'title' => 'Réclamations en retard',
+            'title' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->description,
             'relationShip' => false,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),

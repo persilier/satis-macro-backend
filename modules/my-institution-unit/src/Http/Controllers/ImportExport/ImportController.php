@@ -32,9 +32,7 @@ class ImportController extends ApiController
         $institution = $this->institution();
 
         $datas = [
-
             'status' => true,
-            'unitTypeUnit' => '',
         ];
 
         $file = $request->file('file');
@@ -47,8 +45,7 @@ class ImportController extends ApiController
 
         if ($imports->getErrors()) {
             $datas = [
-                'status' => false,
-                'units' => $imports->getErrors()
+                'errors' => $imports->getErrors()
             ];
         }
 
