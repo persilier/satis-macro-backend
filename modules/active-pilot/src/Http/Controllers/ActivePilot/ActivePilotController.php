@@ -55,6 +55,10 @@ class ActivePilotController extends ApiController
             ->where('institution_id', $institution->id)
             ->get()
             ->filter(function ($value, $key) use ($roleName, $staff, $checkIfStaffIsPilot) {
+                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
+                    return false;
+                }
+
                 if ($checkIfStaffIsPilot && $staff->is_active_pilot && $staff->id == $value->id) {
                     return false;
                 }
@@ -63,10 +67,6 @@ class ActivePilotController extends ApiController
                     if(!is_null($value->identite->user)){
                         return $value->identite->user->hasRole($roleName);
                     }
-                }
-
-                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
-                    return false;
                 }
 
                 return false;
