@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -172,7 +173,17 @@ trait ClientTrait
             'number' => $request->number
         ];
 
-        return $account = Account::create($store);
+        $account = Account::create($store);
+
+        $this->activityLogService->store("Enregistrement d'un compte client",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'account',
+            $this->user(),
+            $account
+        );
+
+        return $account;
     }
 
     /**
@@ -194,9 +205,13 @@ trait ClientTrait
 
     /**
      * @param $institutionId
-     * @return Builder[]|Collection
-     * @throws CustomException
+     *
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @return LengthAwarePaginator|Builder[]|Collection
      */
+
     protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize= 10,$key=null)
     {
 
@@ -214,6 +229,7 @@ trait ClientTrait
             })
             ->where('institution_id', $institutionId)
             ->when($key,function (Builder $query1) use ($key) {
+
                 $query1->whereHas("client",function ($query2) use ($key){
                     $query2->whereHas("identite",function ($query3) use($key){
                         $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])

@@ -101,6 +101,15 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
+            'list-auth-config','update-auth-config',
+            'activity-log',
+            'list-any-notification-proof','pilot-list-any-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
@@ -132,6 +141,12 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             "my-email-claim-configuration",
+            'list-auth-config','update-auth-config',
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
@@ -188,6 +203,15 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
             "any-email-claim-configuration",
+            'list-auth-config','update-auth-config',
+            'activity-log',
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
@@ -253,6 +277,13 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             "my-email-claim-configuration",
+            'list-auth-config','update-auth-config',
+            'activity-log',
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 

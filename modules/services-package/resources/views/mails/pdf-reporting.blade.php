@@ -2,12 +2,12 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-            Header Title
+            {{$data['title']}}
         @endcomponent
     @endslot
 
     {{-- Body --}}
-    This is our main message
+    {{$data['description']}}
 
     {{-- Subcopy --}}
     @isset($subcopy)

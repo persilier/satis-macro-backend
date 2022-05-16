@@ -7,6 +7,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
@@ -76,13 +77,14 @@ trait ClaimSatisfactionMeasured
      * @param string $status
      * @return array
      */
-    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
 
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
         return $paginate
             ?$this->getClaim($status)
                 ->where('institution_targeted_id', $this->institution()->id)
                 ->when($key,function (Builder $query1) use ($key) {
                     $query1->where('reference' , 'LIKE', "%$key%")
+
                         ->orWhereHas("claimer",function ($query2) use ($key){
                             $query2->where('firstname' , 'LIKE', "%$key%")
                                 ->orWhere('lastname' , 'LIKE', "%$key%")

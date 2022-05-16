@@ -138,6 +138,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdatePermissionsDescriptionSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
 
@@ -148,8 +149,18 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\MeasurePreventiveRequireStatusSeeder::class);
 
 //         $this->call(\Satis2020\ServicePackage\Database\Seeds\CreateOrUpdateComponentSeeder::class);
+        //$this->call(\Satis2020\ServicePackage\Database\Seeds\RestoreUsersProfilSeeder::class);
+
+
+//        $this->call(\Satis2020\ServicePackage\Database\Seeds\ActivityLogSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\NotificationsProofsSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\VerifyChannelsWhichCanBeTargetedSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AddDescriptionToPermissionSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AddDescriptionToRoleSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\AuthConfigSeeder::class);
+        $this->call(UpdateClaimsChannels::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
 
 

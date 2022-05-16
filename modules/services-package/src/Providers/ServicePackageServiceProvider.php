@@ -74,6 +74,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                 \Satis2020\ServicePackage\Console\Commands\RelanceCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\SendSMSCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\SendMailCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\RegulatorySemesterReportingCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\DeletingTestData::class,
             ]);
 

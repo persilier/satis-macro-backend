@@ -16,6 +16,7 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Notification;
 
@@ -27,7 +28,9 @@ class ClaimAssignmentToStaffController extends ApiController
 {
     use ClaimAwaitingTreatment;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -35,6 +38,8 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
         $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim', 'unfoundedClaim']);
+
+        $this->activityLogService = $activityLogService;
     }
 
 
@@ -121,6 +126,14 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
+        $this->activityLogService->store("Traitement d'une réclamation",
+            $this->institution()->id,
+            $this->activityLogService::TREATMENT_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
+
         if(!is_null($this->getInstitutionPilot($institution))){
             $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
         }
@@ -158,6 +171,14 @@ class ClaimAssignmentToStaffController extends ApiController
         ]);
 
         $claim->update(['status' => 'treated']);
+
+        $this->activityLogService->store("Une réclamation a été déclarée non fondée",
+            $this->institution()->id,
+            $this->activityLogService::UNFOUNDED_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         if(!is_null($this->getInstitutionPilot($institution))){
             $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));

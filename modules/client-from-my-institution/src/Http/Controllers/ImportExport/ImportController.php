@@ -18,6 +18,7 @@ use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class ImportExportController
@@ -25,7 +26,9 @@ use Satis2020\ServicePackage\Requests\Imports\ImportClientRequest;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -33,6 +36,7 @@ class ImportController extends ApiController
 
         $this->middleware('permission:store-client-from-my-institution')
             ->only(['importClient', 'downloadFile']);
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -42,6 +46,11 @@ class ImportController extends ApiController
      */
     public function importClients(ImportClientRequest $request)
     {
+        $datas = [
+            'status' => true,
+            'clients' => ''
+        ];
+
         $datas = [
             'status' => true,
             'clients' => ''
@@ -63,7 +72,10 @@ class ImportController extends ApiController
 
         $transaction = new TransactionClientImport(
             $myInstitution,
-            $data
+            $data,
+            $request->stop_identite_exist,
+            $request->etat_update
+
         );
 
         Excel::import(
@@ -71,12 +83,17 @@ class ImportController extends ApiController
             $request->file('file')
         );
 
-        $datas['errors'] = $transaction->getImportErrors();
+        $this->activityLogService->store("Importation des clients",
+            $this->institution()->id,
+            $this->activityLogService::IMPORTATION,
+            'client',
+            $this->user()
+        );
 
+        $datas['errors'] = $transaction->getImportErrors();
 
         return response()->json($datas, 201);
     }
 
 
 }
-

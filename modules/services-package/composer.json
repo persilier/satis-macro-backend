@@ -27,7 +27,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Satis2020\\ServicePackage\\Providers\\ServicePackageServiceProvider"
+                "Satis2020\\ServicePackage\\Providers\\ServicePackageServiceProvider",
+                "Satis2020\\ServicePackage\\Providers\\EventServiceProvider"
             ]
         }
     }

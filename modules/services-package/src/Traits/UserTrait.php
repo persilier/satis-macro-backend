@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\InactivityReactivationHistory;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Rules\IsValidPasswordRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -237,6 +240,19 @@ trait UserTrait
         if(is_null($user->disabled_at)){
 
             $status = Carbon::now();
+
+        } else {
+            /*
+             *
+             */
+            $configs = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
+
+            if ($this->inactivityTimeIsPassed($user,$configs )){
+                InactivityReactivationHistory::create([
+                    'user_id' => $user->id,
+                ]);
+            }
+
         }
 
         $user->update(['disabled_at' => $status]);

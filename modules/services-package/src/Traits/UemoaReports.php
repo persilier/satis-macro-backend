@@ -358,7 +358,7 @@ trait UemoaReports{
 
             });
 
-        });
+      });
 
         return $claimCollection;
 
@@ -839,7 +839,7 @@ trait UemoaReports{
      */
     protected function colorTableHeader(){
 
-        return "#7F9CF5";
+       return "#7F9CF5";
     }
 
 

@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class PasswordResetRequest
@@ -46,7 +48,7 @@ class PasswordResetRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = env('URL_FORGOT_PASSWORD_CLIENT', 'http://127.0.0.1:3000/forgot-password').'/'.$this->token;
+        $url = Config::get("auth.password_reset_link").'/'.$this->token;
 
         return (new MailMessage)
             ->subject(__('passwords.email_password_reset_request_subject'))

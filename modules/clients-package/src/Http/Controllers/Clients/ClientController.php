@@ -16,19 +16,28 @@ use Satis2020\ServicePackage\Models\TypeClient;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class ClientController extends ApiController
 {
     use IdentiteVerifiedTrait, VerifyUnicity;
-    public function __construct()
+
+    /**
+     * @var ActivityLogService
+     */
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         /*$this->middleware('permission:can-list-client-from-my-institution')->only(['index']);
         $this->middleware('permission:can-create-client-from-my-institution')->only(['store']);
         $this->middleware('permission:can-show-client-from-my-institution')->only(['show']);
         $this->middleware('permission:can-update-client-from-my-institution')->only(['update']);
         $this->middleware('permission:can-delete-client-from-my-institution')->only(['destroy']);*/
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -65,6 +74,7 @@ class ClientController extends ApiController
      * @param \Illuminate\Http\Request $request
      * @return ClientResource
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function store(Request $request)
     {
@@ -122,6 +132,15 @@ class ClientController extends ApiController
             'institutions_id'       => $request->institutions_id,
             'others'                => $request->others
         ]);
+
+        $this->activityLogService->store("Enregistrement d'un compte client",
+            $this->institution()->id,
+            $this->activityLogService::CREATED,
+            'client',
+            $this->user(),
+            $client
+        );
+
         return new ClientResource($client);
     }
 
@@ -236,7 +255,7 @@ class ClientController extends ApiController
      */
     public function destroy(Client $client)
     {
-        $client->delete();
+        $client->secureDelete('client_institutions');
         return new ClientResource($client);
     }
 

@@ -4,15 +4,21 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Satis2020\ServicePackage\Services\InstitutionService;
+use Satis2020\ServicePackage\Services\StateService;
+use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\SecureForceDeleteWithoutException;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Institution extends Model
 {
-    use Sluggable, UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException;
+    use Sluggable, UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException, LogsActivity, ActivityTrait;
+
+    protected static $logName = 'institution';
     /**
      * The attributes that should be cast to native types.
      *
@@ -34,8 +40,13 @@ class Institution extends Model
      */
     protected $fillable = [
         'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id',
-        'orther_attributes', 'active_pilot_id'
+        'orther_attributes', 'active_pilot_id','country_id'
     ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = ['country'];
 
     /**
      * Return the sluggable configuration array for this model.
@@ -146,6 +157,13 @@ class Institution extends Model
     public function emailClaimConfiguration()
     {
         return $this->hasOne(EmailClaimConfiguration::class);
+    }
+
+
+    public function getCountryAttribute()
+    {
+        $institutionService = new InstitutionService();
+        return array_key_exists("country_id",$this->attributes)? $institutionService->getCountryById($this->attributes['country_id']):null;
     }
 
 }

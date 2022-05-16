@@ -50,9 +50,9 @@ trait ImportStaff
             $rules['institution'] = 'required|exists:institutions,name';
         }
 
-        $rules['roles'] = [
+        /*$rules['roles'] = [
             'required', new RoleValidationForImport($row['institution']),
-        ];
+        ];*/
 
         return $rules;
     }
@@ -65,6 +65,7 @@ trait ImportStaff
             "profil" => 'required|exists:roles,name',
             "roles" => ['required', new AddProfilToRoleValidation()]
         ];
+
     }
 
 
@@ -201,14 +202,23 @@ trait ImportStaff
             'identite_id' => $identite->id,
         ],$data);
 
-        if (!User::where('username', $identite->email[0])->first()) {
+        $verifyRole = Role::where('name', $row['roles'])
+            ->where('guard_name', 'api')
+            ->withCasts(['institution_types' => 'array'])
+            ->first();
 
-            $user = User::create([
-                'username' => $identite->email[0],
-                'password' => bcrypt('satis'),
-                'identite_id' => $identite->id
-            ]);
-            $user->assignRole(Role::whereIn('name', $row['roles'])->where('guard_name', 'api')->get());
+
+        if(!empty($row['roles']) && $verifyRole) {
+
+            $user = User::updateOrCreate(
+                ['username' => $identite->email[0]],
+                [
+                    'username' => $identite->email[0],
+                    'password' => bcrypt('satis'),
+                    'identite_id' => $identite->id
+                ]);
+            $user->syncRoles(Role::whereIn('name', $row['roles'])->where('guard_name', 'api')->get());
+
         }
 
         return $store;

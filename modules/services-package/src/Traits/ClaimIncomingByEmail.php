@@ -168,6 +168,7 @@ trait ClaimIncomingByEmail
 
         if ($subscriber['error']) {
 
+
             try {
                 Log::debug("subscribtion error",$subscriber);
             }catch (\Exception $exception){

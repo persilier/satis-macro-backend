@@ -13,19 +13,33 @@ class Constants
 
     const GLOBAL_STATE_REPORTING = 'global-state-reporting';
     const ANALYTICS_STATE_REPORTING = 'analytics-state-reporting';
-    const OUT_OF_30_DAYS_REPORTING= 'out-of-30-days-reporting';
-    const OUT_OF_TIME_CLAIMS_REPORTING= 'out-of-time-claims-reporting';
-    const MONTHLY_REPORTING= 'monthly-reporting';
-    const DAILY_REPORTING= 'daily-reporting';
-    const WEEKLY_REPORTING= 'weekly-reporting';
-    const BIANNUAL_REPORTING= 'biannual-reporting';
-    const QUARTERLY_REPORTING= 'quarterly-reporting';
+    const OUT_OF_30_DAYS_REPORTING = 'out-of-30-days-reporting';
+    const OUT_OF_TIME_CLAIMS_REPORTING = 'out-of-time-claims-reporting';
+    const MONTHLY_REPORTING = 'monthly-reporting';
+    const DAILY_REPORTING = 'daily-reporting';
+    const WEEKLY_REPORTING = 'weekly-reporting';
+    const BIANNUAL_REPORTING = 'biannual-reporting';
+    const QUARTERLY_REPORTING = 'quarterly-reporting';
+    const SYSTEM_USAGE_REPORTING = 'system-usage-report';
+    const SYSTEM_EFFICIENCY_REPORTING = 'system-efficiency-reporting';
+    const BENCHMARKING_REPORTING = 'benchmarking-report';
+    const GLOBAL_REPORTING = 'global-report';
+    const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
+
 
     static public function  paginationSize()
     {
         return self::PAGINATION_SIZE;
     }
 
+    static function getReportTypesNames()
+    {
+        $names = [];
+        foreach (self::reportTypes() as $type){
+            array_push($names,$type['value']);
+        }
+        return $names;
+    }
 
     static function reportTypes()
     {
@@ -43,6 +57,9 @@ class Constants
                 'value' => self::OUT_OF_TIME_CLAIMS_REPORTING, 'label' => 'Réclamations en retard'
             ],
             [
+                'value' => self::REGULATORY_STATE_REPORTING, 'label' => 'Rapports des états réglementaire'
+            ],
+            [
                 'value' => self::MONTHLY_REPORTING, 'label' => 'Génération automatique par mois'
             ],
             [
@@ -57,14 +74,47 @@ class Constants
             [
                 'value' => self::QUARTERLY_REPORTING, 'label' => 'Génération automatique par Trimestriel'
             ],
+            [
+                'value' => self::SYSTEM_USAGE_REPORTING, 'label' => 'Rapport utilisation système'
+            ],
+            [
+                'value' => self::SYSTEM_EFFICIENCY_REPORTING, 'label' => "Rapport d'éfficacité du système"
+            ],
+            [
+                'value' => self::BENCHMARKING_REPORTING, 'label' => 'Rapport de comparaison de l\'utilisation des fonctionnalités du système'
+            ],
+            [
+                'value' => self::GLOBAL_REPORTING, 'label' => 'Rapport consolidé et rapport spécifique par institution'
+            ],
 
         ];
     }
 
-    static function getReportTypesNames()
+    static function periodList(){
+
+        return [
+            [
+                'value' => 'days', 'label' => 'Journalier'
+            ],
+            [
+                'value' => 'weeks', 'label' => 'Hebdomadaire'
+            ],
+            [
+                'value' => 'months', 'label' => 'Mensuel'
+            ],
+            [
+                'value' => 'quarterly', 'label' => 'Trimestriel'
+            ],
+            [
+                'value' => 'biannual', 'label' => 'Semestriel'
+            ],
+        ];
+    }
+
+    static function getPeriodValues()
     {
         $names = [];
-        foreach (self::reportTypes() as $type){
+        foreach (self::periodList() as $type){
             array_push($names,$type['value']);
         }
         return $names;

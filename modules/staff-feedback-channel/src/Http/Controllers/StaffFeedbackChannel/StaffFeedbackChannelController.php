@@ -8,15 +8,19 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class StaffFeedbackChannelController extends ApiController
 {
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -46,15 +50,27 @@ class StaffFeedbackChannelController extends ApiController
     public function update(Request $request)
     {
         $rules = [
-            'feedback_preferred_channels' => 'required|array',
-            'feedback_preferred_channels.*' => ['required', Rule::in(Channel::where('is_response', true)->get()->pluck('slug')->all())],
+            'feedback_preferred_channels' => 'sometimes|array',
+            'feedback_preferred_channels.*' => ['sometimes', Rule::in(Channel::where('is_response', true)->get()->pluck('slug')->all())],
         ];
 
+        /*$rules = [
+            'feedback_preferred_channels' => 'required|array',
+            'feedback_preferred_channels.*' => ['required', Rule::in(Channel::where('is_response', true)->get()->pluck('slug')->all())],
+        ];*/
+
         $this->validate($request, $rules);
-
+        $feedback_preferred_channels = $request->feedback_preferred_channels!=[] ? $request->feedback_preferred_channels : null;
         $staff = $this->staff();
+        $staff->update(['feedback_preferred_channels' => $feedback_preferred_channels]);
 
-        $staff->update(['feedback_preferred_channels' => $request->feedback_preferred_channels]);
+        $this->activityLogService->store("Mise à jour du canal de feedback d'un staff",
+            $this->institution()->id,
+            ActivityLogService::UPDATE_STAFF,
+            'staff',
+            $this->user(),
+            $staff
+        );
 
         return response()->json($staff, 201);
     }

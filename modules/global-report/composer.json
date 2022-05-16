@@ -1,0 +1,26 @@
+{
+    "name": "satis2020/global-report",
+    "description": "ce raport permet de voir toute la statistique du système",
+    "license": "DMD",
+    "version" : "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "Satis2020\\GlobalReport\\": "src/",
+            "Satis2020\\GlobalReport\\Database\\Seeds\\": "database/seeds/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MYRIAME ZANNOU",
+            "email": "myriame@dmdconsult.com"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Satis2020\\GlobalReport\\Providers\\GlobalReportProvider"
+            ]
+        }
+    }
+}
