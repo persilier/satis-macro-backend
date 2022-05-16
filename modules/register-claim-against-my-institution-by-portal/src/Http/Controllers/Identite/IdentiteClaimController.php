@@ -44,10 +44,14 @@ class IdentiteClaimController extends Controller
             $request->request->remove('amount_currency_slug');
         }
 
-        $rulesRequest = $this->rules($request);
-        $rulesRequest['created_by'] = 'nullable';
+        if ($request->isNotFilled("account_number")){
+            $request->request->remove("account_number");
+        }
 
         $request->merge(['claimer_id' => $identite->id]);
+
+        $rulesRequest = $this->rules($request);
+        $rulesRequest['created_by'] = 'nullable';
 
         $this->convertEmailInStrToLower($request);
 
@@ -65,7 +69,7 @@ class IdentiteClaimController extends Controller
         // Check if the claim is complete
         $request->merge(['status' => $status['status']]);
 
-        $claim = $this->createClaim($request, false);
+        $claim = $this->createClaim($request, true);
 
         $this->attachFilesToClaimBase64($claim, $request);
 

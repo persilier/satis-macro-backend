@@ -4,6 +4,7 @@ use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 

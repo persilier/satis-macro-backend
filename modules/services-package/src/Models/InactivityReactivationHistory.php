@@ -11,6 +11,10 @@ class InactivityReactivationHistory extends Model
 
     protected $fillable = [
         'user_id',
+        'action'
     ];
+
+    const DEACTIVATION = "deactivation";
+    const ACTIVATION = "activation";
 
 }

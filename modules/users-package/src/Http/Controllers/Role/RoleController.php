@@ -44,9 +44,10 @@ class RoleController extends ApiController
     {
         $rules = [
             'name' => 'required|unique:'.config('permission.table_names.roles'),
+            'description'=>'required|string',
         ];
         $this->validate($request, $rules);
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'api']);
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'api','description'=>$request->description]);
         return new RoleResource($role);
     }
 
@@ -75,6 +76,7 @@ class RoleController extends ApiController
     {
         $rules = [
             'name' => 'required|unique:'.config('permission.table_names.roles'),
+            'description'=>'required|string',
         ];
 
         $this->validate($request, $rules);
@@ -82,6 +84,7 @@ class RoleController extends ApiController
         $role = Role::where('name', $role)->where('guard_name', 'api')->firstOrFail();
 
         $role->name = $request->name;
+        $role->description = $request->description;
 
         if(! $role->isDirty()){
             return $this->errorResponse('You need to specify a different value to update', 422);

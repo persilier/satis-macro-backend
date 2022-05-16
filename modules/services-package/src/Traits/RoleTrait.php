@@ -26,7 +26,13 @@ trait RoleTrait
      */
     protected function createRole($request){
 
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'api', 'is_editable' => 1, 'institution_types' => json_encode ($request->institutionTypes)]);
+        $role = Role::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'guard_name' => 'api',
+            'is_editable' => 1,
+            'institution_types' => json_encode ($request->institutionTypes)
+        ]);
 
         return $role->syncPermissions($request->permissions);
 
@@ -42,6 +48,7 @@ trait RoleTrait
 
         $role->update([
             'name' => $request->name,
+            'description' => $request->description,
             'institution_types' => $request->institutionTypes,
         ]);
 
@@ -176,7 +183,8 @@ trait RoleTrait
                 return $q->where('name','!=', $role);
             })],
             'permissions' => 'required|array',
-            'institutionTypes' => 'required|array'
+            'institutionTypes' => 'required|array',
+            'description'=>'required|string'
         ];
     }
 
@@ -222,6 +230,15 @@ trait RoleTrait
 
             throw new CustomException("Impossible de modifier ou de supprimer ce rôle.");
 
+        }
+
+    }
+
+    protected function checkIsUsedRole($role){
+
+        $item = Role::withCount('users')->findOrFail($role->id);
+        if ($item->users_count!=0) {
+            throw new CustomException("Impossible de supprimer ce role car il est déjà attribué.");
         }
 
     }

@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Row;
+use Satis2020\ServicePackage\Rules\RoleValidationForImport;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
@@ -47,7 +48,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $this->unitRequired = $data['unitRequired'];
         $this->stop_identite_exist = $data['stop_identite_exist'];
         $this->etat = $data['etat'];
-        $this->errors = collect([]);
+        $this->errors = [];
     }
 
     /***
@@ -66,9 +67,6 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
     {
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
-
-
-        //dd($row);
 
         $validator = $this->validateRow($row);
 
@@ -96,14 +94,13 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
             }
 
             if ($this->hasError){
-                $this->errors->push($error);
+                array_push($this->errors,$error);
             }
 
             } else {
             Log::error($validator->errors());
-            //throw ValidationException::withMessages($validator->getMessageBag()->getMessages());
-            $this->errors['messages'] =  $validator->getMessageBag()->getMessages();
-            $this->errors['data'] =  $row;
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,"line"=>$rowIndex];
+            array_push($this->errors,$error);
             $this->hasError = true;
         }
 

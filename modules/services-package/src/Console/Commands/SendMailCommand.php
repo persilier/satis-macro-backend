@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Satis2020\ServicePackage\Mail\SendMail;
@@ -63,8 +64,12 @@ class SendMailCommand extends Command
 
         }
 
-        Mail::to($options['to'])->queue(new SendMail($options['text']));
-
+        try {
+            Mail::to($options['to'])->queue(new SendMail($options['text']));
+        }catch (\Exception $e){
+            Log::debug($e);
+            $this->error($e);
+        }
         return 0;
     }
 }

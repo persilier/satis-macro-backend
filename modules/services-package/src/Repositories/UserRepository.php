@@ -52,6 +52,29 @@ class UserRepository
         return $user->refresh();
     }
 
+    /**
+     * @param $identityId
+     * @param $data
+     * @return User
+     */
+    public function updateUserByIdentity($identityId,$data)
+    {
+        $this->user->newQuery()
+                    ->where("identite_id",$identityId)->update($data);
+
+        return $this->user->refresh();
+    }
+
+    /**
+     * @param $identityId
+     * @return User
+     */
+    public function getUserByIdentity($identityId)
+    {
+        return $this->user->newQuery()
+            ->where("identite_id",$identityId)->first();
+
+    }
 
     public function getUserByInstitution($institutionId)
     {
