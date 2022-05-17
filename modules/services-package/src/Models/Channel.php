@@ -50,9 +50,9 @@ class Channel extends Model
      */
     protected $casts = [
         'name' => 'json',
-        'is_editable'=>'boolean',
-        'is_response'=>'boolean',
-        'can_be_response'=>'boolean',
+       // 'is_editable'=>'boolean',
+       // 'is_response'=>'boolean',
+       // 'can_be_response'=>'boolean',
     ];
 
     /**
