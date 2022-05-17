@@ -65,6 +65,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
      */
     public function onRow(Row $row)
     {
+
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
@@ -75,27 +76,35 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $error['data'] =  $row;
 
         if (!$validator->fails()) {
-            $data = $this->modifiedDataKeysInId($row);
+                $data = $this->modifiedDataKeysInId($row);
 
-            // Unité Verification
-            $verifiedUnit = $this->handleUnitVerification($data);
+                // Institution Verification
+                $verifiedInstitution = $this->handleInstitutionVerification($row);
 
-            if (!$verifiedUnit['status']) {
-                $error['message'] =  $verifiedUnit['message'];
-                $this->hasError = true;
-            } else {
-                $staff = $this->verificationAndStoreStaff($data);
-
-                if ($staff['status'] === false) {
-                    $error['message'] =  $staff['message'];
+                if (!$verifiedInstitution['status']) {
+                    $error['message'] =  $verifiedInstitution['message'];
                     $this->hasError = true;
+                } else {
+                    // Unité Verification
+                    $verifiedUnit = $this->handleUnitVerification($data);
 
+                    if (!$verifiedUnit['status']) {
+                        $error['message'] =  $verifiedUnit['message'];
+                        $this->hasError = true;
+                    } else {
+                        $staff = $this->verificationAndStoreStaff($data);
+
+                        if ($staff['status'] === false) {
+                            $error['message'] =  $staff['message'];
+                            $this->hasError = true;
+
+                        }
+                    }
                 }
-            }
 
-            if ($this->hasError){
-                array_push($this->errors,$error);
-            }
+                if ($this->hasError){
+                    array_push($this->errors,$error);
+                }
 
             } else {
             Log::error($validator->errors());

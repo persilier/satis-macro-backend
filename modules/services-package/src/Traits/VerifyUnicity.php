@@ -227,6 +227,7 @@ trait VerifyUnicity
         }
     }
 
+
     /**
      * @param $values
      * @param $table
