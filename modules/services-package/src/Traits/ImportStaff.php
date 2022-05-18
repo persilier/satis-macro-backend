@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Imports\Institution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Role;
@@ -86,6 +87,24 @@ trait ImportStaff
             }
         }
 
+        return ['status' => true];
+    }
+
+    /**
+     * @param $row
+     * @return array|bool
+     */
+    protected function handleInstitutionVerification($row)
+    {
+        $institution = \Satis2020\ServicePackage\Models\Institution::query()->where('name', $row['institution'])->first();
+        $myInstitution = $this->institution();
+
+        if($institution->id!=$myInstitution->id){
+            return [
+                'status' => false,
+                'message' => 'Institution non valide.'
+            ];
+        }
         return ['status' => true];
     }
 
