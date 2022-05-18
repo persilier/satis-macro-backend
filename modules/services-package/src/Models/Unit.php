@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis\CountriesPackage\Traits\HasStateTrait;
 use Satis2020\ServicePackage\Services\StateService;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -13,7 +14,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Unit extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait,HasStateTrait;
 
     protected static $logName = 'unit';
 
@@ -46,10 +47,6 @@ class Unit extends Model
         'name', 'description', 'unit_type_id', 'institution_id', 'others', 'lead_id', 'parent_id','state_id'
     ];
 
-    /**
-     * @var string[]
-     */
-    protected $appends = ['state'];
     /**
      * Get the unitType associated with the unit
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -128,13 +125,6 @@ class Unit extends Model
     public function treatments()
     {
         return $this->hasMany(Treatment::class, 'responsible_unit_id');
-    }
-
-    public function getStateAttribute()
-    {
-        $stateService = new StateService();
-
-        return $stateService->getStateById($this->attributes['state_id']);
     }
 
 }
