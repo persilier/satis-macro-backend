@@ -88,6 +88,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'system-any-efficiency-report',
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-my-staff-monitoring',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -112,7 +113,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-
+                    'show-my-staff-monitoring',
                 ],
                 "supervisor-observatory" => [],
                 "collector-observatory" => [

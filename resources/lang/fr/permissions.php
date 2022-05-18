@@ -177,6 +177,7 @@ return [
             "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
             "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
             "list_global_reporting" =>'Voir le rapport global',
+            "show_my_staff_monitoring" =>'Voir le suivi des reclamations au niveau des staffs de mon unité',
         ],
 
     //pilot and collector
