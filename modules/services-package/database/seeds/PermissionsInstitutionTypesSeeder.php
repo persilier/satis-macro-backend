@@ -107,7 +107,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-any-institution',
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-            'list-regulatory-reporting-claim-any-institution',
+            'list-regulatory-reporting-claim-any-institution','show-my-staff-monitoring',
             'config-reporting-claim-any-institution',
             'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
@@ -146,7 +146,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-regulatory-reporting-claim-my-institution',
             'config-reporting-claim-my-institution',
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-            'system-my-efficiency-report',
+            'system-my-efficiency-report','show-my-staff-monitoring',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
         ];
 
@@ -213,6 +213,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'config-reporting-claim-any-institution',
             'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
         ];
 
         $memberPermissions = [
@@ -285,6 +286,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
