@@ -131,7 +131,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'history-list-treat-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'list-staff-revivals','list-unit-revivals'
 
                 ]
             ];

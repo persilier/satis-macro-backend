@@ -106,7 +106,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'list-staff-revivals','list-unit-revivals'
                 ]
             ];
 

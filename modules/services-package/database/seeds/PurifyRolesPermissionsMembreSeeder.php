@@ -48,6 +48,7 @@ class PurifyRolesPermissionsMembreSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'list-my-discussions', 'store-discussion', 'destroy-discussion', 'list-discussion-contributors', 'add-discussion-contributor', 'remove-discussion-contributor', 'contribute-discussion',
                     'history-list-treat-claim',
+                    'list-staff-revivals','list-unit-revivals'
                 ]
             ];
 
