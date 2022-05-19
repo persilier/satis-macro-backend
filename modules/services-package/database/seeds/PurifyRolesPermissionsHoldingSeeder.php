@@ -88,6 +88,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-my-staff-monitoring',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -113,6 +114,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-my-staff-monitoring',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
