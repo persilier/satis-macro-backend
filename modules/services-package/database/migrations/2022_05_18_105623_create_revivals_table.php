@@ -16,7 +16,7 @@ class CreateRevivalsTable extends Migration
     {
         Schema::create('revivals', function (Blueprint $table) {
             $table->uuid("id")->primary();
-            $table->longText("message")->index();
+            $table->longText("message");
             $table->string("claim_status")->index();
             $table->uuid("institution_id")->index();
             $table->uuid("claim_id")->index();
