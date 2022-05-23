@@ -50,6 +50,7 @@ class PurifyRolesPermissionsMembreSeeder extends Seeder
                     'history-list-treat-claim',
                     'list-staff-revivals','list-unit-revivals',
                     'history-list-treat-claim','show-my-staff-monitoring',
+                    'revive-staff',
                 ]
             ];
 
