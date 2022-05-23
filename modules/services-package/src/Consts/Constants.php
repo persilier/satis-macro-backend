@@ -111,6 +111,40 @@ class Constants
         ];
     }
 
+    static function proxyConfig(){
+
+        return [
+            [
+                'value' => null, 'name' => 'proxy_http_server'
+            ],
+            [
+                'value' => null, 'name' => 'proxy_https_server'
+            ],
+            [
+                'value' => null, 'name' => 'proxy_http_port'
+            ],
+            [
+                'value' => null, 'name' => 'proxy_https_port'
+            ],
+            [
+                'value' => null, 'name' => 'proxy_modules'
+            ],
+        ];
+    }
+
+    static function getProxyNames()
+    {
+        $names = [];
+        foreach (self::proxyConfig() as $type){
+            array_push($names,$type['name']);
+        }
+        return $names;
+    }
+
+    static function proxyModules(){
+        return ['mail','sms','incoming_mail_service'];
+    }
+
     static function getPeriodValues()
     {
         $names = [];

@@ -87,7 +87,7 @@ trait StaffMonitoring
      * @return Builder
      */
 
-    protected function getAllStaffClaim($request, $unitId, $thisDay, $paginate = false, $paginationSize = 10, $key = null){
+    protected function getAllStaffClaim($request, $unitId, $thisDay, $paginationSize = 10, $key = null){
 
         $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
@@ -100,14 +100,9 @@ trait StaffMonitoring
         if ($request->has('staff_id')){
             $claims->where('treatments.responsible_staff_id', $request->staff_id);
         }
-        $claims->where('treatments.assigned_to_staff_at', '>=', Carbon::parse($thisDay)->startOfDay())
-               ->where('treatments.assigned_to_staff_at', '<=', Carbon::parse($thisDay)->endOfDay())
-               ->whereNull('claims.deleted_at');
 
-        if($paginate){
-
-            $claims->when($key,function (Builder $query1) use ($key) {
-                $query1->where('reference' , 'LIKE', "%$key%")
+        $claims = $claims->when($key,function (Builder $query1) use ($key) {
+                $query1->where('claims.reference' , 'LIKE', "%$key%")
                     ->orWhereHas("claimer",function ($query2) use ($key){
                         $query2->where('firstname' , 'LIKE', "%$key%")
                             ->orWhere('lastname' , 'LIKE', "%$key%")
@@ -116,9 +111,9 @@ trait StaffMonitoring
                     })->orWhereHas("claimObject",function ($query3) use ($key){
                         $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
                     });
-            })->paginate($paginationSize);
-
-        }
+               })->where('treatments.assigned_to_staff_at', '>=', Carbon::parse($thisDay)->startOfDay())
+                ->where('treatments.assigned_to_staff_at', '<=', Carbon::parse($thisDay)->endOfDay())
+                ->whereNull('claims.deleted_at')->paginate($paginationSize);
 
         return $claims;
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Metadata;
 
-class ReportingTitlesSeeder extends Seeder
+class ProxyConfigSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,11 +15,13 @@ class ReportingTitlesSeeder extends Seeder
      */
     public function run()
     {
-        $reportsTypes = Constants::reportTypes();
+        $proxyConfig = Constants::proxyConfig();
 
-        foreach ($reportsTypes as $type){
-            $name = $type['value'];
-            $data = ["title"=>$type['label'],"description"=>$type['label']];
+        foreach ($proxyConfig as $config){
+            $name = $config['name'];
+            $data = [
+                $config['name']=>$config['value'],
+            ];
             $meta = Metadata::query()
                 ->where('name',$name)
                 ->first();
@@ -32,5 +34,7 @@ class ReportingTitlesSeeder extends Seeder
             }
 
         }
+
     }
+
 }

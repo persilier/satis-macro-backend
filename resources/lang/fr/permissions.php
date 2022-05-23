@@ -249,7 +249,10 @@ return [
         'show_dashboard_data_my_unit' => 'Afficher les donnees du tableau de bord de mon unite',
         'show_dashboard_data_my_activity' => 'Afficher les donnees du tableau de bord de mon activite',
         'history_list_treat_claim' => 'Historique des reclamations traitees',
+        'show_proxy_config' => 'Voir La configuration des proxy',
+        'update_proxy_config' => 'Mettre à jour les configurations des proxy',
     ],
+
 
 
 ];

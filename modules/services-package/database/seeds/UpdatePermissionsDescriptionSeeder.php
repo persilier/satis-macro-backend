@@ -273,6 +273,8 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'show-dashboard-data-my-unit' => __("permissions.staff.show_dashboard_data_my_unit",[],app()->getLocale()),
         'show-dashboard-data-my-activity' => __("permissions.staff.show_dashboard_data_my_activity",[],app()->getLocale()),
         'history-list-treat-claim' => __("permissions.staff.history_list_treat_claim",[],app()->getLocale()),
+        'show-proxy-config' => __("permissions.staff.show_proxy_config",[],app()->getLocale()),
+        'update-proxy-config' => __("permissions.staff.update_proxy_config",[],app()->getLocale()),
     ];
 
         foreach ($staff as $name => $description){

@@ -37,4 +37,15 @@ class MetadataService
         return $this->repository->update($data,$name);
     }
 
+    public function updateProxyMetadata($request){
+
+        foreach($request->all() as $key=>$input){
+            $data = [
+               $key=>$input,
+            ];
+
+            $this->repository->update($data,$key);
+        }
+        return true;
+    }
 }
