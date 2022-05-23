@@ -139,6 +139,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdatePermissionsDescriptionSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ProxyConfigSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
 

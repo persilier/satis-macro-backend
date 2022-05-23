@@ -27,7 +27,7 @@ class MyStaffMonitoringService
         $claimTreated = $this->getClaimTreated($request,$unitId,$thisDay)->count();
         $claimNoTreated = $claimAssigned - $claimTreated;
 
-        $staffClaims = $this->getAllStaffClaim($request, $unitId, $thisDay, true,$paginationSize, $recherche)->get();
+        $staffClaims = $this->getAllStaffClaim($request, $unitId, $thisDay, $paginationSize, $recherche);
 
         return [
             "claimAssignedToStaff"=>$claimAssigned,

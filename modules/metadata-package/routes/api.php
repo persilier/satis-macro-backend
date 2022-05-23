@@ -28,3 +28,7 @@ Route::put('plan', 'Plan\PlanController@update')->name('plan.update');
 Route::get("reporting-metadata",'Reporting\ReportingMetadataController@index')->name('reporting.meta');
 Route::get("reporting-metadata/{name}",'Reporting\ReportingMetadataController@edit')->name('edit.reporting.meta');
 Route::put("reporting-metadata",'Reporting\ReportingMetadataController@update')->name('update.reporting.meta');
+
+
+Route::get("proxy-metadata",'Proxy\ProxyConfigMetadataController@index')->name('proxy.meta');
+Route::put("proxy-metadata",'Proxy\ProxyConfigMetadataController@update')->name('update.proxy.meta');

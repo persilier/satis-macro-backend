@@ -64,6 +64,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'show-my-staff-monitoring',
+                    'show-proxy-config',
+                    'update-proxy-config'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -90,6 +92,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'show-my-staff-monitoring',
+                    'show-proxy-config',
+                    'update-proxy-config'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -108,7 +112,10 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'show-proxy-config',
+                    'update-proxy-config'
                 ]
             ];
 

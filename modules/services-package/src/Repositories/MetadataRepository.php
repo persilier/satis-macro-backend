@@ -56,6 +56,7 @@ class MetadataRepository
         foreach ($data as $key => $datum){
             $updatedData[$key] = $datum;
         }
+
         $metadata->data = json_encode($updatedData);
         $metadata->save();
         return $metadata->refresh();

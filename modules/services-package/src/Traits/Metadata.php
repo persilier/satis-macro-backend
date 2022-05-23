@@ -386,6 +386,22 @@ trait Metadata
         return$response;
     }
 
+    protected function formatProxyMetas($types)
+    {
+        $metas = $this->getAllDataByTypes($types);
+        $response = [];
+        foreach ($metas as $meta){
+            $value = json_decode($meta->data);
+            $name = $meta->name;
+            array_push($response,[
+                "id"=>$meta->id,
+                "name"=>$name,
+                "value"=>$value,
+            ]);
+        }
+        return $response;
+    }
+
     /*public function getData(Request $request, $datas){
         $actions = [];
 
