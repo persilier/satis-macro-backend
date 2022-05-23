@@ -24,7 +24,7 @@ class RevivalRepository
     {
         return $this->revival
             ->newQuery()
-            ->with("claim:reference,id","createdBy.identite","institution:name,id","staff.identite")
+            ->with("claim:reference,id,status","createdBy.identite","institution:name,id","staff.identite")
             ->where('staff_unit_id',$unitId)
             ->paginate($size);
     }
@@ -33,7 +33,7 @@ class RevivalRepository
     {
         return $this->revival
             ->newQuery()
-            ->with("claim:reference,id","createdBy.identite","institution:name,id","staff.identite")
+            ->with("claim:reference,id,status","createdBy.identite","institution:name,id","staff.identite")
             ->where('targeted_staff_id',$staffId)
             ->paginate($size);
     }
