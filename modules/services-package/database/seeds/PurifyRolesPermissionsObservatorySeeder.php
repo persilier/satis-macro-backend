@@ -139,7 +139,9 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
                     'show-proxy-config',
-                    'update-proxy-config'
+                    'update-proxy-config',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
                 ]
             ];
 

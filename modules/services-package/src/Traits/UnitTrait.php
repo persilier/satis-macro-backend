@@ -59,5 +59,15 @@ trait UnitTrait
 
     }
 
+    protected function getUnitLeadId($unitId)
+    {
+        return Unit::query()->find($unitId)? Unit::query()->find($unitId)->lead_id:null;
+    }
+
+    protected function staffIsUnitLead($staff)
+    {
+        return $staff->id == $this->getUnitLeadId($staff->unit_id);
+    }
+
 
 }
