@@ -132,7 +132,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'history-list-treat-claim',
                     'search-claim-any-reference',
                     'attach-files-to-claim',
-                    'list-staff-revivals','list-unit-revivals'
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
 
                 ]
             ];

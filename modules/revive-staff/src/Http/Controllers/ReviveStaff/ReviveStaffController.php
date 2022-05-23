@@ -9,6 +9,7 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Notifications\ReviveStaff;
 use Satis2020\ServicePackage\Services\RevivalService;
 use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\UnitTrait;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,6 +62,11 @@ class ReviveStaffController extends ApiController
      */
     public function store(Request $request, Claim $claim)
     {
+        if (!$this->checkIfStaffIsPilot($this->staff()) || !$this->staffIsUnitLead($this->staff()))
+        {
+            abort(Response::HTTP_UNAUTHORIZED);
+        }
+
         $rules = [
             'text' => 'required',
         ];
