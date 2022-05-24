@@ -25,7 +25,8 @@
         "beyondcode/laravel-websockets": "^1.4",
         "pusher/pusher-php-server": "^4.1",
         "nategood/httpful": "*",
-        "spatie/laravel-activitylog": "*"
+        "spatie/laravel-activitylog": "*",
+        "satis2020/countries-package": "1.0.0"
     },
     "require-dev": {
     },

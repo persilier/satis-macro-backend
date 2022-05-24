@@ -17,7 +17,6 @@
     "guzzlehttp/guzzle": "^6.3",
     "laravel/framework": "^7.0",
     "laravel/tinker": "^2.0",
-    "satis/countries-package": "^1.0",
     "satis2020/account-type": "^1.0",
     "satis2020/active-pilot": "^1.0",
     "satis2020/activity-log": "^1.0",
@@ -772,13 +771,7 @@
       "options": {
         "symlink": true
       }
-    },
-    {
-      "type": "path",
-      "url": "../satis-countries-package/",
-      "options": {
-        "symlink": true
-      }
     }
+
   ]
 }
