@@ -101,7 +101,8 @@
     "satis2020/useful-data-for-backoffice": "^1.0",
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0"
+    "satis2020/without-link-with-institution-unit": "^1.0",
+    "satis2020/countries-package": "dev-main"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -771,7 +772,10 @@
       "options": {
         "symlink": true
       }
+    },
+    {
+      "type": "vcs",
+      "url":  "https://github.com/FathDMD/satis2020-countries-package"
     }
-
   ]
 }
