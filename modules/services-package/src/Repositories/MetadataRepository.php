@@ -56,8 +56,25 @@ class MetadataRepository
         foreach ($data as $key => $datum){
             $updatedData[$key] = $datum;
         }
-
         $metadata->data = json_encode($updatedData);
+        $metadata->save();
+        return $metadata->refresh();
+    }
+
+
+    /**
+     * @param $data
+     * @param $name
+     * @return Builder|Model|object
+     */
+    public function updateProxy($data,$name)
+    {
+        $metadata = $this->getByName($name);
+        $updatedData = json_decode($metadata->data,true);
+        foreach ($data as $datum){
+            $updatedData = $datum;
+        }
+        $metadata->data = $updatedData;
         $metadata->save();
         return $metadata->refresh();
     }

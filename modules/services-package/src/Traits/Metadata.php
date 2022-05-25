@@ -361,10 +361,25 @@ trait Metadata
 
     protected function getAllDataByTypes($types)
     {
-
         return MetadataModel::query()
             ->whereIn("name",$types)
             ->get();
+    }
+
+    protected function checkProxyNotExist($types)
+    {
+        $metas = $this->getAllDataByTypes($types);
+        $response = [];
+        foreach ($metas as $meta){
+            $value = json_decode($meta->data);
+            $name = $meta->name;
+            array_push($response,[
+                "id"=>$meta->id,
+                "name"=>$name,
+                "value"=>$value,
+            ]);
+        }
+        return $response;
     }
 
     protected function formatReportTitleMetas($types)
@@ -389,17 +404,17 @@ trait Metadata
     protected function formatProxyMetas($types)
     {
         $metas = $this->getAllDataByTypes($types);
-        $response = [];
+       /* $response = [];
         foreach ($metas as $meta){
             $value = json_decode($meta->data);
             $name = $meta->name;
             array_push($response,[
                 "id"=>$meta->id,
                 "name"=>$name,
-                "value"=>$value,
+                $value,
             ]);
-        }
-        return $response;
+        }*/
+        return $metas;
     }
 
     /*public function getData(Request $request, $datas){

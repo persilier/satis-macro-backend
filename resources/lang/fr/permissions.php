@@ -251,8 +251,8 @@ return [
         'history_list_treat_claim' => 'Historique des reclamations traitees',
         'show_proxy_config' => 'Voir La configuration des proxy',
         'update_proxy_config' => 'Mettre à jour les configurations des proxy',
+        'delete_proxy_config' => 'Supprimer les configurations des proxy',
     ],
-
 
 
 ];
