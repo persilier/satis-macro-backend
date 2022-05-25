@@ -373,14 +373,6 @@ trait Metadata
             ->first();
     }
 
-    protected function checkProxyNotExist($types)
-    {
-        $metas = $this->getAllDataByTypes($types);
-        $response = [];
-
-        return $response;
-    }
-
     protected function formatReportTitleMetas($types)
     {
         $metas = $this->getAllDataByTypes($types);
