@@ -62,7 +62,7 @@ class ReviveStaffController extends ApiController
      */
     public function store(Request $request, Claim $claim)
     {
-        if (!$this->checkIfStaffIsPilot($this->staff()) || !$this->staffIsUnitLead($this->staff()))
+        if (!$this->checkIfStaffIsPilot($this->staff()) && !$this->staffIsUnitLead($this->staff()))
         {
             abort(Response::HTTP_UNAUTHORIZED);
         }
