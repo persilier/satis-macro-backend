@@ -34,17 +34,12 @@ class ProxyConfigMetadataController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @param Metadata $metadata
+     * @param MetadataService $metadataService
      * @return JsonResponse
      */
-    public function index()
+    public function index(MetadataService $metadataService)
     {
-        $proxy = Constants::getProxyNames();
-
-        $datas = $this->formatProxyMetas($proxy);
-        return response()->json($datas);
+        return response()->json($metadataService->getProxy());
     }
 
 
@@ -68,7 +63,8 @@ class ProxyConfigMetadataController extends ApiController
             'proxy_modules.*'=>Rule::in(Constants::proxyModules())
         ]);
 
-        return response()->json($metadataService->updateProxyMetadata($request));
+        $metadataService->updateProxyMetadata($request);
+        return response()->json($metadataService->getProxy());
     }
 
 
@@ -83,8 +79,10 @@ class ProxyConfigMetadataController extends ApiController
     public function delete(MetadataService $metadataService)
     {
         $proxy = Constants::getProxyNames();
-        return response()->json($metadataService->destroyProxyMetadata($proxy));
+        $metadataService->destroyProxyMetadata($proxy);
+        return response()->json($metadataService->getProxy());
     }
+
 
 }
 
