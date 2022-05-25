@@ -8,9 +8,21 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Satis2020\ServicePackage\Services\MetadataService;
 
 class MessageApiMethod
 {
+
+    /**
+     * @var MetadataService
+     */
+    private $metaService;
+
+    public function __construct(MetadataService $metadataService)
+    {
+        $this->metaService = $metadataService;
+    }
+
     /**
      * oceanicsms.com Message Api
      *
