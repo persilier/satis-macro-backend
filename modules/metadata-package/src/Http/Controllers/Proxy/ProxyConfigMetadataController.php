@@ -78,9 +78,8 @@ class ProxyConfigMetadataController extends ApiController
      */
     public function delete(MetadataService $metadataService)
     {
-        $proxy = Constants::getProxyNames();
-        $metadataService->destroyProxyMetadata($proxy);
-        return response()->json($metadataService->getProxy());
+
+        return response()->json($metadataService->destroyProxyMetadata());
     }
 
 

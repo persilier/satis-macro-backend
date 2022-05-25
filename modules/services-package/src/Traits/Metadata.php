@@ -369,8 +369,8 @@ trait Metadata
     protected function getAllDataProxyByTypes($types)
     {
         return MetadataModel::query()
-            ->whereIn("name",$types)
-            ->get()->groupBy("name","data");
+            ->where("name",$types)
+            ->first();
     }
 
     protected function checkProxyNotExist($types)
@@ -400,22 +400,7 @@ trait Metadata
         return$response;
     }
 
-    protected function formatProxyMetas($types)
-    {
-        $metas = $this->getAllDataProxyByTypes($types);
-        $response = [];
 
-       /* foreach ($metas as $meta){
-            $name = $meta->name;
-            $value = json_decode($meta->data);
-            array_push($response,[
-                "id"=>$meta->id,
-                "name"=>$name,
-                "value"=>$value
-            ]);
-        }*/
-        return $metas;
-    }
 
     /*public function getData(Request $request, $datas){
         $actions = [];

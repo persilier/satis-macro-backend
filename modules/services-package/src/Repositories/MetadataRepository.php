@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Repositories;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Metadata;
 
 class MetadataRepository
@@ -67,19 +68,12 @@ class MetadataRepository
      * @param $name
      * @return Builder|Model|object
      */
-    public function updateProxy($data,$name)
+    public function updateProxy($data)
     {
-        $metadata = $this->getByName($name);
-        $updatedData = $metadata->data;
-
-        foreach ($data as $datum){
-            $updatedData = $datum;
-        }
-        if($metadata->name == "proxy_modules"){
-            $metadata->data = json_encode($updatedData);
-        }
-        $metadata->data = $updatedData;
+        $metadata = $this->getByName(Constants::PROXY);
+        $metadata->data = json_encode($data);
         $metadata->save();
+
         return $metadata->refresh();
     }
 

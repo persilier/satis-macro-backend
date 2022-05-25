@@ -42,30 +42,24 @@ class MetadataService
         return $this->repository->update($data,$name);
     }
 
+
     public function getProxy(){
-        $proxy = Constants::getProxyNames();
-        $datas = $this->formatProxyMetas($proxy);
-        return $datas;
+        $proxy = [Constants::PROXY];
+        $meta = $this->getAllDataProxyByTypes($proxy)->toArray();
+        return json_decode($meta['data']["fr"]);
     }
 
     public function updateProxyMetadata($request){
-        foreach($request->all() as $key=>$input){
-            $data = [
-               $input,
-            ];
-            $this->repository->updateProxy($data,$key);
-        }
-        return true;
+        return $this->repository->updateProxy($request->all());
     }
 
-    public function destroyProxyMetadata($proxy){
-        foreach($proxy as $key=>$input){
-            $data = [
-                $input=>null,
-            ];
-            $this->repository->updateProxy($data,$input);
-        }
-        return true;
+    public function destroyProxyMetadata(){
+        return $this->repository->updateProxy(NULL);
+    }
+
+    public function proxyExist()
+    {
+        return $this->getProxy()!=null;
     }
 
 
