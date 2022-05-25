@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Services;
 
 
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Metadata as MetadataModel;
 use Satis2020\ServicePackage\Repositories\MetadataRepository;
 use Satis2020\ServicePackage\Traits\Metadata as MetadataTraits;
@@ -39,6 +40,12 @@ class MetadataService
             "description"=>$request->description,
         ];
         return $this->repository->update($data,$name);
+    }
+
+    public function getProxy(){
+        $proxy = Constants::getProxyNames();
+        $datas = $this->formatProxyMetas($proxy);
+        return $datas;
     }
 
     public function updateProxyMetadata($request){
