@@ -3,14 +3,12 @@
 namespace Satis2020\MyInstitution\Http\Controllers\Institutions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Services\CountryService;
-use Satis2020\ServicePackage\Services\InstitutionService;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UploadFile;
@@ -39,8 +37,8 @@ class InstitutionController extends ApiController
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function getMyInstitution(CountryService $countryService){
-        return response()->json(["institution"=>$this->institution()->load('defaultCurrency'),"countries"=>$countryService->getCountries()], 200);
+    public function getMyInstitution(){
+        return response()->json(["institution"=>$this->institution()->load('defaultCurrency',"country"),"countries"=>Country::getAllAfricaCountries()], 200);
     }
 
     /**
