@@ -66,7 +66,7 @@ trait UnitTrait
 
     protected function staffIsUnitLead($staff)
     {
-        return $staff->id == $this->getUnitLeadId($staff->unit_id);
+        return $staff->is_lead;
     }
 
 
