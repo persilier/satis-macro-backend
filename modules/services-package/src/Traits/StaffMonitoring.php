@@ -35,6 +35,7 @@ trait StaffMonitoring
      * @return Builder
      */
     protected function getClaimAssigned($request,$unitId,$thisDay){
+
         $claims = Claim::query();
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);

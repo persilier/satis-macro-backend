@@ -275,6 +275,7 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'history-list-treat-claim' => __("permissions.staff.history_list_treat_claim",[],app()->getLocale()),
         'show-proxy-config' => __("permissions.staff.show_proxy_config",[],app()->getLocale()),
         'update-proxy-config' => __("permissions.staff.update_proxy_config",[],app()->getLocale()),
+        'delete-proxy-config' => __("permissions.staff.delete_proxy_config",[],app()->getLocale()),
     ];
 
         foreach ($staff as $name => $description){

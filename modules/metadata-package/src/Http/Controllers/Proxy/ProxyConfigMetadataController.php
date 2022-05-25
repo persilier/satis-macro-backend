@@ -5,6 +5,7 @@ namespace Satis2020\MetadataPackage\Http\Controllers\Proxy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Satis2020\MetadataPackage\Http\Resources\Metadata as MetadataResource;
@@ -28,6 +29,7 @@ class ProxyConfigMetadataController extends ApiController
         $this->middleware('auth:api');
         $this->middleware('permission:show-proxy-config')->only(['index']);
         $this->middleware('permission:update-proxy-config')->only(['update']);
+        $this->middleware('permission:delete-proxy-config')->only(['delete']);
 
     }
 
@@ -69,6 +71,20 @@ class ProxyConfigMetadataController extends ApiController
         return response()->json($metadataService->updateProxyMetadata($request));
     }
 
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param MetadataService $metadataService
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function delete(MetadataService $metadataService)
+    {
+        $proxy = Constants::getProxyNames();
+        return response()->json($metadataService->destroyProxyMetadata($proxy));
+    }
 
 }
 

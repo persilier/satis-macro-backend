@@ -4,10 +4,14 @@
 namespace Satis2020\ServicePackage\Services;
 
 
+use Satis2020\ServicePackage\Models\Metadata as MetadataModel;
 use Satis2020\ServicePackage\Repositories\MetadataRepository;
+use Satis2020\ServicePackage\Traits\Metadata as MetadataTraits;
 
 class MetadataService
 {
+    use MetadataTraits;
+
     /**
      * @var MetadataRepository
      */
@@ -38,14 +42,24 @@ class MetadataService
     }
 
     public function updateProxyMetadata($request){
-
         foreach($request->all() as $key=>$input){
             $data = [
-               $key=>$input,
+               $input,
             ];
-
-            $this->repository->update($data,$key);
+            $this->repository->updateProxy($data,$key);
         }
         return true;
     }
+
+    public function destroyProxyMetadata($proxy){
+        foreach($proxy as $key=>$input){
+            $data = [
+                $input=>null,
+            ];
+            $this->repository->updateProxy($data,$input);
+        }
+        return true;
+    }
+
+
 }

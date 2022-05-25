@@ -16,12 +16,9 @@ class ProxyConfigSeeder extends Seeder
     public function run()
     {
         $proxyConfig = Constants::proxyConfig();
-
         foreach ($proxyConfig as $config){
             $name = $config['name'];
-            $data = [
-                $config['name']=>$config['value'],
-            ];
+            $data = $config['value'];
             $meta = Metadata::query()
                 ->where('name',$name)
                 ->first();
@@ -29,7 +26,7 @@ class ProxyConfigSeeder extends Seeder
                 Metadata::query()->create([
                     'id' => (string)Str::uuid(),
                     'name' => $name,
-                    'data' => json_encode($data)
+                    'data' => $data
                 ]);
             }
 

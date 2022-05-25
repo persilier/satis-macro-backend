@@ -31,4 +31,5 @@ Route::put("reporting-metadata",'Reporting\ReportingMetadataController@update')-
 
 
 Route::get("proxy-metadata",'Proxy\ProxyConfigMetadataController@index')->name('proxy.meta');
-Route::put("proxy-metadata",'Proxy\ProxyConfigMetadataController@update')->name('update.proxy.meta');
+Route::put("update-proxy-metadata",'Proxy\ProxyConfigMetadataController@update')->name('update.proxy.meta');
+Route::delete("delete-proxy-metadata",'Proxy\ProxyConfigMetadataController@delete')->name('delete.proxy.meta');
