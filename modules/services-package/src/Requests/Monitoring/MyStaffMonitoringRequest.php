@@ -25,7 +25,7 @@ class MyStaffMonitoringRequest extends FormRequest
     public function rules()
     {
         return [
-            "staff_id"=>['sometimes','exists:staff,id'],
+            "staff_id"=>['required','exists:staff,id'],
             "institution_id"=>['sometimes','exists:institutions,id']
         ];
     }
