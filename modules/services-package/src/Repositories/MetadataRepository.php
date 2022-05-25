@@ -70,9 +70,13 @@ class MetadataRepository
     public function updateProxy($data,$name)
     {
         $metadata = $this->getByName($name);
-        $updatedData = json_decode($metadata->data,true);
+        $updatedData = $metadata->data;
+
         foreach ($data as $datum){
             $updatedData = $datum;
+        }
+        if($metadata->name == "proxy_modules"){
+            $metadata->data = json_encode($updatedData);
         }
         $metadata->data = $updatedData;
         $metadata->save();
