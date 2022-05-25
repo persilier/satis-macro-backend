@@ -53,6 +53,7 @@ class Controller extends BaseController
 
        // dd($proxyConfigs);
 
+        //dd(MessageApiMethod::bicecSMSGateway("22996475848","Text Bisec"));
     }
 
     public function download(File $file)

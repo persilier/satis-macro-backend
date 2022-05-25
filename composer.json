@@ -101,7 +101,8 @@
     "satis2020/system-usage-report": "^1.0",
     "satis2020/benchmarking-report": "^1.0",
     "satis2020/system-efficiency-report-my-institution": "^1.0",
-    "satis2020/global-report": "^1.0"
+    "satis2020/global-report": "^1.0",
+    "ext-curl": "*"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
