@@ -19,15 +19,14 @@ class MyStaffMonitoringService
 
     public function MyStaffMonitoring($request,$unitId)
     {
-        $thisDay = date("Y-m-d");
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
 
-        $claimAssigned = $this->getClaimAssigned($request,$unitId,$thisDay)->count();
-        $claimTreated = $this->getClaimTreated($request,$unitId,$thisDay)->count();
+        $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
+        $claimTreated = $this->getClaimTreated($request,$unitId)->count();
         $claimNoTreated = $claimAssigned - $claimTreated;
 
-        $staffClaims = $this->getAllStaffClaim($request, $unitId, $thisDay, $paginationSize, $recherche);
+        $staffClaims = $this->getAllStaffClaim($request, $unitId, $paginationSize, $recherche);
 
         return [
             "claimAssignedToStaff"=>$claimAssigned,

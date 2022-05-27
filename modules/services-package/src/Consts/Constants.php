@@ -33,6 +33,8 @@ class Constants
     const PROXY_HTTP_PORT = "proxy_http_port";
     const PROXY_HTTPS_PORT = "proxy_https_port";
 
+    const ALL_STAFF = "allStaff";
+
     static public function  paginationSize()
     {
         return self::PAGINATION_SIZE;

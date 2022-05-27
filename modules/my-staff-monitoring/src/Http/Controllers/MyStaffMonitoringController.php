@@ -19,36 +19,30 @@ class MyStaffMonitoringController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:show-my-staff-monitoring')->only(['index','show']);
+        //$this->middleware('permission:show-my-staff-monitoring')->only(['index','show']);
 
     }
 
     public function index(MyStaffMonitoringRequest $request, MyStaffMonitoringService $service)
     {
         $staff = $this->staff();
-
         if (!$this->staffIsUnitLead($this->staff()))
         {
             abort(Response::HTTP_UNAUTHORIZED);
         }
-
         $request->merge([
             "institution_id"=>$this->institution()->id
         ]);
-
         $staffMonitoring = $service->MyStaffMonitoring($request,$staff->unit_id);
         return response()->json($staffMonitoring, 200);
     }
 
     public function show(){
-
         $staff = $this->staff();
-
         if (!$this->staffIsUnitLead($this->staff()))
         {
             abort(Response::HTTP_UNAUTHORIZED);
         }
-
         return response()->json([
             'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)
         ], 200);
