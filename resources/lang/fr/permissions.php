@@ -177,7 +177,9 @@ return [
             "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
             "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
             "list_global_reporting" =>'Voir le rapport global',
-            "show_my_staff_monitoring" =>'Voir le suivi des reclamations au niveau des staffs de mon unité',
+            'show_proxy_config' => 'Voir La configuration des proxy',
+            'update_proxy_config' => 'Mettre à jour les configurations des proxy',
+            'delete_proxy_config' => 'Supprimer les configurations des proxy',
         ],
 
     //pilot and collector
@@ -249,9 +251,7 @@ return [
         'show_dashboard_data_my_unit' => 'Afficher les donnees du tableau de bord de mon unite',
         'show_dashboard_data_my_activity' => 'Afficher les donnees du tableau de bord de mon activite',
         'history_list_treat_claim' => 'Historique des reclamations traitees',
-        'show_proxy_config' => 'Voir La configuration des proxy',
-        'update_proxy_config' => 'Mettre à jour les configurations des proxy',
-        'delete_proxy_config' => 'Supprimer les configurations des proxy',
+        "show_my_staff_monitoring" =>'Voir le suivi des reclamations au niveau des staffs de mon unité',
     ],
 
 
