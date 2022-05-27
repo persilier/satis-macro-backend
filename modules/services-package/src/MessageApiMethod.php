@@ -133,7 +133,7 @@ class MessageApiMethod
     }
 
     static function bicecSMSGateway ($to,$text) {
-        $url="https://sms.intra.bicec/bicec/admin/json.php?module=sms&action=send_cresco&phone=$to&body=".urlencode($text);
+        $url="http://10.100.23.21/bicec/admin/json.php?module=sms&action=send_wallet&phone=$to&body=".urlencode($text);
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
