@@ -204,14 +204,14 @@ trait RoleTrait
 
                 if(!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType) || !in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $institutionType)){
 
-                    throw new CustomException("Impossible d'attribuer la permission {$permission} à ce rôle.");
+                    throw new CustomException(__('errors.cant_give_permission',['permission'=>$permission],app()->getLocale()));
                 }
 
             }else{
 
                 if(!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType)){
 
-                    throw new CustomException("Impossible d'attribuer la permission {$permission} à ce rôle.");
+                    throw new CustomException(__('errors.cant_give_permission',['permission'=>$permission],app()->getLocale()));
 
                 }
 
@@ -228,7 +228,7 @@ trait RoleTrait
 
         if($role->is_editable == 0){
 
-            throw new CustomException("Impossible de modifier ou de supprimer ce rôle.");
+            throw new CustomException(__('errors.cant_delete_role',[],app()->getLocale()));
 
         }
 

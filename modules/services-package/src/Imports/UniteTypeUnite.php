@@ -40,7 +40,7 @@ class UniteTypeUnite implements ToCollection, WithHeadingRow
         $index = 1;
         if(empty($collection)){
 
-            throw new CustomException("Le fichier excel d'import des types d'unités et unités est vide.", 404);
+            throw new CustomException(__("messages.empty_unity_file_alert",[],app()->getLocale()), 404);
         }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {

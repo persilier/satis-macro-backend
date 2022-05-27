@@ -177,4 +177,6 @@ return [
         'size'                  => 'taille',
     ],
     'unique_telephone'=>"Ce numéro de téléphone est déjà utilisé",
+    'date_gte'=>":attribute is invalid! The value is greater than now",
+    'date_format_invalid'=>":attribute ne correspond pas au format Y-m-d H:i.",
 ];

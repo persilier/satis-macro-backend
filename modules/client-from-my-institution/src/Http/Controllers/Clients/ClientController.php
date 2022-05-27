@@ -168,7 +168,7 @@ class ClientController extends ApiController
         $request->merge(['institution_id' => $this->institution()->id]);
         if (!$client = $this->getOneClient($request, $clientId)) {
 
-            throw new CustomException("Impossible de retrouver ce client dans votre institution.");
+            throw new CustomException(__('errors.client_not_found',[],app()->getLocale()));
         }
 
         return response()->json($client, 200);
@@ -201,7 +201,7 @@ class ClientController extends ApiController
 
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id) {
-            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+            return $this->errorResponse(__('errors.account_do_not_exist',[],app()->getLocale()), Response::HTTP_NOT_FOUND);
         }
 
         $client = $account->client_institution->client;
@@ -218,7 +218,7 @@ class ClientController extends ApiController
 
         if (!$verifyPhone['status']) {
 
-            $verifyPhone['message'] = "We can't perform your request. The phone number " . $verifyPhone['verify']['conflictValue'] . " belongs to someone else";
+            $verifyPhone['message'] = __('errors.phone_conflict',['phone'=>$verifyPhone['verify']['conflictValue']],app()->getLocale());
             throw new CustomException($verifyPhone, 409);
 
         }
@@ -228,7 +228,7 @@ class ClientController extends ApiController
 
         if (!$verifyEmail['status']) {
 
-            $verifyEmail['message'] = "We can't perform your request. The email address " . $verifyEmail['verify']['conflictValue'] . " belongs to someone else";
+            $verifyEmail['message'] = __('errors.email_conflict',['email'=>$verifyEmail['verify']['conflictValue']],app()->getLocale());
             throw new CustomException($verifyEmail, 409);
 
         }
@@ -237,7 +237,7 @@ class ClientController extends ApiController
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $this->activityLogService->store('Mise à jour des informations du compte d\'un client',
+        $this->activityLogService->store(__('messages.client_updated',[],app()->getLocale()),
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'account',
