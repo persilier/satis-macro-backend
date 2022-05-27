@@ -26,6 +26,7 @@ class UniteTypeUnite implements ToCollection, WithHeadingRow
     {
         $this->myInstitution = $myInstitution;
         $this->withoutInstituion = $withoutInstituion;
+        $this->errors = [];
     }
 
     /**
@@ -36,31 +37,20 @@ class UniteTypeUnite implements ToCollection, WithHeadingRow
     {
 
         $collection = $collection->toArray();
-
+        $index = 1;
         if(empty($collection)){
 
             throw new CustomException(__("messages.empty_unity_file_alert",[],app()->getLocale()), 404);
         }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
+            $index++;
 
             $validator = Validator::make($row, $this->rulesImport($row));
             // fields validations
             if ($validator->fails()) {
-
-                $errors_validations = [];
-
-                foreach ($validator->errors()->messages() as $messages) {
-
-                    foreach ($messages as $error) {
-                        $errors_validations[] = $error;
-                    }
-                }
-
-                $this->errors[$key] = [
-                    'error' => $errors_validations,
-                    'data' => $row
-                ];
+                $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,"line"=>$index];
+                array_push($this->errors,$error);
 
             } else {
 

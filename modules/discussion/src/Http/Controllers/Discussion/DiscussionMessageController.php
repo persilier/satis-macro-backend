@@ -32,7 +32,7 @@ class DiscussionMessageController extends ApiController
      *
      * @param Request $request
      * @param Discussion $discussion
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */

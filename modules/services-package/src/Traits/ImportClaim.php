@@ -163,8 +163,8 @@ trait ImportClaim
             'description'   => $row['description'],
             'claim_object_id' => $row['objet_reclamation'],
             'institution_targeted_id'   => $row['institution_concernee'],
-            'request_channel_slug' => $row['canal_reception_slug'],
-            'response_channel_slug' => $row['canal_reponse_slug'] ,
+            'request_channel_slug' => strtolower($row['canal_reception_slug']),
+            'response_channel_slug' => strtolower($row['canal_reponse_slug']),
             'event_occured_at' => $row['date_evenement'],
             'amount_disputed' => $row['montant_reclame'],
             'amount_currency_slug' => $row['devise_slug'],
@@ -336,7 +336,7 @@ trait ImportClaim
 
         }
 
-        if($data['relance'] =='OUI'){
+        if(strtolower($data['relance']) =='oui'){
 
             $data['relance'] = true;
 

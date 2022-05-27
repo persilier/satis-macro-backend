@@ -26,7 +26,10 @@ class ReportingTasksController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:config-reporting-claim-any-institution')->only(['show']);
+        $this->middleware('permission:list-config-reporting-claim-my-institution')->only(['index']);
+        $this->middleware('permission:store-config-reporting-claim-my-institution')->only(['create','store']);
+        $this->middleware('permission:update-config-reporting-claim-my-institution')->only(['update','edit']);
+        $this->middleware('permission:delete-config-reporting-claim-my-institution')->only(['destroy']);
     }
 
 

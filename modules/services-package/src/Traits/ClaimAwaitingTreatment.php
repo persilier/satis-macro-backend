@@ -241,16 +241,23 @@ trait ClaimAwaitingTreatment
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
 
-    protected function getTargetedStaffFromUnit($unitId)
+    protected function getTargetedStaffFromUnit($unitId,$isReassignment=false,$currentStaffId=null)
     {
         return Staff::with('identite.user')
             ->where('unit_id', $unitId)
             ->get()
-            ->filter(function ($value, $key) {
+            ->filter(function ($value, $key) use($isReassignment,$currentStaffId){
                 if (is_null($value->identite)) {
                     return false;
                 }
                 if (is_null($value->identite->user)) {
+                    return false;
+                }
+                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
+                    return false;
+                }
+
+                if ($isReassignment && $currentStaffId==$value->id){
                     return false;
                 }
                 return $value->identite->user->hasRole('staff');

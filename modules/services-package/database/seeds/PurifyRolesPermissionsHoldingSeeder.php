@@ -83,7 +83,15 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-auth-config','update-auth-config',
                     'activity-log',
                     'list-any-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'config-reporting-claim-any-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-any-efficiency-report',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-proxy-config',
+                    'update-proxy-config',
+                    'delete-proxy-config',
+                    'list-config-reporting-claim-any-institution','store-config-reporting-claim-any-institution','update-config-reporting-claim-any-institution','delete-config-reporting-claim-any-institution',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -105,7 +113,11 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-any-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution'
+                    'list-regulatory-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-any-efficiency-report',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-config-reporting-claim-any-institution','store-config-reporting-claim-any-institution','update-config-reporting-claim-any-institution','delete-config-reporting-claim-any-institution',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -124,8 +136,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'history-list-treat-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
-
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
                 ]
             ];
 

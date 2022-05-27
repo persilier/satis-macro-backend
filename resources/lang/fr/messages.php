@@ -24,5 +24,8 @@ return [
                                         Souhaitez vous apporter une modification à ce compte ?",
     'unit_do_not_exist'=>"L'unité que vous avez choisir n'existe pas dans cette institution.",
     'unit_found_for_staff'=>"Un identité a été retrouvé avec les informations du staff.",
-    'unable_to_find_unit_type'=>"Impossible d'accéder au type de l'institution de l'utilisateur connecté."
+    'unable_to_find_unit_type'=>"Impossible d'accéder au type de l'institution de l'utilisateur connecté.",
+        'semester'=>"Semestre"
+
 ];
+

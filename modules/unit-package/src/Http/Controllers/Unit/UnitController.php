@@ -3,6 +3,7 @@
 namespace Satis2020\UnitPackage\Http\Controllers\Unit;
 
 use Illuminate\Http\Response;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Unit;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution','state'])->get(), 200);
     }
 
     /**
@@ -34,7 +35,7 @@ class UnitController extends ApiController
         return response()->json([
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
-            'countries'=>$countryService->getCountries()
+            'countries'=>Country::getAllAfricaCountries()
 
         ], 200);
     }

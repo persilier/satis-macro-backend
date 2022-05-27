@@ -104,7 +104,14 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-auth-config','update-auth-config',
             'activity-log',
             'list-any-notification-proof','pilot-list-any-notification-proof',
-            'list-regulatory-reporting-claim-my-institution'
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution','show-my-staff-monitoring',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals'
         ];
 
         $filialPermissions = [
@@ -137,8 +144,12 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             "my-email-claim-configuration",
             'list-auth-config','update-auth-config',
             'list-notification-proof','pilot-list-notification-proof',
-            'list-regulatory-reporting-claim-my-institution'
-
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report','show-my-staff-monitoring',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals'
         ];
 
         $observatoryPermissions = [
@@ -197,7 +208,15 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-auth-config','update-auth-config',
             'activity-log',
             'list-notification-proof','pilot-list-notification-proof',
-            'list-regulatory-reporting-claim-my-institution'
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals',
+            'show-my-staff-monitoring',
         ];
 
         $memberPermissions = [
@@ -265,8 +284,13 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-auth-config','update-auth-config',
             'activity-log',
             'list-notification-proof','pilot-list-notification-proof',
-            'list-regulatory-reporting-claim-my-institution'
-
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals',
+            'show-my-staff-monitoring',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

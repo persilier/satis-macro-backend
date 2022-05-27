@@ -114,4 +114,6 @@ return [
 
     'password_timeout' => 10800,
 
+    'password_reset_link'=>env('URL_FORGOT_PASSWORD_CLIENT', 'http://127.0.0.1:3000/forgot-password'),
+
 ];

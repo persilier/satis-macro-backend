@@ -2,9 +2,9 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
@@ -38,10 +38,20 @@ trait ClaimIncomingByEmail
     {
         try {
 
+            $httpClient = Http::withHeaders([]);
+
+            $proxyConfigs = Config::get('proxy');
+
+            if ($proxyConfigs['http'] || $proxyConfigs['https']) {
+                $httpClient = $httpClient->withOptions([
+                    'proxy' => $proxyConfigs
+                ]);
+            }
+
             $params = Config::get('email-claim-configuration');
 
-            $response = Http::post($params['api_subscriber'], [
-                "app_name" => Institution::findOrFail($request->institution_id)->name,
+            $requestData = [
+                "app_name" => Str::random(16).'-'.Institution::findOrFail($request->institution_id)->name,
                 "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
@@ -54,7 +64,13 @@ trait ClaimIncomingByEmail
                     "client_id" => $params['client_id'],
                     "client_secret" => $params['client_secret'],
                 ]
-            ])->json();
+            ];
+
+            $response = $httpClient->post($params['api_subscriber'],$requestData )->json();
+
+            if($response==null){
+                $response = Http::post($params['api_subscriber'],$requestData )->json();
+            }
 
             if ($response['status'] !== 200) {
                 return [
@@ -69,6 +85,7 @@ trait ClaimIncomingByEmail
             ];
 
         } catch (\Exception $exception) {
+
             return [
                 "error" => true,
                 "message" => $exception->getMessage()
@@ -80,9 +97,19 @@ trait ClaimIncomingByEmail
     {
         try {
 
+            $httpClient = Http::withHeaders([]);
+
+            $proxyConfigs = Config::get('proxy');
+
+            if ($proxyConfigs['http'] || $proxyConfigs['https']) {
+                $httpClient = $httpClient->withOptions([
+                    'proxy' => $proxyConfigs
+                ]);
+            }
+
             $params = Config::get('email-claim-configuration');
 
-            $response = Http::put($params['api_subscriber'], [
+            $requestData = [
                 "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
@@ -96,7 +123,13 @@ trait ClaimIncomingByEmail
                     "client_id" => $params['client_id'],
                     "client_secret" => $params['client_secret'],
                 ]
-            ])->json();
+            ];
+
+            $response = $httpClient->put($params['api_subscriber'], $requestData)->json();
+
+            if ($response==null){
+                $response = Http::put($params['api_subscriber'], $requestData)->json();
+            }
 
             if (!$response['success']) {
                 return [
@@ -132,7 +165,16 @@ trait ClaimIncomingByEmail
 
         $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
+
         if ($subscriber['error']) {
+
+
+            try {
+                Log::debug("subscribtion error",$subscriber);
+            }catch (\Exception $exception){
+                Log::info( $subscriber['message']);
+            }
+
             return [
                 "error" => true,
                 "message" => __('messages.invalid_params',[],getAppLang()),

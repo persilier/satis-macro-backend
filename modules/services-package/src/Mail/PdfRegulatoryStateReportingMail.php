@@ -12,7 +12,7 @@ class PdfRegulatoryStateReportingMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $data;
+    public $data;
 
     /**
      * PdfReportingSend constructor.
@@ -30,10 +30,10 @@ class PdfRegulatoryStateReportingMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Reporting')
+        return $this->subject($this->data['title'])
                     ->attach($this->data['file'], [
                         'mime' => 'application/pdf',
                     ])
-                    ->markdown('ServicePackage::mails.pdf-regulatory-state-reporting');
+                    ->markdown('ServicePackage::mails.pdf-reporting');
     }
 }

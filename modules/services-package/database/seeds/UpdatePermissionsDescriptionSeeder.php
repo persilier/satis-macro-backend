@@ -186,6 +186,12 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'destroy-staff-from-maybe-no-unit' => __("permissions.admin.destroy_staff_from_maybe_no_unit",[],app()->getLocale()),
             'show-staff-from-maybe-no-unit' => __("permissions.admin.show_staff_from_maybe_no_unit",[],app()->getLocale()),
             "any-email-claim-configuration" =>__("permissions.admin.any_email_claim_configuration",[],app()->getLocale()),
+            'list-system-usage-reporting' =>__("permissions.admin.list_system_usage_reporting",[],app()->getLocale()),
+            'list-benchmarking-reporting' =>__("permissions.admin.list_benchmarking_reporting",[],app()->getLocale()),
+            'list-global-reporting' =>__("permissions.admin.list_global_reporting",[],app()->getLocale()),
+            'show-proxy-config' => __("permissions.admin.show_proxy_config",[],app()->getLocale()),
+            'update-proxy-config' => __("permissions.admin.update_proxy_config",[],app()->getLocale()),
+            'delete-proxy-config' => __("permissions.admin.delete_proxy_config",[],app()->getLocale()),
         ];
 
         foreach ($admin as $name => $description){
@@ -269,6 +275,8 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'show-dashboard-data-my-unit' => __("permissions.staff.show_dashboard_data_my_unit",[],app()->getLocale()),
         'show-dashboard-data-my-activity' => __("permissions.staff.show_dashboard_data_my_activity",[],app()->getLocale()),
         'history-list-treat-claim' => __("permissions.staff.history_list_treat_claim",[],app()->getLocale()),
+        'show-my-staff-monitoring' =>__("permissions.staff.show_my_staff_monitoring",[],app()->getLocale()),
+
     ];
 
         foreach ($staff as $name => $description){

@@ -75,6 +75,9 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
      * @return array
      */
 

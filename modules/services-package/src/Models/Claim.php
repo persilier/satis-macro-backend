@@ -23,9 +23,11 @@ class Claim extends Model
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
     const CLAIM_TRANSFERRED_TO_UNIT = "transferred_to_unit";
+    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION= "transferred_to_targeted_institution";
     const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
+    const CLAIM_ARCHIVED = "archived";
 
 
     /**
@@ -103,7 +105,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType'];
+    protected $appends = ['timeExpire', 'accountType','lastRevival'];
 
     /**
      * @return mixed
@@ -115,7 +117,7 @@ class Claim extends Model
         if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
 
             $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
-            $diff = now()->diffInDays(($dateExpire), false);
+            $diff = $dateExpire->diffInDays((now()), false);
         }
 
         return $diff;
@@ -275,5 +277,21 @@ class Claim extends Model
         return $this->belongsTo(Staff::class, 'revoked_by');
     }
 
+
+    /**
+     * @return HasMany
+     */
+    public function revivals()
+    {
+        return $this->hasMany(Revival::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function getLastRevivalAttribute()
+    {
+        return collect($this->revivals)->sortByDesc('created_at')->first();
+    }
 
 }

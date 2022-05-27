@@ -15,13 +15,14 @@ use Satis2020\ServicePackage\Models\CategoryClient;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
+use Satis2020\ServicePackage\Traits\Search;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
+    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete,Search;
 
     protected $activityLogService;
 
@@ -62,15 +63,14 @@ class ClientController extends ApiController
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
-     * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    public function create()
+    public function create(Request $request)
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id, false),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);
@@ -144,7 +144,7 @@ class ClientController extends ApiController
             'client_institution.client.identite',
             'client_institution.category_client',
             'client_institution.institution'
-        ])->find($accountId);
+        ])->findOrFail($accountId);
 
         $account->makeVisible(['account_number']);
         $account->makeHidden(['number']);

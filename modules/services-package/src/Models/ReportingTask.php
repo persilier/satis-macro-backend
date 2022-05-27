@@ -15,6 +15,9 @@ class ReportingTask extends Model
 {
     use UuidAsId, SoftDeletes, SecureDelete, LogsActivity, ActivityTrait;
 
+    const BIANNUAL_REPORT="biannual";
+
+
     protected static $logName = 'reporting_task';
     /**
      * The attributes that should be cast to native types.
@@ -35,7 +38,7 @@ class ReportingTask extends Model
      * @var array
      */
     protected $fillable = [
-        'period', 'staffs' , 'institution_id', 'institution_targeted_id'
+        'period', 'staffs' , 'institution_id', 'institution_targeted_id','reporting_type'
     ];
 
 

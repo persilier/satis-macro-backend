@@ -103,7 +103,6 @@ class AwaitingValidationController extends ApiController
     {
 
         $claim->load($this->getRelations());
-
         $request->merge(['claim' => $claim->id]);
 
         $rules = [

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
@@ -51,14 +52,11 @@ trait DataUserNature
     {
 
         $message = __('messages.unable_to_fin_user_institution',[],getAppLang());
+        $staff = $this->user()->load('identite.staff')->identite->staff;
 
-        try {
-            $this->institution = Institution::with('institutionType')->findOrFail($this->staff()->institution_id);
-        } catch (\Exception $exception) {
-            throw new RetrieveDataUserNatureException($message);
-        }
+        $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 
-        if (is_null($this->institution)) {
+        if ($this->institution==null) {
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -71,20 +69,7 @@ trait DataUserNature
      */
     protected function connectedInstitution()
     {
-
-        $message = __('messages.unable_to_fin_user_institution',[],getAppLang());
-
-        try {
-            $this->institution = Institution::with('institutionType')->findOrFail($this->staff()->institution_id);
-        } catch (\Exception $exception) {
-            throw new RetrieveDataUserNatureException($message);
-        }
-
-        if (is_null($this->institution)) {
-            throw new RetrieveDataUserNatureException($message);
-        }
-
-        return $this->institution;
+        return $this->institution();
     }
 
     /**

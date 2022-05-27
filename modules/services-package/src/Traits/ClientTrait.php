@@ -229,6 +229,7 @@ trait ClientTrait
             })
             ->where('institution_id', $institutionId)
             ->when($key,function (Builder $query1) use ($key) {
+
                 $query1->whereHas("client",function ($query2) use ($key){
                     $query2->whereHas("identite",function ($query3) use($key){
                         $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])

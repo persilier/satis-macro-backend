@@ -19,6 +19,7 @@ class StateAnalytiqueReportExcel implements FromCollection, WithHeadings, Should
     private $claims;
     private $myInstitution;
     private $libellePeriode;
+    private $title;
 
     /**
      * GlobalStateReportExcel constructor.
@@ -27,11 +28,12 @@ class StateAnalytiqueReportExcel implements FromCollection, WithHeadings, Should
      * @param $libellePeriode
      * @param $reportName
      */
-    public function __construct($claims, $myInstitution, $libellePeriode)
+    public function __construct($claims, $myInstitution, $libellePeriode,$title)
     {
         $this->claims = $claims;
         $this->myInstitution = $myInstitution;
         $this->libellePeriode = $libellePeriode;
+        $this->title = $title;
     }
     /**
      * @return Collection
@@ -70,7 +72,7 @@ class StateAnalytiqueReportExcel implements FromCollection, WithHeadings, Should
 
         return [
             [
-               'Etat Analytique des réclamations'
+               $this->title
             ],
             [
                 'Période : '.$this->libellePeriode

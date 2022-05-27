@@ -4,6 +4,9 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Satis\CountriesPackage\Traits\HasCountryTrait;
+use Satis2020\ServicePackage\Services\InstitutionService;
+use Satis2020\ServicePackage\Services\StateService;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\SecureForceDeleteWithoutException;
@@ -14,7 +17,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Institution extends Model
 {
-    use Sluggable, UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException, LogsActivity, ActivityTrait;
+    use Sluggable, UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException, LogsActivity, ActivityTrait,HasCountryTrait;
 
     protected static $logName = 'institution';
     /**
@@ -38,8 +41,9 @@ class Institution extends Model
      */
     protected $fillable = [
         'slug', 'name', 'acronyme', 'iso_code', 'default_currency_slug', 'logo', 'institution_type_id',
-        'orther_attributes', 'active_pilot_id'
+        'orther_attributes', 'active_pilot_id','country_id'
     ];
+
 
     /**
      * Return the sluggable configuration array for this model.
@@ -151,5 +155,6 @@ class Institution extends Model
     {
         return $this->hasOne(EmailClaimConfiguration::class);
     }
+
 
 }
