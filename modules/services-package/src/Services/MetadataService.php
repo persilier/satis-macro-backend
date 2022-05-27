@@ -18,9 +18,9 @@ class MetadataService
      */
     private $repository;
 
-    public function __construct(MetadataRepository $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
+        $this->repository = new MetadataRepository;
     }
 
     public function getByName($name)
@@ -46,7 +46,13 @@ class MetadataService
     public function getProxy(){
         $proxy = [Constants::PROXY];
         $meta = $this->getAllDataProxyByTypes($proxy)->toArray();
-        return json_decode($meta['data']["fr"]);
+
+        $proxy = json_decode($meta['data']["fr"],true);
+        $http = $proxy[Constants::PROXY_HTTP_PORT]!=null?$proxy[Constants::PROXY_HTTP_SERVER].':'.$proxy[Constants::PROXY_HTTP_PORT]:$proxy[Constants::PROXY_HTTP_SERVER];
+        $https = $proxy[Constants::PROXY_HTTPS_PORT]!=null?$proxy[Constants::PROXY_HTTPS_SERVER].':'.$proxy[Constants::PROXY_HTTPS_PORT]:$proxy[Constants::PROXY_HTTPS_SERVER];
+
+       // dd($https,$http);
+        return json_decode($meta['data']["fr"],true);
     }
 
     public function updateProxyMetadata($request){
@@ -62,5 +68,17 @@ class MetadataService
         return $this->getProxy()!=null;
     }
 
+    public function getRequestProxy()
+    {
+
+        $proxy = $this->getProxy();
+        $http = $proxy[Constants::PROXY_HTTP_PORT]!=null?$proxy[Constants::PROXY_HTTP_SERVER].':'.$proxy[Constants::PROXY_HTTP_PORT]:$proxy[Constants::PROXY_HTTP_SERVER];
+        $https = $proxy[Constants::PROXY_HTTPS_PORT]!=null?$proxy[Constants::PROXY_HTTPS_SERVER].':'.$proxy[Constants::PROXY_HTTPS_PORT]:$proxy[Constants::PROXY_HTTPS_SERVER];
+
+        return [
+            "http"=>$http,
+            "https"=>$https
+        ];
+    }
 
 }

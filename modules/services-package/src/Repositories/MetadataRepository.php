@@ -19,9 +19,9 @@ class MetadataRepository
      * MetadataRepository constructor.
      * @param Metadata $metadata
      */
-    public function __construct(Metadata $metadata)
+    public function __construct()
     {
-        $this->metadata = $metadata;
+        $this->metadata = new Metadata;
     }
 
     public function getByName($name)

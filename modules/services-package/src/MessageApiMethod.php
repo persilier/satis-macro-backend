@@ -81,10 +81,10 @@ class MessageApiMethod
 
 
         $request = Http::withHeaders($headers);
+        $metadataService = new MetadataService;
 
-        $proxyConfigs = Config::get('proxy');
-
-        if ($proxyConfigs['http'] || $proxyConfigs['https']) {
+        if ($metadataService->proxyExist()) {
+            $proxyConfigs = $metadataService->getRequestProxy();
             $request = $request->withOptions([
                 'proxy' => $proxyConfigs
             ]);

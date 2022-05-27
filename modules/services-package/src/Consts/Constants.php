@@ -26,8 +26,12 @@ class Constants
     const GLOBAL_REPORTING = 'global-report';
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
 
-    const PROXY_MODULES = "proxy_modules";
     const PROXY = "proxy";
+    const PROXY_MODULES = "proxy_modules";
+    const PROXY_HTTP_SERVER = "proxy_http_server";
+    const PROXY_HTTPS_SERVER = "proxy_https_server";
+    const PROXY_HTTP_PORT = "proxy_http_port";
+    const PROXY_HTTPS_PORT = "proxy_https_port";
 
     static public function  paginationSize()
     {
