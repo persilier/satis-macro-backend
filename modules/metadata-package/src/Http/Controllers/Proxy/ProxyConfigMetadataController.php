@@ -55,8 +55,8 @@ class ProxyConfigMetadataController extends ApiController
     {
 
         $this->validate($request, [
-            'proxy_http_server'=>['nullable','string'],
-            'proxy_https_server'=>['nullable','string'],
+            'proxy_http_server'=>['required','string'],
+            'proxy_https_server'=>['required','string'],
             'proxy_http_port'=>['nullable','string'],
             'proxy_https_port'=>['nullable','string'],
             'proxy_modules'=>['array'],

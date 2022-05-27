@@ -189,7 +189,9 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'list-system-usage-reporting' =>__("permissions.admin.list_system_usage_reporting",[],app()->getLocale()),
             'list-benchmarking-reporting' =>__("permissions.admin.list_benchmarking_reporting",[],app()->getLocale()),
             'list-global-reporting' =>__("permissions.admin.list_global_reporting",[],app()->getLocale()),
-            'show-my-staff-monitoring' =>__("permissions.admin.show_my_staff_monitoring",[],app()->getLocale()),
+            'show-proxy-config' => __("permissions.admin.show_proxy_config",[],app()->getLocale()),
+            'update-proxy-config' => __("permissions.admin.update_proxy_config",[],app()->getLocale()),
+            'delete-proxy-config' => __("permissions.admin.delete_proxy_config",[],app()->getLocale()),
         ];
 
         foreach ($admin as $name => $description){
@@ -273,9 +275,8 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'show-dashboard-data-my-unit' => __("permissions.staff.show_dashboard_data_my_unit",[],app()->getLocale()),
         'show-dashboard-data-my-activity' => __("permissions.staff.show_dashboard_data_my_activity",[],app()->getLocale()),
         'history-list-treat-claim' => __("permissions.staff.history_list_treat_claim",[],app()->getLocale()),
-        'show-proxy-config' => __("permissions.staff.show_proxy_config",[],app()->getLocale()),
-        'update-proxy-config' => __("permissions.staff.update_proxy_config",[],app()->getLocale()),
-        'delete-proxy-config' => __("permissions.staff.delete_proxy_config",[],app()->getLocale()),
+        'show-my-staff-monitoring' =>__("permissions.staff.show_my_staff_monitoring",[],app()->getLocale()),
+
     ];
 
         foreach ($staff as $name => $description){
