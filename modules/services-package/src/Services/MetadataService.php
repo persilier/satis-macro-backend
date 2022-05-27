@@ -47,11 +47,6 @@ class MetadataService
         $proxy = [Constants::PROXY];
         $meta = $this->getAllDataProxyByTypes($proxy)->toArray();
 
-        $proxy = json_decode($meta['data']["fr"],true);
-        $http = $proxy[Constants::PROXY_HTTP_PORT]!=null?$proxy[Constants::PROXY_HTTP_SERVER].':'.$proxy[Constants::PROXY_HTTP_PORT]:$proxy[Constants::PROXY_HTTP_SERVER];
-        $https = $proxy[Constants::PROXY_HTTPS_PORT]!=null?$proxy[Constants::PROXY_HTTPS_SERVER].':'.$proxy[Constants::PROXY_HTTPS_PORT]:$proxy[Constants::PROXY_HTTPS_SERVER];
-
-       // dd($https,$http);
         return json_decode($meta['data']["fr"],true);
     }
 
@@ -72,8 +67,8 @@ class MetadataService
     {
 
         $proxy = $this->getProxy();
-        $http = $proxy[Constants::PROXY_HTTP_PORT]!=null?$proxy[Constants::PROXY_HTTP_SERVER].':'.$proxy[Constants::PROXY_HTTP_PORT]:$proxy[Constants::PROXY_HTTP_SERVER];
-        $https = $proxy[Constants::PROXY_HTTPS_PORT]!=null?$proxy[Constants::PROXY_HTTPS_SERVER].':'.$proxy[Constants::PROXY_HTTPS_PORT]:$proxy[Constants::PROXY_HTTPS_SERVER];
+        $http = !empty($proxy[Constants::PROXY_HTTP_PORT])?$proxy[Constants::PROXY_HTTP_SERVER].':'.$proxy[Constants::PROXY_HTTP_PORT]:$proxy[Constants::PROXY_HTTP_SERVER];
+        $https = !empty($proxy[Constants::PROXY_HTTPS_PORT])?$proxy[Constants::PROXY_HTTPS_SERVER].':'.$proxy[Constants::PROXY_HTTPS_PORT]:$proxy[Constants::PROXY_HTTPS_SERVER];
 
         return [
             "http"=>$http,

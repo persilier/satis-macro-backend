@@ -37,7 +37,18 @@ class MessageApiMethod
      */
     static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
-        $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+
+        $request = Http::withHeaders([]);
+        $metadataService = new MetadataService;
+
+        if ($metadataService->proxyExist()) {
+            $proxyConfigs = $metadataService->getRequestProxy();
+            $request = $request->withOptions([
+                'proxy' => $proxyConfigs
+            ]);
+        }
+
+        $response = $request->asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
             'user' => $user,
             'password' => $password,
             'from' => $from,
