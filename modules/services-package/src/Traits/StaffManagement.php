@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
@@ -166,5 +167,11 @@ trait StaffManagement
             throw new CustomException("You do not own this staff.");
         }
 
+    }
+
+    public function checkIfStaffHasUserAccount($staff)
+    {
+        $userRepo = app(UserRepository::class);
+        return $userRepo->getUserByIdentity($staff->identite_id)!=null;
     }
 }

@@ -95,6 +95,7 @@ trait ClaimIncomingByEmail
 
     protected function updateSubscriber($request, $emailClaimConfiguration, $routeName)
     {
+
         try {
 
             $httpClient = Http::withHeaders([]);
@@ -125,6 +126,7 @@ trait ClaimIncomingByEmail
                 ]
             ];
 
+
             $response = $httpClient->put($params['api_subscriber'], $requestData)->json();
 
             if ($response==null){
@@ -154,6 +156,7 @@ trait ClaimIncomingByEmail
 
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
+
 //        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
 //
 //        if ($testSmtp['error']) {

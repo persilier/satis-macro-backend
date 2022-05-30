@@ -195,13 +195,16 @@ class StaffController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Staff $staff)
     {
-        abort(Response::HTTP_FORBIDDEN);
-        $staff->delete();
+        if ($this->checkIfStaffHasUserAccount($staff)){
+            abort(Response::HTTP_FORBIDDEN,__('messages.user_has_account'));
+        }else{
+            $staff->delete();
+        }
         return response()->json($staff, 200);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'semester'=>"Semestre"
+    'semester'=>"Semestre",
+    'user_has_account'=>"Cet utilisateur ne peut être supprimé"
 ];
