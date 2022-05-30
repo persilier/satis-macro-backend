@@ -51,8 +51,7 @@ class Controller extends BaseController
        //     dump('no');
        // }
 
-       // dd($proxyConfigs);
-
+        //verif
         dd(MessageApiMethod::bicecSMSGateway("237691104493","Test SMS Bisec"));
     }
 
