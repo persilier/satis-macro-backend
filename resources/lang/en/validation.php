@@ -148,6 +148,8 @@ return [
 
     'attributes' => [],
     'unique_telephone'=>"This phone number is already used",
+    'date_gte'=>":attribute is invalid! The value is greater than now",
+    'date_format_invalid'=>":attribute does not match the Y-m-d H:i format.",
 
 
 ];

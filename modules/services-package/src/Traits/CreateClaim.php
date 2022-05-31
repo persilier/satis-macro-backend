@@ -59,10 +59,10 @@ trait CreateClaim
                 function ($attribute, $value, $fail) {
                     try{
                         if (Carbon::parse($value)->gt(Carbon::now())) {
-                            $fail($attribute . ' is invalid! The value is greater than now');
+                            $fail(__('validation.date_gte',['attribute'=>$attribute],getAppLang()));
                         }
                     }catch (InvalidFormatException $e){
-                        $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
+                        $fail(__('validation.date_format_invalid',['attribute'=>$attribute],getAppLang()));
                     }
                 }
             ],
@@ -155,7 +155,7 @@ trait CreateClaim
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Can't retrieve the claimObject requirements");
+            throw new CustomException(__('errors.retrieve_claim_object',[],app()->getLocale()));
 
         }
 

@@ -65,12 +65,12 @@ trait ClaimAwaitingTreatment
 
             if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit") {
 
-                throw new CustomException("Impossible de traiter cette réclammation");
+                throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
             }
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Imposible de récupérer cette réclammation.");
+            throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
 
         }
 
@@ -236,7 +236,7 @@ trait ClaimAwaitingTreatment
     {
 
         if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId)->where('claims.id', $claim)->first())
-            throw new CustomException("Impossible de récupérer cette réclammation");
+            throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
         else
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
@@ -299,7 +299,7 @@ trait ClaimAwaitingTreatment
         $staff = $this->staff();
 
         if (!$this->checkLead($staff)) {
-            throw new CustomException("Seul le lead de votre unité est autorisé à effectuer cette action.");
+            throw new CustomException(__('messages.only_lead_can_is_allow',[],getAppLang()));
         }
     }
 

@@ -180,7 +180,7 @@ trait ClaimIncomingByEmail
 
             return [
                 "error" => true,
-                "message" => "Les paramètres ne sont pas valides. L'adresse email saisie et/ou le nom (nom de l'intituion) de votre application est déjà utilisé par une autre institution.",
+                "message" => __('messages.invalid_params',[],getAppLang()),
                 "serviceErrors" => $subscriber['message']
             ];
         }
