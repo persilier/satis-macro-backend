@@ -542,13 +542,12 @@ trait FilterClaims
      * @param bool $treatment
      * @return Builder
      */
-    function getClaimsByStatus($claims, $status, $relations=[], $treatment=false)
+    function getClaimsByStatus($claims, $status, $treatment=false)
     {
 
         if ($treatment) {
 
             $claims->join('treatments', function ($join) {
-
                 $join->on('claims.id', '=', 'treatments.claim_id')
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })->select('claims.*');
@@ -559,7 +558,6 @@ trait FilterClaims
             $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
 
         } else {
-
             $claims->where('status', $status);
         }
 

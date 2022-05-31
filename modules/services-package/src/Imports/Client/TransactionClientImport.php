@@ -145,7 +145,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                     $error=['messages'=>"Un compte avec ses informations existe déjà",'data'=>$row,'line'=>$rowIndex];
                     array_push($this->errors,$error);
                     $this->hasError = true;
-
                 }
 
             } else {
@@ -173,9 +172,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
                 ['number' => $row['account_number'], 'client_institution_id' => $clientInstitution->id],
                 ['account_type_id' => $row['account_type']]
             );
-
-
-
 
         } else {
             Log::error($validator->errors());
@@ -267,11 +263,11 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
         }
 
         $data['category_client'] = optional(
-            $this->data['categoryClients']->firstWhere('name', $data['category_client'])
+            $this->data['categoryClients']->firstWhere('name', 'iLike',$data['category_client'])
         )->id;
 
         $data['account_type'] = optional(
-            $this->data['accountTypes']->firstWhere('name', $data['account_type'])
+            $this->data['accountTypes']->firstWhere('name','iLike', $data['account_type'])
         )->id;
 
         return $data;

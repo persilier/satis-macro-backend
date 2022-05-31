@@ -167,4 +167,11 @@ trait StaffManagement
         }
 
     }
+
+    public function checkIfStaffHasUserAccount($staff)
+    {
+        $userRepo = app(UserRepository::class);
+        return $userRepo->getUserByIdentity($staff->identite_id)!=null;
+    }
+
 }

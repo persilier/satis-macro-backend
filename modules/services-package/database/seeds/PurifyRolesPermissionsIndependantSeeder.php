@@ -84,7 +84,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-auth-config','update-auth-config',
                     'activity-log',
                     'list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution',
                     'config-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-my-efficiency-report',
