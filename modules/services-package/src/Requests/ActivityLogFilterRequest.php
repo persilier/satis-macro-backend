@@ -27,7 +27,7 @@ class ActivityLogFilterRequest extends FormRequest
             'causer_id' => 'nullable|exists:users,id',
             'log_action' => 'nullable',
             'date_start' => 'sometimes|date_format:Y-m-d',
-            'date_end' => 'sometimes|date_format:Y-m-d|after:date_start'
+            'date_end' => 'sometimes|date_format:Y-m-d|after_or_equal:date_start'
         ];
     }
 
