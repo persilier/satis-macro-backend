@@ -52,7 +52,7 @@ class Controller extends BaseController
        // }
 
         //verif
-        dd(MessageApiMethod::bicecSMSGateway("237691104493","Test SMS Bisec"));
+        return response()->json(MessageApiMethod::bicecSMSGateway($request->phone,"Test SMS Bisec"));
     }
 
     public function download(File $file)
