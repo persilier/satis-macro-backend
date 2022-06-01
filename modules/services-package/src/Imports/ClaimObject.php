@@ -30,6 +30,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
     {
         $this->myInstitution = $myInstitution;
         $this->withoutInstitution = $withoutInstitution;
+        $this->errors = [];
     }
 
     /**
