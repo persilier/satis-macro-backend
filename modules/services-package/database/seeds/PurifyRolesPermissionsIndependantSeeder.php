@@ -85,11 +85,14 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'activity-log',
                     'list-notification-proof',
                     'config-reporting-claim-my-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'system-my-efficiency-report',
                     'config-reporting-claim-my-institution',
                     'list-notification-proof',
+                    'system-any-efficiency-report',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-proxy-config',
+                    'update-proxy-config',
+                    'delete-proxy-config'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -110,11 +113,10 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'system-my-efficiency-report',
-                    'config-reporting-claim-my-institution',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -134,7 +136,11 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
+
                 ]
             ];
 

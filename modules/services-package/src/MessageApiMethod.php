@@ -8,9 +8,21 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Satis2020\ServicePackage\Services\MetadataService;
 
 class MessageApiMethod
 {
+
+    /**
+     * @var MetadataService
+     */
+    private $metaService;
+
+    public function __construct(MetadataService $metadataService)
+    {
+        $this->metaService = $metadataService;
+    }
+
     /**
      * oceanicsms.com Message Api
      *
@@ -25,7 +37,18 @@ class MessageApiMethod
      */
     static public function toOceanicsms($user, $password, $from, $to, $text, $api)
     {
-        $response = Http::asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
+
+        $request = Http::withHeaders([]);
+        $metadataService = new MetadataService;
+
+        if ($metadataService->proxyExist()) {
+            $proxyConfigs = $metadataService->getRequestProxy();
+            $request = $request->withOptions([
+                'proxy' => $proxyConfigs
+            ]);
+        }
+
+        $response = $request->asForm()->post('http://oceanicsms.com/api/http/sendmsg.php', [
             'user' => $user,
             'password' => $password,
             'from' => $from,
@@ -69,10 +92,10 @@ class MessageApiMethod
 
 
         $request = Http::withHeaders($headers);
+        $metadataService = new MetadataService;
 
-        $proxyConfigs = Config::get('proxy');
-
-        if ($proxyConfigs['http'] || $proxyConfigs['https']) {
+        if ($metadataService->proxyExist()) {
+            $proxyConfigs = $metadataService->getRequestProxy();
             $request = $request->withOptions([
                 'proxy' => $proxyConfigs
             ]);

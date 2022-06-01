@@ -75,6 +75,9 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
      * @return array
      */
 
@@ -116,7 +119,7 @@ trait ClaimSatisfactionMeasured
 
         if($claim->activeTreatment->responsibleStaff->institution_id !== $this->institution()->id){
 
-            throw new CustomException("Impossible de récupérer cette réclamation.");
+            throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
 
         }
 

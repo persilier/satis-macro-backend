@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -57,7 +58,7 @@ class UnitController extends ApiController
             'unitTypes' => UnitType::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-            'countries'=>$countryService->getCountries()
+            'countries'=>Country::getAllAfricaCountries()
         ], 200);
     }
 
@@ -78,7 +79,7 @@ class UnitController extends ApiController
             'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
                 $query->where('institution_id', $this->institution()->id);
             }),
-            'state_id'=>['nullable','numeric',new StateExistRule]
+            'state_id'=>['nullable','numeric','exists:states,id']
         ];
 
         $this->validate($request, $rules);

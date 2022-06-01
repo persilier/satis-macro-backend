@@ -46,7 +46,7 @@ trait HandleTreatment
         \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
 
         $activityLogService = app(ActivityLogService::class);
-        $activityLogService->store("Plainte transférée à une unité",
+        $activityLogService->store(__('activity_logs.claim_transferred',[],getAppLang()),
             $this->institution()->id,
             ActivityLogService::TRANSFER_TO_UNIT,
             'claim',

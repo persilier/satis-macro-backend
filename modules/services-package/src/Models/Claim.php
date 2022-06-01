@@ -105,7 +105,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType'];
+    protected $appends = ['timeExpire', 'accountType','lastRevival'];
 
     /**
      * @return mixed
@@ -277,5 +277,21 @@ class Claim extends Model
         return $this->belongsTo(Staff::class, 'revoked_by');
     }
 
+
+    /**
+     * @return HasMany
+     */
+    public function revivals()
+    {
+        return $this->hasMany(Revival::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function getLastRevivalAttribute()
+    {
+        return collect($this->revivals)->sortByDesc('created_at')->first();
+    }
 
 }
