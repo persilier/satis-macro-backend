@@ -42,6 +42,7 @@ class ImportController extends ApiController
         $datas = [
             'status' => true,
             'claimObjects' => '',
+
         ];
 
         $file = $request->file('file');
@@ -54,13 +55,8 @@ class ImportController extends ApiController
 
         $imports->import($file);
 
-        if ($imports->getErrors()) {
 
-            $datas = [
-                'status' => false,
-                'claimObjects' => $imports->getErrors()
-            ];
-        }
+            $datas['errors'] =  $imports->getErrors();
 
         $this->activityLogService->store("Importation d'une liste de catégories et d'objets de réclamation",
             $this->institution()->id,

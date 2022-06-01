@@ -30,6 +30,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
     {
         $this->myInstitution = $myInstitution;
         $this->withoutInstitution = $withoutInstitution;
+        $this->errors = [];
     }
 
     /**
@@ -69,7 +70,7 @@ class ClaimObject implements ToCollection, WithHeadingRow
                     }
                 }
 
-                $error=['messages'=>$errors_validations,'data'=>$row,'line'=>$rowIndex];
+                $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,'line'=>$rowIndex];
                 array_push($this->errors,$error);
             } else {
 
