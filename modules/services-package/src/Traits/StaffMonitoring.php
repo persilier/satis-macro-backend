@@ -113,19 +113,19 @@ trait StaffMonitoring
             })->where('responsible_unit_id', $unitId)
               ->whereNotNull('treatments.assigned_to_staff_at')
               ->whereNull('claims.deleted_at')
-              ->select('claims.*')
+              ->select('claims.*');
 
-              ->when($key,function (Builder $query1) use ($key) {
-                $query1->where('claims.reference' , 'LIKE', "%$key%")
-                    ->orWhereHas("claimer",function ($query2) use ($key){
-                        $query2->where('firstname' , 'LIKE', "%$key%")
-                            ->orWhere('lastname' , 'LIKE', "%$key%")
-                            ->orwhereJsonContains('telephone', $key)
-                            ->orwhereJsonContains('email', $key);
-                    })->orWhereHas("claimObject",function ($query3) use ($key){
-                        $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
-                    });
-             });
+        $claims->when($key,function (Builder $query1) use ($claims,$key){
+            $query1->where('claims.reference' , 'LIKE', "%$key%")
+                ->orWhereHas("claimer",function ($query2) use ($claims,$key){
+                 $query2->where('firstname' , 'LIKE', "%$key%")
+                     ->orWhere('lastname' , 'LIKE', "%$key%")
+                     ->orwhereJsonContains('telephone', $key)
+                     ->orwhereJsonContains('email', $key);
+                 })->orWhereHas("claimObject",function ($query3) use ($claims,$key){
+                     $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                 });
+        });
 
         if ($request->has('institution_id')){
             $claims->where('institution_targeted_id', $request->institution_id);
