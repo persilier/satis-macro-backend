@@ -102,10 +102,6 @@
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/without-link-with-institution-unit": "^1.0",
-    "satis2020/system-usage-report": "^1.0",
-    "satis2020/benchmarking-report": "^1.0",
-    "satis2020/system-efficiency-report-my-institution": "^1.0",
-    "satis2020/global-report": "^1.0",
     "ext-curl": "*",
     "satis2020/my-staff-monitoring": "^1.0",
     "satis2020/countries-package": "dev-main"
