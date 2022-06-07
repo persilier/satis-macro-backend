@@ -231,6 +231,7 @@ trait ClaimIncomingByEmail
             "firstname" => $name_array[0],
             "lastname" => sizeof($name_array) > 1 ? $name_array[1] : $name_array[0],
             "description" => $typeText === "html_text" ? $email['htmlMessage'] : $email['plainMessage'],
+            "plain_text_description" => $email['plainMessage'],
             "attachments" => $email["attachments"]
         ];
     }
@@ -251,6 +252,7 @@ trait ClaimIncomingByEmail
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
                 'description' => $claim['description'],
+                'plain_text_description' => $claim['plain_text_description'],
                 'status' => $status,
                 'claimer_id' => $identity->id,
                 "institution_targeted_id" => $configuration->institution_id,
