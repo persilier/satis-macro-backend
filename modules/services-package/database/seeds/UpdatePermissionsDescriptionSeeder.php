@@ -186,9 +186,6 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'destroy-staff-from-maybe-no-unit' => __("permissions.admin.destroy_staff_from_maybe_no_unit",[],app()->getLocale()),
             'show-staff-from-maybe-no-unit' => __("permissions.admin.show_staff_from_maybe_no_unit",[],app()->getLocale()),
             "any-email-claim-configuration" =>__("permissions.admin.any_email_claim_configuration",[],app()->getLocale()),
-            'list-system-usage-reporting' =>__("permissions.admin.list_system_usage_reporting",[],app()->getLocale()),
-            'list-benchmarking-reporting' =>__("permissions.admin.list_benchmarking_reporting",[],app()->getLocale()),
-            'list-global-reporting' =>__("permissions.admin.list_global_reporting",[],app()->getLocale()),
             'show-proxy-config' => __("permissions.admin.show_proxy_config",[],app()->getLocale()),
             'update-proxy-config' => __("permissions.admin.update_proxy_config",[],app()->getLocale()),
             'delete-proxy-config' => __("permissions.admin.delete_proxy_config",[],app()->getLocale()),
@@ -250,6 +247,9 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'list-claim-incomplete-without-client' => __("permissions.pilot.list_claim_incomplete_without_client",[],app()->getLocale()),
         'show-claim-incomplete-without-client' => __("permissions.pilot.show_claim_incomplete_without_client",[],app()->getLocale()),
         'update-claim-incomplete-without-client' => __("permissions.pilot.update_claim_incomplete_without_client",[],app()->getLocale()),
+        'list-system-usage-reporting' =>__("permissions.pilot.list_system_usage_reporting",[],app()->getLocale()),
+        'list-benchmarking-reporting' =>__("permissions.pilot.list_benchmarking_reporting",[],app()->getLocale()),
+        'list-global-reporting' =>__("permissions.pilot.list_global_reporting",[],app()->getLocale()),
     ];
 
         foreach ($pilot as $name => $description){
