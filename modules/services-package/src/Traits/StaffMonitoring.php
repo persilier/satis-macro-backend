@@ -100,14 +100,17 @@ trait StaffMonitoring
      * @param $request
      * @param $unitId
      * @param int $paginationSize
+     * @param null $type
      * @param null $key
-     * @return Builder
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
 
-    protected function getAllStaffClaim($request, $unitId, $paginationSize = 10, $key = null){
+    protected function getAllStaffClaim($request, $unitId, $paginationSize = 10, $type = null, $key = null){
 
-        $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
+    $claims =  Claim::query()->with($this->getRelations())
+        ->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
+<<<<<<< HEAD
                  ->on('claims.active_treatment_id', '=', 'treatments.id')
                  ->whereNotNull('treatments.transferred_to_unit_at');
             })->where('responsible_unit_id', $unitId)
@@ -132,12 +135,42 @@ trait StaffMonitoring
         }
         if ($request->staff_id != Constants::ALL_STAFF){
             $claims->where('treatments.responsible_staff_id', $request->staff_id);
+=======
+                ->on('claims.active_treatment_id', '=', 'treatments.id')
+                ->whereNotNull('treatments.transferred_to_unit_at');
+        })->where('responsible_unit_id', $unitId)
+        ->whereNotNull('treatments.assigned_to_staff_at')
+        ->whereNull('claims.deleted_at');
+
+    if($key){
+        if ($type == 'reference') {
+            $claims->where('reference', 'LIKE', "%$key%");
+        } elseif ($type == 'claimObject'){
+            $claims->whereHas("claimObject",function ($query) use ($key){
+                $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+            });
+        } elseif ($type == 'claimer'){
+            $claims->whereHas("claimer",function ($query) use ($key){
+                $query->where('firstname' , 'like', "%$key%")
+                    ->orWhere('lastname' , 'like', "%$key%")
+                    ->orwhereJsonContains('telephone', $key)
+                    ->orwhereJsonContains('email', $key);
+            });
+>>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
         }
-
-        $claims = $claims->paginate($paginationSize);
-
-        return $claims;
-
     }
+
+    if ($request->has('institution_id')){
+        $claims->where('institution_targeted_id', $request->institution_id);
+    }
+    if ($request->staff_id != Constants::ALL_STAFF){
+        $claims->where('treatments.responsible_staff_id', $request->staff_id);
+    }
+
+    $claims = $claims->paginate($paginationSize);
+
+    return $claims;
+
+}
 
 }

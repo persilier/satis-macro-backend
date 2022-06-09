@@ -108,6 +108,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'revive-staff',
                     'config-reporting-claim-my-institution',
                     'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
                     'system-any-efficiency-report',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',

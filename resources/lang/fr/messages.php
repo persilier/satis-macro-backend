@@ -1,7 +1,10 @@
 <?php
 
 return [
+<<<<<<< HEAD
     'semester'=>"Semestre",
+=======
+>>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
     'user_has_account'=>"Cet utilisateur ne peut être supprimé",
     'client_updated'=> "Mise à jour des informations du compte d'un client",
     'empty_unity_file_alert'=>"Le fichier excel d'import des types d'unités et unités est vide.",
