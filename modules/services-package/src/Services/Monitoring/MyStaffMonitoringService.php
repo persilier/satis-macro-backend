@@ -20,13 +20,14 @@ class MyStaffMonitoringService
     public function MyStaffMonitoring($request,$unitId)
     {
         $paginationSize = \request()->query('size');
-        $recherche = \request()->query('key');
+        $type = \request()->query('type');
+        $key = \request()->query('key');
 
         $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
         $claimTreated = $this->getClaimTreated($request,$unitId)->count();
-        $claimNoTreated = $claimAssigned - $claimTreated;
+        $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
 
-        $staffClaims = $this->getAllStaffClaim($request, $unitId, $paginationSize, $recherche);
+        $staffClaims = $this->getAllStaffClaim($request, $unitId, $paginationSize, $type, $key);
 
         return [
             "claimAssignedToStaff"=>$claimAssigned,

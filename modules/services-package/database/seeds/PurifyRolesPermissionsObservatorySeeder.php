@@ -107,7 +107,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
 

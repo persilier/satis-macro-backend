@@ -174,9 +174,6 @@ return [
             'destroy_staff_from_maybe_no_unit' => 'Supprimer un staff n\'ayant peut etre pas d\'unite',
             'show_staff_from_maybe_no_unit' => 'Afficher un staff n\'ayant peut etre pas d\'unite',
             "any_email_claim_configuration" =>'Voir toute configuration de reclamation par mail',
-            "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
-            "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
-            "list_global_reporting" =>'Voir le rapport global',
             'show_proxy_config' => 'Voir La configuration des proxy',
             'update_proxy_config' => 'Mettre à jour les configurations des proxy',
             'delete_proxy_config' => 'Supprimer les configurations des proxy',
@@ -232,6 +229,9 @@ return [
         'list_claim_incomplete_without_client' => 'Voir une reclamation incomplete enregistree sans client',
         'show_claim_incomplete_without_client' => 'Afficher une reclamation imcomplete enregistree sans client',
         'update_claim_incomplete_without_client' => 'Modifier une reclamation incomplete enregistree sans client',
+        "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
+        "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
+        "list_global_reporting" =>'Voir le rapport global',
     ],
 
     //staff

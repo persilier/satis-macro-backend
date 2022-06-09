@@ -84,7 +84,6 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'activity-log',
                     'list-any-notification-proof',
                     'config-reporting-claim-any-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'show-proxy-config',
