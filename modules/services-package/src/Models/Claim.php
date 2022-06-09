@@ -101,7 +101,8 @@ class Claim extends Model
         'time_limit',
         'revoked_at',
         'revoked_by',
-        'account_number'
+        'account_number',
+        'plain_text_description',
     ];
 
 
@@ -292,6 +293,16 @@ class Claim extends Model
     public function getLastRevivalAttribute()
     {
         return collect($this->revivals)->sortByDesc('created_at')->first();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainTextDescriptionAttribute()
+    {
+        return $this->attributes['plain_text_description']==null?
+            $this->attributes['description']:
+            $this->attributes['plain_text_description'];
     }
 
 }

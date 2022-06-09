@@ -51,8 +51,8 @@ class Controller extends BaseController
        //     dump('no');
        // }
 
-       // dd($proxyConfigs);
-
+        //verif
+        return response()->json(MessageApiMethod::bicecSMSGateway($request->phone,"Test SMS Bisec"));
     }
 
     public function download(File $file)

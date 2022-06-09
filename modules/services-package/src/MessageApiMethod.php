@@ -155,4 +155,16 @@ class MessageApiMethod
             ->throw()->json();
     }
 
+    static function bicecSMSGateway ($to,$text) {
+        $url="http://10.100.23.21/bicec/admin/json.php?module=sms&action=send_wallet&phone=$to&body=".urlencode($text);
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch,CURLOPT_HEADER, false);
+        @curl_exec($ch);
+
+        return curl_close($ch);
+    }
+
 }

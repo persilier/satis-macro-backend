@@ -86,9 +86,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-notification-proof',
                     'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                    'show-proxy-config',
-                    'update-proxy-config',
-                    'delete-proxy-config'
+                    'show-proxy-config','update-proxy-config','delete-proxy-config'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -108,9 +106,11 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'config-reporting-claim-my-institution',
                     'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
 
                 ],

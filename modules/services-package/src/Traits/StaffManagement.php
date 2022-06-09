@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Repositories\UserRepository;
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
@@ -167,4 +168,14 @@ trait StaffManagement
         }
 
     }
+
+    public function checkIfStaffHasUserAccount($staff)
+    {
+        $userRepo = app(UserRepository::class);
+        return $userRepo->getUserByIdentity($staff->identite_id)!=null;
+    }
+<<<<<<< HEAD
+
+=======
+>>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
 }

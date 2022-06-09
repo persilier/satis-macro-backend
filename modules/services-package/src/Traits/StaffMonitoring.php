@@ -110,6 +110,32 @@ trait StaffMonitoring
     $claims =  Claim::query()->with($this->getRelations())
         ->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
+<<<<<<< HEAD
+                 ->on('claims.active_treatment_id', '=', 'treatments.id')
+                 ->whereNotNull('treatments.transferred_to_unit_at');
+            })->where('responsible_unit_id', $unitId)
+              ->whereNotNull('treatments.assigned_to_staff_at')
+              ->whereNull('claims.deleted_at')
+              ->select('claims.*');
+
+        $claims->when($key,function (Builder $query1) use ($claims,$key){
+            $query1->where('claims.reference' , 'LIKE', "%$key%")
+                ->orWhereHas("claimer",function ($query2) use ($claims,$key){
+                 $query2->where('firstname' , 'LIKE', "%$key%")
+                     ->orWhere('lastname' , 'LIKE', "%$key%")
+                     ->orwhereJsonContains('telephone', $key)
+                     ->orwhereJsonContains('email', $key);
+                 })->orWhereHas("claimObject",function ($query3) use ($claims,$key){
+                     $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                 });
+        });
+
+        if ($request->has('institution_id')){
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        if ($request->staff_id != Constants::ALL_STAFF){
+            $claims->where('treatments.responsible_staff_id', $request->staff_id);
+=======
                 ->on('claims.active_treatment_id', '=', 'treatments.id')
                 ->whereNotNull('treatments.transferred_to_unit_at');
         })->where('responsible_unit_id', $unitId)
@@ -130,6 +156,7 @@ trait StaffMonitoring
                     ->orwhereJsonContains('telephone', $key)
                     ->orwhereJsonContains('email', $key);
             });
+>>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
         }
     }
 

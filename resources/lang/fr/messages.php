@@ -1,7 +1,12 @@
 <?php
 
 return [
-   'client_updated'=> "Mise à jour des informations du compte d'un client",
+<<<<<<< HEAD
+    'semester'=>"Semestre",
+=======
+>>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
+    'user_has_account'=>"Cet utilisateur ne peut être supprimé",
+    'client_updated'=> "Mise à jour des informations du compte d'un client",
     'empty_unity_file_alert'=>"Le fichier excel d'import des types d'unités et unités est vide.",
     'not_allowed_to_access_reporting'=>"Vous n'êtes pas autorité à accéder au reporting de cette insitution.",
     'config_already_exist'=>"Cette configuration de rapport automatique existe déjà pour la période choisie.",
@@ -28,4 +33,5 @@ return [
         'semester'=>"Semestre"
 
 ];
+
 

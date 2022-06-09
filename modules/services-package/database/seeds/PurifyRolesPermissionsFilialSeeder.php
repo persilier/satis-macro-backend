@@ -56,11 +56,11 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     "my-email-claim-configuration",
                     'list-auth-config','update-auth-config',
                     'list-notification-proof',
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'config-reporting-claim-my-institution',
+                    'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                    'show-proxy-config',
-                    'update-proxy-config',
-                    'delete-proxy-config'
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -81,8 +81,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "supervisor-filial" => [],

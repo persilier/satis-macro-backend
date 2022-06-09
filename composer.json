@@ -102,7 +102,7 @@
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/without-link-with-institution-unit": "^1.0",
-    "satis2020/my-staff-monitoring": "^1.0",
+    "ext-curl": "*",
     "satis2020/countries-package": "dev-main"
   },
   "require-dev": {
@@ -770,13 +770,6 @@
     {
       "type": "path",
       "url": "modules/global-report/",
-      "options": {
-        "symlink": true
-      }
-    },
-    {
-      "type": "path",
-      "url": "modules/my-staff-monitoring/",
       "options": {
         "symlink": true
       }
