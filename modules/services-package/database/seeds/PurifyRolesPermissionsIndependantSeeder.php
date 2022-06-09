@@ -106,6 +106,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'config-reporting-claim-my-institution',
                     'pilot-list-notification-proof',
                     'system-any-efficiency-report',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',

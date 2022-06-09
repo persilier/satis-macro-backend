@@ -87,7 +87,6 @@ trait ClaimSatisfactionMeasured
                 ->where('institution_targeted_id', $this->institution()->id)
                 ->when($key,function (Builder $query1) use ($key) {
                     $query1->where('reference' , 'LIKE', "%$key%")
-
                         ->orWhereHas("claimer",function ($query2) use ($key){
                             $query2->where('firstname' , 'LIKE', "%$key%")
                                 ->orWhere('lastname' , 'LIKE', "%$key%")
