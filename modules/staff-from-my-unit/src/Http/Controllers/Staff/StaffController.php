@@ -205,10 +205,7 @@ class StaffController extends ApiController
         }else{
             $staff->delete();
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> 20b55314b5a96f16afad7b95a2d89399e6cb80aa
         return response()->json($staff, 200);
     }
 
