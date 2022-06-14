@@ -106,6 +106,45 @@ trait ClaimSatisfactionMeasured
     }
 
 
+
+    /**
+     * @param string $status
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @return mixed
+     */
+
+    protected function getAllMyUnsatisfiedClaim($paginationSize = 10,$key=null){
+       $claims = $this->getClaim(Claim::CLAIM_VALIDATED)
+                ->where('institution_targeted_id', $this->institution()->id)
+                ->whereHas("activeTreatment",function ($builder){
+                    $builder->where('is_claimer_satisfied',false);
+                })
+               ->when($key,function (Builder $query1) use ($key) {
+                    $query1->where('reference' , 'LIKE', "%$key%")
+                        ->orWhereHas("claimer",function ($query2) use ($key){
+                            $query2->where('firstname' , 'LIKE', "%$key%")
+                                ->orWhere('lastname' , 'LIKE', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        })->orWhereHas("claimObject",function ($query3) use ($key){
+                            $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        })->orWhereHas("unitTargeted",function ($query4) use ($key){
+                            $query4->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        });
+                })->paginate($paginationSize);
+
+                return $claims;
+            /*:$this->getClaim($status)->get()->filter(function ($item){
+                return (
+                    $item->activeTreatment->responsibleStaff!=null &&
+                    $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            })->values();*/
+
+    }
+
+
     /**
      * @param $claim
      * @param $status
