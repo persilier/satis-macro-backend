@@ -27,7 +27,8 @@ class UnsatisfiedClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        //$this->middleware('permission:list-my-claim-unsatisfied')->only(['index']);
+        $this->middleware('permission:list-my-claim-unsatisfied')->only(['index']);
+        $this->middleware('active.pilot')->only(['index']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -42,60 +43,11 @@ class UnsatisfiedClaimController extends ApiController
     {
         $key = $request->key;
         $size = $request->size;
-        $claims = $this->getAllMyUnsatisfiedClaim($size,$key);
+        $type = $request->type;
+        $claims = $this->getAllMyUnsatisfiedClaim($size,$key,$type);
         return response()->json($claims, 200);
     }
 
-
-    /**
-     * @param $claim
-     * @return JsonResponse
-     */
-    public function show($claim)
-    {
-        $claim = $this->getOneMyClaim($claim);
-        return response()->json($claim, 200);
-    }
-
-
-    /**
-     * @param Request $request
-     * @param $claim
-     * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
-     * @throws ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
-     */
-    public function satisfactionMeasured(Request $request, $claim)
-    {
-
-        if ($request->isNotFilled("note")){
-            $request->request->remove("note");
-        }
-        $this->validate($request, $this->rules($request));
-
-        $claim = $this->getOneMyClaim($claim);
-
-        $claim->activeTreatment->update([
-            'is_claimer_satisfied' => $request->is_claimer_satisfied,
-            'unsatisfied_reason' => $request->unsatisfaction_reason,
-            'satisfaction_measured_by' => $this->staff()->id,
-            'satisfaction_measured_at' => Carbon::now(),
-            'note' => $request->note
-        ]);
-
-        $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
-
-        $this->activityLogService->store("Mesure de satisfaction",
-            $this->institution()->id,
-            $this->activityLogService::MEASURE_SATISFACTION,
-            'claim',
-            $this->user(),
-            $claim
-        );
-
-        return response()->json($claim, 200);
-    }
 }
 
 

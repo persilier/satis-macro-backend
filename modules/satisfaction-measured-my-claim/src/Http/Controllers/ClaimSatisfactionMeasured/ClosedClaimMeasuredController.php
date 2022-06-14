@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
  * Class ClaimSatisfactionMeasuredController
  * @package Satis2020\SatisfactionMeasuredMyClaim\Http\Controllers\ClaimSatisfactionMeasured
  */
-class ClaimSatisfactionMeasuredController extends ApiController
+class ClosedClaimMeasuredController extends ApiController
 {
     use ClaimSatisfactionMeasured;
 
@@ -27,8 +27,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-satisfaction-measured-my-claim')->only(['index']);
-        $this->middleware('permission:update-satisfaction-measured-my-claim')->only(['show', 'satisfactionMeasured']);
+        $this->middleware('permission:list-closed-my-claims')->only(['index']);
+        $this->middleware('permission:close-my-claims')->only(['store']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -41,7 +41,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getAllMyClaim();
+        $claims = $this->getAllMyClaim(Claim::CLAIM_CLOSED);
         return response()->json($claims, 200);
     }
 
@@ -65,29 +65,24 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function satisfactionMeasured(Request $request, $claim)
+    public function store(Request $request, Claim $claim)
     {
 
-        if ($request->isNotFilled("note")){
-            $request->request->remove("note");
-        }
-        $this->validate($request, $this->rules($request));
-
-        $claim = $this->getOneMyClaim($claim);
-
-        $claim->activeTreatment->update([
-            'is_claimer_satisfied' => $request->is_claimer_satisfied,
-            'unsatisfied_reason' => $request->unsatisfaction_reason,
-            'satisfaction_measured_by' => $this->staff()->id,
-            'satisfaction_measured_at' => Carbon::now(),
-            'note' => $request->note
+        $this->validate($request, [
+            "closed_reason"=>['required','string'],
         ]);
 
-        if ($request->is_claimer_satisfied) {
-            $claim->update(['status' => Claim::CLAIM_ARCHIVED, 'archived_at' => Carbon::now()]);
-        }
+        $claim = $this->getOneMyClaim($claim->id);
 
-        $this->activityLogService->store("Mesure de satisfaction",
+        $claim->activeTreatment->update([
+            'closed_by' => $this->staff()->id,
+            'closed_at' => Carbon::now(),
+            'closed_reason'=>$request->closed_reason
+        ]);
+
+        $claim->update(['status'=>Claim::CLAIM_CLOSED,"closed_at"=>now()]);
+
+        $this->activityLogService->store("Plainte clôturée",
             $this->institution()->id,
             $this->activityLogService::MEASURE_SATISFACTION,
             'claim',

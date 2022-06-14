@@ -35,7 +35,7 @@ class Treatment extends Model
      */
     protected $dates = [
         'transferred_to_targeted_institution_at', 'transferred_to_unit_at', 'assigned_to_staff_at',
-        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at'
+        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at','closed_at'
     ];
 
     /**
@@ -69,7 +69,10 @@ class Treatment extends Model
         'invalidated_reason',
         'number_reject',
         'treatments',
-        'note'
+        'note',
+        'closed_reason',
+        'closed_at',
+        'closed_by'
     ];
 
     /**

@@ -28,6 +28,7 @@ class Claim extends Model
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
     const CLAIM_ARCHIVED = "archived";
+    const CLAIM_CLOSED = "closed";
 
 
     /**
@@ -67,7 +68,8 @@ class Claim extends Model
         'archived_at',
         'created_at',
         'updated_at',
-        'revoked_at'
+        'revoked_at',
+        'closed_at',
     ];
 
     /**
@@ -103,6 +105,7 @@ class Claim extends Model
         'revoked_by',
         'account_number',
         'plain_text_description',
+        'closed_at',
     ];
 
 

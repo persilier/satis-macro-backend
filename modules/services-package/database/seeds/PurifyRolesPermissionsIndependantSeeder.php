@@ -112,6 +112,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'system-any-efficiency-report',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-my-claim-unsatisfied',
+                    'list-closed-my-claims','close-my-claims',
+
 
                 ],
                 "supervisor-pro" => [],

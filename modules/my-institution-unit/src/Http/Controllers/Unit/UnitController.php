@@ -76,9 +76,9 @@ class UnitController extends ApiController
             'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
+            'parent_id' => ['sometimes',Rule::exists('units', 'id')->where(function ($query){
                 $query->where('institution_id', $this->institution()->id);
-            }),
+            })],
             'state_id'=>['nullable','numeric','exists:states,id']
         ];
 
@@ -152,9 +152,9 @@ class UnitController extends ApiController
             'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
                 $query->where('institution_id', $this->institution()->id)->where('unit_id', $unit->id);
             }),
-            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
+            'parent_id' => ['sometimes',Rule::exists('units', 'id')->where(function ($query){
                 $query->where('institution_id', $this->institution()->id);
-            }),
+            })],
             'state_id'=>['nullable','numeric',new StateExistRule]
         ];
 

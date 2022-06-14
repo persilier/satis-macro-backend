@@ -149,7 +149,10 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
             'system-my-efficiency-report','show-my-staff-monitoring',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-            'list-staff-revivals','list-unit-revivals'
+            'list-staff-revivals','list-unit-revivals',
+            'list-my-claim-unsatisfied',
+            'list-closed-my-claims','close-my-claims',
+
         ];
 
         $observatoryPermissions = [
@@ -291,6 +294,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'list-staff-revivals','list-unit-revivals',
             'show-my-staff-monitoring',
+            'list-my-claim-unsatisfied',
+            'list-closed-my-claims','close-my-claims',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
