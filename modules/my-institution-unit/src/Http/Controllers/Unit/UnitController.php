@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -54,11 +55,12 @@ class UnitController extends ApiController
     public function create(CountryService $countryService)
     {
         return response()->json([
-            'unitTypes' => UnitType::all(),
-            'units' => $this->getAllUnitByInstitution($this->institution()->id),
-            'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-            'countries'=>$countryService->getCountries()
-        ], 200);
+        'unitTypes' => UnitType::all(),
+        'units' => $this->getAllUnitByInstitution($this->institution()->id),
+        'parents' => $this->getAllUnitByInstitution($this->institution()->id),
+        'countries'=>Country::getAllAfricaCountries()
+    ], 200);
+
     }
 
     /**
@@ -129,6 +131,7 @@ class UnitController extends ApiController
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
             'countries'=>$countryService->getCountries()
         ], 200);
+
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Satis2020\UnitPackage\Http\Controllers\Unit;
 
 use Illuminate\Http\Response;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Unit;
 use Illuminate\Http\Request;
@@ -20,23 +21,25 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution','state'])->get(), 200);
+
     }
 
     /**
      * Show the form for creating a new resource.
      *
      * @param CountryService $countryService
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(CountryService $countryService)
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
-            'countries'=>$countryService->getCountries()
+            'countries'=>Country::getAllAfricaCountries()
 
         ], 200);
+
     }
 
     /**
@@ -79,7 +82,7 @@ class UnitController extends ApiController
      *
      * @param Unit $unit
      * @param CountryService $countryService
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit(Unit $unit,CountryService $countryService)
     {
@@ -87,7 +90,7 @@ class UnitController extends ApiController
             'unit' => $unit->load('unitType', 'institution'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
-            'countries'=>$countryService->getCountries()
+            'countries'=>Country::getAllAfricaCountries()
 
         ], 200);
     }
