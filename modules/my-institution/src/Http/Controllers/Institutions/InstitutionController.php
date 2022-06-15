@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Satis\CountriesPackage\Facades\Country;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
@@ -40,7 +41,8 @@ class InstitutionController extends ApiController
      * @throws RetrieveDataUserNatureException
      */
     public function getMyInstitution(CountryService $countryService){
-        return response()->json(["institution"=>$this->institution()->load('defaultCurrency'),"countries"=>$countryService->getCountries()], 200);
+        return response()->json(["institution"=>$this->institution()->load('defaultCurrency',"country"),"countries"=>Country::getAllAfricaCountries()], 200);
+
     }
 
     /**
