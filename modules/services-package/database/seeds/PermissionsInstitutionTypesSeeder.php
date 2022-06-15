@@ -152,6 +152,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-staff-revivals','list-unit-revivals',
             'list-my-claim-unsatisfied',
             'list-closed-my-claims','close-my-claims',
+            'list-escalation-config','update-escalation-config',
+            'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
 
         ];
 
@@ -296,6 +298,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'show-my-staff-monitoring',
             'list-my-claim-unsatisfied',
             'list-closed-my-claims','close-my-claims',
+            'list-escalation-config','update-escalation-config',
+            'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

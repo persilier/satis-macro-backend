@@ -82,7 +82,10 @@ trait ClaimTrait
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.assignedToStaffBy.identite',
             'activeTreatment.responsibleUnit',
-            'revivals'
+            'revivals',
+            'validatedBy.identite',
+            'transferredToTargetInstitutionBy.identite',
+            'transferredToUnitBy.identite',
         ];
     }
 

@@ -72,7 +72,10 @@ class Treatment extends Model
         'note',
         'closed_reason',
         'closed_at',
-        'closed_by'
+        'closed_by',
+        'validated_by',
+        'transferred_to_unit_by',
+        'transferred_to_targeted_institution_by',
     ];
 
     /**
@@ -117,6 +120,29 @@ class Treatment extends Model
     public function satisfactionMeasuredBy()
     {
         return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
+    }
+    /**
+     * @return BelongsTo
+     */
+    public function validatedBy()
+    {
+        return $this->belongsTo(Staff::class, 'validated_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToTargetInstitutionBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_targeted_institution_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
 }

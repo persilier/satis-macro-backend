@@ -63,7 +63,8 @@ trait AwaitingValidation
     {
         $validationData = [
             'invalidated_reason' => NULL,
-            'validated_at' => Carbon::now()
+            'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
         ];
 
         $backup = $this->backupData($claim, $validationData);
@@ -71,6 +72,7 @@ trait AwaitingValidation
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
             'invalidated_reason' => NULL,
             'treatments' => $backup
         ]);
