@@ -47,6 +47,7 @@ class Unit extends Model
         'name', 'description', 'unit_type_id', 'institution_id', 'others', 'lead_id', 'parent_id','state_id'
     ];
 
+
     /**
      * Get the unitType associated with the unit
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

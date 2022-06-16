@@ -22,13 +22,17 @@ class UnitController extends ApiController
     public function index()
     {
         return response()->json(Unit::with(['unitType', 'institution','state'])->get(), 200);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 65cf39c61226a6ef1aa446c73d6ff128014a5310
     }
 
     /**
      * Show the form for creating a new resource.
      *
      * @param CountryService $countryService
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(CountryService $countryService)
     {
@@ -38,6 +42,7 @@ class UnitController extends ApiController
             'countries'=>Country::getAllAfricaCountries()
 
         ], 200);
+
     }
 
     /**
@@ -80,7 +85,7 @@ class UnitController extends ApiController
      *
      * @param Unit $unit
      * @param CountryService $countryService
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit(Unit $unit,CountryService $countryService)
     {
@@ -88,7 +93,7 @@ class UnitController extends ApiController
             'unit' => $unit->load('unitType', 'institution'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
-            'countries'=>$countryService->getCountries()
+            'countries'=>Country::getAllAfricaCountries()
 
         ], 200);
     }

@@ -156,5 +156,4 @@ class Institution extends Model
         return $this->hasOne(EmailClaimConfiguration::class);
     }
 
-
 }

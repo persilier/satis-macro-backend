@@ -105,6 +105,7 @@
     "ext-curl": "*",
     "satis2020/countries-package": "dev-main",
     "satis2020/escalation": "1.0.0"
+
   },
   "require-dev": {
     "facade/ignition": "^2.0",
