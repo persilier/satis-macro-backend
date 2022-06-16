@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Satis2020\Escalation\Http\Controllers\Config\EscalationConfigController;
+use Satis2020\Escalation\Http\Controllers\TreatmentBoard\TreatmentBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,4 @@ use Satis2020\Escalation\Http\Controllers\Config\EscalationConfigController;
 
 Route::get('escalation-config', [EscalationConfigController::class,"show"])->name('escalation.config.show');
 Route::put('escalation-config',  [EscalationConfigController::class,"update"])->name('escalation.config.update');
-Route::resource('treatments-board',  "")->name('escalation.config.update');
+Route::resource('treatments-boards',  TreatmentBoardController::class);

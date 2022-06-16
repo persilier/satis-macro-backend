@@ -7,6 +7,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
 use Satis2020\Escalation\Requests\EscalationConfigRequest;
 use Satis2020\Escalation\Services\EscalationConfigService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
@@ -44,19 +45,20 @@ class EscalationConfigController extends ApiController
     /**
      * @param EscalationConfigRequest $request
      * @return Application|ResponseFactory|Response
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function update(EscalationConfigRequest $request)
     {
-        $configAuth = $this->escalationConfigService->updateConfig($request);
+        $request->merge(['institution_id'=>$this->institution()->id]);
+        $config = $this->escalationConfigService->updateConfig($request);
 
         $this->activityLogService->store("Mise à jour des configurations d'escalade",
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'config_auth',
             $this->user(),
-            $configAuth
+            $config
         );
-        return response($configAuth,Response::HTTP_OK);
+        return response($config,Response::HTTP_OK);
     }
 }

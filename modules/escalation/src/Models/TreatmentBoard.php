@@ -3,6 +3,7 @@
 namespace Satis2020\Escalation\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
@@ -14,7 +15,7 @@ use Spatie\Translatable\HasTranslations;
 
 class TreatmentBoard extends Model
 {
-    use  UuidAsId, SoftDeletes, SecureDelete, SecureForceDeleteWithoutException, LogsActivity, ActivityTrait;
+    use  UuidAsId, LogsActivity, ActivityTrait;
 
     const STANDARD="standard";
     const SPECIFIC="specific";
@@ -38,14 +39,14 @@ class TreatmentBoard extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'type','description','created_by','status'
+        'name', 'type','description','created_by','status','institution_id'
     ];
 
 
 
     /**
      * Get the staffs associated with the position
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function members()
     {

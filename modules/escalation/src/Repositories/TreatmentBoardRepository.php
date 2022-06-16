@@ -23,6 +23,14 @@ class TreatmentBoardRepository
         $this->treatmentBoard = new TreatmentBoard;
     }
 
+    public function getAll()
+    {
+        return $this->treatmentBoard
+            ->newQuery()
+            ->get()
+            ->load('members.identite');
+    }
+
     public function getById($id)
     {
         return $this->treatmentBoard
@@ -36,12 +44,12 @@ class TreatmentBoardRepository
      * @param $data
      * @param null $members
      */
-    public function store($data, $members=null)
+    public function store($data,$members=null)
     {
         $treatmentBoard = $this->treatmentBoard
             ->newQuery()
             ->create($data)->refresh()->load("members");
-        if ($members) {
+        if (empty($members)) {
             $treatmentBoard->members()->sync($members);
         }
         return $treatmentBoard;
@@ -51,16 +59,23 @@ class TreatmentBoardRepository
          * @param $treatmentBoard
          * @param null $members
          */
-    public function update($data,$treatmentBoard, $members=null)
+    public function update($data,$treatmentBoardId, $members=null)
     {
-        $treatmentBoard
-            ->update($data);
+        $treatmentBoard = $this->getById($treatmentBoardId);
+        $treatmentBoard->update($data);
 
-        if ($members){
-            $treatmentBoard->load('members');
+        if (!empty($members)){
             $treatmentBoard->members()->sync($members);
         }
 
         return $treatmentBoard->refresh()->load('members');
+    }
+
+    public function getStandardBoard()
+    {
+        return $this->treatmentBoard
+            ->newQuery()
+            ->where('type',TreatmentBoard::STANDARD)
+            ->first();
     }
 }

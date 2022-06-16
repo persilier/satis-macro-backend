@@ -7,9 +7,13 @@ use Satis2020\Escalation\Requests\EscalationConfigRequest;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Repositories\MetadataRepository;
 use Satis2020\ServicePackage\Services\TreatmentBoardService;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 
 class EscalationConfigService
 {
+
+    use DataUserNature;
+
     /**
      * @var MetadataRepository
      */
@@ -47,18 +51,18 @@ class EscalationConfigService
      */
     public function updateConfig(EscalationConfigRequest $request)
     {
-        if ($request->specific_bord_exists){
+
+        if ($request->filled('standard_bord_exists') && $request->standard_bord_exists){
             $treatmentBoardRepo = new TreatmentBoardRepository;
             $request->merge([
                 'type'=>TreatmentBoard::STANDARD
             ]);
 
-            $treatmentBoardRepo->store(
-                $request->only([
+            $treatmentBoardRepo->store($request->only([
                     'name',
-                    'type'
-                ],$request->members)
-            );
+                    'type',
+                    'institution_id'
+                ]),$request->members);
         }
         return $this->metadataRepository->update($request->all(),Metadata::ESCALATION);
     }

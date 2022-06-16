@@ -4,6 +4,7 @@ namespace Satis2020\Escalation\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Satis2020\Escalation\Rules\StandardBoardExists;
 
 class EscalationConfigRequest extends FormRequest
 {
@@ -29,9 +30,9 @@ class EscalationConfigRequest extends FormRequest
             $this->merge(["specific_bord_exists"=>false]);
         }
         $rules =  [
-            'standard_bord_exists' => ['boolean',Rule::requiredIf($this->isNotFilled('specific_bord_exists'))],
+            'standard_bord_exists' => ['boolean',Rule::requiredIf($this->isNotFilled('specific_bord_exists')),new StandardBoardExists],
             'specific_bord_exists' => ['boolean'],
-            'name' => ["numeric","min:1",Rule::requiredIf($this->standard_bord_exists)],
+            'name' => ["string","min:1",Rule::requiredIf($this->standard_bord_exists)],
             'members' => ['array',Rule::requiredIf($this->standard_bord_exists)],
             'members.*' => ['exists:staff,id'],
         ];

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Satis2020\ServicePackage\Services;
+namespace Satis2020\Escalation\Services;
 
 
 use Illuminate\Support\Facades\Http;
@@ -25,6 +25,11 @@ class TreatmentBoardService
         $this->repository = new TreatmentBoardRepository;
     }
 
+    public function getAll()
+    {
+        return $this->repository->getAll();
+    }
+
     public function store(TreatmentBoardRequest $request)
     {
         $request->merge(['created_by'=>$this->staff()->id]);
@@ -33,18 +38,23 @@ class TreatmentBoardService
            'name',
            'description',
            'type',
+           'institution_id',
+           'created_by'
        ]),$request->members);
     }
 
-
-    public function update(TreatmentBoardRequest $request,$treatme)
+    public function getStandardBoard()
     {
-        $request->merge(['created_by'=>$this->staff()->id]);
+        return $this->repository->getStandardBoard();
+    }
 
-       return $this->repository->store($request->only([
+    public function update(TreatmentBoardRequest $request,$treatmentBoardId)
+    {
+
+       return $this->repository->update($request->only([
            'name',
            'description',
            'type',
-       ]),$request->members);
+       ]),$treatmentBoardId,$request->members);
     }
 }
