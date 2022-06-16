@@ -54,16 +54,18 @@ class MyInstitutionMessageApiController extends ApiController
      */
     public function store(Request $request)
     {
-        $rules = ['message_api_id' => 'required|exists:message_apis,id', 'params' => 'required|array'];
+        $rules = [
+            'message_api_id' => 'required|exists:message_apis,id',
+            'params' => 'array'];
 
         $this->validate($request, $this->getRules($rules, $request));
 
         $institution = $this->institution();
 
+        $params = $request->filled('params')? Arr::except($request->params, ['to', 'text']):[];
         $institutionMessageApi = InstitutionMessageApi::updateOrCreate(
             ['institution_id' => $institution->id],
-            ['message_api_id' => $request->message_api_id, 'params' => Arr::except($request->params, ['to', 'text'])]
-        );
+            ['message_api_id' => $request->message_api_id, 'params' => $params]);
 
         $this->activityLogService->store("Enregistrement d'une Api de message",
             $this->institution()->id,
