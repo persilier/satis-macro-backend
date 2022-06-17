@@ -30,6 +30,10 @@ class TreatmentBoardService
     {
         return $this->repository->getAll($size);
     }
+    public function getById($id)
+    {
+        return $this->repository->getById($id);
+    }
 
     public function store(TreatmentBoardRequest $request)
     {

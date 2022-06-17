@@ -35,8 +35,8 @@ class TreatmentBoardRepository
     {
         return $this->treatmentBoard
             ->newQuery()
-            ->findOrFail($id)
-            ->load('members');
+            ->with('members.identite','claim.claimObject')
+            ->find($id);
     }
 
 

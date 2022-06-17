@@ -60,6 +60,19 @@ class TreatmentBoardController extends ApiController
     }
 
     /**
+     * @param TreatmentBoard $treatmentBoard
+     * @param TreatmentBoardService $boardService
+     * @return Application|ResponseFactory|Response
+     */
+    public function edit($treatmentBoardId,TreatmentBoardService $boardService)
+    {
+        return response([
+            "staff"=> $this->getAllStaff(),
+            "treatmentBoard"=>$boardService->getById($treatmentBoardId)
+        ]);
+    }
+
+    /**
      * @param TreatmentBoardRequest $request
      * @return Application|ResponseFactory|Response
      * @throws RetrieveDataUserNatureException
