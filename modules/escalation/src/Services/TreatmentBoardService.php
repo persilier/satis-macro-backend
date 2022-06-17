@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Http;
 use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
 use Satis2020\Escalation\Requests\TreatmentBoardRequest;
 use Satis2020\ServicePackage\Consts\Constants;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 
 class TreatmentBoardService
 {
 
-    use DataUserNature;
+    use DataUserNature,ClaimTrait;
 
     /**
      * @var TreatmentBoardRepository
@@ -34,13 +35,19 @@ class TreatmentBoardService
     {
         $request->merge(['created_by'=>$this->staff()->id]);
 
-       return $this->repository->store($request->only([
+
+        $claim = $this->getOneClaimQuery($request->claim_id);
+        $treatmentBord =  $this->repository->store($request->only([
            'name',
            'description',
            'type',
            'institution_id',
            'created_by'
        ]),$request->members);
+
+        $claim->update(['treatment_board_id'=>$treatmentBord->id]);
+
+        return $treatmentBord;
     }
 
     public function getStandardBoard()

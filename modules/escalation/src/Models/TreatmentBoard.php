@@ -4,7 +4,9 @@ namespace Satis2020\Escalation\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -53,4 +55,11 @@ class TreatmentBoard extends Model
         return $this->belongsToMany(Staff::class);
     }
 
+    /**
+     * @return HasOne
+     */
+    public function claim()
+    {
+        return $this->hasOne(Claim::class);
+    }
 }

@@ -53,11 +53,13 @@ trait ClaimTrait
 
     /**
      * @param $claimId
+     * @param bool $withRelations
      * @return Builder|Builder[]|Collection|Model|null
      */
-    protected function getOneClaimQuery($claimId)
+    protected function getOneClaimQuery($claimId,$withRelations=true)
     {
-        return Claim::with($this->getRelations())->findOrFail($claimId);
+        $relations = $withRelations?$this->getRelations():[];
+        return Claim::with($relations)->findOrFail($claimId);
     }
 
     /**
@@ -86,6 +88,7 @@ trait ClaimTrait
             'activeTreatment.validatedBy.identite',
             'activeTreatment.transferredToTargetInstitutionBy.identite',
             'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard'
         ];
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
@@ -107,6 +108,7 @@ class Claim extends Model
         'account_number',
         'plain_text_description',
         'closed_at',
+        'treatment_board_id'
     ];
 
 
@@ -309,4 +311,11 @@ class Claim extends Model
             $this->attributes['plain_text_description'];
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function treatmentBoard()
+    {
+        return $this->belongsTo(TreatmentBoard::class);
+    }
 }

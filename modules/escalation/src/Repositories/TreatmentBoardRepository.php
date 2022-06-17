@@ -28,7 +28,7 @@ class TreatmentBoardRepository
         return $this->treatmentBoard
             ->newQuery()
             ->get()
-            ->load('members.identite');
+            ->load('members.identite','claim');
     }
 
     public function getById($id)

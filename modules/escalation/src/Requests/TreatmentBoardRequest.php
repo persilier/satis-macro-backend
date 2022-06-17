@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\Escalation\Rules\StandardBoardExists;
+use Satis2020\Escalation\Rules\ValidateClaimId;
 
 class TreatmentBoardRequest extends FormRequest
 {
@@ -30,6 +31,7 @@ class TreatmentBoardRequest extends FormRequest
             'name' => ['string',
                 Rule::requiredIf($this->isNotFilled('specific_bord_exists')),
                 Rule::unique('treatment_boards','name')->ignore($this->id)],
+            'claim_id'=>[Rule::requiredIf($this->type==TreatmentBoard::SPECIFIC),'exists:claims,id',],
             'type'=>['required',Rule::in([TreatmentBoard::STANDARD,TreatmentBoard::SPECIFIC]),new StandardBoardExists],
             'description'=>['string','nullable'],
             'members' => ['array','required'],
