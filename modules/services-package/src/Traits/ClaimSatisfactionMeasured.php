@@ -114,7 +114,7 @@ trait ClaimSatisfactionMeasured
      */
 
     protected function getAllMyUnsatisfiedClaim($paginationSize = 10,$key=null,$type=null){
-       $claims = $this->getClaim(Claim::CLAIM_VALIDATED)
+       $claims = $this->getClaim(Claim::CLAIM_UNSATISFIED)
                 ->where('institution_targeted_id', $this->institution()->id)
                 ->whereHas("activeTreatment",function ($builder){
                     $builder->where('is_claimer_satisfied',false);

@@ -85,6 +85,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         if ($request->is_claimer_satisfied) {
             $claim->update(['status' => Claim::CLAIM_ARCHIVED, 'archived_at' => Carbon::now()]);
+        }else{
+            $claim->update(['status' => Claim::CLAIM_UNSATISFIED]);
         }
 
         $this->activityLogService->store("Mesure de satisfaction",

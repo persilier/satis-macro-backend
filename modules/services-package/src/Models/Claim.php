@@ -29,6 +29,7 @@ class Claim extends Model
     const CLAIM_VALIDATED = "validated";
     const CLAIM_ARCHIVED = "archived";
     const CLAIM_CLOSED = "closed";
+    const CLAIM_UNSATISFIED = "unsatisfied";
 
 
     /**
