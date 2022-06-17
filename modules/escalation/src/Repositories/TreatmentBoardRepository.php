@@ -23,12 +23,12 @@ class TreatmentBoardRepository
         $this->treatmentBoard = new TreatmentBoard;
     }
 
-    public function getAll()
+    public function getAll($size=15)
     {
         return $this->treatmentBoard
             ->newQuery()
-            ->get()
-            ->load('members.identite','claim');
+            ->with('members.identite','claim')
+            ->paginate($size);
     }
 
     public function getById($id)

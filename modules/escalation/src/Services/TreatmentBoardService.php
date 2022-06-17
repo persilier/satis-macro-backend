@@ -26,9 +26,9 @@ class TreatmentBoardService
         $this->repository = new TreatmentBoardRepository;
     }
 
-    public function getAll()
+    public function getAll($size=15)
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($size);
     }
 
     public function store(TreatmentBoardRequest $request)

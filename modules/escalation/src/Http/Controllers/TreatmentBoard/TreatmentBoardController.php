@@ -4,6 +4,7 @@ namespace Satis2020\Escalation\Http\Controllers\TreatmentBoard;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\Escalation\Requests\TreatmentBoardRequest;
@@ -40,11 +41,12 @@ class TreatmentBoardController extends ApiController
     }
 
     /**
+     * @param Request $request
      * @return Application|ResponseFactory|Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response($this->treatmentBordService->getAll());
+        return response($this->treatmentBordService->getAll($request->size));
     }
 
     /**
