@@ -11,9 +11,12 @@ use Satis2020\Escalation\Services\TreatmentBoardService;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Traits\StaffManagement;
 
 class TreatmentBoardController extends ApiController
 {
+    use StaffManagement;
+
     /**
      * @var TreatmentBoardService
      */
@@ -42,6 +45,16 @@ class TreatmentBoardController extends ApiController
     public function index()
     {
         return response($this->treatmentBordService->getAll());
+    }
+
+    /**
+     * @return Application|ResponseFactory|Response
+     */
+    public function create()
+    {
+        return response([
+            "staff"=> $this->getAllStaff()
+        ]);
     }
 
     /**

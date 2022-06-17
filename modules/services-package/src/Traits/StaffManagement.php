@@ -175,4 +175,25 @@ trait StaffManagement
         return $userRepo->getUserByIdentity($staff->identite_id)!=null;
     }
 
+    protected function getAllStaff()
+    {
+        return Staff::with('identite.user')
+            ->get()
+            ->filter(function ($value, $key){
+                if (is_null($value->identite)) {
+                    return false;
+                }
+                if (is_null($value->identite->user)) {
+                    return false;
+                }
+                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
+                    return false;
+                }
+
+                return $value->identite->user->hasRole('staff');
+            })
+            ->values();
+    }
+
+
 }
