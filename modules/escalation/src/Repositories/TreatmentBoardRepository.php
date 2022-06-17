@@ -27,7 +27,7 @@ class TreatmentBoardRepository
     {
         return $this->treatmentBoard
             ->newQuery()
-            ->with('members.identite','claim')
+            ->with('members.identite','claim.claimObject')
             ->paginate($size);
     }
 
