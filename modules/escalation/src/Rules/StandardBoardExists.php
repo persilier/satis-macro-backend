@@ -36,7 +36,11 @@ class StandardBoardExists implements Rule
         if ($value == TreatmentBoard::SPECIFIC){
             $valid = true;
         }else{
-            $valid = $this->request->isNotFilled('id') && is_null($treatmentBoardService->getStandardBoard());
+            if ( $this->request->filled('id')){
+                $valid=true;
+            }else{
+                $valid = is_null($treatmentBoardService->getStandardBoard());
+            }
         }
         return $valid;
     }
