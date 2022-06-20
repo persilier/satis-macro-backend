@@ -14,6 +14,12 @@ class StandardBoardExists implements Rule
 {
 
 
+    private $request;
+
+    public function __construct($request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * Determine if the validation rule passes.
@@ -30,7 +36,7 @@ class StandardBoardExists implements Rule
         if ($value == TreatmentBoard::SPECIFIC){
             $valid = true;
         }else{
-            $valid = is_null($treatmentBoardService->getStandardBoard());
+            $valid = $this->request->isNotFilled('id') && is_null($treatmentBoardService->getStandardBoard());
         }
         return $valid;
     }

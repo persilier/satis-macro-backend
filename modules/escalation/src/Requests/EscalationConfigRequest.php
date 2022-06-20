@@ -30,7 +30,7 @@ class EscalationConfigRequest extends FormRequest
             $this->merge(["specific_bord_exists"=>false]);
         }
         $rules =  [
-            'standard_bord_exists' => ['boolean',Rule::requiredIf($this->isNotFilled('specific_bord_exists')),new StandardBoardExists],
+            'standard_bord_exists' => ['boolean',Rule::requiredIf($this->isNotFilled('specific_bord_exists')),new StandardBoardExists($this->id)],
             'specific_bord_exists' => ['boolean'],
             'name' => ["string","min:1",Rule::requiredIf($this->standard_bord_exists)],
             'members' => ['array',Rule::requiredIf($this->standard_bord_exists)],
