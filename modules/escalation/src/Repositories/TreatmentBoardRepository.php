@@ -49,7 +49,7 @@ class TreatmentBoardRepository
         $treatmentBoard = $this->treatmentBoard
             ->newQuery()
             ->create($data)->refresh()->load("members");
-        if (empty($members)) {
+        if (!empty($members)) {
             $treatmentBoard->members()->sync($members);
         }
         return $treatmentBoard;

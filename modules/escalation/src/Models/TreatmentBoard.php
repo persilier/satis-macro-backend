@@ -60,6 +60,6 @@ class TreatmentBoard extends Model
      */
     public function claim()
     {
-        return $this->hasOne(Claim::class);
+        return $this->hasOne(Claim::class,"treatment_board_id");
     }
 }

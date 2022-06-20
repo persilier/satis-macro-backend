@@ -92,7 +92,7 @@ class TreatmentBoardController extends ApiController
 
     /**
      * @param TreatmentBoardRequest $request
-     * @param TreatmentBoard $treatmentBoard
+     * @param $treatmentBoardId
      * @return Application|ResponseFactory|Response
      * @throws RetrieveDataUserNatureException
      */
