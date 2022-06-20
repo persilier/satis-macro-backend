@@ -98,7 +98,6 @@ class TreatmentBoardController extends ApiController
      */
     public function update(TreatmentBoardRequest $request,$treatmentBoardId)
     {
-
         $this->activityLogService->store("Mise à jour de commité",
             $this->institution()->id,
             $this->activityLogService::UPDATED,
