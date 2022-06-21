@@ -2,6 +2,9 @@
 
 namespace Satis2020\Escalation\Repositories;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\ServicePackage\Models\User;
 /**
@@ -36,7 +39,7 @@ class TreatmentBoardRepository
         return $this->treatmentBoard
             ->newQuery()
             ->with('members.identite','claim.claimObject')
-            ->find($id);
+            ->findOrFail($id);
     }
 
 
@@ -54,11 +57,13 @@ class TreatmentBoardRepository
         }
         return $treatmentBoard;
     }
-        /**
-         * @param $data
-         * @param $treatmentBoard
-         * @param null $members
-         */
+
+    /**
+     * @param $data
+     * @param $treatmentBoardId
+     * @param null $members
+     * @return Builder|Builder[]|Collection|Model|null
+     */
     public function update($data,$treatmentBoardId, $members=null)
     {
         $treatmentBoard = $this->getById($treatmentBoardId);

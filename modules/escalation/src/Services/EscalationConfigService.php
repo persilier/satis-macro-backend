@@ -64,10 +64,11 @@ class EscalationConfigService
                 'type',
                 'institution_id'
             ]);
-            if ($treatmentBoardService->getStandardBoard()==null){
+            $board = $treatmentBoardService->getStandardBoard();
+            if ($board==null){
                 $treatmentBoardRepo->store($boardData,$request->members);
             }else{
-                $treatmentBoardRepo->update($boardData,$request->members);
+                $treatmentBoardRepo->update($boardData,$board->id,$request->members);
             }
         }
         return $this->metadataRepository->update($request->all(),Metadata::ESCALATION);
