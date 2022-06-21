@@ -27,6 +27,7 @@ class TreatmentBoardRequest extends FormRequest
      */
     public function rules()
     {
+
         $rules = [
             'name' => ['string',
                 Rule::requiredIf($this->isNotFilled('specific_bord_exists')),

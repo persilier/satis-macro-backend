@@ -57,12 +57,18 @@ class EscalationConfigService
             $request->merge([
                 'type'=>TreatmentBoard::STANDARD
             ]);
+            $treatmentBoardService = new \Satis2020\Escalation\Services\TreatmentBoardService;
 
-            $treatmentBoardRepo->store($request->only([
-                    'name',
-                    'type',
-                    'institution_id'
-                ]),$request->members);
+            $boardData = $request->only([
+                'name',
+                'type',
+                'institution_id'
+            ]);
+            if ($treatmentBoardService->getStandardBoard()==null){
+                $treatmentBoardRepo->store($boardData,$request->members);
+            }else{
+                $treatmentBoardRepo->update($boardData,$request->members);
+            }
         }
         return $this->metadataRepository->update($request->all(),Metadata::ESCALATION);
     }
