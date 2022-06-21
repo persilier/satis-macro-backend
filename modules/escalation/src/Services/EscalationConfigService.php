@@ -64,6 +64,7 @@ class EscalationConfigService
                 'type',
                 'institution_id'
             ]);
+
             $board = $treatmentBoardService->getStandardBoard();
             if ($board==null){
                 $treatmentBoardRepo->store($boardData,$request->members);

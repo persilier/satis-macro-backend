@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
@@ -59,20 +60,21 @@ class ClosedClaimMeasuredController extends ApiController
 
     /**
      * @param Request $request
-     * @param $claim
+     * @param $claimId
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws CustomException
      */
-    public function store(Request $request, Claim $claim)
+    public function update(Request $request,Claim $claim)
     {
 
         $this->validate($request, [
             "closed_reason"=>['required','string'],
         ]);
 
-        $claim = $this->getOneMyClaim($claim->id);
+
+        $claim = $claim->load('activeTreatment');
 
         $claim->activeTreatment->update([
             'closed_by' => $this->staff()->id,
