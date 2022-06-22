@@ -28,7 +28,7 @@ class MyStaffMonitoringController extends ApiController
         $staff = $this->staff();
         if (!$this->staffIsUnitLead($this->staff()))
         {
-            abort(Response::HTTP_UNAUTHORIZED);
+            abort(Response::HTTP_FORBIDDEN,"User is not allowed");
         }
         $request->merge([
             "institution_id"=>$this->institution()->id
@@ -41,7 +41,7 @@ class MyStaffMonitoringController extends ApiController
         $staff = $this->staff();
         if (!$this->staffIsUnitLead($this->staff()))
         {
-            abort(Response::HTTP_UNAUTHORIZED);
+            abort(Response::HTTP_FORBIDDEN,"User is not allowed");
         }
         return response()->json([
             'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)

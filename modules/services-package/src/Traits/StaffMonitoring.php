@@ -102,33 +102,37 @@ trait StaffMonitoring
             ->whereNotNull('treatments.assigned_to_staff_at')
             ->whereNull('claims.deleted_at');
 
-        if($key){
-            if ($type == 'reference') {
-                $claims->where('reference', 'LIKE', "%$key%");
-            } elseif ($type == 'claimObject'){
-                $claims->whereHas("claimObject",function ($query) use ($key){
-                    $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
-                });
-            } elseif ($type == 'claimer'){
-                $claims->whereHas("claimer",function ($query) use ($key){
-                    $query->where('firstname' , 'like', "%$key%")
-                        ->orWhere('lastname' , 'like', "%$key%")
-                        ->orwhereJsonContains('telephone', $key)
-                        ->orwhereJsonContains('email', $key);
-                });
-            }
-        }
-
         if ($request->has('institution_id')){
-            $claims->where('institution_targeted_id', $request->institution_id);
+            $claims = $claims->where('institution_targeted_id', $request->institution_id);
         }
+
         if ($request->staff_id != Constants::ALL_STAFF){
-            $claims->where('treatments.responsible_staff_id', $request->staff_id);
+            $claims = $claims->where('treatments.responsible_staff_id', $request->staff_id);
         }
 
-        $claims = $claims->paginate($paginationSize);
+        if($key){
+            switch ($key){
+                case 'reference':
+                    $claims = $claims->where('reference', 'LIKE', "%$key%");
+                    break;
+                case 'claimObject':
+                    $claims = $claims->whereHas("claimObject",function ($query) use ($key){
+                        $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                    });
+                    break;
+                default:
+                    $claims = $claims->whereHas("claimer",function ($query) use ($key){
+                        $query->where('firstname' , 'like', "%$key%")
+                            ->orWhere('lastname' , 'like', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                    break;
+            }
 
-        return $claims;
+        }
+
+        return $claims->paginate($paginationSize);
 
     }
 

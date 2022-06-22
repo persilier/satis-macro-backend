@@ -13,7 +13,7 @@
   'allowed_domains' => 
   array (
     'frontend_url' => 'http://localhost:3000',
-    'email_service_url' => 'http://163.172.106.97:8010',
+    'email_service_url' => 'http://127.0.0.1:8001',
     'mobile_backoffice_url' => 'http://163.172.106.97:8022',
     'wordpress_plugin_url' => 'http://163.172.106.97:8111',
   ),
@@ -26,9 +26,9 @@
     'asset_url' => NULL,
     'timezone' => 'Africa/Porto-Novo',
     'locale' => 'fr',
-    'fallback_locale' => 'fr',
+    'fallback_locale' => 'en',
     'faker_locale' => 'fr_FR',
-    'key' => 'base64:SfiFPq1wcx/hiBJg2T9rLNKo7aR3wL97oa9uV++Gj34=',
+    'key' => 'base64:S4nB3LAIZzUkh/H5CJRj4ufP5ZBoiRbY65N6CzAFxo0=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -140,6 +140,7 @@
       ),
     ),
     'password_timeout' => 10800,
+    'password_reset_link' => 'http://163.172.106.97:3011/forgot-password',
   ),
   'broadcasting' => 
   array (
@@ -252,7 +253,7 @@
     'allowed_origins' => 
     array (
       0 => 'http://localhost:3000',
-      1 => 'http://163.172.106.97:8010',
+      1 => 'http://127.0.0.1:8001',
       2 => 'http://163.172.106.97:8022',
       3 => 'http://163.172.106.97:8111',
     ),
@@ -272,6 +273,14 @@
   'countries_services' => 
   array (
     'countries_services_url' => 'http://163.172.106.97:8020/api/',
+  ),
+  'countriespackage' => 
+  array (
+    'prefix' => 'scp',
+    'middleware' => 
+    array (
+      0 => 'web',
+    ),
   ),
   'database' => 
   array (
@@ -383,17 +392,17 @@
       'enable_php' => false,
       'enable_javascript' => true,
       'enable_remote' => true,
-      'font_height_ratio' => 1.100000000000000088817841970012523233890533447265625,
+      'font_height_ratio' => 1.1,
       'enable_html5_parser' => false,
     ),
   ),
   'email-claim-configuration' => 
   array (
-    'api_subscriber' => 'http://163.172.106.97:8010/api/subscribe',
+    'api_subscriber' => 'http://127.0.0.1:8001/api/subscribe',
     'grant_type' => 'client_credentials',
-    'client_id' => '3',
-    'client_secret' => 'X4cRipgGU5Ch2qqpdpMx4DRW1mfVgza0o0gsf2yA',
-    'app_url_incoming_mail' => NULL,
+    'client_id' => '14',
+    'client_secret' => 'hcyb3vPyb3L7ncey62o4TTWrjJLUGuKUxgaE8Mkg',
+    'app_url_incoming_mail' => 'http://127.0.0.1:8000',
   ),
   'excel' => 
   array (
@@ -639,11 +648,11 @@
       'smtp' => 
       array (
         'transport' => 'smtp',
-        'host' => 'smtp.mailtrap.io',
-        'port' => '2525',
+        'host' => 'smtp.uimcec.sn',
+        'port' => '465',
         'encryption' => 'tls',
-        'username' => '812f274dda314f',
-        'password' => 'e2dd6cecff42fc',
+        'username' => 'smdiongue@uimcec.sn',
+        'password' => 'Kaka83*',
       ),
       'ses' => 
       array (
@@ -666,7 +675,7 @@
     ),
     'from' => 
     array (
-      'address' => 'myriame@dmdconsult.com',
+      'address' => 'hello@example.com',
       'name' => 'SATIS',
     ),
     'markdown' => 
@@ -824,6 +833,23 @@
     'secure' => NULL,
     'http_only' => true,
     'same_site' => 'lax',
+  ),
+  'sluggable' => 
+  array (
+    'source' => NULL,
+    'maxLength' => NULL,
+    'maxLengthKeepWords' => true,
+    'method' => NULL,
+    'separator' => '-',
+    'unique' => true,
+    'uniqueSuffix' => NULL,
+    'includeTrashed' => false,
+    'reserved' => NULL,
+    'onUpdate' => false,
+  ),
+  'translatable' => 
+  array (
+    'fallback_locale' => NULL,
   ),
   'view' => 
   array (
@@ -998,23 +1024,6 @@
         1 => 'description',
       ),
     ),
-  ),
-  'translatable' => 
-  array (
-    'fallback_locale' => NULL,
-  ),
-  'sluggable' => 
-  array (
-    'source' => NULL,
-    'maxLength' => NULL,
-    'maxLengthKeepWords' => true,
-    'method' => NULL,
-    'separator' => '-',
-    'unique' => true,
-    'uniqueSuffix' => NULL,
-    'includeTrashed' => false,
-    'reserved' => NULL,
-    'onUpdate' => false,
   ),
   'trustedproxy' => 
   array (
