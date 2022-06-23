@@ -59,7 +59,7 @@ class ReminderBeforeDeadline extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Add Contributor To Discussion')
-            ->markdown('ServicePackage::mail.discussion.feedback', [
+            ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
             ]);
