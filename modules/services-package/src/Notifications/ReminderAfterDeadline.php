@@ -46,7 +46,7 @@ class ReminderAfterDeadline extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['broadcast', 'database'];
+        return ['broadcast', 'database','mail'];
     }
 
     /**
@@ -57,8 +57,9 @@ class ReminderAfterDeadline extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+
         return (new MailMessage)
-            ->subject('Add Contributor To Discussion')
+            ->subject(__('messages.after_relance_title'))
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

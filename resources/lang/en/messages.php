@@ -24,6 +24,8 @@ return [
     'unit_do_not_exist'=>"The unit you have chosen does not exist in this institution",
     'unit_found_for_staff'=>"An identity has been found with the staff information.",
     'unable_to_find_unit_type'=>"Unable to access the institution type of the logged in user.",
-    'semester'=>"Semester"
+    'semester'=>"Semester",
+    "after_relance_title"=>"Claim delayed reminder",
+    "before_relance_title"=>"Claim reminder",
 
 ];

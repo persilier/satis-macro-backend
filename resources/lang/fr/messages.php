@@ -26,7 +26,9 @@ return [
     'unit_do_not_exist'=>"L'unité que vous avez choisir n'existe pas dans cette institution.",
     'unit_found_for_staff'=>"Un identité a été retrouvé avec les informations du staff.",
     'unable_to_find_unit_type'=>"Impossible d'accéder au type de l'institution de l'utilisateur connecté.",
-        'semester'=>"Semestre"
+        'semester'=>"Semestre",
+    "after_relance_title"=>"Relance de reclamation en retard",
+    "before_relance_title"=>"Relance de reclamation en attente",
 
 ];
 

@@ -357,11 +357,8 @@ trait MonitoringClaim
         $time = $this->stringDateInterval($interval);
 
         if ($interval->invert === 1) {
-
             $notif = new ReminderAfterDeadline($claim, $time);
-
         } else {
-
             $notif = new ReminderBeforeDeadline($claim, $time);
         }
 
