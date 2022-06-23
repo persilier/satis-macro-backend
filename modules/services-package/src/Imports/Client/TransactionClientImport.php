@@ -21,7 +21,7 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
 use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading//, ShouldQueue
 {
 
     protected $myInstitution;
@@ -262,17 +262,24 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
             }
         }
 
-        $data['category_client'] = optional(
-            $this->data['categoryClients']->firstWhere('name', 'iLike',$data['category_client'])
-        )->id;
+        $data['category_client'] = $this->getModelId( $this->data['categoryClients'],$data['category_client']);
 
-        $data['account_type'] = optional(
-            $this->data['accountTypes']->firstWhere('name','iLike', $data['account_type'])
-        )->id;
+        $data['account_type'] = $this->getModelId( $this->data['accountTypes'],$data['account_type']);
 
         return $data;
     }
 
+    public function getModelId($models,$name)
+    {
+        $id = null;
+        foreach ($models as $model){
+            if (strtolower($model->name)==strtolower($name)){
+                $id = $model->id;
+                break;
+            }
+        }
+        return $id;
+    }
 
     public function getImportErrors()
     {
