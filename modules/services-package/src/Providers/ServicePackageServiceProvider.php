@@ -79,7 +79,7 @@ class ServicePackageServiceProvider extends ServiceProvider
             ]);
 
             $this->app->booted(function () {
-                $this->app->make(Schedule::class)->command('service:generate-relance')->twiceDaily(7, 14);
+                $this->app->make(Schedule::class)->command('service:generate-relance')->everyMinute();
                 $this->app->make(Schedule::class)->command('service:generate-reporting-day')->twiceDaily(0, 13);
                 $this->app->make(Schedule::class)->command('service:generate-reporting-week')->mondays();
                 $this->app->make(Schedule::class)->command('service:generate-reporting-month')->monthlyOn(1, '01:00')->monthlyOn(1, '13:00');
