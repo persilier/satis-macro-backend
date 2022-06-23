@@ -648,11 +648,11 @@
       'smtp' => 
       array (
         'transport' => 'smtp',
-        'host' => 'smtp.uimcec.sn',
-        'port' => '465',
+        'host' => 'smtp.mailtrap.io',
+        'port' => '2525',
         'encryption' => 'tls',
-        'username' => 'smdiongue@uimcec.sn',
-        'password' => 'Kaka83*',
+        'username' => 'b01af44c3bc7b3',
+        'password' => '68eacdfab1bfb5',
       ),
       'ses' => 
       array (
