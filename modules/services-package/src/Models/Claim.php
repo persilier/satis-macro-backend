@@ -108,7 +108,8 @@ class Claim extends Model
         'account_number',
         'plain_text_description',
         'closed_at',
-        'treatment_board_id'
+        'treatment_board_id',
+        'escalation_status'
     ];
 
 

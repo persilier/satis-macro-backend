@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Rules\UnitBelongsToCircuitRules;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanTreatRules;
+use Satis2020\ServicePackage\Rules\UnitIsParentRules;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Traits\HandleTreatment;
 
@@ -58,7 +59,7 @@ class TransferToCircuitUnitController extends ApiController
         $rules = [
             'unit_id' => [
                 'required', 'exists:units,id', new UnitBelongsToInstitutionRules($this->institution()->id),
-                new UnitCanTreatRules, new UnitBelongsToCircuitRules($claim->id)
+                new UnitCanTreatRules, new UnitBelongsToCircuitRules($claim->id),new UnitIsParentRules($claim->id)
             ],
         ];
 
