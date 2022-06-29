@@ -5,6 +5,8 @@ namespace Satis2020\Escalation\Database\Seeds;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +24,16 @@ class EscalationConfigSeeder extends Seeder
             'standard_bord_exists' => true,
             'specific_bord_exists' => false,
            ];
+
+        TreatmentBoard::query()
+            ->create(
+                [
+                    'name'=>"Standar",
+                    'type' =>TreatmentBoard::STANDARD,
+                    'description'=>"Standard",
+                    'created_by' =>null,
+                    'institution_id' =>Institution::query()->first()->id
+                ]);
 
         Metadata::query()->updateOrCreate([
             "name"=>Metadata::ESCALATION
