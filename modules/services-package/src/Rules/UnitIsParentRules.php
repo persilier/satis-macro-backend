@@ -33,8 +33,7 @@ class UnitIsParentRules implements Rule
     {
         $claim = Claim::with('unitTargeted')->findOrFail($this->claim_id);
 
-        dd($claim->unitTargeted->id, $value);
-        return $claim->unitTargeted->id== $value;
+        return $claim->unitTargeted->parent_id== $value;
     }
 
     /**

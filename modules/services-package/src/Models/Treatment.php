@@ -78,6 +78,7 @@ class Treatment extends Model
         'validated_by',
         'transferred_to_unit_by',
         'transferred_to_targeted_institution_by',
+        'type'
     ];
 
     /**

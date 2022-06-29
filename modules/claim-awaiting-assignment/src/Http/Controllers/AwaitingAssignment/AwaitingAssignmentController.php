@@ -36,11 +36,18 @@ class AwaitingAssignmentController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $claims = $this->getClaimsQuery()->get()->map(function ($item, $key) {
+        $type = $request->query('type','normal');
+
+        $claims = $this->getClaimsQuery()
+            ->when($type==Claim::CLAIM_UNSATISFIED,function ($query){
+                $query->where('status',Claim::CLAIM_UNSATISFIED);
+            })
+            ->get()->map(function ($item, $key) {
 
             $item = Claim::with($this->getRelations())->find($item->id);
 
