@@ -6,16 +6,19 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Treatment;
 
 trait AwaitingValidation
 {
-    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null)
+    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null,$type="normal")
     {
         $institution_id = is_null($institution_id)
             ? $this->institution()->id
             : $institution_id;
 
-        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')->get();
+        $statusColumn = $type==Treatment::ESCALATION?"status":"escalation_status";
+
+        $claimsTreated = Claim::with($this->getRelations())->where($statusColumn, 'treated')->get();
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
@@ -82,7 +85,11 @@ trait AwaitingValidation
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
-            $claim->update(['status' => 'validated']);
+            if (isEscalationClaim($claim)){
+                $claim->update(['escalation_status' => 'validated']);
+            }else{
+                $claim->update(['status' => 'validated']);
+            }
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
         }
 
@@ -120,7 +127,11 @@ trait AwaitingValidation
             'treatments' => $backup
         ]);
 
-        $claim->update(['status' => 'assigned_to_staff']);
+        if(isEscalationClaim($claim)){
+            $claim->update(['escalation_status' => 'assigned_to_staff']);
+        }else{
+            $claim->update(['status' => 'assigned_to_staff']);
+        }
 
         if (!is_null($claim->activeTreatment->responsibleStaff)) {
             if (!is_null($claim->activeTreatment->responsibleStaff->identite)) {

@@ -36,24 +36,26 @@ class AwaitingValidationController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(), 200);
+        $type = $request->query('type','normal');
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(null,$type), 200);
     }
 
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param Claim $claim
      * @return \Illuminate\Http\JsonResponse
      * @throws CustomException
      */
-    public function show(Claim $claim)
+    public function show(Request $request,Claim $claim)
     {
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution();
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution(null,$request->query('type'));
 
         if ($claims->search(function ($item, $key) use ($claim) {
                 return $item->id == $claim->id;

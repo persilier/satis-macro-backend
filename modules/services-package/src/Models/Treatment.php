@@ -13,6 +13,8 @@ class Treatment extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
+    const NORMAL="normal";
+    const ESCALATION="escalation";
     /**
      * The attributes that are translatable
      *
@@ -76,6 +78,7 @@ class Treatment extends Model
         'validated_by',
         'transferred_to_unit_by',
         'transferred_to_targeted_institution_by',
+        'type'
     ];
 
     /**

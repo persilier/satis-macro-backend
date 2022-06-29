@@ -282,15 +282,20 @@ trait ClaimAwaitingTreatment
     }
 
     /**
+     * @param string $type
      * @return mixed
      */
-    protected function queryClaimReassignment(){
+    protected function queryClaimReassignment($type="normal"){
 
-        return Claim::with($this->getRelationsAwitingTreatment())->whereHas('activeTreatment', function ($query){
+        return Claim::with($this->getRelationsAwitingTreatment())
+            ->when($type==Claim::CLAIM_UNSATISFIED,function ($query){
+                $query->where('status',Claim::CLAIM_UNSATISFIED);
+            })
+            ->whereHas('activeTreatment', function ($query){
 
             $query->where('responsible_staff_id', '!=' ,NULL)->where('responsible_unit_id', $this->staff()->unit_id);
 
-        })->whereStatus('assigned_to_staff');
+        })->whereStatus('assigned_to_staff')->orWhereEscalationStatus('assigned_to_staff');
     }
 
 
