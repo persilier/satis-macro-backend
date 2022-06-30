@@ -30,7 +30,7 @@ class StaffFeedbackChannelController extends ApiController
         $staff = $this->staff();
         return response()->json([
             'staff' => $staff,
-            'channels' => Channel::query()->get()->pluck('slug')
+            'channels' => Channel::query()->where("can_be_response",true)->get()->pluck('slug')
         ], 200);
     }
 
