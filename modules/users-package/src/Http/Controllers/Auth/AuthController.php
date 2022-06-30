@@ -111,11 +111,15 @@ class AuthController extends ApiController
         $AttemptsResponse = $authService->proceedAttempt();
 
         if($AttemptsResponse['status']!=Response::HTTP_OK){
+            Log::info("---------------------PASSPORT ERROR-----------------------------------");
+            Log::debug($AttemptsResponse['status']);
+            Log::info("---------------------PASSPORT ERROR-----------------------------------");
+
             return \response($AttemptsResponse,$AttemptsResponse['status']);
         }
 
-        try
-        {
+       /* try
+        {*/
             $convertedResponse =  $this->convertResponse(
                 $this->server->respondToAccessTokenRequest($serverRequest, new Psr7Response)
             );
@@ -123,7 +127,7 @@ class AuthController extends ApiController
             $content = json_decode($convertedResponse->getContent(),true);
 
             return  \response($content,Response::HTTP_OK);
-        } catch (OAuthServerException $e) {
+      /*  } catch (OAuthServerException $e) {
             Log::info("---------------------PASSPORT ERROR-----------------------------------");
             Log::debug($e);
             Log::info("---------------------PASSPORT ERROR-----------------------------------");
@@ -133,6 +137,6 @@ class AuthController extends ApiController
                 "error"=>true,
                 "message"=>$e->getMessage()
             ],Response::HTTP_UNAUTHORIZED);
-        }
+        }*/
     }
 }
