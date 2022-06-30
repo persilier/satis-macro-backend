@@ -51,6 +51,11 @@ class Channel extends Model
         'can_be_response'=>'integer',
     ];
 
+    public function getIsEditableAttribute($value)
+    {
+        return (int) $value;
+    }
+
     /**
      * Return the sluggable configuration array for this model.
      *
