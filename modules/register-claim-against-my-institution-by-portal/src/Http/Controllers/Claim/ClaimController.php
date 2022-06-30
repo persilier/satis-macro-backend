@@ -38,7 +38,12 @@ class ClaimController extends Controller
                 ->whereHas('unitType', function ($q) {
                     $q->where('can_be_target', true);
                 })->get(),
-            'channels' => Channel::all(),
+            'channels' => Channel::query()->withCasts([
+                'name' => 'json',
+                'is_editable'=>'integer',
+                'is_response'=>'integer',
+                'can_be_response'=>'integer',
+            ])->get(),
             'currencies' => Currency::all()
         ], 200);
     }
