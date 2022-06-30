@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laminas\Diactoros\Response as Psr7Response;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Laravel\Passport\TokenRepository;
 use Lcobucci\JWT\Parser as JwtParser;
@@ -23,22 +24,22 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  * Class AuthController
  * @package Satis2020\UserPackage\Http\Controllers\Auth
  */
-class AuthController extends ApiController
+class AuthController extends AccessTokenController
 {
     use VerifyUnicity, IdentityManagement,HandlesOAuthErrors;
 
     /**
      * @var AuthorizationServer
      */
-    private $server;
+    protected $server;
     /**
      * @var JwtParser
      */
-    private $jwt;
+    protected $jwt;
     /**
      * @var TokenRepository
      */
-    private $tokens;
+    protected $tokens;
 
     protected $activityLogService;
 
@@ -49,12 +50,13 @@ class AuthController extends ApiController
         ActivityLogService $activityLogService
     )
     {
-        parent::__construct();
+
         $this->jwt = $jwt;
         $this->server = $server;
         $this->tokens = $tokens;
         $this->activityLogService = $activityLogService;
-        $this->middleware('auth:api')->except(['store']);
+        //$this->middleware('auth:api')->except(['store']);
+
     }
 
     /**
@@ -120,13 +122,15 @@ class AuthController extends ApiController
 
        /* try
         {*/
-            $convertedResponse =  $this->convertResponse(
+            /*$convertedResponse =  $this->convertResponse(
                 $this->server->respondToAccessTokenRequest($serverRequest, new Psr7Response)
-            );
+            );*/
             $authService->resetAttempts(true);
-            $content = json_decode($convertedResponse->getContent(),true);
+            //$content = json_decode($convertedResponse->getContent(),true);
 
-            return  \response($content,Response::HTTP_OK);
+
+            return parent::issueToken($serverRequest);
+        //return  \response($content,Response::HTTP_OK);
       /*  } catch (OAuthServerException $e) {
             Log::info("---------------------PASSPORT ERROR-----------------------------------");
             Log::debug($e);
