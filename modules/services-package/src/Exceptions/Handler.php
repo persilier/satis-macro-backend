@@ -9,7 +9,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Session\TokenMismatchException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\ApiResponser;
@@ -136,9 +135,6 @@ class Handler
         if($this->isFrontend($request)){
             return redirect()->guest('login');
         }
-
-        Log::info("-------------------form exception--------------------------");
-        Log::debug($exception);
 
         return  $this->errorResponse('Unauthenticated', 401);
     }
