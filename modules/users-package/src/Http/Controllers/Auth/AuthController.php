@@ -4,9 +4,7 @@ namespace Satis2020\UserPackage\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Laminas\Diactoros\Response as Psr7Response;
-use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Laravel\Passport\TokenRepository;
 use Lcobucci\JWT\Parser as JwtParser;
@@ -24,22 +22,22 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  * Class AuthController
  * @package Satis2020\UserPackage\Http\Controllers\Auth
  */
-class AuthController extends AccessTokenController
+class AuthController extends ApiController
 {
     use VerifyUnicity, IdentityManagement,HandlesOAuthErrors;
 
     /**
      * @var AuthorizationServer
      */
-    protected $server;
+    private $server;
     /**
      * @var JwtParser
      */
-    protected $jwt;
+    private $jwt;
     /**
      * @var TokenRepository
      */
-    protected $tokens;
+    private $tokens;
 
     protected $activityLogService;
 
@@ -50,13 +48,12 @@ class AuthController extends AccessTokenController
         ActivityLogService $activityLogService
     )
     {
-
+        parent::__construct();
         $this->jwt = $jwt;
         $this->server = $server;
         $this->tokens = $tokens;
         $this->activityLogService = $activityLogService;
-        //$this->middleware('auth:api')->except(['store']);
-
+        $this->middleware('auth:api')->except(['store']);
     }
 
     /**
@@ -113,34 +110,24 @@ class AuthController extends AccessTokenController
         $AttemptsResponse = $authService->proceedAttempt();
 
         if($AttemptsResponse['status']!=Response::HTTP_OK){
-            Log::info("---------------------PASSPORT ERROR-----------------------------------");
-            Log::debug($AttemptsResponse['status']);
-            Log::info("---------------------PASSPORT ERROR-----------------------------------");
-
             return \response($AttemptsResponse,$AttemptsResponse['status']);
         }
 
-       /* try
-        {*/
-            /*$convertedResponse =  $this->convertResponse(
+        try
+        {
+            $convertedResponse =  $this->convertResponse(
                 $this->server->respondToAccessTokenRequest($serverRequest, new Psr7Response)
-            );*/
+            );
             $authService->resetAttempts(true);
-            //$content = json_decode($convertedResponse->getContent(),true);
+            $content = json_decode($convertedResponse->getContent(),true);
 
-
-            return parent::issueToken($serverRequest);
-        //return  \response($content,Response::HTTP_OK);
-      /*  } catch (OAuthServerException $e) {
-            Log::info("---------------------PASSPORT ERROR-----------------------------------");
-            Log::debug($e);
-            Log::info("---------------------PASSPORT ERROR-----------------------------------");
-
+            return  \response($content,Response::HTTP_OK);
+        } catch (OAuthServerException $e) {
             $authService->logAttempt();
             return  \response([
                 "error"=>true,
                 "message"=>$e->getMessage()
             ],Response::HTTP_UNAUTHORIZED);
-        }*/
+        }
     }
 }
