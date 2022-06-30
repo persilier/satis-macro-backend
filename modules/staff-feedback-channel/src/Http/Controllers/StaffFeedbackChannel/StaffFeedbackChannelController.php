@@ -30,7 +30,7 @@ class StaffFeedbackChannelController extends ApiController
         $staff = $this->staff();
         return response()->json([
             'staff' => $staff,
-            'channels' => Channel::query()->where('is_response',true)->get()->pluck('slug')
+            'channels' => Channel::query()->where("can_be_response",true)->get()->pluck('slug')
         ], 200);
     }
 
@@ -47,7 +47,7 @@ class StaffFeedbackChannelController extends ApiController
     {
         $rules = [
             'feedback_preferred_channels' => 'required|array',
-            'feedback_preferred_channels.*' => ['required', Rule::in(Channel::where('can_be_response', true)->get()->pluck('slug')->all())],
+            'feedback_preferred_channels.*' => ['required'],
         ];
 
         $this->validate($request, $rules);
