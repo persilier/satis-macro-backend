@@ -98,7 +98,7 @@ trait ClaimSatisfactionMeasured
                 })->paginate($paginationSize)
 
             :$this->getClaim($status)->get()->filter(function ($item){
-                return ($this->institution() && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+                return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
             })->values();
 
     }
