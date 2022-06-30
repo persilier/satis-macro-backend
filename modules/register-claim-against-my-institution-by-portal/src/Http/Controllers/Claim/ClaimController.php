@@ -32,13 +32,19 @@ class ClaimController extends Controller
 
     public function create(Institution $institution)
     {
+        $channels = Channel::all();
         return response()->json([
             'claimCategories' => ClaimCategory::with('claimObjects')->get(),
             'units' => $institution->units()
                 ->whereHas('unitType', function ($q) {
                     $q->where('can_be_target', true);
                 })->get(),
-            'channels' => Channel::all(),
+            'channels' => $channels->mergeCasts([
+                    'name' => 'json',
+                    'is_editable'=>'integer',
+                    'is_response'=>'integer',
+                    'can_be_response'=>'integer',
+            ]),
             'currencies' => Currency::all()
         ], 200);
     }
