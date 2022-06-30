@@ -4,6 +4,7 @@ namespace Satis2020\UserPackage\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laminas\Diactoros\Response as Psr7Response;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Laravel\Passport\TokenRepository;
@@ -123,6 +124,10 @@ class AuthController extends ApiController
 
             return  \response($content,Response::HTTP_OK);
         } catch (OAuthServerException $e) {
+            Log::info("---------------------PASSPORT ERROR-----------------------------------");
+            Log::debug($e);
+            Log::info("---------------------PASSPORT ERROR-----------------------------------");
+
             $authService->logAttempt();
             return  \response([
                 "error"=>true,
