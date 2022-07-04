@@ -16,7 +16,7 @@ trait AwaitingValidation
             ? $this->institution()->id
             : $institution_id;
 
-        $statusColumn = $type==Treatment::ESCALATION?"status":"escalation_status";
+        $statusColumn = $type==Treatment::ESCALATION?"escalation_status":"status";
 
         $claimsTreated = Claim::with($this->getRelations())->where($statusColumn, 'treated')->get();
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
