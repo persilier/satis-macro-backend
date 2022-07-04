@@ -252,7 +252,7 @@ trait ClaimAwaitingTreatment
         $claim = Claim::query()->find($claim);
         $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
 
-        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId,$statusColumn)->where('claims.id', $claim)->first())
+        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId,$statusColumn)->where('claims.id', $claim->id)->first())
             throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
         else
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
