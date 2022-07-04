@@ -83,7 +83,7 @@ trait ClaimTrait
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit',
+            'activeTreatment.responsibleUnit.parent',
             'revivals',
             'activeTreatment.validatedBy.identite',
             'activeTreatment.transferredToTargetInstitutionBy.identite',
