@@ -249,6 +249,7 @@ trait ClaimAwaitingTreatment
     protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId, $claim)
     {
 
+        $claim = Claim::query()->find($claim);
         $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
 
         if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId,$statusColumn)->where('claims.id', $claim)->first())
