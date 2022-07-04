@@ -64,9 +64,16 @@ trait ClaimAwaitingTreatment
 
         try {
 
-            if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit") {
+            if (isEscalationClaim($claim)){
+                if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->escalation_status != "transferred_to_unit") {
 
-                throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
+                    throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
+                }
+            }else{
+                if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit") {
+
+                    throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
+                }
             }
 
         } catch (\Exception $exception) {
