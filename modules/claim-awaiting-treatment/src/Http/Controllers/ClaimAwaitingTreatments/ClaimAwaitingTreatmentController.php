@@ -55,11 +55,9 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $institution = $this->institution();
         $staff = $this->staff();
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)
-            ->when($type==Claim::CLAIM_UNSATISFIED,function($query){
-                $query->where('status',Claim::CLAIM_UNSATISFIED);
-            })
+        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id,$statusColumn)
             ->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             return $item;

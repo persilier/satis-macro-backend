@@ -28,9 +28,10 @@ trait ClaimAwaitingTreatment
     /**
      * @param $institutionId
      * @param $unitId
+     * @param string $statusColumn
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function getClaimsQuery($institutionId, $unitId)
+    protected function getClaimsQuery($institutionId, $unitId,$statusColumn="status")
     {
         return DB::table('claims')
             ->select('claims.*')
@@ -42,7 +43,7 @@ trait ClaimAwaitingTreatment
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })
             ->whereRaw(
-                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                '( (`staff`.`institution_id` = ? and `claims`.`'.$statusColumn.'` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`'.$statusColumn.'` = ?) )',
                 [$institutionId, 'transferred_to_unit', $institutionId, 'transferred_to_unit']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?)',
