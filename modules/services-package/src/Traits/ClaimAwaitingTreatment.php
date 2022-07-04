@@ -249,7 +249,9 @@ trait ClaimAwaitingTreatment
     protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId, $claim)
     {
 
-        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId)->where('claims.id', $claim)->first())
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
+
+        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId,$statusColumn)->where('claims.id', $claim)->first())
             throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
         else
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
@@ -301,6 +303,8 @@ trait ClaimAwaitingTreatment
      */
     protected function queryClaimReassignment($type="normal"){
 
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+
         return Claim::with($this->getRelationsAwitingTreatment())
             ->when($type==Claim::CLAIM_UNSATISFIED,function ($query){
                 $query->where('status',Claim::CLAIM_UNSATISFIED);
@@ -309,7 +313,7 @@ trait ClaimAwaitingTreatment
 
             $query->where('responsible_staff_id', '!=' ,NULL)->where('responsible_unit_id', $this->staff()->unit_id);
 
-        })->whereStatus('assigned_to_staff')->orWhereEscalationStatus('assigned_to_staff');
+        })->where($statusColumn,'assigned_to_staff');
     }
 
 

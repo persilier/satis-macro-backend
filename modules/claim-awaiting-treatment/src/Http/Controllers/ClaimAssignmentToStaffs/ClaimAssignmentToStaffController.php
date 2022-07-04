@@ -72,13 +72,14 @@ class ClaimAssignmentToStaffController extends ApiController
      *
      * @param Claim $claim
      * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
      * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claim)
     {
         $institution = $this->institution();
         $staff = $this->staff();
+
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
         $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
