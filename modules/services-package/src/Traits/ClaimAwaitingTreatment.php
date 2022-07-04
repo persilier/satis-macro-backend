@@ -108,7 +108,11 @@ trait ClaimAwaitingTreatment
     {
         $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'assigned_to_staff_by' => $this->staff()->id, 'assigned_to_staff_at' => Carbon::now()]);
 
-        $claim->update(['status' => 'assigned_to_staff']);
+        if (isEscalationClaim($claim)){
+            $claim->update(['escalation_status' => 'assigned_to_staff']);
+        }else{
+            $claim->update(['status' => 'assigned_to_staff']);
+        }
 
         return $claim;
     }
@@ -127,11 +131,12 @@ trait ClaimAwaitingTreatment
             'number_reject' => (int) $claim->activeTreatment->number_reject + 1,
         ]);
 
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
         if (!is_null($claim->transfered_to_targeted_institution_at)) {
-            $claim->update(['status' => 'transferred_to_targeted_institution']);
+            $claim->update([$statusColumn => 'transferred_to_targeted_institution']);
             $institution = Institution::find($claim->institution_targeted_id);
         } else {
-            $claim->update(['status' => 'full']);
+            $claim->update([$statusColumn => 'full']);
             $institution = is_null($claim->createdBy) ? $claim->institutionTargeted : $claim->createdBy->institution;
         }
 
@@ -209,9 +214,10 @@ trait ClaimAwaitingTreatment
      * @param $institutionId
      * @param $unitId
      * @param $staffId
+     * @param string $statusColumn
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function getClaimsTreat($institutionId, $unitId, $staffId)
+    protected function getClaimsTreat($institutionId, $unitId, $staffId,$statusColumn="status")
     {
         return DB::table('claims')
             ->select('claims.*')
@@ -223,7 +229,7 @@ trait ClaimAwaitingTreatment
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })
             ->whereRaw(
-                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                '( (`staff`.`institution_id` = ? and `claims`.`'.$statusColumn.'` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`'.$statusColumn.'` = ?) )',
                 [$institutionId, 'assigned_to_staff', $institutionId, 'assigned_to_staff']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`assigned_to_staff_at` IS NOT NULL)',
