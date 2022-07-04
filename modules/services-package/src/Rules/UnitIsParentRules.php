@@ -31,10 +31,10 @@ class UnitIsParentRules implements Rule
 
     public function passes($attribute, $value)
     {
-        $claim = Claim::with('unitTargeted')->findOrFail($this->claim_id);
+        $claim = Claim::with('activeTreatment.responsibleUnit.parent')->findOrFail($this->claim_id);
 
         if ($claim->status==Claim::CLAIM_UNSATISFIED){
-            return $claim->unitTargeted->parent_id== $value;
+            return $claim->activeTreatment->responsibleUnit->parent->id== $value;
         }
 
         return  true;
