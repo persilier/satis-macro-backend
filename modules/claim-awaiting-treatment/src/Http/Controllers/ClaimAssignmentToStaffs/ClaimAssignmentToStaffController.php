@@ -55,11 +55,10 @@ class ClaimAssignmentToStaffController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)
-            ->when($type==Claim::CLAIM_UNSATISFIED,function($query){
-                $query->where('status',Claim::CLAIM_UNSATISFIED);
-            })
-            ->get()->map(function ($item, $key) {
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+
+        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id,$statusColumn)
+           ->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
             $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
