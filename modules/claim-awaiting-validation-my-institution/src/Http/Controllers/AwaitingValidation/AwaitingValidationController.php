@@ -55,7 +55,8 @@ class AwaitingValidationController extends ApiController
      */
     public function show(Request $request,Claim $claim)
     {
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution(null,$request->query('type'));
+        $type = isEscalationClaim($claim)?"unsatisfied":"normal";
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution(null,$type);
 
         if ($claims->search(function ($item, $key) use ($claim) {
                 return $item->id == $claim->id;
