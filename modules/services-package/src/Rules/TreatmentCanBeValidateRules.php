@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\AwaitingValidation;
 
@@ -14,10 +15,15 @@ class TreatmentCanBeValidateRules implements Rule
     use AwaitingValidation;
 
     public $institution_id;
+    /**
+     * @var string
+     */
+    private $type;
 
-    public function __construct($institution_id)
+    public function __construct($institution_id,$type="normal")
     {
         $this->institution_id = $institution_id;
+        $this->type = $type;
     }
 
 
@@ -33,7 +39,7 @@ class TreatmentCanBeValidateRules implements Rule
     public function passes($attribute, $value)
     {
 
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution($this->institution_id);
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution($this->institution_id,$this->type);
 
         return $claims->search(function ($item, $key) use ($value) {
             return $item->id == $value;

@@ -82,9 +82,10 @@ class AwaitingValidationController extends ApiController
         $claim->load($this->getRelations());
 
         $request->merge(['claim' => $claim->id]);
+        $type = isEscalationClaim($claim)?"unsatisfied":"normal";
 
         $rules = [
-            'claim' => new TreatmentCanBeValidateRules($this->institution()->id),
+            'claim' => new TreatmentCanBeValidateRules($this->institution()->id,$type),
             'solution_communicated' => 'required|string'
         ];
 
@@ -108,8 +109,10 @@ class AwaitingValidationController extends ApiController
         $claim->load($this->getRelations());
         $request->merge(['claim' => $claim->id]);
 
+        $type = isEscalationClaim($claim)?"unsatisfied":"normal";
+
         $rules = [
-            'claim' => new TreatmentCanBeValidateRules($this->institution()->id),
+            'claim' => new TreatmentCanBeValidateRules($this->institution()->id,$type),
             'invalidated_reason' => 'required|string'
         ];
 
