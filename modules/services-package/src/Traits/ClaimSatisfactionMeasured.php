@@ -22,14 +22,15 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
+     * @param $statusColumn
      * @return Builder
      */
-    protected  function getClaim($status = 'validated'){
+    protected  function getClaim($status = 'validated',$statusColumn="status"){
 
         return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
-        })->where('claims.status', $status)->select('claims.*');
+        })->where('claims.'.$statusColumn, $status)->select('claims.*');
 
     }
 
@@ -78,12 +79,14 @@ trait ClaimSatisfactionMeasured
      * @param bool $paginate
      * @param int $paginationSize
      * @param null $key
-     * @return array
+     * @param string $statusColumn
+     * @return mixed
      */
 
-    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null,$statusColumn='status'){
+
         return $paginate
-            ?$this->getClaim($status)
+            ?$this->getClaim($status,$statusColumn)
                 ->where('institution_targeted_id', $this->institution()->id)
                 ->when($key,function (Builder $query1) use ($key) {
                     $query1->where('reference' , 'LIKE', "%$key%")
@@ -99,7 +102,7 @@ trait ClaimSatisfactionMeasured
                         });
                 })->paginate($paginationSize)
 
-            :$this->getClaim($status)->get()->filter(function ($item){
+            :$this->getClaim($status,$statusColumn)->get()->filter(function ($item){
                 return ($item->activeTreatment->responsibleStaff!=null && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
             })->values();
 
@@ -145,13 +148,14 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param $claim
-     * @param $status
+     * @param string $status
+     * @param string $statusColum
      * @return Builder|Builder[]|Collection|Model
      * @throws CustomException
      */
-    protected function getOneMyClaim($claim, $status = 'validated'){
+    protected function getOneMyClaim($claim, $status = 'validated',$statusColum="status"){
 
-        $claim = $this->getClaim($status)->findOrFail($claim);
+        $claim = $this->getClaim($status,$statusColum)->findOrFail($claim);
 
         if($claim->activeTreatment->responsibleStaff->institution_id !== $this->institution()->id){
 
