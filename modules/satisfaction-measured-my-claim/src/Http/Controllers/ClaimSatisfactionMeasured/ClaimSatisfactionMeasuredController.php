@@ -42,7 +42,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
     public function index(Request $request)
     {
         $statusColumn = $request->query('type',"normal")==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
-        $claims = $this->getAllMyClaim($statusColumn);
+        $claims = $this->getAllMyClaim('validated',false,10,null,$statusColumn);
 
         return response()->json($claims, 200);
     }
