@@ -42,7 +42,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
     public function index(Request $request)
     {
         $statusColumn = $request->query('type',"normal")==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
-        $claims = $this->getAllMyClaim('validated',false,10,null,$statusColumn);
+        $claims = $this->getAllMyClaim(Claim::CLAIM_VALIDATED,false,10,null,$statusColumn);
 
         return response()->json($claims, 200);
     }
@@ -53,11 +53,10 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function show($claim)
+    public function show(Claim $claim)
     {
-        $claim = Claim::query()->find($claim);
         $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
-        $claim = $this->getOneMyClaim($claim->id,$statusColumn);
+        $claim = $this->getOneMyClaim($claim->id,Claim::CLAIM_VALIDATED,$statusColumn);
         return response()->json($claim, 200);
     }
 
