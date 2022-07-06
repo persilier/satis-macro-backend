@@ -55,7 +55,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function show($claim)
     {
-        $claim = Claim::query()->findOrFail($claim);
+        $claim = Claim::query()->find($claim);
         $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
         $claim = $this->getOneMyClaim($claim->id,$statusColumn);
         return response()->json($claim, 200);
