@@ -53,8 +53,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function show(Claim $claim)
+    public function show($claim)
     {
+        $claim = Claim::query()->findOrFail($claim);
         $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
         $claim = $this->getOneMyClaim($claim->id,$statusColumn);
         return response()->json($claim, 200);
