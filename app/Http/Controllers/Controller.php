@@ -52,7 +52,7 @@ class Controller extends BaseController
        // }
 
         //verif
-        return response()->json(MessageApiMethod::bicecSMSGateway($request->phone,"Test SMS Bisec"));
+        return response()->json(MessageApiMethod::uimcecSMSGateway($request->phone,"Test SMS IUMCEC 2"));
     }
 
     public function download(File $file)
