@@ -33,6 +33,11 @@ class OthersClaimsController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
+
         $rulesRequest = $this->rules($request);
 
         $rulesRequest['created_by'] = 'nullable';
