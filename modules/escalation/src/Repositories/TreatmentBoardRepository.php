@@ -30,7 +30,12 @@ class TreatmentBoardRepository
     {
         return $this->treatmentBoard
             ->newQuery()
-            ->with('members.identite','claim.claimObject')
+            ->with([
+                'members.identite',
+                'members.unit',
+                'members.position',
+                'claim.claimObject'
+            ])
             ->paginate($size);
     }
 
@@ -38,7 +43,12 @@ class TreatmentBoardRepository
     {
         return $this->treatmentBoard
             ->newQuery()
-            ->with('members.identite','claim.claimObject')
+            ->with([
+                'members.identite',
+                'members.unit',
+                'members.position',
+                'claim.claimObject'
+            ])
             ->findOrFail($id);
     }
 
