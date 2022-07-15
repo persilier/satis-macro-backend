@@ -15,8 +15,10 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Notifications\RejectAClaim;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 
 /**
  * Trait ClaimAwaitingTreatment

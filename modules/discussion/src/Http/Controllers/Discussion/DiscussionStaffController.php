@@ -13,11 +13,13 @@ use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
 use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
 
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification,ClaimAwaitingTreatment;
 
     public function __construct()
     {
@@ -61,7 +63,7 @@ class DiscussionStaffController extends ApiController
      *
      * @param Request $request
      * @param Discussion $discussion
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -77,9 +79,19 @@ class DiscussionStaffController extends ApiController
 
         $discussion->load('staff.identite', 'createdBy.unit');
 
-        return response()->json([
-            'staff' => $this->getContributors($discussion),
-        ], 200);
+
+        if (isEscalationClaim($discussion->claim)){
+            $response = [
+                'staff' => $this->getContributors($discussion),
+                "escalation_staff"=>$this->getTargetedStaffFromUnit($this->getNormalTreatment($discussion->claim_id)->responsible_unit_id)
+            ];
+        }else{
+            $response = [
+                'staff' => $this->getContributors($discussion),
+            ];
+        }
+
+        return response()->json($response);
     }
 
     /**

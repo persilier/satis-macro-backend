@@ -15,8 +15,10 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Notifications\RejectAClaim;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 
 /**
  * Trait ClaimAwaitingTreatment
@@ -325,6 +327,11 @@ trait ClaimAwaitingTreatment
         if (!$this->checkLead($staff)) {
             throw new CustomException(__('messages.only_lead_can_is_allow',[],getAppLang()));
         }
+    }
+
+    protected function getNormalTreatment($claimId)
+    {
+        return (new TreatmentRepository())->getByClaimId($claimId,Treatment::NORMAL);
     }
 
 }
