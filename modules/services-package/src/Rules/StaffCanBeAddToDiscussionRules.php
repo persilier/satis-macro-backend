@@ -35,7 +35,7 @@ class StaffCanBeAddToDiscussionRules implements Rule
     public function passes($attribute, $value)
     {
 
-        if (isEscalationClaim($this->discussion)){
+        if (isEscalationClaim($this->discussion->claim)){
            $passed = $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
                 return $item->id == $value;
             }) !== false &&
