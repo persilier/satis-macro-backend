@@ -3,6 +3,7 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -12,6 +13,7 @@ use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
 use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToEscalationDiscussionRules;
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\ClaimTrait;
@@ -113,15 +115,22 @@ class DiscussionStaffController extends ApiController
             'discussion' => ['required', 'exists:discussions,id',
                 new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())],
             'staff_id' => 'required|array',
-            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
-                new StaffCanBeAddToDiscussionRules($discussion)],
+            'escalation_staff' => 'array',
+            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion), new StaffCanBeAddToDiscussionRules($discussion)],
+            'escalation_staff.*' => [ 'exists:staff,id',  new StaffCanBeAddToEscalationDiscussionRules($discussion)],
         ];
 
         $this->validate($request, $rules);
 
-        $discussion->staff()->attach($request->staff_id);
+        if ($request->filled('escalation_staff')){
+            $staff = array_merge($request->staff_id,$request->escalation_staff);
+        }else{
+            $staff = $request->staff_id;
+        }
 
-        Notification::send($this->getStaffIdentities($request->staff_id), new AddContributorToDiscussion($discussion));
+        $discussion->staff()->attach($staff);
+
+        Notification::send($this->getStaffIdentities($staff), new AddContributorToDiscussion($discussion));
 
         return response()->json($discussion->staff, 201);
     }
