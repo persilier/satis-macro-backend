@@ -8,12 +8,13 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Discussion;
 
 class StaffCanBeAddToDiscussionRules implements Rule
 {
 
-    use Discussion;
+    use Discussion,ClaimAwaitingTreatment;
 
     protected $discussion;
 
@@ -33,9 +34,21 @@ class StaffCanBeAddToDiscussionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        return $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
+
+        if (isEscalationClaim($this->discussion)){
+           $passed = $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
+                return $item->id == $value;
+            }) !== false &&
+            $this->getTargetedStaffFromUnit($this->getNormalTreatment($this->discussion->claim_id)->responsible_unit_id)->search(function ($item, $key) use ($value) {
                 return $item->id == $value;
             }) !== false;
+        }else{
+            $passed = $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
+                return $item->id == $value;
+            }) !== false;
+        }
+
+        return $passed;
     }
 
     /**

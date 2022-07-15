@@ -35,7 +35,7 @@ trait Discussion
     protected function getContributors($discussion)
     {
 
-        return Staff::with('identite.user')
+        $staff =  Staff::with('identite.user')
             ->get()
             ->filter(function ($value, $key) use ($discussion) {
 
@@ -68,6 +68,8 @@ trait Discussion
                     }) === false;
 
             });
+
+        return $staff;
     }
 
 }
