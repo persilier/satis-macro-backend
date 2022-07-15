@@ -20,11 +20,10 @@ class EscalationConfigService
 
     /**
      * AuthConfigService constructor.
-     * @param MetadataRepository $metadataRepository
      */
-    public function __construct(MetadataRepository $metadataRepository)
+    public function __construct()
     {
-        $this->metadataRepository = $metadataRepository;
+        $this->metadataRepository = new MetadataRepository;
     }
 
     public function get()

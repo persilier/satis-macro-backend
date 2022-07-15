@@ -6,6 +6,8 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
+use Satis2020\Escalation\Services\EscalationConfigService;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Database\Seeder;
@@ -20,28 +22,32 @@ class EscalationConfigSeeder extends Seeder
      */
     public function run()
     {
-        $escalationSettings = [
-            'standard_bord_exists' => true,
-            'specific_bord_exists' => false,
-           ];
 
-        TreatmentBoard::query()
-            ->create(
-                [
-                    'name'=>"Standar",
-                    'type' =>TreatmentBoard::STANDARD,
-                    'description'=>"Standard",
-                    'created_by' =>null,
-                    'institution_id' =>Institution::query()->first()->id
-                ]);
+        $treatmentBoardRepo = new TreatmentBoardRepository;
 
-        Metadata::query()->updateOrCreate([
-            "name"=>Metadata::ESCALATION
-        ],[
-            'id' => (string)Str::uuid(),
-            'name' => Metadata::ESCALATION,
-            'data' => json_encode($escalationSettings)
-        ]);
+        if ($treatmentBoardRepo->getStandardBoard()==null){
+            $escalationSettings = [
+                'standard_bord_exists' => true,
+                'specific_bord_exists' => false,
+            ];
 
+            TreatmentBoard::query()
+                ->create(
+                    [
+                        'name'=>"Standard",
+                        'type' =>TreatmentBoard::STANDARD,
+                        'description'=>"Standard",
+                        'created_by' =>null,
+                        'institution_id' =>Institution::query()->first()->id
+                    ]);
+
+            Metadata::query()->updateOrCreate([
+                "name"=>Metadata::ESCALATION
+            ],[
+                'id' => (string)Str::uuid(),
+                'name' => Metadata::ESCALATION,
+                'data' => json_encode($escalationSettings)
+            ]);
+        }
     }
 }
