@@ -20,6 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        config("allowed_domains.frontend_local_url"),
         config("allowed_domains.frontend_url"),
         config("allowed_domains.email_service_url"),
         config("allowed_domains.mobile_backoffice_url"),

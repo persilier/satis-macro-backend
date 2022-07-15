@@ -48,7 +48,7 @@ class PasswordResetController extends ApiController{
 
         if ($user && $passwordReset){
 
-            $user->notify(new PasswordResetRequest($passwordReset->token));
+            $user->notify(new PasswordResetRequest($passwordReset->token, $request));
         }
 
         return response()->json([
