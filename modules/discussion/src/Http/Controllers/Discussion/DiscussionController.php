@@ -41,11 +41,18 @@ class DiscussionController extends ApiController
             ->filter(function ($value, $key) use($type){
                 $value->load(['staff']);
 
+
+
                 if ($type==Claim::CLAIM_UNSATISFIED){
                     return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+
+                }
+                if ($type==Claim::CLAIM_UNSATISFIED){
+                    return $value->claim->escalation_status != 'archived'&& $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                }else{
+                    return $value->claim->status != 'archived' && $value->claim->escalation_status == null;
                 }
 
-                return $value->claim->status != 'archived';
             })
             ->values()
             , 200);
