@@ -34,6 +34,7 @@ trait StaffManagement
             'sexe' => ['required'],
             'telephone' => ['required', 'array', new TelephoneArray],
             'email' => ['required', 'array', new EmailArray],
+            'email.*' => ['email'],
             'position_id' => 'required|exists:positions,id',
             'institution_id' => 'required|exists:institutions,id',
             'is_lead' => [Rule::in([true, false])]
