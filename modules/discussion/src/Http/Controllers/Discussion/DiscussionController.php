@@ -5,6 +5,7 @@ namespace Satis2020\Discussion\Http\Controllers\Discussion;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\ClaimIsAssignedToStaffRules;
@@ -31,14 +32,23 @@ class DiscussionController extends ApiController
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
 
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->query('type','normal');
         return response()->json(Staff::with('discussions.claim')
             ->findOrFail($this->staff()->id)
             ->discussions
-            ->filter(function ($value, $key) {
+            ->filter(function ($value, $key) use($type){
                 $value->load(['staff']);
-                return $value->claim->status != 'archived';
+
+                if ($type==Claim::CLAIM_UNSATISFIED){
+                    return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                }
+                if ($type==Claim::CLAIM_UNSATISFIED){
+                    return $value->claim->escalation_status != 'archived'&& $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                }else{
+                    return $value->claim->status != 'archived' && $value->claim->escalation_status == null;
+                }
             })
             ->values()
             , 200);
