@@ -10,20 +10,18 @@ use Satis2020\ServicePackage\Models\Treatment;
 
 trait AwaitingValidation
 {
-    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null,$type="normal")
+    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null, $type = "normal")
     {
         $institution_id = is_null($institution_id)
             ? $this->institution()->id
             : $institution_id;
 
-        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+        $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
 
         $claimsTreated = Claim::with($this->getRelations())->where($statusColumn, 'treated')->get();
 
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
-            if ($value->oldActiveTreatment)
-                $value->oldActiveTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
         });
     }
@@ -46,8 +44,15 @@ trait AwaitingValidation
             'createdBy.identite',
             'completedBy.identite',
             'files',
-            'activeTreatment',
-            'oldActiveTreatment',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.responsibleUnit.parent',
+            'revivals',
+            'activeTreatment.validatedBy.identite',
+            'activeTreatment.transferredToTargetInstitutionBy.identite',
+            'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard',
         ];
     }
 
@@ -84,14 +89,14 @@ trait AwaitingValidation
             'treatments' => $backup
         ]);
 
-        if(!is_null($claim->activeTreatment->declared_unfounded_at)){
+        if (!is_null($claim->activeTreatment->declared_unfounded_at)) {
             // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
-            if (isEscalationClaim($claim)){
+            if (isEscalationClaim($claim)) {
                 $claim->update(['escalation_status' => 'validated']);
-            }else{
+            } else {
                 $claim->update(['status' => 'validated']);
             }
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
@@ -131,9 +136,9 @@ trait AwaitingValidation
             'treatments' => $backup
         ]);
 
-        if(isEscalationClaim($claim)){
+        if (isEscalationClaim($claim)) {
             $claim->update(['escalation_status' => 'assigned_to_staff']);
-        }else{
+        } else {
             $claim->update(['status' => 'assigned_to_staff']);
         }
 

@@ -52,6 +52,28 @@ class TreatmentRepository
             ->first();
     }
 
+    public function getClaimOldTreatment($claimId)
+    {
+        return $this->treatment->newQuery()
+            ->with([
+                'responsibleUnit',
+                'assignedToStaffBy.identite',
+                'responsibleStaff.identite',
+                'satisfactionMeasuredBy.identite',
+                'satisfactionMeasuredBy.identite',
+                'responsibleStaff.identite',
+                'assignedToStaffBy.identite',
+                'responsibleUnit.parent',
+                'validatedBy.identite',
+                'transferredToTargetInstitutionBy.identite',
+                'transferredToUnitBy.identite',
+            ])
+            ->latest()
+            ->where('claim_id',$claimId)
+            ->where('type',Treatment::NORMAL)
+            ->first();
+    }
+
 
 
 }

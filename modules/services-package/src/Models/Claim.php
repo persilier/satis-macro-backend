@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 use Satis2020\ServicePackage\Services\StaffService;
 use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\DataUserNature;
@@ -117,7 +118,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType','lastRevival','canAddAttachment'];
+    protected $appends = ['timeExpire', 'accountType','lastRevival','canAddAttachment',"oldActiveTreatment"];
 
     /**
      * @return mixed
@@ -273,11 +274,15 @@ class Claim extends Model
 
     /**
      * Get the active treatment associated with the claim
-     * @return BelongsTo
+     * @return Builder|Model|object
      */
-    public function oldActiveTreatment()
+    public function getOldActiveTreatmentAttribute()
     {
-        return $this->belongsTo(Treatment::class)->latest()->where('type',Treatment::NORMAL);
+        if (isEscalationClaim($this)){
+            return  (new TreatmentRepository)->getClaimOldTreatment($this->id);
+        }
+
+        return null;
     }
 
     /**
