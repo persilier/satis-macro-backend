@@ -272,6 +272,15 @@ class Claim extends Model
     }
 
     /**
+     * Get the active treatment associated with the claim
+     * @return BelongsTo
+     */
+    public function oldActiveTreatment()
+    {
+        return $this->belongsTo(Treatment::class)->latest()->where('type',Treatment::NORMAL);
+    }
+
+    /**
      * Get the discussions associated with the claim
      * @return HasMany
      */

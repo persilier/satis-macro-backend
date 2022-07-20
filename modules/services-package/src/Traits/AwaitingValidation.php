@@ -22,6 +22,7 @@ trait AwaitingValidation
 
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
+            $value->oldActiveTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
         });
     }
@@ -44,7 +45,8 @@ trait AwaitingValidation
             'createdBy.identite',
             'completedBy.identite',
             'files',
-            'activeTreatment'
+            'activeTreatment',
+            'oldActiveTreatment',
         ];
     }
 
