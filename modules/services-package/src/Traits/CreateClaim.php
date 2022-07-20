@@ -55,17 +55,7 @@ trait CreateClaim
             'lieu' => 'nullable|string',
             'event_occured_at' => [
                 'required',
-                'date_format:Y-m-d H:i',
-                function ($attribute, $value, $fail) {
-                    try{
-                        if (Carbon::parse($value)->gt(Carbon::now())) {
-                            $fail(__('validation.date_gte',['attribute'=>$attribute],getAppLang()));
-                        }
-                    }catch (InvalidFormatException $e){
-                        $fail(__('validation.date_format_invalid',['attribute'=>$attribute],getAppLang()));
-                    }
-                }
-            ],
+                'date_format:Y-m-d H:i','after_or_equal:today'],
             'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
             'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
             'is_revival' => 'required|boolean',
