@@ -23,4 +23,9 @@ class StaffService
     {
        return $this->repository->getStaffsByIdentities($identityIds);
     }
+
+    public function getStaffById($staffId)
+    {
+        return $this->repository->getStaffById($staffId);
+    }
 }

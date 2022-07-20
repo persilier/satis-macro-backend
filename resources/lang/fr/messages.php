@@ -4,7 +4,7 @@ return [
     'user_has_account'=>"Cet utilisateur ne peut être supprimé",
     'client_updated'=> "Mise à jour des informations du compte d'un client",
     'empty_unity_file_alert'=>"Le fichier excel d'import des types d'unités et unités est vide.",
-    'not_allowed_to_access_reporting'=>"Vous n'êtes pas autorité à accéder au reporting de cette insitution.",
+    'not_allowed_to_access_reporting'=>"Vous n'êtes pas autorisé à accéder au reporting de cette insitution.",
     'config_already_exist'=>"Cette configuration de rapport automatique existe déjà pour la période choisie.",
     'cant_get_config'=>"Impossible de récupérer cette configuration.",
     'bound_alert'=>"La borne supérieur doit être supérieur à la borne inférieur.",

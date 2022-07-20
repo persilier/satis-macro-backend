@@ -25,4 +25,12 @@ class StaffRepository
                 ->whereIn('identite_id',$identityIds)
                 ->get();
     }
+
+    function getStaffById($staffId)
+    {
+        return $this->staff->newQuery()
+            ->with("institution","identite")
+            ->where('id',$staffId)
+            ->first();
+    }
 }
