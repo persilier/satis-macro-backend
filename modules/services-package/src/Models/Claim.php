@@ -345,12 +345,14 @@ class Claim extends Model
         $staffId = request()->query('staff',null);
         $staff = (new StaffService())->getStaffById($staffId);
 
-        if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
-            $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
-        }
+        if ($staff!=null){
+            if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
+                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+            }
 
-        if ($this->status==Claim::CLAIM_VALIDATED){
-            $canAttach = $staff->id == $staff->institution->active_pilot_id;
+            if ($this->status==Claim::CLAIM_VALIDATED){
+                $canAttach = $staff->id == $staff->institution->active_pilot_id;
+            }
         }
 
         return $canAttach;
