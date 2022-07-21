@@ -45,13 +45,9 @@ class ClaimReassignmentController extends ApiController
     protected function index(Request $request){
 
         $type = $request->query('type','normal');
-
         $this->checkLeadReassignment();
 
-        return response()->json($this->queryClaimReassignment()
-            ->when($type==Claim::CLAIM_UNSATISFIED,function ($query){
-                $query->where('status',Claim::CLAIM_UNSATISFIED);
-            })->get(), 200);
+        return response()->json($this->queryClaimReassignment($type)->get(), 200);
     }
 
 
