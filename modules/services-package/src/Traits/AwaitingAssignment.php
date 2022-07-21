@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 
@@ -67,21 +68,7 @@ trait AwaitingAssignment
 
     protected function getRelations()
     {
-        return [
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment'
-        ];
+        return Constants::getClaimRelations();
     }
 
     protected function getActiveTreatmentRelationsAwaitingAssignment()

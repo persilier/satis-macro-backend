@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\In;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -69,29 +70,7 @@ trait ClaimTrait
      */
     protected function getRelations()
     {
-        return [
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite',
-            'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit.parent',
-            'revivals',
-            'activeTreatment.validatedBy.identite',
-            'activeTreatment.transferredToTargetInstitutionBy.identite',
-            'activeTreatment.transferredToUnitBy.identite',
-            'treatmentBoard'
-        ];
+        return Constants::getClaimRelations();
     }
 
 

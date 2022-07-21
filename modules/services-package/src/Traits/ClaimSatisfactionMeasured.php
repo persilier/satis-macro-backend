@@ -53,24 +53,7 @@ trait ClaimSatisfactionMeasured
      */
     protected function getRelations()
     {
-        return [
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite',
-            'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit'
-        ];
+        return Constants::getClaimRelations();
     }
 
 
