@@ -95,7 +95,8 @@
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/without-link-with-institution-unit": "^1.0",
-    "satis2020/notification-proof": "^1.0"
+    "satis2020/notification-proof": "^1.0",
+    "satis2020/my-staff-monitoring": "1.0.0"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -720,6 +721,13 @@
     {
       "type": "path",
       "url": "modules/notification-proof/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/my-staff-monitoring/",
       "options": {
         "symlink": true
       }
