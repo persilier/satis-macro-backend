@@ -1,0 +1,30 @@
+{
+  "name": "satis2020/useful-data-for-claims-classification",
+  "description": "satis2020/useful-data-for-claims-classification est un module qui d'envoyer les données nécessaires au serv",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Arafath ATTA YAYA",
+      "email": "arafath@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\UsefulDataForClaimsClassification\\": "src/",
+      "Satis2020\\UsefulDataForClaimsClassification\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\UsefulDataForClaimsClassification\\Providers\\UsefulDataForClaimsClassificationServiceProvider"
+      ]
+    }
+  }
+}
