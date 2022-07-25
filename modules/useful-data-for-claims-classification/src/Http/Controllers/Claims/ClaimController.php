@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UsefulDataForBackoffice\Http\Controllers\RetrieveDataForCreateClaim;
+namespace Satis2020\UsefulDataForClaimsClassification\Http\Controllers\Claims;
 
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\CategoryClient;
@@ -11,9 +11,13 @@ use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\UnitType;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
 
-class RetrieveDataController extends Controller
+class ClaimController extends Controller
 {
+
+    use ClaimTrait;
+
     public function __construct()
     {
         $this->middleware('set.language');
@@ -21,7 +25,7 @@ class RetrieveDataController extends Controller
     }
 
 
-    public function create()
+    public function index()
     {
         $unitTypes = UnitType::withTrashed()->get();
         return response()->json([

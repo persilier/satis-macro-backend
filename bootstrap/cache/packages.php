@@ -698,7 +698,7 @@
   array (
     'providers' => 
     array (
-      0 => 'Satis2020\\UsefulDataForBackoffice\\Providers\\UsefulDataForBackofficeServiceProvider',
+      0 => 'Satis2020\\UsefulDataForBackoffice\\Providers\\UsefulDataForClaimsClassificationServiceProvider',
     ),
   ),
   'satis2020/useful-data-plugin-wordpress' => 

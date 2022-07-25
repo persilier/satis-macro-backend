@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Satis2020\UsefulDataForBackoffice\Providers;
+namespace Satis2020\UsefulDataForClaimsClassification\Providers;
 
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-class UsefulDataForBackofficeServiceProvider extends ServiceProvider
+class UsefulDataForClaimsClassificationServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -58,7 +58,7 @@ class UsefulDataForBackofficeServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'namespace' => 'Satis2020\UsefulDataForBackoffice\Http\Controllers',
+            'namespace' => 'Satis2020\UsefulDataForClaimsClassification\Http\Controllers',
             'middleware' => ['api']
         ];
     }

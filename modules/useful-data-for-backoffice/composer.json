@@ -27,7 +27,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Satis2020\\UsefulDataForBackoffice\\Providers\\UsefulDataForBackofficeServiceProvider"
+        "UsefulDataForClaimsClassificationServiceProvider"
       ]
     }
   }
