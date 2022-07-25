@@ -11,6 +11,9 @@ use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Illuminate\Support\Facades\Config;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 
 trait ClaimIncomingByEmail
 {
@@ -264,6 +267,19 @@ trait ClaimIncomingByEmail
                 $save_img = $this->base64SaveImg($claim['attachments'][$i], 'claim-attachments/', $i);
                 $claimStore->files()->create(['title' => "Incoming mail attachment ".$claimStore->reference, 'url' => $save_img['link']]);
             }
+
+            $claim->load('claimer','institutionTargeted');
+            // send notification to claimer
+            if (!is_null($claim->claimer)) {
+                $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+            }
+
+            // send notification to pilot
+                if (!is_null($claim->institutionTargeted)) {
+                    if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
+                        $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
+                    }
+                }
 
             return true;
 
