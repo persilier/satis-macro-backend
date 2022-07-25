@@ -4,7 +4,8 @@
 namespace Satis2020\ServicePackage\Services;
 
 
-use Satis2020\ServicePackage\Requests\StaffRepository;
+
+use Satis2020\ServicePackage\Repositories\StaffRepository;
 
 class StaffService
 {

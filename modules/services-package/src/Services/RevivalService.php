@@ -4,7 +4,7 @@
 namespace Satis2020\ServicePackage\Services;
 
 
-use Satis2020\ServicePackage\Requests\RevivalRepository;
+use Satis2020\ServicePackage\Repositories\RevivalRepository;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 
 class RevivalService

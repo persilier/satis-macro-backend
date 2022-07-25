@@ -1,8 +1,7 @@
 <?php
 
 
-namespace Satis2020\ServicePackage\Requests;
-
+namespace Satis2020\ServicePackage\Repositories;
 
 use Satis2020\ServicePackage\Models\Revival;
 
