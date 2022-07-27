@@ -278,36 +278,38 @@ trait CreateClaim
             $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
         }
 
+        if (is_null($claim->createdBy)) {
+            $institutionTargeted = $claim->institutionTargeted;
+        } else {
+            $institutionTargeted = $claim->createdBy->institution;
+        }
+
         // send notification to pilot
-        if (!is_null($claim->createdBy)) {
+        //if (!is_null($claim->createdBy)) {
+        if (!is_null($institutionTargeted)) {
 
-            if (!is_null($claim->createdBy->institution)) {
+            if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
 
-                if (!is_null($this->getInstitutionPilot($claim->createdBy->institution))) {
+                if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
 
-                    if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
+                    $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaimHighForcefulness($claim));
 
-                        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaimHighForcefulness($claim));
+                }else{
 
-                    }else{
-
-                        $this->getInstitutionPilot($claim->createdBy->institution)->notify(new RegisterAClaim($claim));
-
-                    }
-
-                    // check if the claimObject related to the claim have a time_limit = 1 and send a notification
-                    $this->closeTimeLimitNotification($claim);
-
-                    // send recurrence notification to the pilot
-                    $this->recurrenceNotification($claim);
+                    $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
 
                 }
+
+                // check if the claimObject related to the claim have a time_limit = 1 and send a notification
+                $this->closeTimeLimitNotification($claim);
+
+                // send recurrence notification to the pilot
+                $this->recurrenceNotification($claim);
 
             }
 
         }
-
-
+        //}
         return $claim;
     }
 
