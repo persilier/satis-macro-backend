@@ -3,10 +3,11 @@
 namespace Satis2020\UsefulDataForClaimsClassification\Http\Controllers\Claims;
 
 use Satis2020\ServicePackage\Http\Controllers\Controller;
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Services\ClaimClassificationService;
 use Satis2020\ServicePackage\Traits\ClaimTrait;
 
-class ClaimController extends Controller
+class ClaimCategoryController extends Controller
 {
 
     use ClaimTrait;
@@ -18,9 +19,9 @@ class ClaimController extends Controller
     }
 
 
-    public function index(ClaimClassificationService $claimClassificationService)
+    public function index(ClaimClassificationService $claimClassificationService, $claimCategoryName)
     {
-        return response()->json($claimClassificationService->getAllClaimClassification(), 200);
+        return response()->json($claimClassificationService->getAllObjectsByCategoryName($claimCategoryName), 200);
     }
 
 }

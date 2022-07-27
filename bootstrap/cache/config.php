@@ -12,8 +12,8 @@
   ),
   'allowed_domains' => 
   array (
-    'frontend_url' => 'http://localhost:3000',
-    'email_service_url' => 'http://127.0.0.1:8001',
+    'frontend_url' => 'http://163.172.106.97:3011',
+    'email_service_url' => 'http://163.172.106.97:8010',
     'mobile_backoffice_url' => 'http://163.172.106.97:8022',
     'wordpress_plugin_url' => 'http://163.172.106.97:8111',
   ),
@@ -28,7 +28,7 @@
     'locale' => 'fr',
     'fallback_locale' => 'en',
     'faker_locale' => 'fr_FR',
-    'key' => 'base64:UzJZXvxhuRQU1xTToZMdJm94JGKoGs/qYZlMEEHB3y8=',
+    'key' => 'base64:S4nB3LAIZzUkh/H5CJRj4ufP5ZBoiRbY65N6CzAFxo0=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -199,7 +199,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/opt/lampp/htdocs/satis-server-backend/storage/framework/cache/data',
+        'path' => '/Users/dmd-dev2/vhosts/test-encryter/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -252,8 +252,8 @@
     ),
     'allowed_origins' => 
     array (
-      0 => 'http://localhost:3000',
-      1 => 'http://127.0.0.1:8001',
+      0 => 'http://163.172.106.97:3011',
+      1 => 'http://163.172.106.97:8010',
       2 => 'http://163.172.106.97:8022',
       3 => 'http://163.172.106.97:8111',
     ),
@@ -291,7 +291,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'satis_front',
+        'database' => 'satis_dev_bis',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -300,10 +300,10 @@
         'driver' => 'mysql',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
-        'database' => 'satis_front',
+        'port' => '8889',
+        'database' => 'satis_dev_bis',
         'username' => 'root',
-        'password' => '',
+        'password' => 'root',
         'unix_socket' => '',
         'charset' => 'utf8',
         'collation' => 'utf8_general_ci',
@@ -321,10 +321,10 @@
         'driver' => 'pgsql',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
-        'database' => 'satis_front',
+        'port' => '8889',
+        'database' => 'satis_dev_bis',
         'username' => 'root',
-        'password' => '',
+        'password' => 'root',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -336,10 +336,10 @@
         'driver' => 'sqlsrv',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
-        'database' => 'satis_front',
+        'port' => '8889',
+        'database' => 'satis_dev_bis',
         'username' => 'root',
-        'password' => '',
+        'password' => 'root',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -379,10 +379,10 @@
     'convert_entities' => true,
     'defines' => 
     array (
-      'font_dir' => '/opt/lampp/htdocs/satis-server-backend/storage/fonts/',
-      'font_cache' => '/opt/lampp/htdocs/satis-server-backend/storage/fonts/',
-      'temp_dir' => '/tmp',
-      'chroot' => '/opt/lampp/htdocs/satis-server-backend',
+      'font_dir' => '/Users/dmd-dev2/vhosts/test-encryter/storage/fonts/',
+      'font_cache' => '/Users/dmd-dev2/vhosts/test-encryter/storage/fonts/',
+      'temp_dir' => '/var/folders/3z/2_7mzsbn1bv7f2txjpq2hc_80000gn/T',
+      'chroot' => '/Users/dmd-dev2/vhosts/test-encryter',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -398,11 +398,11 @@
   ),
   'email-claim-configuration' => 
   array (
-    'api_subscriber' => 'http://127.0.0.1:8001/api/subscribe',
+    'api_subscriber' => 'http://163.172.106.97:8010/api/subscribe',
     'grant_type' => 'client_credentials',
-    'client_id' => '14',
-    'client_secret' => 'hcyb3vPyb3L7ncey62o4TTWrjJLUGuKUxgaE8Mkg',
-    'app_url_incoming_mail' => 'http://127.0.0.1:8000',
+    'client_id' => '3',
+    'client_secret' => 'X4cRipgGU5Ch2qqpdpMx4DRW1mfVgza0o0gsf2yA',
+    'app_url_incoming_mail' => 'http://41.214.72.34:8000',
   ),
   'excel' => 
   array (
@@ -478,7 +478,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => '/opt/lampp/htdocs/satis-server-backend/storage/app/public/laravel-excel',
+      'local_path' => '/Users/dmd-dev2/vhosts/test-encryter/storage/app/public/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
     ),
@@ -492,12 +492,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/opt/lampp/htdocs/satis-server-backend/storage/app',
+        'root' => '/Users/dmd-dev2/vhosts/test-encryter/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/opt/lampp/htdocs/satis-server-backend/storage/app/public',
+        'root' => '/Users/dmd-dev2/vhosts/test-encryter/storage/app/public',
         'url' => 'http://127.0.0.1:8000/storage',
         'visibility' => 'public',
       ),
@@ -513,7 +513,7 @@
     ),
     'links' => 
     array (
-      '/opt/lampp/htdocs/satis-server-backend/public/storage' => '/opt/lampp/htdocs/satis-server-backend/storage/app/public',
+      '/Users/dmd-dev2/vhosts/test-encryter/public/storage' => '/Users/dmd-dev2/vhosts/test-encryter/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -580,13 +580,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/opt/lampp/htdocs/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/Users/dmd-dev2/vhosts/test-encryter/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/opt/lampp/htdocs/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/Users/dmd-dev2/vhosts/test-encryter/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -636,7 +636,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/opt/lampp/htdocs/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/Users/dmd-dev2/vhosts/test-encryter/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -651,8 +651,8 @@
         'host' => 'smtp.mailtrap.io',
         'port' => '2525',
         'encryption' => 'tls',
-        'username' => 'b01af44c3bc7b3',
-        'password' => '68eacdfab1bfb5',
+        'username' => '812f274dda314f',
+        'password' => 'e2dd6cecff42fc',
       ),
       'ses' => 
       array (
@@ -675,7 +675,7 @@
     ),
     'from' => 
     array (
-      'address' => 'hello@example.com',
+      'address' => 'ulrich@dmdconsult.com',
       'name' => 'SATIS',
     ),
     'markdown' => 
@@ -683,7 +683,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/opt/lampp/htdocs/satis-server-backend/resources/views/vendor/mail',
+        0 => '/Users/dmd-dev2/vhosts/test-encryter/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -810,7 +810,7 @@
       'secret' => '',
       'region' => 'us-east-1',
     ),
-    'app_nature' => 'PRO',
+    'app_nature' => 'HUB',
   ),
   'session' => 
   array (
@@ -818,7 +818,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/opt/lampp/htdocs/satis-server-backend/storage/framework/sessions',
+    'files' => '/Users/dmd-dev2/vhosts/test-encryter/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -855,9 +855,9 @@
   array (
     'paths' => 
     array (
-      0 => '/opt/lampp/htdocs/satis-server-backend/resources/views',
+      0 => '/Users/dmd-dev2/vhosts/test-encryter/resources/views',
     ),
-    'compiled' => '/opt/lampp/htdocs/satis-server-backend/storage/framework/views',
+    'compiled' => '/Users/dmd-dev2/vhosts/test-encryter/storage/framework/views',
     'expires' => true,
   ),
   'websockets' => 
@@ -1028,7 +1028,7 @@
   'trustedproxy' => 
   array (
     'proxies' => NULL,
-    'headers' => 94,
+    'headers' => 30,
   ),
   'tinker' => 
   array (

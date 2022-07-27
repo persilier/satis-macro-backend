@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Satis2020\UsefulDataForClaimsClassification\Providers;
-
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
