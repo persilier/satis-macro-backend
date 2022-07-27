@@ -283,7 +283,6 @@ trait CreateClaim
         } else {
             $institutionTargeted = $claim->createdBy->institution;
         }
-
         // send notification to pilot
         //if (!is_null($claim->createdBy)) {
         if (!is_null($institutionTargeted)) {
