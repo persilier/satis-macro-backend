@@ -12,7 +12,7 @@ trait BCIReportsTrait
 
     protected function getClaimsByCategories($institutionId,$year=null)
     {
-        $months = Claim::query()
+        $claims = Claim::query()
             ->with(['institutionTargeted','claimObject.claimCategory'])
             ->whereYear("created_at",now())
             ->get()->groupBy([
@@ -26,68 +26,82 @@ trait BCIReportsTrait
             function($item){
                 return optional($item->claimObject)->name;
             }
-        ])->toArray();
+        ]);
 
-        $d = [];
-        foreach ($months as $mouthName => $claimCategories){
-            $d[$mouthName] = $claimCategories;
+        /*foreach ($months as $mouthName => $claimCategories){
+            //$d[$mouthName] = $claimCategories;
            // array_push($d[$mouthName],$claimCategories);
-            dd($d);
             foreach ($claimCategories as $categoryName => $claimObjects){
-                array_push($d[$mouthName][$categoryName],$claimObjects);
-                dd($d);
+                //dd($d[$mouthName][$categoryName]->toArray());
+                //$s = $d[$mouthName][$categoryName]->toArray();
+                //array_push($s,$claimObjects);
                 foreach ($claimObjects as $claimObjectsName => $claims){
+                    //$s[$mouthName][$categoryName][$claimObjectsName]['totalTreated'] = $this->totalTreated(collect($claims));
+                    $obj = [
+                        $claimObjectsName =>[
+                            "totalTreated"=>$this->totalTreated(collect($claims)),
+                            "totalReceived"=>count($claims),
+                        ]
+                    ];
+                    $cat = [$categoryName => $obj];
+
+                    $g = [
+                      $mouthName =>$cat
+                    ];
+                    $data[$mouthName] = [];
+                    array_push($data[$mouthName],$cat);
+                    //return $g;
+                    //dd($d[$mouthName][$categoryName][$claimObjectsName]);
+
                     $totalReceived = count($claims);
                     $totalTreated = $this->totalTreated($claims);
 
                     $data = [
 
-                        "totalTreated"=>$totalTreated
+                        "$d[$mouthName][$categoryName]"=>$totalTreated."fath"
 
                     ];
                     array_push($d[$mouthName][$claimObjectsName]);
 
                 }
             }
-        }
+        }*/
+        //return $data;
 
-        $data = [];
+
         $claimCollection = collect([]);
+        $data = [];
 
+        $claims = $claims->map(function ($categories,$monthName) use ($claimCollection,$data){
+            $categories->map(function ($objects, $categoryName) use ($claimCollection,$categories,$monthName){
+                $objects->map(function ($claims, $objectName)  use ($claimCollection, $categoryName,$categories,$monthName){
 
-        $claims = $claims->map(function ($categories,$month) use ($claimCollection,$data){
-
-            $categories->map(function ($objects, $keyCategory) use ($claimCollection,$categories,$data){
-
-
-
-                $objects->map(function ($claims, $keyObject)  use ($claimCollection, $keyCategory,$categories,$data){
-
-
-
-                    /*$data = [
-                        'claimCategorie' => $keyCategory,
-                        'claimObject' => $keyObject,
-                        'totalClaim' => (string) $claims->count(),
+                    $data = [
+                        "month"=>$monthName,
+                        'claimCategorie' => $categoryName,
+                        'claimObject' => $objectName,
+                        'totalReceived' => (string) $claims->count(),
                         'totalTreated' => (string) $this->totalTreated($claims),
-                        'totalUnfounded' => (string) $this->totalUnfounded($claims),
-                        'totalNoValidated' => (string) $this->totalNoValidated($claims),
-                        'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
-                        'delayPlanned' => optional((string) $claims->first()->claimObject)->time_limit,
-                        'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
-                        'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
-                        'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
-                        'percentageTreatedOutDelay' => (string)  $this->percentageOutTime($claims),
-                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims)
-                    ];*/
+                        'totalRemaining' => (string) ($claims->count()-$this->totalTreated($claims)),
+                        'totalTreatedOutDelay' => (string) $this->totalTreatedOutDelay($this->claimTreated($claims)),
+                    ];
 
-
+                    return $claimCollection->push($data);
                 });
 
             });
-            return $claimCollection->push($data);
         });
 
-        return $claimCollection;
+        return $claimCollection/*->groupBy([
+            function($item){
+                return $item['month'];
+            },
+            function($item){
+                return $item['claimCategorie'];
+            },
+            function($item){
+                return $item['claimObject'];
+            }
+        ])*/;
     }
 }

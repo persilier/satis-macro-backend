@@ -786,6 +786,18 @@ trait UemoaReports{
 
         })->count();
     }
+    /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function claimTreated($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at);
+
+        });
+    }
 
 
     /**
