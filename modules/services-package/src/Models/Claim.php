@@ -350,9 +350,9 @@ class Claim extends Model
                 $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
             }
 
-            if ($this->status==Claim::CLAIM_VALIDATED){
+           /* if ($this->status==Claim::CLAIM_VALIDATED){
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
-            }
+            }*/
         }
 
         return $canAttach;
