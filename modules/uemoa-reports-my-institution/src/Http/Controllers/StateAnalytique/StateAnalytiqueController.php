@@ -84,7 +84,7 @@ class StateAnalytiqueController extends ApiController
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        $data = view('ServicePackage::uemoa.report-analytique', [
+        $data = view('uemoa.report-analytique', [
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,

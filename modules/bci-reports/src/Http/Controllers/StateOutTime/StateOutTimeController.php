@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\GlobalStateReport;
+namespace Satis2020\UemoaReportsMyInstitution\Http\Controllers\StateOutTime;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -8,17 +8,17 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Consts\Constants;
-use Satis2020\ServicePackage\Exports\UemoaReports\GlobalStateReportExcel;
 use Satis2020\ServicePackage\Exports\UemoaReports\StateReportExcel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 
+
 /**
- * Class GlobalStateReportController
- * @package Satis2020\UemoaReportsMyInstitution\Http\Controllers\GlobalStateReport
+ * Class StateMore30DaysController
+ * @package Satis2020\UemoaReportsMyInstitution\Http\Controllers\StateMore30Days
  */
-class GlobalStateReportController extends ApiController
+class StateOutTimeController extends ApiController
 {
     use UemoaReports,Metadata;
 
@@ -41,11 +41,12 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsStateOutTime($request, true);
 
         return response()->json($claims, 200);
 
     }
+
 
     /**
      * @param Request $request
@@ -56,15 +57,15 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsStateOutTime($request, true);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        $titleDescription = $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->title.' : '.$this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->description;
-        Excel::store(new StateReportExcel($claims, true, $libellePeriode, $titleDescription, false), 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx');
+        $titleDescription = $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->title.' : '.$this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->description;
 
+        Excel::store(new StateReportExcel($claims, true, $libellePeriode, $titleDescription, false), 'rapport-uemoa-etat-hors-delai-my-institution.xlsx');
 
-        return response()->json(['file' => 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx'], 200);
+        return response()->json(['file' => 'rapport-uemoa-etat-hors-delai-my-institution.xlsx'], 200);
     }
 
 
@@ -78,23 +79,23 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsStateOutTime($request, true);
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        $data = view('uemoa.report-reclamation', [
+        $data = view('ServicePackage::uemoa.report-reclamation', [
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
-            'title' => $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->title,
-            'description' => $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->description,
+            'title' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::OUT_OF_TIME_CLAIMS_REPORTING)->description,
             'relationShip' => false,
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),
             'logoSatis' => asset('assets/reporting/images/satisLogo.png'),
         ])->render();
 
-        $file = 'rapport-uemoa-etat-global-reclamation-my-institution.pdf';
+        $file = 'rapport-uemoa-etat-hors-delai-my-institution.pdf';
 
         $pdf = App::make('dompdf.wrapper');
 

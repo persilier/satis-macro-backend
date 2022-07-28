@@ -1,0 +1,30 @@
+{
+  "name": "satis2020/bci-reports",
+  "description": "satis2020/bci-reports est un module qui va permettre de gérer les rapports BCI",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Arafath ATTA YAYA",
+      "email": "arafath@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\BCIReports\\": "src/",
+      "Satis2020\\BCIReports\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\BCIReports\\Providers\\BCIReportsServiceProvider"
+      ]
+    }
+  }
+}
