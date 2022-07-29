@@ -92,7 +92,7 @@ trait BCIReportsTrait
             });
         });
 
-        return $claimCollection/*->groupBy([
+        return $claimCollection->groupBy([
             function($item){
                 return $item['month'];
             },
@@ -102,6 +102,6 @@ trait BCIReportsTrait
             function($item){
                 return $item['claimObject'];
             }
-        ])*/;
+        ]);
     }
 }
