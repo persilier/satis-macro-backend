@@ -83,6 +83,7 @@ trait BCIReportsTrait
             $totalYear['totalTreatedOutDelay'] += $total['totalTreatedOutDelay'];
         }
 
-        return ['reportData'=>$response,'reportTotal' => $totalYear];
+        return $response;
+        //return ['reportData'=>$response,'reportTotal' => $totalYear];
     }
 }
