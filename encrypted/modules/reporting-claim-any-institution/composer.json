@@ -1,0 +1,34 @@
+{
+  "name": "satis2020/reporting-claim-any-institution",
+  "description": "satis2020/reporting-claim-any-institution est un package qui va nous permettre d'enregistrer une réclamation contre n'importe qu'elle institution",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Christian AWASSI",
+      "email": "christian@dmdconsult.com"
+    },
+    {
+      "name": "Nelson AZONHOU",
+      "email": "ulrich@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\ReportingClaimAnyInstitution\\": "src/",
+      "Satis2020\\ReportingClaimAnyInstitution\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\ReportingClaimAnyInstitution\\Providers\\ReportingClaimAnyInstitutionServiceProvider"
+      ]
+    }
+  }
+}

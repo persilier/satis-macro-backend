@@ -28,51 +28,10 @@ trait BCIReportsTrait
             }
         ]);
 
-        /*foreach ($months as $mouthName => $claimCategories){
-            //$d[$mouthName] = $claimCategories;
-           // array_push($d[$mouthName],$claimCategories);
-            foreach ($claimCategories as $categoryName => $claimObjects){
-                //dd($d[$mouthName][$categoryName]->toArray());
-                //$s = $d[$mouthName][$categoryName]->toArray();
-                //array_push($s,$claimObjects);
-                foreach ($claimObjects as $claimObjectsName => $claims){
-                    //$s[$mouthName][$categoryName][$claimObjectsName]['totalTreated'] = $this->totalTreated(collect($claims));
-                    $obj = [
-                        $claimObjectsName =>[
-                            "totalTreated"=>$this->totalTreated(collect($claims)),
-                            "totalReceived"=>count($claims),
-                        ]
-                    ];
-                    $cat = [$categoryName => $obj];
-
-                    $g = [
-                      $mouthName =>$cat
-                    ];
-                    $data[$mouthName] = [];
-                    array_push($data[$mouthName],$cat);
-                    //return $g;
-                    //dd($d[$mouthName][$categoryName][$claimObjectsName]);
-
-                    $totalReceived = count($claims);
-                    $totalTreated = $this->totalTreated($claims);
-
-                    $data = [
-
-                        "$d[$mouthName][$categoryName]"=>$totalTreated."fath"
-
-                    ];
-                    array_push($d[$mouthName][$claimObjectsName]);
-
-                }
-            }
-        }*/
-        //return $data;
-
 
         $claimCollection = collect([]);
-        $data = [];
 
-        $claims = $claims->map(function ($categories,$monthName) use ($claimCollection,$data){
+        $claims = $claims->map(function ($categories,$monthName) use ($claimCollection){
             $categories->map(function ($objects, $categoryName) use ($claimCollection,$categories,$monthName){
                 $objects->map(function ($claims, $objectName)  use ($claimCollection, $categoryName,$categories,$monthName){
 
@@ -92,7 +51,7 @@ trait BCIReportsTrait
             });
         });
 
-        return $claimCollection->groupBy([
+        $response =  $claimCollection->groupBy([
             function($item){
                 return $item['month'];
             },
@@ -103,5 +62,27 @@ trait BCIReportsTrait
                 return $item['claimObject'];
             }
         ]);
+
+        $totalYear = ['totalReceived'=>0,"totalTreated"=>0,"totalRemaining"=>0,"totalTreatedOutDelay"=>0];
+        foreach ($response as $categoryName => $claimCategories){
+            $total = ['totalReceived'=>0,"totalTreated"=>0,"totalRemaining"=>0,"totalTreatedOutDelay"=>0];
+            foreach ($claimCategories as $claimObjects){
+                foreach ($claimObjects as $claimObject){
+                    $items = $claimObject[0];
+                    $total['totalReceived'] += $items['totalReceived'];
+                    $total['totalTreated'] += $items['totalTreated'];
+                    $total['totalRemaining'] += $items['totalRemaining'];
+                    $total['totalTreatedOutDelay'] += $items['totalTreatedOutDelay'];
+                }
+            }
+
+            $response[$categoryName]['total'] = $total;
+            $totalYear['totalReceived'] += $total['totalReceived'];
+            $totalYear['totalTreated'] += $total['totalTreated'];
+            $totalYear['totalRemaining'] += $total['totalRemaining'];
+            $totalYear['totalTreatedOutDelay'] += $total['totalTreatedOutDelay'];
+        }
+
+        return ['reportData'=>$response,'reportTotal' => $totalYear];
     }
 }

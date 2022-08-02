@@ -1,0 +1,34 @@
+{
+  "name": "satis2020/configuration",
+  "description": "satis2020/configuration est un module qui va permettre de configurer le système",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Christian AWASSI",
+      "email": "christian@dmdconsult.com"
+    },
+    {
+      "name": "Nelson AZONHOU",
+      "email": "ulrich@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/external-dependencies-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\Configuration\\": "src/",
+      "Satis2020\\Configuration\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\Configuration\\Providers\\ConfigurationServiceProvider"
+      ]
+    }
+  }
+}

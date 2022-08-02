@@ -1,0 +1,34 @@
+{
+  "name": "satis2020/encrypter-package",
+  "description": "satis2020/encrypter-package est un module qui va cryter le coude source",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Christian AWASSI",
+      "email": "christian@dmdconsult.com"
+    },
+    {
+      "name": "Nelson AZONHOU",
+      "email": "ulrich@dmdconsult.com"
+    }
+  ],
+  "require": {
+
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\EncrypterPackage\\": "src/",
+      "Satis2020\\EncrypterPackage\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\EncrypterPackage\\EncrypterPackageServiceProvider"
+      ]
+    }
+  }
+}
