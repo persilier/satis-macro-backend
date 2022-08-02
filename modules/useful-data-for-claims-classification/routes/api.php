@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::prefix('/useful-data-claims-classification')->name('claims-classification.')->group(function () {
-    Route::get('/claims', 'Claims\ClaimController@index')->name('claims.index');
+    Route::get('/claims/revoked', 'Claims\ClaimRevokedController@index')->name('claims.index.revoked');
     Route::get('/categories/{name}/objects', 'Claims\ClaimCategoryController@index')->name('categories.index');
 });

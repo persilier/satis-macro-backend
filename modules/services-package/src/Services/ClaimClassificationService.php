@@ -16,7 +16,8 @@ class ClaimClassificationService
     public function __construct(
         ClaimRepository $claimRepository,
         ClaimObjectRepository $claimObjectRepository
-    ){
+    )
+    {
         $this->claimRepository = $claimRepository;
         $this->claimObjectRepository = $claimObjectRepository;
     }
@@ -26,9 +27,22 @@ class ClaimClassificationService
      */
     public function getAllClaimClassification()
     {
+        return $this->formatClaimsToSend($this->claimRepository->getAllClaimsWithRelations());
+    }
+
+    /***
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllClaimClassificationRevoked()
+    {
+        return $this->formatClaimsToSend($this->claimRepository->getAllClaimsRevokedWithRelations());
+    }
+
+    public function formatClaimsToSend($data)
+    {
         $claims = collect();
 
-        $this->claimRepository->getAllClaimsWithRelations()->map(function ($item) use ($claims) {
+         $data->map(function ($item) use ($claims) {
             return $claims->push([
                 "reference" => $item->reference,
                 "description" => $item->description,
@@ -37,7 +51,7 @@ class ClaimClassificationService
             ]);
         })->all();
 
-        return $claims;
+         return $claims;
     }
 
     /***

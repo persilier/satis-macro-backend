@@ -2,6 +2,8 @@
 
 namespace Satis2020\ServicePackage\Repositories;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 
@@ -18,7 +20,7 @@ class ClaimRepository
     }
 
     /***
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Builder[]|Collection
      */
     public function getAllClaims()
     {
@@ -26,11 +28,20 @@ class ClaimRepository
     }
 
     /***
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Builder[]|Collection
      */
     public function getAllClaimsWithRelations()
     {
         return $this->claim->newQuery()->with(Constants::getClaimRelations())->get();
+    }
+    /***
+     * @return Builder[]|Collection
+     */
+    public function getAllClaimsRevokedWithRelations()
+    {
+        return $this->claim->newQuery()->with(Constants::getClaimRelations())
+            ->whereNotNull('revoked_at')
+            ->get();
     }
 
     public function getClaimsByCategory($institutionId=null)
