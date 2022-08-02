@@ -701,6 +701,13 @@
       0 => 'Satis2020\\UsefulDataForBackoffice\\Providers\\UsefulDataForBackofficeServiceProvider',
     ),
   ),
+  'satis2020/useful-data-for-claims-classification' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\UsefulDataForClaimsClassification\\Providers\\UsefulDataForClaimsClassificationServiceProvider',
+    ),
+  ),
   'satis2020/useful-data-plugin-wordpress' => 
   array (
     'providers' => 
