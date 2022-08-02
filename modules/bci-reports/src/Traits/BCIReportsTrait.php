@@ -76,7 +76,7 @@ trait BCIReportsTrait
                 }
             }
 
-            $response[$categoryName]['total'] = $total;
+            $response[$categoryName]['total'] = ["total"=>[$total]];
             $totalYear['totalReceived'] += $total['totalReceived'];
             $totalYear['totalTreated'] += $total['totalTreated'];
             $totalYear['totalRemaining'] += $total['totalRemaining'];
