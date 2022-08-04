@@ -2,6 +2,7 @@
 namespace Satis2020\BCIReports\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\Claim;
 
 trait BCIReportsTrait
@@ -32,7 +33,6 @@ trait BCIReportsTrait
     protected function getGlobalReportsByMonths($institutionId,$year)
     {
         $claims = $this->getReportData($institutionId,$year);
-
 
         $claimCollection = collect([]);
 
@@ -130,20 +130,31 @@ trait BCIReportsTrait
         ]);
 
         $tab = [];
-        $totalYear = ['totalReceived'=>0,"totalTreated"=>0,"totalRemaining"=>0,"totalTreatedOutDelay"=>0];
+        //$totalYear = ['totalReceived'=>0,"totalTreated"=>0,"totalRemaining"=>0,"totalTreatedOutDelay"=>0];
 
+        //return $claims;
         foreach ($claims as  $key_month=>$value_month){
+            $totalYear[$key_month] = ['totalReceived'=>0,"totalTreated"=>0,"totalRemaining"=>0,"totalTreatedOutDelay"=>0];
             foreach ($value_month as  $key_cat=>$value_cat){
                 $tab[$key_cat] = [];
                 foreach ($value_cat as  $key_obj=>$value_obj){
-                    $item = $value_obj[0];
-                    $totalYear['totalReceived'] += $item['totalReceived'];
-                    $totalYear['totalTreated'] += $item['totalTreated'];
-                    $totalYear['totalRemaining'] += $item['totalRemaining'];
-                    $totalYear['totalTreatedOutDelay'] += $item['totalTreatedOutDelay'];
+                    foreach ($value_obj as $item){
+                        Log::info("-------$key_month-------------");
+                        Log::debug($item);
+                        Log::info("----------$key_month----------");
+
+                        $totalYear['totalReceived'] += $item['totalReceived'];
+                        $totalYear['totalTreated'] += $item['totalTreated'];
+                        $totalYear['totalRemaining'] += $item['totalRemaining'];
+                        $totalYear['totalTreatedOutDelay'] += $item['totalTreatedOutDelay'];
+
+                    }
                     $tab[$key_cat][$key_obj] = $totalYear;
                 }
             }
+            Log::info("-----------------------total-$key_month------------------");
+            Log::debug($totalYear);
+            Log::info("-----------------------total-$key_month-----------------");
         }
         return $tab;
 
