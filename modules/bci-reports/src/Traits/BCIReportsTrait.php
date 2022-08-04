@@ -2,7 +2,6 @@
 namespace Satis2020\BCIReports\Traits;
 
 use Carbon\Carbon;
-use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use Satis2020\ServicePackage\Models\Claim;
 
 trait BCIReportsTrait
@@ -12,7 +11,7 @@ trait BCIReportsTrait
     {
         return Claim::query()
             ->with(['institutionTargeted','claimObject.claimCategory'])
-            ->whereYear("created_at",now())
+            ->whereYear("created_at",$year)
             ->when($institutionId,function ($query) use($institutionId){
                 $query->where('institution_targeted_id',$institutionId);
             })
