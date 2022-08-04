@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,3 +12,5 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('satis-years',[SatisYearController::class,"index"])->name('satis.years');

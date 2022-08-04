@@ -12,7 +12,7 @@ use Satis2020\ServicePackage\Traits\UemoaReports;
  * Class GlobalStateReportController
  * @package Satis2020\BCIReports\Http\Controllers\GlobalStateReport
  */
-class GlobalReportController extends ApiController
+class GlobalCondensedAnnualReportController extends ApiController
 {
     use BCIReportsTrait,Metadata,UemoaReports;
 
@@ -28,7 +28,7 @@ class GlobalReportController extends ApiController
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Validation\ValidationException|\Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index(Request $request)
     {
@@ -41,7 +41,7 @@ class GlobalReportController extends ApiController
             'year' => 'required|date_format:Y',
         ]);
 
-        $claims = $this->getGlobalReportsByMonths($this->institution()->id,$request->year);
+        $claims = $this->getCondensedAnnualReports($this->institution()->id,$request->year);
 
         return response()->json($claims);
 

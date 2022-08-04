@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 
 
     Route::post('/bci-reports/global', 'GlobalReport\GlobalReportController@index')->name('bci-reports.global');
+    Route::post('/bci-reports/global-condensed', 'GlobalReport\GlobalCondensedAnnualReportController@index')->name('bci-reports.global-condensed');
