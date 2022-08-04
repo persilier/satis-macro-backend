@@ -89,7 +89,7 @@ class Constants
             $years = [date('Y')];
         }else{
             for ($i=0; $i<=$diffInYear;$i++){
-                array_push($years,$currentYear-$i);
+                array_push($years,["label"=>$currentYear-$i,"value"=>$currentYear-$i]);
             }
         }
 
