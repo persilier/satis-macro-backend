@@ -101,7 +101,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
-            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
         ];
 
         $filialPermissions = [
@@ -132,7 +132,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             "my-email-claim-configuration",
-            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+            'bci-monthly-reports', 'bci-annual-reports'
+
         ];
 
         $observatoryPermissions = [
@@ -188,7 +190,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
             "any-email-claim-configuration",
-            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
         ];
 
         $memberPermissions = [
@@ -253,7 +255,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             "my-email-claim-configuration",
-            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+            'bci-monthly-reports', 'bci-annual-reports'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

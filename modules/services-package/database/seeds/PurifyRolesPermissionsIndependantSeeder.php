@@ -82,7 +82,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
                     'list-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -103,7 +105,10 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports'
+
+
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -159,9 +164,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
 
             $modules = [
                 "Collecte" => "collector-filial-pro",
-	            "Traitement" =>  "staff",
-	            "Pilotage du processus" => "pilot",
-	            "Administration" =>  "admin-pro"
+                "Traitement" => "staff",
+                "Pilotage du processus" => "pilot",
+                "Administration" => "admin-pro"
             ];
 
             $permissionsAssociatedToModules = collect([]);
@@ -169,7 +174,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
             foreach ($modules as $moduleName => $roleName) {
                 // CreateOrUpdate $module
                 $module = Module::updateOrCreate(
-                    ['name->'.app()->getLocale() => $moduleName],
+                    ['name->' . app()->getLocale() => $moduleName],
                     ["name" => $moduleName, "description" => $moduleName]
                 );
 
