@@ -110,30 +110,37 @@ trait BCIReportsTrait
         foreach ($categories as $category) {
             $data[$category->name] = [];
             $objects = $category->claimObjects;
+            $totalCategory = ['totalReceived' => 0, "totalTreated" => 0, "totalRemaining" => 0, "totalTreatedOutDelay" => 0];
+
             foreach ($objects as $object) {
                 $data[$category->name][$object->name] = [];
                 $claims = $object->claims()->whereYear("created_at", 2021)->get();
-
                 $total['totalReceived'] = count($claims);
                 $total['totalTreated'] = $this->totalTreated($claims);
                 $total['totalRemaining'] = ($claims->count() - $this->totalTreated($claims));
                 $total['totalTreatedOutDelay'] = $this->totalTreatedOutDelay($this->claimTreated($claims));
+
+                $totalCategory['totalReceived'] += $total['totalReceived'];
+                $totalCategory['totalTreated'] += $total['totalTreated'];
+                $totalCategory['totalRemaining'] += $total['totalRemaining'];
+                $totalCategory['totalTreatedOutDelay'] += $total['totalTreatedOutDelay'];
+
                 $data[$category->name][$object->name] = $total;
             }
+            $data[$category->name]["total"] = $totalCategory;
 
         }
         $dataCollection->push($data);
 
-        $totalYear = [];
-       // dd($dataCollection[0]);
+        $totalYear = ['totalReceived' => 0, "totalTreated" => 0, "totalRemaining" => 0, "totalTreatedOutDelay" => 0];
         foreach ($dataCollection[0] as $category){
-            $totalYear = ['totalReceived' => 0, "totalTreated" => 0, "totalRemaining" => 0, "totalTreatedOutDelay" => 0];
-
+            unset($category['total']);
             foreach ($category as $object){
                 $totalYear['totalReceived'] += $object['totalReceived'];
                 $totalYear['totalTreated'] += $object['totalTreated'];
                 $totalYear['totalRemaining'] += $object['totalRemaining'];
                 $totalYear['totalTreatedOutDelay'] += $object['totalTreatedOutDelay'];
+
             }
         }
 
