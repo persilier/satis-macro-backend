@@ -84,6 +84,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-notification-proof',
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -105,7 +106,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports'
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [

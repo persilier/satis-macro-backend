@@ -57,6 +57,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-notification-proof',
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
 
                 ],
                 "pilot-filial" => [
@@ -79,7 +80,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports'
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
 
                 ],
                 "supervisor-filial" => [],

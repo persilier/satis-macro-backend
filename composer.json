@@ -96,7 +96,8 @@
     "satis2020/users-package": "^1.0",
     "satis2020/without-link-with-institution-unit": "^1.0",
     "satis2020/notification-proof": "^1.0",
-    "satis2020/bci-reports": "^1.0"
+    "satis2020/bci-reports": "^1.0",
+    "satis2020/webhooks": "^1.0"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -728,6 +729,13 @@
     {
       "type": "path",
       "url": "modules/bci-reports/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/webhooks/",
       "options": {
         "symlink": true
       }

@@ -133,7 +133,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-            'bci-monthly-reports', 'bci-annual-reports'
+            'bci-monthly-reports', 'bci-annual-reports',
+            'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
 
         ];
 
@@ -256,7 +257,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-            'bci-monthly-reports', 'bci-annual-reports'
+            'bci-monthly-reports', 'bci-annual-reports',
+            'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
