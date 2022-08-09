@@ -7,7 +7,6 @@ namespace Satis2020\Webhooks\Services;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\Webhooks\Repositories\WebhookConfigRepository;
-use Satis2020\Webhooks\Requests\WebhookConfigRequest;
 
 class WebhookConfigService
 {
@@ -30,9 +29,9 @@ class WebhookConfigService
     }
 
 
-    public function getByEvent($event,$institutionId,$webhookId=null)
+    public function getByEvent($event, $institutionId, $webhookId = null)
     {
-        return $this->repository->getByEvent($event,$institutionId,$webhookId);
+        return $this->repository->getByEvent($event, $institutionId, $webhookId);
     }
 
     public function getById($id)
@@ -43,29 +42,35 @@ class WebhookConfigService
     public function store(Request $request)
     {
         return $this->repository->store($request->only([
-           'name',
-           'event',
-           'url',
-           'institution_id',
-       ]));
+            'name',
+            'event',
+            'url',
+            'institution_id',
+        ]));
     }
-
 
 
     public function update(Request $request)
     {
 
-       return $this->repository->update($request->only([
-           'name',
-           'event',
-           'url',
-           'institution_id',
-       ]),$request->id);
+        return $this->repository->update($request->only([
+            'name',
+            'event',
+            'url',
+            'institution_id',
+        ]), $request->id);
     }
 
 
     public function remove($webhookConfigId)
     {
-       return $this->repository->remove($webhookConfigId);
+        return $this->repository->remove($webhookConfigId);
+    }
+
+    public function getWebhookUrl($event, $institutionId)
+    {
+        return $this->repository->getByEvent($event, $institutionId) != null ?
+            $this->repository->getByEvent($event, $institutionId)->urls
+            : null;
     }
 }

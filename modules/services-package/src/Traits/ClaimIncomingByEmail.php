@@ -11,6 +11,8 @@ use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Illuminate\Support\Facades\Config;
+use Satis2020\Webhooks\Consts\Event;
+use Satis2020\Webhooks\Facades\SendEvent;
 
 trait ClaimIncomingByEmail
 {
@@ -259,8 +261,11 @@ trait ClaimIncomingByEmail
                 $claimStore->files()->create(['title' => "Incoming mail attachment ".$claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            return true;
+            $claim->load('claimer');
+            //sending webhook event
+            SendEvent::sendEvent(Event::CLAIM_REGISTERED,$claim->toArray(),$claim->institution_targeted_id);
 
+            return true;
         } catch (\Exception $exception) {
             return false;
         }

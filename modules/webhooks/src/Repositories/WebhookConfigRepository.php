@@ -53,7 +53,6 @@ class WebhookConfigRepository
             ->findOrFail($id);
     }
 
-
     /**
      * @param $data
      * @return Builder|Model

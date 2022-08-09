@@ -8,7 +8,7 @@ use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Satis2020\ServicePackage\Facades\Handler;
+use Satis2020\Webhooks\Services\SendEventService;
 
 /**
  * Class WebhooksServiceProvider
@@ -129,8 +129,8 @@ class WebhooksServiceProvider extends ServiceProvider
      */
     protected function registerFacades()
     {
-        $this->app->singleton('Handler', function ($app) {
-            return new Handler();
+        $this->app->singleton('SendEvent', function ($app) {
+            return new SendEventService();
         });
 
     }

@@ -28,6 +28,8 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
 use Faker\Factory as Faker;
+use Satis2020\Webhooks\Consts\Event;
+use Satis2020\Webhooks\Facades\SendEvent;
 
 /**
  * Trait CreateClaim
@@ -306,6 +308,8 @@ trait CreateClaim
 
         }
 
+        //sending webhook event
+        SendEvent::sendEvent(Event::CLAIM_REGISTERED,$claim->toArray(),$claim->institution_targeted_id);
 
         return $claim;
     }
