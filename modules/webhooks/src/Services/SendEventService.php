@@ -9,11 +9,11 @@ class SendEventService
 
     public function sendEvent($event, $data, $institutionId)
     {
-        $url = (new WebhookConfigService())->getByEvent($event, $institutionId);
+        $webhook = (new WebhookConfigService())->getByEvent($event, $institutionId);
 
-        if ($url != null) {
+        if ($webhook != null) {
             try {
-                Http::post($url, $data);
+                Http::post($webhook->url, $data);
             } catch (\Exception $exception) {
                 Log::error("webhook error : " . $exception->getMessage());
             }
