@@ -3,7 +3,6 @@
 namespace Satis2020\MyStaffMonitoring\Http\Controllers;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Requests\Monitoring\MyStaffMonitoringRequest;
 use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;

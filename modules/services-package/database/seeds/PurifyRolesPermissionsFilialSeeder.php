@@ -77,6 +77,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+
+
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -95,7 +97,10 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-unit-revivals','list-staff-revivals'
+
                 ]
             ];
 

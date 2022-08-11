@@ -133,6 +133,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
+            'list-unit-revivals','list-staff-revivals'
         ];
 
         $observatoryPermissions = [
@@ -254,6 +256,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             "my-email-claim-configuration",
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
+            'list-unit-revivals','list-staff-revivals'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

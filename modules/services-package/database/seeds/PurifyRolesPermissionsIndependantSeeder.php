@@ -123,7 +123,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-unit-revivals','list-staff-revivals'
                 ]
             ];
 
