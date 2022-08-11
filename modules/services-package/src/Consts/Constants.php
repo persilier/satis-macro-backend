@@ -86,7 +86,7 @@ class Constants
 
         $diffInYear = $currentYear - $installationYear;
         if ($diffInYear==0){
-            $years = [date('Y')];
+            $years = [['label'=>date('Y'),"value"=>date('Y')]];
         }else{
             for ($i=0; $i<=$diffInYear;$i++){
                 array_push($years,["label"=>$currentYear-$i,"value"=>$currentYear-$i]);
