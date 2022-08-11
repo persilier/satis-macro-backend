@@ -125,7 +125,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
-                    'list-unit-revivals','list-staff-revivals'
+                    'list-unit-revivals','list-staff-revivals',
+                    'revive-staff',
                 ]
             ];
 
