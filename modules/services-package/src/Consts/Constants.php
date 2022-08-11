@@ -145,10 +145,7 @@ class Constants
             'activeTreatment.assignedToStaffBy.identite',
             'activeTreatment.responsibleUnit.parent',
             'revivals',
-            'activeTreatment.validatedBy.identite',
-            'activeTreatment.transferredToTargetInstitutionBy.identite',
-            'activeTreatment.transferredToUnitBy.identite',
-            'treatmentBoard'
+            'activeTreatment',
         ];
 
     }
