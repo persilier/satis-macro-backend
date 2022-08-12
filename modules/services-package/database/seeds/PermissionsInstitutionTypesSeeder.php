@@ -135,7 +135,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
             'bci-monthly-reports', 'bci-annual-reports',
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
-
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
+            'list-unit-revivals','list-staff-revivals'
         ];
 
         $observatoryPermissions = [
@@ -259,6 +261,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
             'bci-monthly-reports', 'bci-annual-reports',
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'show-my-staff-monitoring',
+            'list-unit-revivals','list-staff-revivals'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

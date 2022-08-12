@@ -82,6 +82,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
 
                 ],
                 "supervisor-filial" => [],
@@ -101,7 +102,11 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-unit-revivals','list-staff-revivals',
+                    'revive-staff',
+
                 ]
             ];
 
