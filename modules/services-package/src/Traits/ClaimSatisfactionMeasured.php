@@ -1,14 +1,10 @@
 <?php
-
-
 namespace Satis2020\ServicePackage\Traits;
-
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
 
@@ -74,7 +70,10 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
-     * @return array
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @return mixed
      */
     protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
 
@@ -89,9 +88,9 @@ trait ClaimSatisfactionMeasured
                                 ->orwhereJsonContains('telephone', $key)
                                 ->orwhereJsonContains('email', $key);
                         })->orWhereHas("claimObject",function ($query3) use ($key){
-                            $query3->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                            $query3->where("name->".app()->getLocale(), 'LIKE', "%$key%");
                         })->orWhereHas("unitTargeted",function ($query4) use ($key){
-                            $query4->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                            $query4->where("name->".app()->getLocale(), 'LIKE', "%$key%");
                         });
                 })->paginate($paginationSize)
 

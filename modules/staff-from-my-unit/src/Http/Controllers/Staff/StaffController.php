@@ -2,6 +2,7 @@
 
 namespace Satis2020\StaffFromMyUnit\Http\Controllers\Staff;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
