@@ -24,7 +24,7 @@ class Event
             [
                 "label" => "Nouvelle reclamation reçue", "value" => self::CLAIM_RECEIVED
             ],
-            [
+          /*  [
                 "label" => "Reclamation rejetée", "value" => self::CLAIM_REJECTED
             ],
             [
@@ -41,7 +41,7 @@ class Event
             ],
             [
                 "label" => "Nouvelle satisfaction mésurée", "value" => self::SATISFACTION_MEASURED
-            ],
+            ],*/
         ];
     }
 
@@ -50,12 +50,12 @@ class Event
         return [
             self::CLAIM_REGISTERED,
             self::CLAIM_RECEIVED,
-            self::CLAIM_REJECTED,
-            self::CLAIM_CLOSED,
-            self::CLAIM_TREATED,
-            self::CLAIM_VALIDATED,
-            self::CLAIM_COMPLETED,
-            self::SATISFACTION_MEASURED,
+            //self::CLAIM_REJECTED,
+            //self::CLAIM_CLOSED,
+            //self::CLAIM_TREATED,
+            //self::CLAIM_VALIDATED,
+            //self::CLAIM_COMPLETED,
+            //self::SATISFACTION_MEASURED,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
-use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,7 +11,10 @@ use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
-
-Route::get('satis-years',[SatisYearController::class,"index"])->name('satis.years');
-Route::get("claims/details/{claim_id}",[Satis2020\ServicePackage\Http\Controllers\Claim\ClaimController::class,"show"]);
+/**
+ * My Monitoring
+ */
+Route::prefix('/my')->name('my.')->group(function () {
+    Route::post('/monitoring-by-staff', 'MyStaffMonitoringController@index')->name('monitoring-by-staff.index');
+    Route::get('/unit-staff', 'MyStaffMonitoringController@show')->name('unit-staff.show');
+});
