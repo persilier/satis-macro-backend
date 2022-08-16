@@ -18,13 +18,13 @@ class Event
     public static function getEvents()
     {
         return [
-            [
+            /*[
                 "label" => "Nouvelle reclamation enrégistrée", "value" => self::CLAIM_REGISTERED
             ],
             [
                 "label" => "Nouvelle reclamation reçue", "value" => self::CLAIM_RECEIVED
             ],
-          /*  [
+            [
                 "label" => "Reclamation rejetée", "value" => self::CLAIM_REJECTED
             ],
             [
@@ -38,24 +38,24 @@ class Event
             ],
             [
                 "label" => "Reclamation completée", "value" => self::CLAIM_COMPLETED
-            ],
+            ],*/
             [
                 "label" => "Nouvelle satisfaction mésurée", "value" => self::SATISFACTION_MEASURED
-            ],*/
+            ],
         ];
     }
 
     public static function getEventsValues()
     {
         return [
-            self::CLAIM_REGISTERED,
-            self::CLAIM_RECEIVED,
+            //self::CLAIM_REGISTERED,
+            //self::CLAIM_RECEIVED,
             //self::CLAIM_REJECTED,
             //self::CLAIM_CLOSED,
             //self::CLAIM_TREATED,
             //self::CLAIM_VALIDATED,
             //self::CLAIM_COMPLETED,
-            //self::SATISFACTION_MEASURED,
+            self::SATISFACTION_MEASURED,
         ];
     }
 }

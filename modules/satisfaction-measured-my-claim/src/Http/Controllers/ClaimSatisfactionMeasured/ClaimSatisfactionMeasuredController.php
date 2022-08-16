@@ -9,6 +9,8 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
+use Satis2020\Webhooks\Consts\Event;
+use Satis2020\Webhooks\Facades\SendEvent;
 
 /**
  * Class ClaimSatisfactionMeasuredController
@@ -79,6 +81,10 @@ class ClaimSatisfactionMeasuredController extends ApiController
         ]);
 
         $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
+
+        $claim->refresh();
+        //sending webhook event
+        SendEvent::sendEvent(Event::SATISFACTION_MEASURED,$claim->toArray(),$claim->institution_targeted_id);
 
         return response()->json($claim, 200);
     }
