@@ -107,6 +107,7 @@ trait BCIReportsTrait
         $dataCollection = collect();
 
 
+        $data = [];
         foreach ($categories as $category) {
             $data[$category->name] = [];
             $objects = $category->claimObjects;
@@ -114,7 +115,7 @@ trait BCIReportsTrait
 
             foreach ($objects as $object) {
                 $data[$category->name][$object->name] = [];
-                $claims = $object->claims()->whereYear("created_at", 2021)->get();
+                $claims = $object->claims()->whereYear("created_at", $year)->get();
                 $total['totalReceived'] = count($claims);
                 $total['totalTreated'] = $this->totalTreated($claims);
                 $total['totalRemaining'] = ($claims->count() - $this->totalTreated($claims));

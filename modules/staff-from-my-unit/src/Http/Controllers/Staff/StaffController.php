@@ -51,9 +51,11 @@ class StaffController extends ApiController
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
         return response()->json(
-            Staff::with(['identite', 'position', 'unit', 'institution'])
+            Staff::query()
+                ->select('staff.*')
+                ->with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
-                ->when($recherche !=null,function(Builder $query) use ($recherche ) {
+                ->when($recherche != null, function (Builder $query) use ($recherche) {
                     $query
                         ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
                         ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
