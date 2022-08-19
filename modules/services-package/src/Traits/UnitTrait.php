@@ -34,7 +34,7 @@ trait UnitTrait
         try{
 
             $unit = Unit::with([
-                'unitType', 'institution', 'parent', 'children', 'lead.identite','state'
+                'unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'
             ])->where('institution_id', $institution)->findOrFail($id);
 
             return $unit;

@@ -4,11 +4,15 @@
 namespace Satis2020\ServicePackage;
 
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Client as HttpClient;
+use Httpful\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Services\MetadataService;
+use Illuminate\Support\Str;
 
 class MessageApiMethod
 {
@@ -131,7 +135,7 @@ class MessageApiMethod
 
         $uri = 'https://api.orangesmspro.sn:8443/api';
 
-        $response = \Httpful\Request::post($uri)
+        $response = Request::post($uri)
             ->body(http_build_query($params))
             ->authenticateWith($login, $token)
             ->send();
@@ -155,16 +159,44 @@ class MessageApiMethod
             ->throw()->json();
     }
 
-    static function bicecSMSGateway ($to,$text) {
-        $url="http://10.100.23.21/bicec/admin/json.php?module=sms&action=send_wallet&phone=$to&body=".urlencode($text);
+    static function bicecSMSGateway($to, $text)
+    {
+        $url = "http://10.100.23.21/bicec/admin/json.php?module=sms&action=send_wallet&phone=$to&body=" . urlencode($text);
         $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL,$url);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch,CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         @curl_exec($ch);
 
         return curl_close($ch);
+    }
+
+
+    static function uimcecSMSGateway($to, $text,$login="satis", $api_access_key="38d0cd40ece8eee6fb19aeb8d0f6ea2a",$signature="UIMCEC", $token="9e5fd4ba3cb3d254780cd5fc0cd2b830")
+    {
+
+        $timestamp = time();
+        $subject = "UIMCEC";
+        $msgToEncrypt = $token . $subject . $signature . $to . $text . $timestamp;
+        $key = hash_hmac('sha1', $msgToEncrypt, $api_access_key);
+        $params = array(
+            'token' => $token,
+            'subject' => $subject,
+            'signature' => $signature,
+            'recipient' => $to,
+            'content' => $text,
+            'timestamp' => $timestamp,
+            'key' => $key
+        );
+        $uri = 'https://api.orangesmspro.sn:8443/api';
+
+        $response = Request::  post($uri)
+            ->body(http_build_query($params))
+            ->authenticateWith($login, $token)
+            ->send();
+
+        return $response->hasErrors()==false && $response->body!=null && Str::contains( $response->body,"STATUS_CODE: 200");
     }
 
 }

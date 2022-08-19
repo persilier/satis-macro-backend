@@ -103,14 +103,6 @@ trait ClaimIncomingByEmail
 
             $httpClient = Http::withHeaders([]);
 
-            $proxyConfigs = Config::get('proxy');
-
-            if ($proxyConfigs['http'] || $proxyConfigs['https']) {
-                $httpClient = $httpClient->withOptions([
-                    'proxy' => $proxyConfigs
-                ]);
-            }
-
             $params = Config::get('email-claim-configuration');
 
             $requestData = [

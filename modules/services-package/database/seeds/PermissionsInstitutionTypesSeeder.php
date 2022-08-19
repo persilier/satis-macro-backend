@@ -111,7 +111,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'config-reporting-claim-any-institution',
             'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-            'list-staff-revivals','list-unit-revivals'
+            'list-staff-revivals','list-unit-revivals',
+            'logout-user-my-institution',
         ];
 
         $filialPermissions = [
@@ -154,7 +155,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-closed-my-claims','close-my-claims',
             'list-escalation-config','update-escalation-config',
             'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
-
+            'logout-user-my-institution',
         ];
 
         $observatoryPermissions = [
@@ -222,6 +223,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'list-staff-revivals','list-unit-revivals',
             'show-my-staff-monitoring',
+            'logout-user-my-institution',
         ];
 
         $memberPermissions = [
@@ -300,6 +302,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-closed-my-claims','close-my-claims',
             'list-escalation-config','update-escalation-config',
             'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+            'logout-user-my-institution',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

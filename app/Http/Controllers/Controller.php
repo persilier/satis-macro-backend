@@ -31,6 +31,8 @@ class Controller extends BaseController
 
     public function index(Request $request)
     {
+        #dd(config('auth.password_reset_link'));
+        #dd(parse_url($request->headers->get('origin'),  PHP_URL_HOST));
         //dd(Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false));
         //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
@@ -52,7 +54,7 @@ class Controller extends BaseController
        // }
 
         //verif
-        return response()->json(MessageApiMethod::bicecSMSGateway($request->phone,"Test SMS Bisec"));
+        return response()->json(MessageApiMethod::uimcecSMSGateway($request->phone,"Test SMS IUMCEC 2"));
     }
 
     public function download(File $file)

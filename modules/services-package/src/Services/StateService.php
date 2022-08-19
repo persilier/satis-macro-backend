@@ -5,6 +5,8 @@ namespace Satis2020\ServicePackage\Services;
 
 
 use Illuminate\Support\Facades\Http;
+use Satis\CountriesPackage\Models\Country;
+use Satis\CountriesPackage\Models\State;
 use Satis2020\ServicePackage\Consts\Constants;
 
 class StateService
@@ -17,8 +19,12 @@ class StateService
      */
     public function getStatesByCountry($country_id)
     {
-        $response = Http::get(config("countries_services.countries_services_url")."countries/".$country_id."/states");
-        return $response->successful()?$response->json()['states']:[];
+        $country =  Country::query()
+            ->with("states")
+            ->where('region', 'Africa')
+            ->where('id', $country_id)
+            ->first();
+        return $country!=null?$country->states:[];
     }
 
     /**
@@ -29,8 +35,7 @@ class StateService
     {
         $state = null;
         if (!is_null($state_id)){
-            $response = Http::get(config("countries_services.countries_services_url")."states/".$state_id);
-            $state = $response->json();
+            $state = State::query()->find($state_id);
         }
 
         return $state;

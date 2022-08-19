@@ -117,8 +117,8 @@ class Claim extends Model
         'escalation_status'
     ];
 
-
     protected $appends = ['timeExpire', 'accountType','lastRevival','canAddAttachment',"oldActiveTreatment"];
+
 
     /**
      * @return mixed
@@ -303,6 +303,25 @@ class Claim extends Model
         return $this->belongsTo(Staff::class, 'revoked_by');
     }
 
+    function getCanAddAttachmentAttribute()
+    {
+        $canAttach = false;
+
+        $staffId = request()->query('staff',null);
+        $staff = (new StaffService())->getStaffById($staffId);
+
+        if ($staff!=null){
+            if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
+                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+            }
+
+           /* if ($this->status==Claim::CLAIM_VALIDATED){
+                $canAttach = $staff->id == $staff->institution->active_pilot_id;
+            }*/
+        }
+
+        return $canAttach;
+    }
 
     /**
      * @return HasMany
@@ -338,23 +357,4 @@ class Claim extends Model
         return $this->belongsTo(TreatmentBoard::class);
     }
 
-    function getCanAddAttachmentAttribute()
-    {
-        $canAttach = false;
-
-        $staffId = request()->query('staff',null);
-        $staff = (new StaffService())->getStaffById($staffId);
-
-        if ($staff!=null){
-            if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
-                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
-            }
-
-           /* if ($this->status==Claim::CLAIM_VALIDATED){
-                $canAttach = $staff->id == $staff->institution->active_pilot_id;
-            }*/
-        }
-
-        return $canAttach;
-    }
 }

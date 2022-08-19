@@ -27,6 +27,7 @@ trait IdentityManagement
         $identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
     }
 
+
     /**
      * @return array
      */

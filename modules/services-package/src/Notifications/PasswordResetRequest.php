@@ -18,15 +18,18 @@ class PasswordResetRequest extends Notification implements ShouldQueue
     use Queueable;
 
     protected $token;
+    protected $request;
 
     /**
      * Create a new notification instance.
      *
      * @param $token
+     * @param null $request
      */
-    public function __construct($token)
+    public function __construct($token, $request = null)
     {
         $this->token = $token;
+        $this->request = $request;
     }
 
     /**
@@ -48,7 +51,7 @@ class PasswordResetRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = Config::get("auth.password_reset_link").'/'.$this->token;
+        $url = $this->request->headers->get('origin').'/forgot-password/'.$this->token;
 
         return (new MailMessage)
             ->subject(__('passwords.email_password_reset_request_subject'))

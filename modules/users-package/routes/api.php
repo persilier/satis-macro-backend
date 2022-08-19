@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Satis2020\UserPackage\Http\Controllers\Auth\AuthController;
+use Satis2020\UserPackage\Http\Controllers\Auth\LogoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,3 +59,4 @@ Route::name('reset.password.post')->post('/reset-password', 'Auth\PasswordResetC
 Route::name('reset.password.expired')->put('/reset-password-expired', 'Auth\PasswordExpiredResetController@update');
 
 Route::post("/login",[AuthController::class,"store"])->name("issue.token");
+Route::post("/logout",[LogoutController::class,"store"])->name("logout.user");
