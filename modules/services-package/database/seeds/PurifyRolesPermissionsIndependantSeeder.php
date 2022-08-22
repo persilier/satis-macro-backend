@@ -88,6 +88,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'config-reporting-claim-my-institution',
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'logout-user-my-institution',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

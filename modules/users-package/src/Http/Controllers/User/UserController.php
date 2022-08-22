@@ -33,6 +33,11 @@ class UserController extends ApiController
     {
         parent::__construct();
 
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-user-my-institution')->only(['index']);
+        $this->middleware('permission:show-user-my-institution')->only(['show']);
+        $this->middleware('permission:store-user-my-institution')->only(['store']);
+
         $this->activityLogService = $activityLogService;
     }
 
