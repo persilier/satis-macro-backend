@@ -40,12 +40,9 @@ class ClaimRepository
     public function getAllClaimsRevokedWithRelations()
     {
         return $this->claim->newQuery()->with(Constants::getClaimRelations())
-            ->whereNotNull('revoked_at')
+            ->whereHas('activeTreatment',function ($query){
+                $query->whereNotNull('rejected_at');
+            })
             ->get();
-    }
-
-    public function getClaimsByCategory($institutionId=null)
-    {
-
     }
 }

@@ -16,4 +16,5 @@ Route::prefix('/useful-data-claims-classification')->name('claims-classification
     Route::get('/claims', 'Claims\ClaimController@index')->name('claims.index.revoked');
     Route::get('/claims/revoked', 'Claims\ClaimRevokedController@index')->name('claims.index.revoked');
     Route::get('/categories/{name}/objects', 'Claims\ClaimCategoryController@index')->name('categories.index');
+    Route::get('/objects/{name}', 'Claims\ClaimObjectController@index')->name('claims.object.index');
 });

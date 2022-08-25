@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Services;
 
+use Illuminate\Support\Collection;
 use Satis2020\ServicePackage\Repositories\ClaimObjectRepository;
 use Satis2020\ServicePackage\Repositories\ClaimRepository;
 
@@ -23,7 +24,7 @@ class ClaimClassificationService
     }
 
     /***
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getAllClaimClassification()
     {
@@ -31,7 +32,7 @@ class ClaimClassificationService
     }
 
     /***
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getAllClaimClassificationRevoked()
     {
@@ -47,6 +48,8 @@ class ClaimClassificationService
                 "reference" => $item->reference,
                 "description" => $item->description,
                 "object" => optional($item->claimObject)->name,
+                "rejected_reason" =>optional($item->activeTreatment)->rejected_reason,
+                "rejected_at" => optional($item->activeTreatment)->rejected_at,
                 "category" => optional(optional(optional($item->claimObject)->claimCategory))->name,
             ]);
         })->all();
@@ -56,10 +59,19 @@ class ClaimClassificationService
 
     /***
      * @param $categoryName
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getAllObjectsByCategoryName($categoryName)
     {
         return $this->claimObjectRepository->getAllObjectsByCategoryName($categoryName)->pluck('name');
+    }
+
+    /***
+     * @param $objectName
+     * @return Collection
+     */
+    public function getTimeLimitByObjectName($objectName)
+    {
+        return $this->claimObjectRepository->getTimeLimitByObjectName($objectName);
     }
 }

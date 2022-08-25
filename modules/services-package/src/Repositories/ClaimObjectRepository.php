@@ -21,4 +21,11 @@ class ClaimObjectRepository
             $query->where('name->'.app()->getLocale(), $categoryName);
         })->get();
     }
+
+    public function getTimeLimitByObjectName($objectName)
+    {
+        return $this->claimObject->newQuery()
+            ->where('name->'.app()->getLocale(), $objectName)
+            ->firstOrFail()->time_limit;
+    }
 }
