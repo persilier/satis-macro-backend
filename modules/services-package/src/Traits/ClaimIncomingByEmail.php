@@ -11,6 +11,9 @@ use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Illuminate\Support\Facades\Config;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 
 trait ClaimIncomingByEmail
 {
@@ -95,6 +98,7 @@ trait ClaimIncomingByEmail
 
     protected function updateSubscriber($request, $emailClaimConfiguration, $routeName)
     {
+
         try {
 
             $httpClient = Http::withHeaders([]);
@@ -116,6 +120,7 @@ trait ClaimIncomingByEmail
                     "client_secret" => $params['client_secret'],
                 ]
             ];
+
 
             $response = $httpClient->put($params['api_subscriber'], $requestData)->json();
 
@@ -146,6 +151,7 @@ trait ClaimIncomingByEmail
 
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
+
 //        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
 //
 //        if ($testSmtp['error']) {
@@ -169,7 +175,7 @@ trait ClaimIncomingByEmail
 
             return [
                 "error" => true,
-                "message" => "Les paramètres ne sont pas valides. L'adresse email saisie et/ou le nom (nom de l'intituion) de votre application est déjà utilisé par une autre institution.",
+                "message" => __('messages.invalid_params',[],getAppLang()),
                 "serviceErrors" => $subscriber['message']
             ];
         }
@@ -216,10 +222,11 @@ trait ClaimIncomingByEmail
             "name" => $email['header']['from']['name'],
             "address" => $email['header']['from']['address'],
             "date" => $email['header']['date'],
-             $name_array = explode(" ", $email['header']['from']['name'], 2),
+            $name_array = explode(" ", $email['header']['from']['name'], 2),
             "firstname" => $name_array[0],
             "lastname" => sizeof($name_array) > 1 ? $name_array[1] : $name_array[0],
             "description" => $typeText === "html_text" ? $email['htmlMessage'] : $email['plainMessage'],
+            "plain_text_description" => $email['plainMessage'],
             "attachments" => $email["attachments"]
         ];
     }
@@ -240,6 +247,7 @@ trait ClaimIncomingByEmail
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
                 'description' => $claim['description'],
+                'plain_text_description' => $claim['plain_text_description'],
                 'status' => $status,
                 'claimer_id' => $identity->id,
                 "institution_targeted_id" => $configuration->institution_id,
@@ -250,6 +258,19 @@ trait ClaimIncomingByEmail
             for ($i = 0; $i < sizeof($claim['attachments']); $i++) {
                 $save_img = $this->base64SaveImg($claim['attachments'][$i], 'claim-attachments/', $i);
                 $claimStore->files()->create(['title' => "Incoming mail attachment ".$claimStore->reference, 'url' => $save_img['link']]);
+            }
+
+            $claim->load('claimer','institutionTargeted');
+            // send notification to claimer
+            if (!is_null($claim->claimer)) {
+                $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+            }
+
+            // send notification to pilot
+            if (!is_null($claim->institutionTargeted)) {
+                if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
+                    $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
+                }
             }
 
             return true;
