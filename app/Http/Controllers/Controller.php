@@ -122,5 +122,14 @@ class Controller extends BaseController
 
     }
 
+    public function claimRef()
+    {
+        $subject = "[SATISPR-202201001437-INDEPENDANT] Accusé de reception";
+        $content = "Bonjour M ATTA YAYA ARAFATH, [SATISPR-202201001437-INDEPENDANTE] Nous acusons reception de votre [SATISPR-202201001437-INDEPENDANTE] reclamation en ce jour ! [SATISPR-202201001437-INDEPENDANTE]";
+
+        $references = array_unique(array_merge(extractClaimRefs($subject),extractClaimRefs($content)));
+
+        return response()->json($references);
+    }
 
 }

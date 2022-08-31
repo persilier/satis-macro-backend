@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -197,10 +198,17 @@ trait ClaimIncomingByEmail
             $error = false;
             try {
 
-                $claim = $this->getDataIncomingEmail($email, $typeText);
+                $mailSubject = $email['header']['subject'];
+                $mailContent = $email['plainMessage'];
 
-                if (! $storeClaim = $this->storeClaim($claim, $status, $configuration)) {
-                    $error = true;
+                $references = array_unique(array_merge(extractClaimRefs($mailContent),extractClaimRefs($mailSubject)));
+
+                if (!claimsExists($references)){
+                    $claim = $this->getDataIncomingEmail($email, $typeText);
+
+                    if (! $storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                        $error = true;
+                    }
                 }
 
             }catch (\Exception $e){
