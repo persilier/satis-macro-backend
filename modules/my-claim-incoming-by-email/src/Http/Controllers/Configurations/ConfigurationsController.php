@@ -24,7 +24,7 @@ class ConfigurationsController extends ApiController
     /***
      * @param Request $request
      * @param EmailClaimConfiguration|null $emailClaimConfiguration
-     * @return JsonResponse
+     * @return mixed
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -39,7 +39,7 @@ class ConfigurationsController extends ApiController
         $configuration = $this->storeConfiguration($request, $emailClaimConfiguration, "my.register-email-claim");
 
         if ($configuration['error']) {
-            return $this->errorResponse($configuration['message'], 400);
+            return response($configuration, 400);
         }
 
         return response()->json($configuration['data'], 201);

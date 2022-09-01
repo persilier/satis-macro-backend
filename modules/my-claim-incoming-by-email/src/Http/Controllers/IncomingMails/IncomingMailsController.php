@@ -8,17 +8,18 @@ use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\TestSmtpConfiguration;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class IncomingMailsController extends Controller
 {
-    use ClaimIncomingByEmail, TestSmtpConfiguration, CreateClaim, DataUserNature, VerifyUnicity;
+    use ClaimIncomingByEmail, TestSmtpConfiguration, CreateClaim, DataUserNature, VerifyUnicity,Notification;
 
     public function __construct()
     {
         $this->middleware('set.language');
-        $this->middleware('client.credentials');
+        //$this->middleware('client.credentials');
     }
 
 

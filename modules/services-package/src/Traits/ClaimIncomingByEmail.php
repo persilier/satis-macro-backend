@@ -208,8 +208,15 @@ trait ClaimIncomingByEmail
                         $claim = $this->getDataIncomingEmail($email, $typeText);
 
                         if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                            Log::info("has not stored");
                             $error = true;
+                        }else{
+                            Log::info("has stored");
                         }
+                    }else{
+                        Log::info("mail exist");
+
+                        $error = true;
                     }
                 }
             } catch (\Exception $e) {
@@ -269,22 +276,25 @@ trait ClaimIncomingByEmail
                 $claimStore->files()->create(['title' => "Incoming mail attachment " . $claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            $claim->load('claimer', 'institutionTargeted');
+            Log::debug($claimStore);
+            $claimStore->load('claimer', 'institutionTargeted');
             // send notification to claimer
-            if (!is_null($claim->claimer)) {
-                $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+            if (!is_null($claimStore->claimer)) {
+                $claimStore->claimer->notify(new AcknowledgmentOfReceipt($claimStore));
             }
 
             // send notification to pilot
-            if (!is_null($claim->institutionTargeted)) {
-                if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
-                    $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
+            if (!is_null($claimStore->institutionTargeted)) {
+                if (!is_null($this->getInstitutionPilot($claimStore->institutionTargeted))) {
+                    $this->getInstitutionPilot($claimStore->institutionTargeted)->notify(new RegisterAClaim($claimStore));
                 }
             }
 
             return true;
 
         } catch (\Exception $exception) {
+            Log::info("-----------------incoming mail-------------------------");
+            Log::debug($exception);
             return false;
         }
     }
