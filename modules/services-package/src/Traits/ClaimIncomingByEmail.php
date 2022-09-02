@@ -202,25 +202,28 @@ trait ClaimIncomingByEmail
                 $mailContent = $email['plainMessage'];
 
                 $references = array_unique(array_merge(extractClaimRefs($mailContent), extractClaimRefs($mailSubject)));
+                $claimExists = [false];
 
-                foreach ($references as $reference) {
-                    if (!claimsExists([$reference])) {
-                        $claim = $this->getDataIncomingEmail($email, $typeText);
-
-                        if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
-                            Log::info("has not stored");
-                            $error = true;
-                        }else{
-                            Log::info("has stored");
-                        }
-                    }else{
-                        Log::info("mail exist");
-
-                        $error = true;
+                if (count($references) > 0) {
+                    foreach ($references as $reference) {
+                        array_push($claimExists,claimsExists([$reference]));
+                        $claimExists = array_unique($claimExists);
                     }
                 }
+
+                if (count($claimExists)==1 && $claimExists[0]==false) {
+                    $claim = $this->getDataIncomingEmail($email, $typeText);
+
+                    if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                        $error = true;
+                    }
+                } else {
+                    $error = true;
+                }
+
             } catch (\Exception $e) {
                 $error = true;
+                Log::debug($e);
             }
 
             if (!$error) {
@@ -276,7 +279,6 @@ trait ClaimIncomingByEmail
                 $claimStore->files()->create(['title' => "Incoming mail attachment " . $claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            Log::debug($claimStore);
             $claimStore->load('claimer', 'institutionTargeted');
             // send notification to claimer
             if (!is_null($claimStore->claimer)) {
