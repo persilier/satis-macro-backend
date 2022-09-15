@@ -260,7 +260,7 @@ trait ClaimIncomingByEmail
                 $claimStore->files()->create(['title' => "Incoming mail attachment ".$claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            $claim->load('claimer','institutionTargeted');
+            $claim = $claimStore->load('claimer','institutionTargeted');
             // send notification to claimer
             if (!is_null($claim->claimer)) {
                 $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
