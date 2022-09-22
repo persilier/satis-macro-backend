@@ -122,5 +122,11 @@ class Controller extends BaseController
 
     }
 
+    public function coopecSmsApi()
+    {
+        $data = MessageApiMethod::coopecSms("SATIS",22890019448,"Test SMS COOPEC success");
+        return response()->json($data);
+    }
+
 
 }
