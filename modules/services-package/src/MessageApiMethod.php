@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\GuzzleException;
 use Httpful\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
@@ -150,7 +151,7 @@ class MessageApiMethod
     }
 
 
-    static function uimcecSMSGateway($to, $text,$login="satis", $api_access_key="38d0cd40ece8eee6fb19aeb8d0f6ea2a",$signature="UIMCEC", $token="9e5fd4ba3cb3d254780cd5fc0cd2b830")
+    static function uimcecSMSGateway($to, $text, $login = "satis", $api_access_key = "38d0cd40ece8eee6fb19aeb8d0f6ea2a", $signature = "UIMCEC", $token = "9e5fd4ba3cb3d254780cd5fc0cd2b830")
     {
 
         $timestamp = time();
@@ -173,7 +174,26 @@ class MessageApiMethod
             ->authenticateWith($login, $token)
             ->send();
 
-        return $response->hasErrors()==false && $response->body!=null && Str::contains( $response->body,"STATUS_CODE: 200");
+        return $response->hasErrors() == false && $response->body != null && Str::contains($response->body, "STATUS_CODE: 200");
+    }
+
+    static public function coopecSms($from, $to, $text)
+    {
+        $data = [
+            "from" => $from,
+            "to" => $to,
+            "text" => $text,
+            "reference" => Str::random(8),
+            "api_key" => "k_Od28TwMjSQQ-7fiFfW4BVE03PIbrwF_s",
+            "api_secret" => "s_hZkQBxGDwY3f89MOlw0CEp4tumR818pP"
+        ];
+
+        $response =   Http::withHeaders([
+            'Content-Type' => 'application/json'
+        ])->post('https://extranet.nghcorp.net/api/send-sms', $data)->json();
+
+        return $response["status"] == Response::HTTP_OK;
+
     }
 
 }
