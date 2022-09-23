@@ -3,7 +3,6 @@
 namespace Satis2020\BCIReports\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 
@@ -18,6 +17,7 @@ trait BCIReportsTrait
             ->when($institutionId, function ($query) use ($institutionId) {
                 $query->where('institution_targeted_id', $institutionId);
             })
+            ->orderBy('created_at', 'ASC')
             ->get()->groupBy([
 
                 function ($item) {
@@ -41,15 +41,14 @@ trait BCIReportsTrait
         $claims->map(function ($categories, $monthName) use ($claimCollection) {
             $categories->map(function ($objects, $categoryName) use ($claimCollection, $categories, $monthName) {
                 $objects->map(function ($claims, $objectName) use ($claimCollection, $categoryName, $categories, $monthName) {
-
                     $data = [
                         "month" => $monthName,
                         'claimCategorie' => $categoryName,
                         'claimObject' => $objectName,
-                        'totalReceived' => (string)$claims->count(),
-                        'totalTreated' => (string)$this->totalTreated($claims),
-                        'totalRemaining' => (string)($claims->count() - $this->totalTreated($claims)),
-                        'totalTreatedOutDelay' => (string)$this->totalTreatedOutDelay($this->claimTreated($claims)),
+                        'totalReceived' => $claims->count(),
+                        'totalTreated' => $this->totalTreated($claims),
+                        'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
+                        'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                     ];
 
                     return $claimCollection->push($data);
@@ -57,6 +56,7 @@ trait BCIReportsTrait
 
             });
         });
+
 
         $response = $claimCollection->groupBy([
             function ($item) {
@@ -69,6 +69,184 @@ trait BCIReportsTrait
                 return $item['claimObject'];
             }
         ]);
+
+
+        $orderedData = [];
+        $arr = [];
+      /*  $months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+
+        //set default values for empties months
+        foreach ($months as $month) {
+            $data = [
+                "month" => $month,
+                'totalReceived' => 0,
+                'totalTreated' => 0,
+                'totalRemaining' => 0,
+                'totalTreatedOutDelay' => 0,
+            ];
+            $allData = [];
+
+            if (!isset($response[$month])) {
+                $response[$month] = [];
+                foreach (ClaimCategory::with('claimObjects')->get() as $category) {
+                    foreach ($category->claimObjects as $object) {
+                        $data["claimObject"] = $object->name;
+                        $data["claimCategorie"] = $category->name;
+
+                        $fData = [$category->name => []];
+                        $fData[$category->name] = [$object->name => []];
+                        $fData[$category->name][$object->name] = $data;
+                        array_push($allData, $fData);
+                        $response[$month] = collect($allData);
+                    }
+                }
+            } else {
+                foreach (ClaimCategory::with('claimObjects')->get() as $category) {
+                    foreach ($category->claimObjects as $object) {
+                        if (!isset($response[$month][$category->name])) {
+                            $fData = [$category->name => []];
+                            $fData[$category->name] = [$object->name => []];
+                            $fData[$category->name][$object->name] = $data;
+                            array_push($allData, $fData);
+                            $response[$month] = collect($allData);
+                        } else {
+                            if (!isset($response[$month][$category->name][$object->name])) {
+                                $fData = [$category->name => []];
+                                $fData[$category->name] = [$object->name => []];
+                                $fData[$category->name][$object->name] = $data;
+                                array_push($allData, $fData);
+                                $response[$month] = collect($allData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $response = $response->toArray();
+        $response = $this->sortMonths();*/
+
+      //  dd($response);
+
+        foreach ($response as $month => $claimCategory) {
+            array_push($orderedData, $claimCategory);
+        }
+
+
+        for ($i = 0; $i < count($orderedData); $i++) {
+            $data = $orderedData[$i];
+            $firstData = [];
+
+            foreach ($data as $categoryName => $category) {
+                foreach ($category as $objectName => $object) {
+                    $newData = isset($object[0]) ? $object[0] : $object;
+                    if (!array_key_exists(($i - 1), $orderedData)) {
+                        $newData['initialStock'] = 0;
+                        $newData['totalRemaining'] = ($newData['initialStock'] + $newData['totalReceived']) - $newData['totalTreated'];
+
+                        $fData = [$categoryName => []];
+                        $fData[$categoryName] = [$objectName => []];
+                        $fData[$categoryName][$objectName] = $newData;
+
+                        array_push($firstData, $fData);
+                        $orderedData[0] = $firstData;
+                    } else {
+                        //find the record in the previous month
+                        $previousMonth = $orderedData[$i - 1];
+
+
+                        if (isset($previousMonth[$categoryName]) &&
+                            isset($previousMonth[$categoryName][$objectName])
+                        ) {
+                            $value = $previousMonth[$categoryName][$objectName];
+                        } else {
+                            $value = null;
+                        }
+
+                        for ($k = 0; $k < count($previousMonth); $k++) {
+                            //if (!isset($previousMonth[$k]))
+                            //  dd($previousMonth,$k);
+                            $elem = $previousMonth[$k];
+                            if (isset($elem[$categoryName]) &&
+                                isset($elem[$categoryName][$objectName])
+                            ) {
+                                $value = $elem[$categoryName][$objectName];
+                                break;
+                            } else {
+                                $value = null;
+                            }
+                        }
+
+
+                        if ($value != null) {
+                            //dd($value);
+                            //if ($newData['month']=="March" && $categoryName=="No Game No Life" && $objectName=="Garanties perdues")
+                            //    dd($value,$previousMonth);
+                            $newData['initialStock'] = $value['totalRemaining'];
+                            $newData['totalRemaining'] = ($newData['initialStock'] + $newData['totalReceived']) - $newData['totalTreated'];
+                        } else {
+                            //dd($newData,$previousMonth);
+                            //Log::info("$categoryName $objectName ".$newData['month']);
+                            // dd($newData,$orderedData[$i-1]);
+                            $newData['initialStock'] = 0;
+                            if (!isset($newData['totalReceived']))
+                                dd($newData, "miss");
+                            $newData['totalRemaining'] = ($newData['initialStock'] + $newData['totalReceived']) - $newData['totalTreated'];
+                        }
+
+
+                        $fData = [$categoryName => []];
+                        $fData[$categoryName] = [$objectName => []];
+                        $fData[$categoryName][$objectName] = $newData;
+
+                        array_push($firstData, $fData);
+                        $orderedData[$i] = $firstData;
+                    }
+
+                    array_push($arr, $newData);
+                }
+            }
+        }
+
+        return $arr;
+
+        /*   $previousMonth = null;
+           $previousMonthAtt = null;
+           $arr = [];
+           $prevValue = null;
+           foreach ($response as $month => $claimCategory) {
+               foreach ($claimCategory as $categoryName => $claimObject) {
+                   foreach ($claimObject as $objectName => $data) {
+                       $newData = $data[0];
+                       if ($previousMonth==null){
+                           $newData['initialStock'] = 0;
+                           $newData['totalRemaining'] = ($newData['initialStock'] + $newData['totalReceived'])-$newData['totalTreated'];
+                           array_push($arr, $newData);
+                       }else{
+                           //find the record in the previous month
+                           $previousMonth = collect($previousMonth);
+                       }
+
+                   }
+
+               }
+               $previousMonth = [$month=>$claimCategory];
+           }*/
+        return $response;
+
 
         $totalYear = ['totalReceived' => 0, "totalTreated" => 0, "totalRemaining" => 0, "totalTreatedOutDelay" => 0];
         foreach ($response as $categoryName => $claimCategories) {
@@ -96,9 +274,9 @@ trait BCIReportsTrait
     protected function getCondensedAnnualReports($institutionId, $year)
     {
         $categories = ClaimCategory::query()
-            ->whereHas('claimObjects',function ($query) use($year){
-                $query->whereHas('claims',function ($builder)use($year){
-                    $builder->whereYear("created_at",$year);
+            ->whereHas('claimObjects', function ($query) use ($year) {
+                $query->whereHas('claims', function ($builder) use ($year) {
+                    $builder->whereYear("created_at", $year);
                 });
             })
             ->with("claimObjects.claims")
@@ -134,9 +312,9 @@ trait BCIReportsTrait
         $dataCollection->push($data);
 
         $totalYear = ['totalReceived' => 0, "totalTreated" => 0, "totalRemaining" => 0, "totalTreatedOutDelay" => 0];
-        foreach ($dataCollection[0] as $category){
+        foreach ($dataCollection[0] as $category) {
             unset($category['total']);
-            foreach ($category as $object){
+            foreach ($category as $object) {
                 $totalYear['totalReceived'] += $object['totalReceived'];
                 $totalYear['totalTreated'] += $object['totalTreated'];
                 $totalYear['totalRemaining'] += $object['totalRemaining'];
@@ -145,6 +323,53 @@ trait BCIReportsTrait
             }
         }
 
-        return ['reportData'=>$dataCollection,'totalReport'=>$totalYear];
+        return ['reportData' => $dataCollection, 'totalReport' => $totalYear];
+    }
+
+    function sortMonths($array)
+    {
+        $orderedArray = [];
+        foreach ($array as $month => $data) {
+            switch ($month) {
+                case "January":
+                    $orderedArray[0] = $data;
+                    break;
+                case "February":
+                    $orderedArray[1] = $data;
+                    break;
+                case "March":
+                    $orderedArray[2] = $data;
+                    break;
+                case "April":
+                    $orderedArray[3] = $data;
+                    break;
+                case "May":
+                    $orderedArray[4] = $data;
+                    break;
+                case "June":
+                    $orderedArray[5] = $data;
+                    break;
+                case "July":
+                    $orderedArray[6] = $data;
+                    break;
+                case "August":
+                    $orderedArray[7] = $data;
+                    break;
+                case "September":
+                    $orderedArray[8] = $data;
+                    break;
+                case "October":
+                    $orderedArray[9] = $data;
+                    break;
+                case "November":
+                    $orderedArray[10] = $data;
+                    break;
+                case "December":
+                    $orderedArray[11] = $data;
+                    break;
+            }
+        }
+
+        return $orderedArray;
     }
 }
