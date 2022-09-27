@@ -153,21 +153,9 @@ trait ClaimIncomingByEmail
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
 
-//        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
-//
-//        if ($testSmtp['error']) {
-//            return [
-//                "error" => true,
-//                "message" => $testSmtp['message']
-//            ];
-//        }
-
         $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
-
         if ($subscriber['error']) {
-
-
             try {
                 Log::debug("subscribtion error", $subscriber);
             } catch (\Exception $exception) {
@@ -250,7 +238,6 @@ trait ClaimIncomingByEmail
         ];
     }
 
-
     protected function storeClaim($claim, $status, $configuration)
     {
         try {
@@ -300,7 +287,6 @@ trait ClaimIncomingByEmail
             return false;
         }
     }
-
 
     protected function identityVerified($claim)
     {
