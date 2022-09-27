@@ -2,8 +2,11 @@
 
 namespace Satis2020\BCIReports\Http\Controllers\GlobalReport;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Satis2020\BCIReports\Traits\BCIReportsTrait;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UemoaReports;
@@ -31,8 +34,8 @@ class GlobalCondensedAnnualReportController extends ApiController
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException|\Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws ValidationException|RetrieveDataUserNatureException
      */
     public function index(Request $request)
     {

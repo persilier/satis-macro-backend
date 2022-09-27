@@ -2,36 +2,10 @@
 
 namespace Satis2020\BCIReports\Traits;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 
 trait BCIReportsTrait
 {
-
-    protected function getReportData($institutionId, $year)
-    {
-        return Claim::query()
-            ->with(['institutionTargeted', 'claimObject.claimCategory'])
-            ->whereYear("created_at", $year)
-            ->when($institutionId, function ($query) use ($institutionId) {
-                $query->where('institution_targeted_id', $institutionId);
-            })
-            ->orderBy('created_at', 'ASC')
-            ->get()->groupBy([
-
-                function ($item) {
-                    return Carbon::parse($item->created_at)->format('F');
-                },
-                function ($item) {
-                    return optional(optional($item->claimObject)->claimCategory)->name;
-                },
-                function ($item) {
-                    return optional($item->claimObject)->name;
-                }
-            ]);
-    }
 
     protected function getGlobalReportsByMonths($institutionId, $year)
     {
@@ -175,7 +149,6 @@ trait BCIReportsTrait
             foreach ($claimCategories as $claimObjects) {
                 foreach ($claimObjects as $claimObject) {
                     $items = $claimObject[0];
-                    //dd($items);
                     $total['totalReceived'] += $items['totalReceived'];
                     $total['totalTreated'] += $items['totalTreated'];
                     $total['totalRemaining'] += $items['totalRemaining'];
@@ -186,7 +159,6 @@ trait BCIReportsTrait
             }
 
             $groupedData[$categoryName]['total'] = ["total" => [$total]];
-            //$totalYear['totalInitialStock'] += $total['totalInitialStock'];
             $totalYear['totalReceived'] += $total['totalReceived'];
             $totalYear['totalTreated'] += $total['totalTreated'];
             $totalYear['totalRemaining'] += $total['totalReceived'] - $total['totalTreated'];
