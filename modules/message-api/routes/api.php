@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
  * message-apis
  */
 Route::resource('message-apis', 'MessageApi\MessageApiController')->except(['show']);
+
+
+
