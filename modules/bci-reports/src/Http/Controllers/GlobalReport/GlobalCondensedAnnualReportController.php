@@ -14,7 +14,7 @@ use Satis2020\ServicePackage\Traits\UemoaReports;
  */
 class GlobalCondensedAnnualReportController extends ApiController
 {
-    use BCIReportsTrait,Metadata,UemoaReports;
+    use BCIReportsTrait, Metadata, UemoaReports;
 
     public function __construct()
     {
@@ -45,10 +45,7 @@ class GlobalCondensedAnnualReportController extends ApiController
             'year' => 'required|date_format:Y',
         ]);
 
-        $claims = $this->getCondensedAnnualReports($this->institution()->id,$request->year);
-
-        return response()->json($claims);
-
+        return response()->json( $this->getCondensedAnnualReports($this->institution()->id,$request->year));
     }
 
 

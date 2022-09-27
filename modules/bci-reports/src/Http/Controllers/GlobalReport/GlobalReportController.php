@@ -45,9 +45,7 @@ class GlobalReportController extends ApiController
             'year' => 'required|date_format:Y',
         ]);
 
-        $claims = $this->getGlobalReportsByMonths($this->institution()->id,$request->year);
-
-        return response()->json($claims);
+        return response()->json($this->getGlobalReportsByMonths($this->institution()->id,$request->year));
 
     }
 

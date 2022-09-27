@@ -124,7 +124,7 @@ trait BCIReportsTrait
                                 'totalTreated' => $this->totalTreated($decemberLastYearClaims),
                                 'totalRemaining' => ($decemberLastYearClaims->count() - $this->totalTreated($decemberLastYearClaims)),
                                 'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($decemberLastYearClaims)),
-                                'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($decemberLastYearClaims)),                            ];
+                                'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($decemberLastYearClaims)),];
                         }
                         $previousMonth = $decemberData;
                     }
@@ -199,71 +199,144 @@ trait BCIReportsTrait
 
     protected function getCondensedAnnualReports($institutionId, $year)
     {
-        $categories = ClaimCategory::query()
-            ->whereHas('claimObjects', function ($query) use ($year) {
-                $query->whereHas('claims', function ($builder) use ($year) {
-                    $builder->whereYear("created_at", $year);
-                });
-            })
-            ->with("claimObjects.claims")
-            ->get();
+        $yearlyClaims = [];
+        $previousYearData = $this->getPreviousYearGlobalReport($institutionId, $year);
 
-        $dataCollection = collect();
+        foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
+            foreach ($category->claimObjects as $object) {
+                $claims = $object->claims()
+                    ->whereYear("created_at", $year)
+                    ->get();
 
-        $data = [];
-        foreach ($categories as $category) {
-            $data[$category->name] = [];
-            $objects = $category->claimObjects;
-            $totalCategory = [
-                'totalReceived' => 0,
-                "totalTreated" => 0,
-                "totalRemaining" => 0,
-                "totalTreatedOutDelay" => 0,
-                "totalRemainingOutDelay" => 0
-            ];
-
-            foreach ($objects as $object) {
-                $data[$category->name][$object->name] = [];
-                $claims = $object->claims()->whereYear("created_at", $year)->get();
-                $total['totalReceived'] = count($claims);
-                $total['totalTreated'] = $this->totalTreated($claims);
-                $total['totalRemaining'] = ($claims->count() - $this->totalTreated($claims));
-                $total['totalTreatedOutDelay'] = $this->totalTreatedOutDelay($this->claimTreated($claims));
-                $total['totalRemainingOutDelay'] = $this->totalOutDelay($this->claimsNotTreated($claims));
-
-                $totalCategory['totalReceived'] += $total['totalReceived'];
-                $totalCategory['totalTreated'] += $total['totalTreated'];
-                $totalCategory['totalRemaining'] += $total['totalRemaining'];
-                $totalCategory['totalTreatedOutDelay'] += $total['totalTreatedOutDelay'];
-                $totalCategory['totalRemainingOutDelay'] += $total['totalRemainingOutDelay'];
-
-                $data[$category->name][$object->name] = $total;
+                if (empty($claims)) {
+                    $data = [
+                        'claimCategorie' => $category->name,
+                        'claimObject' => $object->name,
+                        'totalReceived' => 0,
+                        'totalTreated' => 0,
+                        'totalRemaining' => 0,
+                        'totalTreatedOutDelay' => 0,
+                        'totalRemainingOutDelay' => 0,
+                    ];
+                } else {
+                    $data = [
+                        'claimCategorie' => $category->name,
+                        'claimObject' => $object->name,
+                        'totalReceived' => $claims->count(),
+                        'totalTreated' => $this->totalTreated($claims),
+                        'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
+                        'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
+                        'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
+                    ];
+                }
+                array_push($yearlyClaims, $data);
             }
-            $data[$category->name]["total"] = $totalCategory;
-
         }
-        $dataCollection->push($data);
+
+        $groupedData = collect($yearlyClaims)->groupBy([
+            function ($item) {
+                return $item['claimCategorie'];
+            },
+            function ($item) {
+                return $item['claimObject'];
+            }
+        ]);
 
         $totalYear = [
             'totalReceived' => 0,
             "totalTreated" => 0,
             "totalRemaining" => 0,
             "totalTreatedOutDelay" => 0,
-            "totalRemainingOutDelay" => 0
+            "totalRemainingOutDelay" => 0,
+            "totalStockInitial" => 0
         ];
-        foreach ($dataCollection[0] as $category) {
-            unset($category['total']);
-            foreach ($category as $object) {
-                $totalYear['totalReceived'] += $object['totalReceived'];
-                $totalYear['totalTreated'] += $object['totalTreated'];
-                $totalYear['totalRemaining'] += $object['totalRemaining'];
-                $totalYear['totalTreatedOutDelay'] += $object['totalTreatedOutDelay'];
-                $totalYear['totalRemainingOutDelay'] += $object['totalRemainingOutDelay'];
 
+
+        foreach ($groupedData as $categoryName => $category) {
+            $totalCategory = [
+                'totalReceived' => 0,
+                "totalTreated" => 0,
+                "totalRemaining" => 0,
+                "totalTreatedOutDelay" => 0,
+                "totalRemainingOutDelay" => 0,
+                "totalStockInitial" => 0,
+            ];
+
+            $totalInitial = 0;
+            foreach ($category as $objectName => $object) {
+                $data = $object[0];
+                if ($object[0]) {
+                    $data['initialStock'] = $previousYearData[$categoryName][$objectName][0]['totalRemaining'];
+                    $groupedData[$categoryName][$objectName] = $data;
+                    $totalInitial += $data['initialStock'];
+
+                    $totalCategory['totalReceived'] += $data['totalReceived'];
+                    $totalCategory['totalTreated'] += $data['totalTreated'];
+                    $totalCategory['totalRemaining'] += $data['totalRemaining'];
+                    $totalCategory['totalTreatedOutDelay'] += $data['totalTreatedOutDelay'];
+                    $totalCategory['totalRemainingOutDelay'] += $data['totalRemainingOutDelay'];
+                    $totalCategory['totalStockInitial'] = $totalInitial;
+
+                    $groupedData[$categoryName]['total'] = $totalCategory;
+                }
+            }
+
+            $totalYear['totalReceived'] += $totalCategory['totalReceived'];
+            $totalYear['totalTreated'] += $totalCategory['totalTreated'];
+            $totalYear['totalRemaining'] += $totalCategory['totalRemaining'];
+            $totalYear['totalTreatedOutDelay'] += $totalCategory['totalTreatedOutDelay'];
+            $totalYear['totalRemainingOutDelay'] += $totalCategory['totalRemainingOutDelay'];
+            $totalYear['totalStockInitial'] += $totalCategory['totalStockInitial'];
+        }
+
+        return ['reportData' => $groupedData, 'totalReport' => $totalYear];
+    }
+
+    protected function getPreviousYearGlobalReport($institutionId, $year)
+    {
+
+        $allData = [];
+        $previousYear = $year - 1;
+
+        foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
+            foreach ($category->claimObjects as $object) {
+                $claims = $object->claims()
+                    ->whereYear("created_at", $previousYear)
+                    ->get();
+
+                if (empty($claims)) {
+                    $data = [
+                        'claimCategorie' => $category->name,
+                        'claimObject' => $object->name,
+                        'totalReceived' => 0,
+                        'totalTreated' => 0,
+                        'totalRemaining' => 0,
+                        'totalTreatedOutDelay' => 0,
+                        'totalRemainingOutDelay' => 0,
+                    ];
+                } else {
+                    $data = [
+                        'claimCategorie' => $category->name,
+                        'claimObject' => $object->name,
+                        'totalReceived' => $claims->count(),
+                        'totalTreated' => $this->totalTreated($claims),
+                        'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
+                        'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
+                        'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
+                    ];
+                }
+                array_push($allData, $data);
             }
         }
 
-        return ['reportData' => $dataCollection, 'totalReport' => $totalYear];
+        return collect($allData)->groupBy([
+            function ($item) {
+                return $item['claimCategorie'];
+            },
+            function ($item) {
+                return $item['claimObject'];
+            }
+        ]);
     }
 
 }
