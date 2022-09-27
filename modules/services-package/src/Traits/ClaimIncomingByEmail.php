@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ trait ClaimIncomingByEmail
     protected function rulesIncomingEmail($id)
     {
         return [
-            "email" => 'required|unique:email_claim_configurations,email,'.$id,
+            "email" => 'required|unique:email_claim_configurations,email,' . $id,
             "host" => 'required',
             "port" => 'required',
             "protocol" => 'required',
@@ -54,14 +55,14 @@ trait ClaimIncomingByEmail
             $params = Config::get('email-claim-configuration');
 
             $requestData = [
-                "app_name" => Str::random(16).'-'.Institution::findOrFail($request->institution_id)->name,
-                "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
+                "app_name" => Str::random(16) . '-' . Institution::findOrFail($request->institution_id)->name,
+                "url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
                 "mail_server_password" => $request->password,
                 "mail_server_port" => $request->port,
                 "mail_server_protocol" => $request->protocol,
-                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false),
+                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route('passport.token', null, false),
                 "app_login_params" => [
                     "grant_type" => $params['grant_type'],
                     "client_id" => $params['client_id'],
@@ -69,10 +70,10 @@ trait ClaimIncomingByEmail
                 ]
             ];
 
-            $response = $httpClient->post($params['api_subscriber'],$requestData )->json();
+            $response = $httpClient->post($params['api_subscriber'], $requestData)->json();
 
-            if($response==null){
-                $response = Http::post($params['api_subscriber'],$requestData )->json();
+            if ($response == null) {
+                $response = Http::post($params['api_subscriber'], $requestData)->json();
             }
 
             if ($response['status'] !== 200) {
@@ -106,13 +107,13 @@ trait ClaimIncomingByEmail
             $params = Config::get('email-claim-configuration');
 
             $requestData = [
-                "url" => Config::get('email-claim-configuration.app_url_incoming_mail').route($routeName, $request->email, false),
+                "url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route($routeName, $request->email, false),
                 "mail_server" => $request->host,
                 "mail_server_username" => $request->email,
                 "mail_server_password" => $request->password,
                 "mail_server_port" => $request->port,
                 "mail_server_protocol" => $request->protocol,
-                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false),
+                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route('passport.token', null, false),
                 "app_id" => $emailClaimConfiguration->subscriber_id,
                 "app_login_params" => [
                     "grant_type" => $params['grant_type'],
@@ -124,7 +125,7 @@ trait ClaimIncomingByEmail
 
             $response = $httpClient->put($params['api_subscriber'], $requestData)->json();
 
-            if ($response==null){
+            if ($response == null) {
                 $response = Http::put($params['api_subscriber'], $requestData)->json();
             }
 
@@ -152,30 +153,18 @@ trait ClaimIncomingByEmail
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
 
-//        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
-//
-//        if ($testSmtp['error']) {
-//            return [
-//                "error" => true,
-//                "message" => $testSmtp['message']
-//            ];
-//        }
-
-        $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
-
+        $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
         if ($subscriber['error']) {
-
-
             try {
-                Log::debug("subscribtion error",$subscriber);
-            }catch (\Exception $exception){
-                Log::info( $subscriber['message']);
+                Log::debug("subscribtion error", $subscriber);
+            } catch (\Exception $exception) {
+                Log::info($subscriber['message']);
             }
 
             return [
                 "error" => true,
-                "message" => __('messages.invalid_params',[],getAppLang()),
+                "message" => __('messages.invalid_params', [], getAppLang()),
                 "serviceErrors" => $subscriber['message']
             ];
         }
@@ -197,14 +186,32 @@ trait ClaimIncomingByEmail
             $error = false;
             try {
 
-                $claim = $this->getDataIncomingEmail($email, $typeText);
+                $mailSubject = $email['header']['subject'];
+                $mailContent = $email['plainMessage'];
 
-                if (! $storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                $references = array_unique(array_merge(extractClaimRefs($mailContent), extractClaimRefs($mailSubject)));
+                $claimExists = [false];
+
+                if (count($references) > 0) {
+                    foreach ($references as $reference) {
+                        array_push($claimExists,claimsExists([$reference]));
+                        $claimExists = array_unique($claimExists);
+                    }
+                }
+
+                if (count($claimExists)==1 && $claimExists[0]==false) {
+                    $claim = $this->getDataIncomingEmail($email, $typeText);
+
+                    if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                        $error = true;
+                    }
+                } else {
                     $error = true;
                 }
 
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $error = true;
+                Log::debug($e);
             }
 
             if (!$error) {
@@ -231,12 +238,11 @@ trait ClaimIncomingByEmail
         ];
     }
 
-
     protected function storeClaim($claim, $status, $configuration)
     {
         try {
 
-            if (! $identity = $this->identityVerified($claim)) {
+            if (!$identity = $this->identityVerified($claim)) {
                 $identity = Identite::create([
                     "firstname" => $claim['firstname'],
                     "lastname" => $claim['lastname'],
@@ -257,29 +263,30 @@ trait ClaimIncomingByEmail
 
             for ($i = 0; $i < sizeof($claim['attachments']); $i++) {
                 $save_img = $this->base64SaveImg($claim['attachments'][$i], 'claim-attachments/', $i);
-                $claimStore->files()->create(['title' => "Incoming mail attachment ".$claimStore->reference, 'url' => $save_img['link']]);
+                $claimStore->files()->create(['title' => "Incoming mail attachment " . $claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            $claim->load('claimer','institutionTargeted');
+            $claimStore->load('claimer', 'institutionTargeted');
             // send notification to claimer
-            if (!is_null($claim->claimer)) {
-                $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+            if (!is_null($claimStore->claimer)) {
+                $claimStore->claimer->notify(new AcknowledgmentOfReceipt($claimStore));
             }
 
             // send notification to pilot
-            if (!is_null($claim->institutionTargeted)) {
-                if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
-                    $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
+            if (!is_null($claimStore->institutionTargeted)) {
+                if (!is_null($this->getInstitutionPilot($claimStore->institutionTargeted))) {
+                    $this->getInstitutionPilot($claimStore->institutionTargeted)->notify(new RegisterAClaim($claimStore));
                 }
             }
 
             return true;
 
         } catch (\Exception $exception) {
+            Log::info("-----------------incoming mail-------------------------");
+            Log::debug($exception);
             return false;
         }
     }
-
 
     protected function identityVerified($claim)
     {

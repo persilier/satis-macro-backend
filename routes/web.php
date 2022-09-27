@@ -15,6 +15,7 @@ use Satis2020\ReportingClaimMyInstitution\Http\Controllers\Reporting\RegulatoryS
 |
 */
 Route::get('mail/{phone?}', 'Controller@index');
+Route::get('test-claims-ref', 'Controller@claimRef');
 Route::get('download/{file}', 'Controller@download');
 Route::get('download-uemoa-reports/{file}', 'Controller@downloadExcelReports');
 Route::get('download-excel/{file}', 'Controller@downloadExcels');
