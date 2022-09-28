@@ -46,6 +46,7 @@ class StaffController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -53,30 +54,21 @@ class StaffController extends ApiController
     {
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
+        $unit_id = \request()->query('unit_id');
 
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
                 ->where('institution_id', $this->institution()->id)
+                ->when(request()->filled('unit_id'),function (Builder $builder) use($unit_id){
+                    return $builder->where('unit_id',$unit_id);
+                })
                 ->whereHas('identite', function($query) use ($recherche) {
                     return $query
                         ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
                         ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
                         ->orwhereJsonContains('telephone', $recherche)
                         ->orwhereJsonContains('email', $recherche);
-                })->paginate($paginationSize)
-
-           /* Staff::with(['identite', 'position', 'unit', 'institution'])
-                ->where('institution_id', $this->institution()->id)
-                ->when($recherche !=null,function(Builder $query) use ($recherche) {
-                    $query
-                        ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
-                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
-                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
-                        ->orwhereJsonContains('telephone', $recherche)
-                        ->orwhereJsonContains('email', $recherche);
-                })
-                ->paginate($paginationSize)*/
-            , 200);
+                })->paginate($paginationSize));
     }
 
     /**
