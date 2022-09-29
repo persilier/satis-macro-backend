@@ -7,6 +7,7 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 trait BCIReportsTrait
 {
 
+    //get Global Reports By Months
     protected function getGlobalReportsByMonths($institutionId, $year)
     {
 
@@ -28,6 +29,8 @@ trait BCIReportsTrait
         $monthlyClaims = [];
         $monthlyClaimsActualized = [];
 
+
+        // get total claim by month and grouped by category object
         for ($i = 0; $i < count($months); $i++) {
             foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
                 foreach ($category->claimObjects as $object) {
@@ -169,11 +172,17 @@ trait BCIReportsTrait
         return ['reportData' => $groupedData, 'reportTotal' => $totalYear];
     }
 
+
+    //get Condensed Annual Reports
     protected function getCondensedAnnualReports($institutionId, $year)
     {
         $yearlyClaims = [];
+
+        //get collection of previous year report
         $previousYearData = $this->getPreviousYearGlobalReport($institutionId, $year);
 
+
+        //group yearly total claims by category and object
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
             foreach ($category->claimObjects as $object) {
                 $claims = $object->claims()
@@ -223,7 +232,6 @@ trait BCIReportsTrait
             "totalStockInitial" => 0
         ];
 
-
         foreach ($groupedData as $categoryName => $category) {
             $totalCategory = [
                 'totalReceived' => 0,
@@ -234,6 +242,7 @@ trait BCIReportsTrait
                 "totalStockInitial" => 0,
             ];
 
+            //add initial stock(previous year claim) to the yearly collection
             $totalInitial = 0;
             foreach ($category as $objectName => $object) {
                 $data = $object[0];
@@ -253,6 +262,7 @@ trait BCIReportsTrait
                 }
             }
 
+            //condense total claim by category
             $totalYear['totalReceived'] += $totalCategory['totalReceived'];
             $totalYear['totalTreated'] += $totalCategory['totalTreated'];
             $totalYear['totalRemaining'] += $totalCategory['totalRemaining'];
@@ -264,6 +274,7 @@ trait BCIReportsTrait
         return ['reportData' => $groupedData, 'totalReport' => $totalYear];
     }
 
+    //get Previous Year Global Report (total of claim by category and object)
     protected function getPreviousYearGlobalReport($institutionId, $year)
     {
 
