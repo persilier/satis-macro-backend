@@ -2,8 +2,11 @@
 
 namespace Satis2020\BCIReports\Http\Controllers\GlobalReport;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Satis2020\BCIReports\Traits\BCIReportsTrait;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UemoaReports;
@@ -14,7 +17,7 @@ use Satis2020\ServicePackage\Traits\UemoaReports;
  */
 class GlobalCondensedAnnualReportController extends ApiController
 {
-    use BCIReportsTrait,Metadata,UemoaReports;
+    use BCIReportsTrait, Metadata, UemoaReports;
 
     public function __construct()
     {
@@ -31,8 +34,8 @@ class GlobalCondensedAnnualReportController extends ApiController
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException|\Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @return JsonResponse
+     * @throws ValidationException|RetrieveDataUserNatureException
      */
     public function index(Request $request)
     {
@@ -45,10 +48,7 @@ class GlobalCondensedAnnualReportController extends ApiController
             'year' => 'required|date_format:Y',
         ]);
 
-        $claims = $this->getCondensedAnnualReports($this->institution()->id,$request->year);
-
-        return response()->json($claims);
-
+        return response()->json( $this->getCondensedAnnualReports($this->institution()->id,$request->year));
     }
 
 

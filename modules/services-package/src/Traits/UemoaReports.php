@@ -704,6 +704,17 @@ trait UemoaReports{
         })->count();
     }
 
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutDelay($claims){
+
+        return $claims->filter(function ($item){
+            return ($item->created_at->copy()->addWeekdays($item->time_limit) < now());
+        })->count();
+    }
+
 
     /**
      * @param $itemObject
@@ -786,18 +797,32 @@ trait UemoaReports{
 
         })->count();
     }
+
     /**
-     * @param $itemObject
+     * @param $claims
      * @return mixed
      */
-    protected function claimTreated($itemObject){
+    protected function claimTreated($claims){
 
-        return $itemObject->filter(function ($item){
+        return $claims->filter(function ($item){
 
             return ($item->activeTreatment && $item->activeTreatment->validated_at);
 
         });
     }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function claimsNotTreated($claims){
+
+        return $claims->filter(function ($item){
+
+            return (!$item->activeTreatment || !$item->activeTreatment->validated_at);
+        });
+    }
+
 
 
     /**

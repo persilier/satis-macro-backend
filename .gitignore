@@ -23,3 +23,5 @@ package-lock.json
 package.json
 /tests
 *.DS_Store
+
+/encrypted
