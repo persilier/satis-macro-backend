@@ -509,8 +509,6 @@ trait UemoaReports{
 
         $claim->status ? $status = $allStatus[$claim->status] : $status = '';
 
-        dd($claim->status);
-
         return $status;
     }
 

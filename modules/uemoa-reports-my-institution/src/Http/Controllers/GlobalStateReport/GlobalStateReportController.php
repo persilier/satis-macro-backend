@@ -82,7 +82,7 @@ class GlobalStateReportController extends ApiController
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
-        $data = view('uemoa.report-reclamation', [
+        $data = view('ServicePackage::uemoa.report-reclamation', [
             'claims' => $claims,
             'myInstitution' => true,
             'libellePeriode' => $libellePeriode,
