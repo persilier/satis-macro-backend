@@ -86,7 +86,7 @@ trait BCIReportsTrait
                         })->first();
                     } else {
                         $decemberLastYearClaims = $object->claims()
-                            ->whereYear("created_at", $year - 1)
+                            ->whereYear("created_at","<" ,$year)
                            // ->whereMonth("created_at", 12)
                             ->get();
 
