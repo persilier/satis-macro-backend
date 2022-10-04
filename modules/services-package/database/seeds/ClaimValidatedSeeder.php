@@ -27,7 +27,7 @@ class ClaimValidatedSeeder extends Seeder
 
         $faker = Faker::create();
 
-        Claim::query()->inRandomOrder()->take(10000)->chunk(100,function ($claims) use($faker){
+        Claim::query()->inRandomOrder()->take(500)->chunk(100,function ($claims) use($faker){
             foreach ($claims as $claim) {
                 $request = new Request();
 
@@ -40,7 +40,6 @@ class ClaimValidatedSeeder extends Seeder
                     'unit_id' =>$unit->id
                 ]);
                 $this->transferToUnit($request, $claim,false);
-               // dd($claim);
                 //register a treatment
                 $claim = $claim->refresh();
 
@@ -49,8 +48,8 @@ class ClaimValidatedSeeder extends Seeder
                     'amount_returned' => $claim->amount_disputed,
                     'solution' => $faker->text,
                     'preventive_measures' => $faker->text,
-                    'solved_at' => $faker->dateTimeBetween($claim->created_at,  'now', $timezone = null),
-                    'validated_at' => $faker->dateTimeBetween($claim->created_at,  'now', $timezone = null),
+                    'solved_at' => Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
+                    'validated_at' => Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
                 ]);
 
                 //update claim
