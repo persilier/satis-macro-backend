@@ -22,7 +22,7 @@ trait HandleTreatment
         return $activeTreatment;
     }
 
-    protected function transferToUnit($request, $claim)
+    protected function transferToUnit($request, $claim,$sendNotification=true)
     {
         $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
 
@@ -42,7 +42,9 @@ trait HandleTreatment
 
         $claim->update(['status' => 'transferred_to_unit']);
 
-        \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
+        if ($sendNotification){
+            \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
+        }
 
         return $claim;
     }

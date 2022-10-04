@@ -17,6 +17,6 @@ class ClaimSeeder extends Seeder
     {
         //DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         //Claim::flushEventListeners();
-        factory(Claim::class, 15)->create();
+        factory(Claim::class, 15000)->create();
     }
 }

@@ -11,7 +11,15 @@ trait BCIReportsTrait
     protected function getGlobalReportsByMonths($institutionId, $year)
     {
 
+        $currentYear = date("Y");
+
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+        if ($year===$currentYear){
+            $monthNumber = date('m');
+            $months = range(1,$monthNumber);
+        }
+
         $monthsNames = [
             "January",
             "February",
