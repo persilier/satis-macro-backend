@@ -48,8 +48,7 @@ $factory->define(Claim::class, function (Faker $faker) {
     }
 
     if ($nature == 'PRO') {
-
-        $user = User::with('identite.staff')->find('953115a3-4693-4603-bab3-25aa3dcbdb7d');
+        $user = User::with('identite.staff')->where('username','estelle@dmdconsult.com')->first();
     }
 
     $sexe = $faker->randomElement(['male', 'female']);

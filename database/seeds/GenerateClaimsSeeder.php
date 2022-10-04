@@ -13,7 +13,7 @@ class GenerateClaimsSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(ClaimSeeder::class);
+        //$this->call(ClaimSeeder::class);
         $this->call(ClaimValidatedSeeder::class);
     }
 }

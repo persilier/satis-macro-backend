@@ -27,7 +27,7 @@ class ClaimValidatedSeeder extends Seeder
 
         $faker = Faker::create();
 
-        Claim::query()->inRandomOrder()->take(5000)->chunk(100,function ($claims) use($faker){
+        Claim::query()->inRandomOrder()->take(10000)->chunk(100,function ($claims) use($faker){
             foreach ($claims as $claim) {
                 $request = new Request();
 
