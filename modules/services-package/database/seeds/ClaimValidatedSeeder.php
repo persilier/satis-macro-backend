@@ -48,8 +48,8 @@ class ClaimValidatedSeeder extends Seeder
                     'amount_returned' => $claim->amount_disputed,
                     'solution' => $faker->text,
                     'preventive_measures' => $faker->text,
-                    'solved_at' => Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
-                    'validated_at' => Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
+                    'solved_at' => (string)Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
+                    'validated_at' => (string)Carbon::parse($faker->dateTimeBetween($claim->created_at,  'now', $timezone = null)),
                 ]);
 
                 //update claim

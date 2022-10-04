@@ -75,7 +75,7 @@ $factory->define(Claim::class, function (Faker $faker) {
         'is_revival' => $faker->randomElement([true, false]),
         'created_by' => $user->identite->staff->id,
         'status' => 'full',
-        'created_at' => Carbon::parse($faker->dateTimeBetween($startDate = '-5 years', $endDate = 'now', $timezone = null)),
+        'created_at' => (string)Carbon::parse($faker->dateTimeBetween($startDate = '-5 years', $endDate = 'now', $timezone = null)),
         'reference' => date('Y') . date('m') . '-' . $faker->randomNumber(6, true),
         'claimer_expectation' => $faker->text
     ];
