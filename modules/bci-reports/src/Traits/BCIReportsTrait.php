@@ -87,7 +87,7 @@ trait BCIReportsTrait
                     } else {
                         $decemberLastYearClaims = $object->claims()
                             ->whereYear("created_at", $year - 1)
-                            ->whereMonth("created_at", 12)
+                           // ->whereMonth("created_at", 12)
                             ->get();
 
                         if (empty($decemberLastYearClaims)) {
@@ -188,7 +188,6 @@ trait BCIReportsTrait
 
         //get collection of previous year report
         $previousYearData = $this->getPreviousYearGlobalReport($institutionId, $year);
-
 
         //group yearly total claims by category and object
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
