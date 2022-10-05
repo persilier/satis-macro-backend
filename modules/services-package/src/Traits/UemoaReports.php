@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
@@ -705,6 +706,19 @@ trait UemoaReports{
     }
 
     /**
+     * @param $itemObject
+     * @return mixed
+     */
+    protected function totalTreatedOutRegulatoryDelay($itemObject){
+
+        return $itemObject->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($this->getRegulatoryLimit()) > $item->activeTreatment->validated_at));
+
+        })->count();
+    }
+
+    /**
      * @param $claims
      * @return mixed
      */
@@ -712,6 +726,22 @@ trait UemoaReports{
 
         return $claims->filter(function ($item){
             return ($item->created_at->copy()->addWeekdays($item->time_limit) < now());
+        })->count();
+    }
+
+    protected function getRegulatoryLimit()
+    {
+        return (int)json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data);
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutRegulatoryDelay($claims){
+
+        return $claims->filter(function ($item){
+            return ($item->created_at->copy()->addWeekdays($this->getRegulatoryLimit()) < now());
         })->count();
     }
 

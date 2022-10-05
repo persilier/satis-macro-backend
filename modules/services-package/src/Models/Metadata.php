@@ -11,6 +11,9 @@ use Spatie\Translatable\HasTranslations;
 class Metadata extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+
+    const REGULATORY_LIMIT = "regulatory-limit";
+
     /**
      * The attributes that are translatable
      *

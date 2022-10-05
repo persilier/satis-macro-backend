@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\Configuration\Http\Controllers\Relance;
+namespace Satis2020\Configuration\Http\Controllers\RegulatoryLimit;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,7 +12,7 @@ use Satis2020\ServicePackage\Models\Metadata;
  * Class RelanceController
  * @package Satis2020\Configuration\Http\Controllers\Relance
  */
-class RelanceController extends ApiController
+class RegulatoryLimitController extends ApiController
 {
 
     public function __construct()
@@ -30,11 +30,7 @@ class RelanceController extends ApiController
      */
     public function show()
     {
-        return response()->json(
-            [
-                "coef" => json_decode(Metadata::query()->where('name', 'coef-relance')->firstOrFail()->data),
-                "limit" => json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data),
-            ], 200);
+        return response()->json(["limit" => json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data)]);
     }
 
 
@@ -46,14 +42,17 @@ class RelanceController extends ApiController
     public function update(Request $request)
     {
         $rules = [
-            'coef' => 'required|integer',
+            'limit' => 'required|integer',
         ];
 
         $this->validate($request, $rules);
 
-        Metadata::query()->where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode($request->coef)]);
+        Metadata::query()
+            ->where('name', Metadata::REGULATORY_LIMIT)
+            ->firstOrFail()
+            ->update(['data' => json_encode($request->limit)]);
 
-        return response()->json($request->only('coef'), 200);
+        return response()->json($request->only('limit'), 200);
     }
 
 }

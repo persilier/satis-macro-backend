@@ -27,6 +27,7 @@ Route::put("/configurations/mail", "Mail\MailController@update")->name("configur
 // Update Coef send relance
 Route::get("/configurations/relance", "Relance\RelanceController@show")->name("configurations.relance.show");
 Route::put("/configurations/relance", "Relance\RelanceController@update")->name("configurations.relance.update");
+Route::put("/configurations/limit", "RegulatoryLimit\RegulatoryLimitController@update")->name("configurations.limit.update");
 
 // measure preventive
 Route::get("/configurations/measure-preventive", "MeasurePreventive\MeasurePreventiveController@show")->name("configurations.measure.preventive.show");

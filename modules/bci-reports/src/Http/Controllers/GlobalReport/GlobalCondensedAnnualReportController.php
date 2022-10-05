@@ -23,11 +23,11 @@ class GlobalCondensedAnnualReportController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        /*$this->middleware('permission:bci-annual-reports')->only(['index']);
+        $this->middleware('permission:bci-annual-reports')->only(['index']);
 
         if ($this->checkIfStaffIsPilot($this->staff())){
             $this->middleware('permission:active.pilot')->only(['index']);
-        }*/
+        }
     }
 
     /**
