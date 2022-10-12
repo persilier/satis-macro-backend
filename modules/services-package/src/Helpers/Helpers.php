@@ -30,6 +30,17 @@ if (!function_exists('extractClaimRefs')) {
     }
 }
 
+if (!function_exists('extractPhoneNumber')) {
+    function extractPhoneNumber($haystack)
+    {
+        $tags = array_unique(getTagContents($haystack,"{","}"));
+
+        return Arr::where($tags, function ($value, $key) {
+            return Str::contains(strtolower($value), 'satis');
+        });
+    }
+}
+
 function getTagContents($string, $tag_open = '[', $tag_close = ']')
 {
     $result = [];

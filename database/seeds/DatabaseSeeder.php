@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Satis2020\ServicePackage\Database\Seeds\IncomingMailNotifMetadataSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -163,6 +164,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
         $this->call(RevokeTokensSeeder::class);
+        $this->call(IncomingMailNotifMetadataSeeder::class);
 
 
 
