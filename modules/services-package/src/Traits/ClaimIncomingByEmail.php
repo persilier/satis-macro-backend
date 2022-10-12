@@ -3,7 +3,6 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -14,7 +13,6 @@ use Satis2020\ServicePackage\Models\Institution;
 use Illuminate\Support\Facades\Config;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
-use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 
 trait ClaimIncomingByEmail
 {
@@ -190,6 +188,7 @@ trait ClaimIncomingByEmail
                 $mailContent = $email['plainMessage'];
 
                 $references = array_unique(array_merge(extractClaimRefs($mailContent), extractClaimRefs($mailSubject)));
+                $number =  extractPhoneNumber($mailContent);
                 $claimExists = [false];
 
                 if (count($references) > 0) {
@@ -207,6 +206,18 @@ trait ClaimIncomingByEmail
                     }
                 } else {
                     $error = true;
+                    if (!empty($number)){
+                        $claim = Claim::query()
+                            ->with('claimer')
+                            ->where('reference',$references)
+                            ->first();
+
+                        if ($claim){
+                            $claimer = $claim->claimer;
+                            $claimer->update(['telephone' => $number]);
+                            $error = false;
+                        }
+                    }
                 }
 
             } catch (\Exception $e) {

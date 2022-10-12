@@ -30,7 +30,9 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
     {
         $this->claim = $claim;
 
-        $this->event = $this->getNotification('acknowledgment-of-receipt');
+        $event = $claim->claimObject && $claim->claimObject!=null?
+            'acknowledgment-of-receipt':'acknowledgment-of-receipt-incoming';
+        $this->event = $this->getNotification($event);
 
         if ($claim->claimObject && $claim->claimObject!=null){
             $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
