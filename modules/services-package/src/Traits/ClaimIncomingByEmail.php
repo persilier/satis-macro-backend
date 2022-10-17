@@ -17,6 +17,7 @@ use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 
 trait ClaimIncomingByEmail
 {
+use ClaimsCategoryPrediction;
 
     protected function rulesIncomingEmail($id)
     {
@@ -244,10 +245,13 @@ trait ClaimIncomingByEmail
                 ]);
             }
 
+            $claim_object_id = $this->allClaimsCategoryPrediction($claim['description']);
+
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
                 'description' => $claim['description'],
                 'plain_text_description' => $claim['plain_text_description'],
+                'claim_object_id' => $claim_object_id,
                 'status' => $status,
                 'claimer_id' => $identity->id,
                 "institution_targeted_id" => $configuration->institution_id,

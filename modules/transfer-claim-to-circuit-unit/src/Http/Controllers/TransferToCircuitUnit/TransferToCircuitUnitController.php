@@ -11,11 +11,12 @@ use Satis2020\ServicePackage\Rules\UnitCanTreatRules;
 use Satis2020\ServicePackage\Rules\UnitIsParentRules;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Traits\HandleTreatment;
+use Satis2020\ServicePackage\Traits\UnitsPrediction;
 
 class TransferToCircuitUnitController extends ApiController
 {
 
-    use HandleTreatment, AwaitingAssignment;
+    use HandleTreatment, AwaitingAssignment, UnitsPrediction;
 
     public function __construct()
     {
@@ -68,6 +69,10 @@ class TransferToCircuitUnitController extends ApiController
         $claim = $this->transferToUnit($request, $claim);
 
         return response()->json($claim, 201);
+    }
+
+    public function getUnitsPrediction($description,$object){
+       return response($this->allUnitsPrediction($description,$object));
     }
 
 }
