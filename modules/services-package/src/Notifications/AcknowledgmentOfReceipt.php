@@ -64,14 +64,14 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      *
      * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         $ref = formatClaimRef($this->claim->reference);
 
         return (new MailMessage)
-            ->subject("${$ref} Accusé de reception")
+            ->subject("$ref Accusé de reception")
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
