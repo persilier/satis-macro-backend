@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
@@ -37,7 +38,11 @@ class DashboardController extends ApiController
     public function index(Request $request)
     {
         $this->validate($request, [
-            'institution_targeted_id' => 'nullable|exists:institutions,id'
+            'institution_targeted_id' => 'nullable|exists:institutions,id',
+            'type' => 'required|in:day,period,month,30days,45days,3months',
+            'day' => [Rule::requiredIf(in_array($request->type, ['day'])), 'date_format:Y-m-d'],
+            'date_start' => [Rule::requiredIf(in_array($request->type, ['period'])), 'date_format:Y-m-d'],
+            'date_end' => [Rule::requiredIf(in_array($request->type, ['period'])), 'date_format:Y-m-d','after_or_equal:date_start'],
         ]);
 
         $permissions = Auth::user()->getAllPermissions();
@@ -105,9 +110,23 @@ class DashboardController extends ApiController
                 $request->has('institution_targeted_id') ? $q->where('institution_targeted_id', $request->institution_targeted_id) : $q->where('institution_targeted_id', '!=', NULL);
             })
             ->get()
-            ->map(function ($claim, $key) use ($statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics, $pointOfServicesTargeted, $institutionsTargeted) {
+            ->map(function ($claim, $key) use ($request, $statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics, $pointOfServicesTargeted, $institutionsTargeted) {
 
-                if ($claim->created_at->between(Carbon::now()->subDays(30), Carbon::now())) {
+               if ($request->type == "day"){
+                   $periode = $claim->created_at->between($request->day, $request->day);
+               } elseif ($request->type == "period"){
+                   $periode = $claim->created_at->between($request->date_start, $request->date_end);
+               } elseif ($request->type == "month"){
+                  $periode = $claim->created_at->between(Carbon::now()->startOfMonth(),Carbon::now()->endOfMonth());
+               } elseif ($request->type == "30days"){
+                   $periode = $claim->created_at->between(Carbon::now()->subDays(30), Carbon::now());
+               } elseif ($request->type == "45days"){
+                   $periode = $claim->created_at->between(Carbon::now()->subDays(45), Carbon::now());
+               } elseif ($request->type == "3months"){
+                   $periode = $claim->created_at->between(Carbon::now()->subMonth(3), Carbon::now());
+               }
+
+                if ($periode) {
 
                     // totalRegistered
                     $totalClaimsRegisteredStatistics->put('total', ($totalClaimsRegisteredStatistics->get('total') + 1));
