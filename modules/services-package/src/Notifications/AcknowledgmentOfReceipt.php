@@ -6,8 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Channels\MessageChannel;
+use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
 
 /**
  * Class AcknowledgmentOfReceipt
@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Channels\MessageChannel;
  */
 class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification, ClaimIncomingByEmail;
 
     public $claim;
     public $event;
@@ -75,7 +75,8 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
-            ]);
+            ])
+            ->replyTo($this->getConfiguration($this->claim->institution_targeted_id)->email);
     }
 
     /**

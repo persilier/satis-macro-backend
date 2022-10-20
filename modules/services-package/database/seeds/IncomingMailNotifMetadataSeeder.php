@@ -33,7 +33,7 @@ class IncomingMailNotifMetadataSeeder extends Seeder
                     [
                         'event' => 'acknowledgment-of-receipt-incoming',
                         'description' => "Notification envoyée au réclamant après enregistrement d'une réclamation",
-                        'text' => "Votre reclamation a ete enregistree avec succes. Reference: {claim_reference}. Objet : {claim_object}. Veuillez ajouter votre numéro sous ce format {numéro}"
+                        'text' => "Votre reclamation a été enregistrée avec succes. Référence: {claim_reference}. Veuillez répondre à ce mail en spécifiant votre numéro de téléphone sous ce format {numéro}."
                     ],
                     [
                         'event' => 'register-a-claim',

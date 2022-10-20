@@ -312,4 +312,10 @@ trait ClaimIncomingByEmail
         return $identity;
     }
 
+    protected function getConfiguration($institutionId)
+    {
+        return EmailClaimConfiguration::query()
+            ->where('institution_id',$institutionId)
+            ->first();
+    }
 }
