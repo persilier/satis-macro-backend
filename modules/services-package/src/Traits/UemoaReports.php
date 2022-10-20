@@ -379,6 +379,7 @@ trait UemoaReports{
             'relationShip' => $this->relationShip($claim),
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
+            'reference' => $claim->reference,
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
             'telephone' => $this->telephone($claim),
             'agence' =>  $this->agence($claim),
