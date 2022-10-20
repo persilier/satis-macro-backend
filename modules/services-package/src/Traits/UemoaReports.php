@@ -380,6 +380,7 @@ trait UemoaReports{
             'client' => $this->client($claim),
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
             'telephone' => $this->telephone($claim),
+            'reference' => $claim->reference,
             'agence' =>  $this->agence($claim),
             'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
             'claimObject' => optional($claim->claimObject)->name,
