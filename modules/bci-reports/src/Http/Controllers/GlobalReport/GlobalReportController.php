@@ -43,12 +43,15 @@ class GlobalReportController extends ApiController
         if ($request->isNotFilled('year')){
             $request->merge(['year'=>date('Y')]);
         }
+        if ($request->isNotFilled('timelimit')){
+            $request->merge(['timelimit'=>45]);
+        }
 
         $this->validate($request, [
             'year' => 'required|date_format:Y',
         ]);
 
-        return response()->json($this->getGlobalReportsByMonths($this->institution()->id,$request->year));
+        return response()->json($this->getGlobalReportsByMonths($this->institution()->id,$request));
     }
 
 

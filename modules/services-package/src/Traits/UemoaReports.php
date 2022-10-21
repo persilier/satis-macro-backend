@@ -707,13 +707,14 @@ trait UemoaReports{
 
     /**
      * @param $itemObject
+     * @param int $timelimit
      * @return mixed
      */
-    protected function totalTreatedOutRegulatoryDelay($itemObject){
+    protected function totalTreatedOutRegulatoryDelay($itemObject,$timelimit){
 
-        return $itemObject->filter(function ($item){
+        return $itemObject->filter(function ($item) use($timelimit){
 
-            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($this->getRegulatoryLimit()) > $item->activeTreatment->validated_at));
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($timelimit) > $item->activeTreatment->validated_at));
 
         })->count();
     }
@@ -738,10 +739,10 @@ trait UemoaReports{
      * @param $claims
      * @return mixed
      */
-    protected function totalOutRegulatoryDelay($claims){
+    protected function totalOutRegulatoryDelay($claims,$timelimit){
 
-        return $claims->filter(function ($item){
-            return ($item->created_at->copy()->addWeekdays($this->getRegulatoryLimit()) < now());
+        return $claims->filter(function ($item) use($timelimit){
+            return ($item->created_at->copy()->addWeekdays($timelimit) < now());
         })->count();
     }
 
