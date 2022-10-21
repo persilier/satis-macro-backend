@@ -8,11 +8,12 @@ trait BCIReportsTrait
 {
 
     //get Global Reports By Months
-    protected function getGlobalReportsByMonths($institutionId, $year)
+    protected function getGlobalReportsByMonths($institutionId, $request)
     {
 
         $currentYear = date("Y");
-
+        $year = $request->year;
+        $timeLimit = $request->timelimit;
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
         if ($year===$currentYear){
@@ -70,8 +71,8 @@ trait BCIReportsTrait
                             'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                             'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                             'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                            'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims)),
-                            'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims)),
+                            'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
+                            'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
                         ];
                     }
                     array_push($monthlyClaims, $data);
@@ -115,8 +116,8 @@ trait BCIReportsTrait
                                 'totalRemaining' => ($decemberLastYearClaims->count() - $this->totalTreated($decemberLastYearClaims)),
                                 'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($decemberLastYearClaims)),
                                 'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($decemberLastYearClaims)),
-                                'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($decemberLastYearClaims)),
-                                'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($decemberLastYearClaims)),
+                                'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($decemberLastYearClaims),$timeLimit),
+                                'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($decemberLastYearClaims),$timeLimit),
                                 ];
                         }
                         $previousMonth = $decemberData;
@@ -198,12 +199,14 @@ trait BCIReportsTrait
 
 
     //get Condensed Annual Reports
-    protected function getCondensedAnnualReports($institutionId, $year)
+    protected function getCondensedAnnualReports($institutionId, $request)
     {
         $yearlyClaims = [];
+        $year = $request->year;
+        $timeLimit = $request->timelimit;
 
         //get collection of previous year report
-        $previousYearData = $this->getPreviousYearGlobalReport($institutionId, $year);
+        $previousYearData = $this->getPreviousYearGlobalReport($institutionId, $request);
 
         //group yearly total claims by category and object
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
@@ -233,8 +236,8 @@ trait BCIReportsTrait
                         'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                         'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                         'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims)),
-                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims)),
+                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
+                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
                     ];
                 }
                 array_push($yearlyClaims, $data);
@@ -310,10 +313,12 @@ trait BCIReportsTrait
     }
 
     //get Previous Year Global Report (total of claim by category and object)
-    protected function getPreviousYearGlobalReport($institutionId, $year)
+    protected function getPreviousYearGlobalReport($institutionId, $request)
     {
 
         $allData = [];
+        $year = $request->year;
+        $timeLimit = $request->timelimit;
         $previousYear = $year - 1;
 
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
@@ -343,8 +348,8 @@ trait BCIReportsTrait
                         'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                         'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                         'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims)),
-                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims)),
+                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
+                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
                     ];
                 }
                 array_push($allData, $data);
