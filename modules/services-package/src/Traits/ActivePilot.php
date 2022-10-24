@@ -31,6 +31,14 @@ trait ActivePilot
         return $user->hasRole($roleName);
     }
 
+    protected function allowOnlyActivePilot($staff)
+    {
+        if (!$staff->is_active_pilot) {
+            return $this->errorResponse('Unauthorized', 401);
+        }
+        return  true;
+    }
+
     protected function getPilotRoleNameByInstitution($institution)
     {
         // we verify if he has an institution type

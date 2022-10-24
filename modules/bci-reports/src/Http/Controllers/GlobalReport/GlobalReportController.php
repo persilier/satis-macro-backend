@@ -26,7 +26,7 @@ class GlobalReportController extends ApiController
         $this->middleware('permission:bci-monthly-reports')->only(['index']);
 
         if ($this->checkIfStaffIsPilot($this->staff())){
-            $this->middleware('permission:active.pilot')->only(['index']);
+            $this->allowOnlyActivePilot($this->staff());
         }
     }
 

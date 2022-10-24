@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ trait DataUserNature
     protected $staff;
 
     /**
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      * @throws RetrieveDataUserNatureException
      */
     protected function user()
