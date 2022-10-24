@@ -1,8 +1,11 @@
 <?php
+
 namespace Satis2020\ServicePackage\Http\Middleware;
+
 use Closure;
+use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Traits\ApiResponser;
-use Illuminate\Support\Facades\Auth;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 
 class ActivePilot
@@ -12,10 +15,10 @@ class ActivePilot
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function handle($request, Closure $next)
     {

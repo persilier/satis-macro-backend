@@ -26,7 +26,7 @@ class GlobalCondensedAnnualReportController extends ApiController
         $this->middleware('permission:bci-annual-reports')->only(['index']);
 
         if ($this->checkIfStaffIsPilot($this->staff())){
-            $this->middleware('permission:active.pilot')->only(['index']);
+            $this->allowOnlyActivePilot($this->staff());
         }
     }
 
@@ -53,7 +53,5 @@ class GlobalCondensedAnnualReportController extends ApiController
 
         return response()->json( $this->getCondensedAnnualReports($this->institution()->id,$request));
     }
-
-
-
+    
 }

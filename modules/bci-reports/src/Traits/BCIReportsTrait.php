@@ -16,9 +16,9 @@ trait BCIReportsTrait
         $timeLimit = $request->timelimit;
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-        if ($year===$currentYear){
+        if ($year === $currentYear) {
             $monthNumber = date('m');
-            $months = range(1,$monthNumber);
+            $months = range(1, $monthNumber);
         }
 
         $monthsNames = [
@@ -71,8 +71,8 @@ trait BCIReportsTrait
                             'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                             'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                             'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                            'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
-                            'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
+                            'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims), $timeLimit),
+                            'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims), $timeLimit),
                         ];
                     }
                     array_push($monthlyClaims, $data);
@@ -91,8 +91,8 @@ trait BCIReportsTrait
                         })->first();
                     } else {
                         $decemberLastYearClaims = $object->claims()
-                            ->whereYear("created_at","<" ,$year)
-                           // ->whereMonth("created_at", 12)
+                            ->whereYear("created_at", "<", $year)
+                            // ->whereMonth("created_at", 12)
                             ->get();
 
                         if (empty($decemberLastYearClaims)) {
@@ -116,9 +116,9 @@ trait BCIReportsTrait
                                 'totalRemaining' => ($decemberLastYearClaims->count() - $this->totalTreated($decemberLastYearClaims)),
                                 'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($decemberLastYearClaims)),
                                 'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($decemberLastYearClaims)),
-                                'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($decemberLastYearClaims),$timeLimit),
-                                'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($decemberLastYearClaims),$timeLimit),
-                                ];
+                                'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($decemberLastYearClaims), $timeLimit),
+                                'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($decemberLastYearClaims), $timeLimit),
+                            ];
                         }
                         $previousMonth = $decemberData;
                     }
@@ -236,8 +236,8 @@ trait BCIReportsTrait
                         'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                         'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                         'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
-                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
+                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims), $timeLimit),
+                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims), $timeLimit),
                     ];
                 }
                 array_push($yearlyClaims, $data);
@@ -348,8 +348,8 @@ trait BCIReportsTrait
                         'totalRemaining' => ($claims->count() - $this->totalTreated($claims)),
                         'totalTreatedOutDelay' => $this->totalTreatedOutDelay($this->claimTreated($claims)),
                         'totalRemainingOutDelay' => $this->totalOutDelay($this->claimsNotTreated($claims)),
-                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims),$timeLimit),
-                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims),$timeLimit),
+                        'totalTreatedOutRegulatoryDelay' => $this->totalTreatedOutRegulatoryDelay($this->claimTreated($claims), $timeLimit),
+                        'totalRemainingOutRegulatoryDelay' => $this->totalOutRegulatoryDelay($this->claimsNotTreated($claims), $timeLimit),
                     ];
                 }
                 array_push($allData, $data);
