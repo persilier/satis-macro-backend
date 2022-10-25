@@ -83,7 +83,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'activity-log',
                     'list-notification-proof',
                     'config-reporting-claim-any-institution',
-                    'list-notification-proof',
+                    'export-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot" => [
@@ -105,6 +105,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
+                    'pilot-export-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',

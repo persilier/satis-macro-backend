@@ -25,6 +25,7 @@ class Constants
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
+    const NOTIFICATION_PROOF= 'notification-proof';
 
 
     static public function  paginationSize()
@@ -85,6 +86,9 @@ class Constants
             ],
             [
                 'value' => self::GLOBAL_REPORTING, 'label' => 'Rapport consolidé et rapport spécifique par institution'
+            ],
+            [
+                'value' => self::NOTIFICATION_PROOF, 'label' => 'Preuve d\'Accusé de réception'
             ],
 
         ];
