@@ -93,6 +93,27 @@ class NotificationProofRepository
         return $query->get();
     }
 
+
+    /**
+     * @param $institutionId
+     * @param $request
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getByInstitutionAndFilterToExport($institutionId, $request)
+    {
+        $query = $this->notificationProof->newQuery()
+            ->with('to')
+            ->where('institution_id', $institutionId);
+        if (!is_null($request)) {
+            if ($request->has('date_start') && $request->has('date_end')) {
+                $query = $query->whereBetween('sent_at',
+                    [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
+                );
+            }
+        }
+
+        return $query->get();
+    }
     /***
      * @param $institutionId
      * @param $request
