@@ -61,9 +61,11 @@ class ExportToPdfIndependantNotificationProofController extends ApiController
 
     public function allProof($request){
       $proof = $this->notificationProofService->filterInstitutionNotificationProofTtoExport($this->institution()->id,$request)->toArray();
-      $period = $request->date_start. ' au '.$request->date_end;
+      $period = \Carbon\Carbon::parse($request->date_start)->format('d M Y') . ' au '. \Carbon\Carbon::parse($request->date_end)->format('d M Y');
+
       return [
           'institution'=>$this->institution(),
+          'logo'=> $this->logo($this->institution()),
           'title' => $this->getMetadataByName(Constants::NOTIFICATION_PROOF)->title,
           'description' => $this->getMetadataByName(Constants::NOTIFICATION_PROOF)->description,
           'colorTableHeader' => $this->colorTableHeader(),
