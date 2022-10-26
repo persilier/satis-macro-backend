@@ -2,7 +2,7 @@
 @section('content')
     <div style="">
         <div class="text-center">
-            {{--           <img src="{{ $data['logo'] }}" alt="logo" style="height: 3.5em; border-radius: .1em; border:1px solid #F3F3F3;">--}}
+            <img src="{{ $data['logo'] }}" alt="logo" style="height: 3.5em; border-radius: .1em; border:1px solid #F3F3F3;">
         </div>
         <div class="text-center" style="font-size: 15px;font-weight: bold">@if($data['report_title']) {{ $data['report_title'] }} @endif</div>
         <div class="text-center" style="font-size: 12px">Période : @if($data['libellePeriode']) {{ $data['libellePeriode'] }} @endif</div>
