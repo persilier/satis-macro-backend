@@ -207,13 +207,6 @@ trait ClaimIncomingByEmail
                                 }
 
                             }
-                        }else{
-                            $claim = $this->getDataIncomingEmail($email, $typeText);
-
-                            if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
-                                $error = true;
-                            }
-                            break;
                         }
                     }
                 }else{
