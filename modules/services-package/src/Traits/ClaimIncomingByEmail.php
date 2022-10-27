@@ -189,33 +189,31 @@ trait ClaimIncomingByEmail
 
                 $references = array_unique(array_merge(extractClaimRefs($mailContent), extractClaimRefs($mailSubject)));
                 $number =  extractPhoneNumber($mailContent);
-                $claimExists = [false];
 
-                if (count($references) > 0) {
+                if (!empty($references)) {
                     foreach ($references as $reference) {
-                        array_push($claimExists,claimsExists([$reference]));
-                        $claimExists = array_unique($claimExists);
-                    }
-                }
-
-                if (count($claimExists)==1 && $claimExists[0]==false) {
-                    $claim = $this->getDataIncomingEmail($email, $typeText);
-
-                    if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
                         $error = true;
-                    }
-                } else {
-                    $error = true;
-                    if (!empty($number)){
-                        $claim = Claim::query()
-                            ->with('claimer')
-                            ->where('reference',$references)
-                            ->first();
+                        if (claimsExists($reference)){
+                            if (!empty($number)){
+                                $claim = Claim::query()
+                                    ->with('claimer')
+                                    ->where('reference',$reference)
+                                    ->first();
 
-                        if ($claim){
-                            $claimer = $claim->claimer;
-                            $claimer->update(['telephone' => $number]);
-                            $error = false;
+                                if ($claim){
+                                    $claimer = $claim->claimer;
+                                    $claimer->update(['telephone' => $number]);
+                                    $error = false;
+                                }
+
+                            }
+                        }else{
+                            $claim = $this->getDataIncomingEmail($email, $typeText);
+
+                            if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                                $error = true;
+                            }
+                            break;
                         }
                     }
                 }

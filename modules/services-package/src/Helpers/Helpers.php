@@ -48,7 +48,7 @@ function getTagContents($string, $tag_open = '[', $tag_close = ']')
     return $result;
 }
 
-function claimsExists($references)
+function claimsExists($reference)
 {
-    return Claim::query()->whereIn('reference',$references)->count()>0;
+    return Claim::query()->where('reference',$reference)->first()!=null;
 }

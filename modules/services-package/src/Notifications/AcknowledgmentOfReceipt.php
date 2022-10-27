@@ -71,12 +71,13 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
         $ref = formatClaimRef($this->claim->reference);
 
         return (new MailMessage)
+            ->replyTo($this->getConfiguration($this->claim->institution_targeted_id)->email,env('MAIL_FROM_NAME'))
             ->subject("$ref Accusé de reception")
-            ->markdown('ServicePackage::mail.claim.feedback', [
+            ->markdown('ServicePackage::mail.claim.feedback',
+                [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
-            ])
-            ->replyTo($this->getConfiguration($this->claim->institution_targeted_id)->email);
+                ]);
     }
 
     /**
