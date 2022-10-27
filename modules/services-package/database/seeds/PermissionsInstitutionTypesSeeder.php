@@ -102,6 +102,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+            'list-notification-proof','pilot-list-notification-proof',
+            'export-notification-proof','pilot-export-notification-proof',
         ];
 
         $filialPermissions = [
@@ -263,6 +265,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'show-my-staff-monitoring',
+            'list-notification-proof','pilot-list-notification-proof',
+            'export-notification-proof','pilot-export-notification-proof',
             'list-unit-revivals','list-staff-revivals'
         ];
 

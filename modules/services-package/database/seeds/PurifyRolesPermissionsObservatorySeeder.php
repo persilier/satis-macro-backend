@@ -80,6 +80,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
                     "any-email-claim-configuration",
                     'list-notification-proof',
+                    'export-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot" => [
@@ -101,6 +102,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
+                    'pilot-export-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "supervisor-observatory" => [],
