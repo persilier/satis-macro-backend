@@ -216,6 +216,12 @@ trait ClaimIncomingByEmail
                             break;
                         }
                     }
+                }else{
+                    $claim = $this->getDataIncomingEmail($email, $typeText);
+
+                    if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                        $error = true;
+                    }
                 }
 
             } catch (\Exception $e) {
