@@ -56,6 +56,7 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'relationShip' => 'Relation avec le réclamant',
             'typeClient' => 'Type Client',
             'client' => 'Client',
+            'reference' => 'Référence',
             'account' => 'N° compte',
             'telephone' => 'Téléphone',
             'agence' => 'Agence',
