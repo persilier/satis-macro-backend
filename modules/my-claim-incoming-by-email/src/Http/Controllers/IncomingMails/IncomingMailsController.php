@@ -14,12 +14,12 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class IncomingMailsController extends Controller
 {
-    use ClaimIncomingByEmail, TestSmtpConfiguration, CreateClaim, DataUserNature, VerifyUnicity,Notification;
+    use ClaimIncomingByEmail, TestSmtpConfiguration, CreateClaim, DataUserNature, VerifyUnicity, Notification;
 
     public function __construct()
     {
-        //$this->middleware('set.language');
-        //$this->middleware('client.credentials');
+        $this->middleware('set.language');
+        $this->middleware('client.credentials');
     }
 
 
