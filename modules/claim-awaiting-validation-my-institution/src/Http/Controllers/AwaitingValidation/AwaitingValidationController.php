@@ -32,12 +32,16 @@ class AwaitingValidationController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(), 200);
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true,$paginationSize, $key, $type), 200);
     }
 
     /**
