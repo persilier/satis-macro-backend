@@ -40,6 +40,11 @@ return [
             'channels' => ['single'],
             'ignore_exceptions' => false,
         ],
+        'database' => [
+            'driver' => 'custom',
+            'via' => danielme85\LaravelLogToDB\LogToDbHandler::class,
+            'name' => 'Satis DB Logging'
+        ],
 
         'single' => [
             'driver' => 'single',
