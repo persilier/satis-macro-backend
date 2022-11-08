@@ -4,6 +4,8 @@
 namespace Satis2020\ServicePackage\Consts;
 
 
+use Satis2020\ServicePackage\Models\Claim;
+
 class Constants
 {
 
@@ -122,5 +124,29 @@ class Constants
         }
         return $names;
     }
+
+    static function getSatisYearsFromCreation()
+    {
+        $years = [];
+        $firstClaim = Claim::withTrashed()->orderBy('created_at','ASC')->first();
+        if ($firstClaim!=null){
+            $installationYear = (int)date("Y",strtotime($firstClaim->created_at));
+        }else{
+            $installationYear = (int)date('Y');
+        }
+        $currentYear = (int)date('Y');
+
+        $diffInYear = $currentYear - $installationYear;
+        if ($diffInYear==0){
+            $years = [['label'=>date('Y'),"value"=>date('Y')]];
+        }else{
+            for ($i=0; $i<=$diffInYear;$i++){
+                array_push($years,["label"=>$currentYear-$i,"value"=>$currentYear-$i]);
+            }
+        }
+
+        return $years;
+    }
+
 
 }
