@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
+use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UserTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 /**
@@ -20,7 +21,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class UserController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, UserTrait;
+    use IdentiteVerifiedTrait, VerifyUnicity, UserTrait, Metadata;
 
     protected $activityLogService;
 
