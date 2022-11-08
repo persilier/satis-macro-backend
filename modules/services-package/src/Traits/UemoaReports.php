@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
@@ -358,7 +359,7 @@ trait UemoaReports{
 
             });
 
-      });
+        });
 
         return $claimCollection;
 
@@ -378,8 +379,10 @@ trait UemoaReports{
             'relationShip' => $this->relationShip($claim),
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
+            'reference' => $claim->reference,
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
             'telephone' => $this->telephone($claim),
+            'reference' => $claim->reference,
             'agence' =>  $this->agence($claim),
             'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
             'claimObject' => optional($claim->claimObject)->name,
@@ -704,6 +707,47 @@ trait UemoaReports{
         })->count();
     }
 
+    /**
+     * @param $itemObject
+     * @param int $timelimit
+     * @return mixed
+     */
+    protected function totalTreatedOutRegulatoryDelay($itemObject,$timelimit){
+
+        return $itemObject->filter(function ($item) use($timelimit){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($timelimit) > $item->activeTreatment->validated_at));
+
+        })->count();
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutDelay($claims){
+
+        return $claims->filter(function ($item){
+            return ($item->created_at->copy()->addWeekdays($item->time_limit) < now());
+        })->count();
+    }
+
+    protected function getRegulatoryLimit()
+    {
+        return (int)json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data);
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutRegulatoryDelay($claims,$timelimit){
+
+        return $claims->filter(function ($item) use($timelimit){
+            return ($item->created_at->copy()->addWeekdays($timelimit) < now());
+        })->count();
+    }
+
 
     /**
      * @param $itemObject
@@ -787,6 +831,32 @@ trait UemoaReports{
         })->count();
     }
 
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function claimTreated($claims){
+
+        return $claims->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at);
+
+        });
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function claimsNotTreated($claims){
+
+        return $claims->filter(function ($item){
+
+            return (!$item->activeTreatment || !$item->activeTreatment->validated_at);
+        });
+    }
+
+
 
     /**
      * @param $itemObject
@@ -839,7 +909,7 @@ trait UemoaReports{
      */
     protected function colorTableHeader(){
 
-       return "#7F9CF5";
+        return "#7F9CF5";
     }
 
 

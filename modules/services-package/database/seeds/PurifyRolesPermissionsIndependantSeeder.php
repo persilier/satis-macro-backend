@@ -89,6 +89,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'logout-user-my-institution',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'export-notification-proof'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -111,6 +113,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'pilot-list-notification-proof',
                     'config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof',
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [

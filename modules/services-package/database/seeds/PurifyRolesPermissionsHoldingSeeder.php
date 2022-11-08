@@ -85,6 +85,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-any-notification-proof',
                     'config-reporting-claim-any-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'export-notification-proof'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -110,6 +112,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -148,9 +152,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 } else {
                     // sync permissions
                     foreach ($permissions as $permissionName) {
-                        if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
-                            Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
-                        }
+                            Permission::query()->updateOrCreate(
+                                ['name' => $permissionName],
+                                ['name' => $permissionName, 'guard_name' => 'api','institution_types' => $institutionTypes]);
                     }
 
                     $role->syncPermissions($permissions);

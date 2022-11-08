@@ -112,6 +112,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof'
+
         ];
 
         $filialPermissions = [
@@ -150,6 +153,9 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof'
+
         ];
 
         $observatoryPermissions = [
@@ -289,6 +295,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'system-my-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

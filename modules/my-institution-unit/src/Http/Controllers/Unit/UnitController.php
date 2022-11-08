@@ -58,10 +58,7 @@ class UnitController extends ApiController
         'unitTypes' => UnitType::all(),
         'units' => $this->getAllUnitByInstitution($this->institution()->id),
         'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-        'countries'=>Country::query()
-            ->where('region', 'Africa')
-            ->with('states')
-            ->get()
+        'countries'=> $countryService->getCountries()
     ], 200);
 
     }

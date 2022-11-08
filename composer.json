@@ -102,6 +102,7 @@
     "satis2020/benchmarking-report": "^1.0",
     "satis2020/system-efficiency-report-my-institution": "^1.0",
     "satis2020/global-report": "^1.0",
+    "satis2020/bci-reports": "^1.0",
     "ext-curl": "*",
     "satis2020/countries-package": "dev-main"
   },
@@ -777,6 +778,13 @@
     {
       "type": "vcs",
       "url":  "https://github.com/FathDMD/satis2020-countries-package"
+    },
+    {
+      "type": "path",
+      "url": "modules/bci-reports/",
+      "options": {
+        "symlink": true
+      }
     }
   ]
 }

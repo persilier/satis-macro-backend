@@ -25,6 +25,9 @@ class Constants
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
+    const NOTIFICATION_PROOF= 'notification-proof';
+    const ALL_STAFF = "allStaff";
+
 
 
     static public function  paginationSize()
