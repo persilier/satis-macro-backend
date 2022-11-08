@@ -1,7 +1,6 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
-use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
-use Satis2020\ServicePackage\Http\Controllers\StateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,5 +12,10 @@ use Satis2020\ServicePackage\Http\Controllers\StateController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('satis-years',[SatisYearController::class,"index"])->name('satis.years');
-Route::get("country/{country_id}/states", [StateController::class,"index"])->name("country.states");
+/**
+ * Global  Report
+ */
+
+
+    Route::post('/bci-reports/global', 'GlobalReport\GlobalReportController@index')->name('bci-reports.global');
+    Route::post('/bci-reports/global-condensed', 'GlobalReport\GlobalCondensedAnnualReportController@index')->name('bci-reports.global-condensed');

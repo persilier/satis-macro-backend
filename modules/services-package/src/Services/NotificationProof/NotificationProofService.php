@@ -28,7 +28,6 @@ class NotificationProofService
     }
 
     /***
-     * @param $institutionId
      * @param $paginate
      * @return mixed
      */
@@ -57,6 +56,17 @@ class NotificationProofService
     public function filterInstitutionNotificationProofs($institutionId, $request, $paginate)
     {
         return $this->proofRepository->getByInstitutionAndFilter($institutionId, $request, $paginate);
+    }
+
+    /***
+     * @param $institutionId
+     * @param $request
+     * @param $paginate
+     * @return mixed
+     */
+    public function filterInstitutionNotificationProofTtoExport($institutionId, $request)
+    {
+        return $this->proofRepository->getByInstitutionAndFilterToExport($institutionId, $request);
     }
 
     /***
