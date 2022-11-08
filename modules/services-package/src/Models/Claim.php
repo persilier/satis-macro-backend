@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, AwaitingAssignment;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     /**
      * The "booted" method of the model.
@@ -95,7 +96,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType','lastRevival'];
+    protected $appends = ['timeExpire', 'accountType','lastRevival','is_rejected','is_duplicate'];
 
     /**
      * @return mixed
@@ -284,5 +285,18 @@ class Claim extends Model
         return collect($this->revivals)->sortByDesc('created_at')->first();
     }
 
+    public function getIsRejectedAttribute()
+    {
+        if (!is_null($this->activeTreatment) && !is_null($this->activeTreatment->rejected_at) && !is_null($this->activeTreatment->rejected_reason)
+            && !is_null($this->activeTreatment->responsibleUnit)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getIsDuplicateAttribute()
+    {
+        return $this->getDuplicatesQuery($this->getClaimsQuery($this->attributes['institution_targeted_id']), $this)->exists();
+    }
 
 }
