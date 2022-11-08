@@ -53,7 +53,7 @@ class DeletingTestData extends Command
     {
         $appNature = Config::get('services.app_nature', 'PRO');
 
-        if ($appNature === 'PRO') {
+       // if ($appNature === 'PRO') {
             $this->info('--------------------------- VIDAGE DES DONNEES TESTS -----------------------------');
             $this->warn('------------------------ CETTE ACTION EST IRREVERSIBLE --------------------------');
             if ($this->confirm('êtes-vous sûr de vouloir supprimer les données tests ? (yes|no)[no]',true)) {
@@ -80,6 +80,6 @@ class DeletingTestData extends Command
             } else {
                 $this->info('Suppression annulée...');
             }
-        }
+      //  }
     }
 }
