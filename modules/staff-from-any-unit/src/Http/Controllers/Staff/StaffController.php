@@ -53,11 +53,13 @@ class StaffController extends ApiController
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
         $unit_id = \request()->query('unit_id');
-
+        $institutionId = \request()->query('institution_id');
 
         return response()->json(
             Staff::with(['identite', 'position', 'unit', 'institution'])
-                ->where('institution_id', $this->institution()->id)
+                ->when(request()->filled('institution_id'),function (Builder $builder) use($institutionId){
+                    return $builder->where('institution_id', $institutionId);
+                })
                 ->when(request()->filled('unit_id'),function (Builder $builder) use($unit_id){
                     return $builder->where('unit_id',$unit_id);
                 })
