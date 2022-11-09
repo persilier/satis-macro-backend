@@ -52,7 +52,7 @@ trait UpdateClaim
 
             if (!$verifyPhone['status']) {
 
-                throw new CustomException("We can't perform your request. The phone number  belongs to someone else");
+                throw new CustomException(["errors" => ["telephone" => ["We can't perform your request. The phone number  belongs to someone else"]]],422);
 
             }
         }
@@ -64,7 +64,7 @@ trait UpdateClaim
 
             if (!$verifyEmail['status']) {
 
-                throw new CustomException("We can't perform your request. The email address  belongs to someone else");
+                throw new CustomException(["errors" => ["email" => ["We can't perform your request. The email address  belongs to someone else"]]],422);
 
             }
 

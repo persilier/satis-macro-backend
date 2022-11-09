@@ -2,14 +2,12 @@
 
 
 namespace Satis2020\ServicePackage\Traits;
-use Illuminate\Support\Facades\DB;
+
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Rules\ExplodeEmailRules;
 use Satis2020\ServicePackage\Rules\ExplodeTelephoneRules;
-use Satis2020\ServicePackage\Rules\NameModelRules;
 
 /**
  * Trait ImportIdentite
@@ -27,19 +25,18 @@ trait ImportIdentite
      */
     public function explodeValueRow($row, $keyRow, $separator = '/', $phone = false)
     {
-        if(array_key_exists($keyRow, $row)) {
+        if (array_key_exists($keyRow, $row)) {
             // put keywords into array
             $datas = explode($separator, $row[$keyRow]);
             $i = 0;
             $values = [];
-            foreach($datas as $data)
-            {
+            foreach ($datas as $data) {
                 $values[$i] = $phone ? preg_replace("/\s+/", "", $data) : $data;
                 $i++;
             }
 
             if ($keyRow === 'email') {
-                foreach ($values as $key => $value){
+                foreach ($values as $key => $value) {
                     $values[$key] = trim(strtolower($value));
                 }
             }
@@ -54,7 +51,8 @@ trait ImportIdentite
     /**
      * @return array
      */
-    protected function rulesIdentite(){
+    protected function rulesIdentite()
+    {
 
         $rules = [
             'firstname' => 'required|string',
@@ -74,14 +72,14 @@ trait ImportIdentite
     }
 
 
-
     /**
      * @param $row
      * @return mixed
      */
-    protected function mergeMyInstitution($row){
+    protected function mergeMyInstitution($row)
+    {
 
-        if(!$this->myInstitution){
+        if (!$this->myInstitution) {
 
             $row['institution'] = $this->myInstitution;
 
@@ -89,8 +87,6 @@ trait ImportIdentite
 
         return $row;
     }
-
-
 
 
     /**
@@ -101,18 +97,13 @@ trait ImportIdentite
      */
     public function getIdInstitution($row, $keyRow, $column)
     {
-        if(array_key_exists($keyRow, $row)) {
+        if (array_key_exists($keyRow, $row)) {
             // put keywords into array
             try {
-
                 $data = Institution::where($column, $row[$keyRow])->first()->id;
-
             } catch (\Exception $exception) {
-
                 $data = null;
-
             }
-
             $row[$keyRow] = $data;
         }
 
@@ -125,11 +116,12 @@ trait ImportIdentite
      * @param $row
      * @return mixed
      */
-    protected function getIdentite($row){
+    protected function getIdentite($row)
+    {
 
         $identite = $this->handleInArrayUnicityVerification($row['email'], 'identites', 'email');
 
-        if(!$identite['status']){
+        if (!$identite['status']) {
 
             $identite = $identite['entity'];
 
@@ -154,14 +146,15 @@ trait ImportIdentite
      * @param $row
      * @return array
      */
-    protected function fillableIdentite($row){
+    protected function fillableIdentite($row)
+    {
         return [
             'firstname' => $row['firstname'],
-            'lastname'  => $row['lastname'],
-            'sexe'      => $row['sexe'],
+            'lastname' => $row['lastname'],
+            'sexe' => $row['sexe'],
             'telephone' => $row['telephone'],
-            'email'     => $row['email'],
-            'ville'     => $row['ville'],
+            'email' => $row['email'],
+            'ville' => $row['ville'],
         ];
     }
 
