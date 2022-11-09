@@ -79,10 +79,13 @@ trait ImportIdentite
     protected function mergeMyInstitution($row)
     {
 
+<<<<<<< HEAD
         if (!$this->myInstitution) {
 
+=======
+        if ($this->myInstitution) {
+>>>>>>> 5ed8cad17ee2acde3612c34124e15a1d2e61b2ea
             $row['institution'] = $this->myInstitution;
-
         }
 
         return $row;
