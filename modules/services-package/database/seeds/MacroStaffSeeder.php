@@ -22,13 +22,15 @@ class MacroStaffSeeder extends Seeder
         $sexe = ['M','F'];
 
         $firstName =  $faker->firstName;
+        $lastName =   $faker->lastName;
+        $email = strtolower($firstName.$lastName.mt_rand(100,999))."@dmdconsult.com";
         return $identity = Identite::create([
             'id' => (string)Str::uuid(),
             'firstname' => $firstName,
-            'lastname' => $faker->lastName,
+            'lastname' => $lastName,
             'sexe' => $sexe[random_int(0,1)],
             'telephone' => [mt_rand(10000000,99999999)],
-            'email' => ["$firstName@dmdconsult.com"],
+            'email' => [$email],
         ]);
     }
 
