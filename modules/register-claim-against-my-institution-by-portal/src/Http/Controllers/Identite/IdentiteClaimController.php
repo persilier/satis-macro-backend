@@ -13,13 +13,14 @@ use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\StaffManagement;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class IdentiteClaimController extends Controller
 {
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone, Notification;
 
     public function __construct()
     {
