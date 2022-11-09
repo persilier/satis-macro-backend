@@ -27,7 +27,7 @@ class MacroStaffSeeder extends Seeder
             'firstname' => $firstName,
             'lastname' => $faker->lastName,
             'sexe' => $sexe[random_int(0,1)],
-            'telephone' => [$faker->phoneNumber],
+            'telephone' => [mt_rand(10000000,99999999)],
             'email' => ["$firstName@dmdconsult.com"],
         ]);
     }
