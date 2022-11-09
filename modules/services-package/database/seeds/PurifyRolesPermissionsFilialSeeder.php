@@ -54,13 +54,12 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'update-active-pilot',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
-                    'list-auth-config','update-auth-config',
                     'list-notification-proof',
-                    'config-reporting-claim-my-institution',
-                    'config-reporting-claim-my-institution',
                     'export-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                    'logout-user-my-institution',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -82,11 +81,11 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'pilot-export-notification-proof',
-                    'list-regulatory-reporting-claim-my-institution',
-                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'system-my-efficiency-report',
-                    'config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -105,7 +104,11 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-unit-revivals','list-staff-revivals',
+                    'revive-staff',
+
                 ]
             ];
 

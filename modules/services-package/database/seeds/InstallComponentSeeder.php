@@ -273,7 +273,7 @@ class InstallComponentSeeder extends Seeder
                     ],
                     'object' => [
                         'type' => 'text',
-                        'value' => "Objet de réclamation",
+                        'value' => "Object de réclamation",
                     ],
                     'object_placeholder' => [
                         'type' => 'text',

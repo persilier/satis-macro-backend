@@ -56,21 +56,16 @@ class DelaiQualificationTreatmentSeeder extends Seeder
             ],
         ];
 
-        Metadata::query()->updateOrCreate(
-            [   'name' => 'delai-qualification-parameters'],
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'delai-qualification-parameters',
-                'data' => json_encode($qualification_parameters)
+        Metadata::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'delai-qualification-parameters',
+            'data' => json_encode($qualification_parameters)
+        ]);
 
-            ]);
-
-        Metadata::query()->updateOrCreate(
-            [   'name' => 'delai-treatment-parameters'],
-            [
-                'id' => (string)Str::uuid(),
-                'name' => 'delai-treatment-parameters',
-                'data' => json_encode($treatments_parameters)
+        Metadata::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'delai-treatment-parameters',
+            'data' => json_encode($treatments_parameters)
         ]);
 
     }

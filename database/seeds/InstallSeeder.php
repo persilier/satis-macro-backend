@@ -22,14 +22,9 @@ class InstallSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdatePermissionsDescriptionSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallSeverityLevelSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\AuthConfigSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\RoleDescriptionSeed::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
-        $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
 
 
