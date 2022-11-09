@@ -3,8 +3,11 @@
 namespace Satis2020\StaffFromAnyUnit\Http\Controllers\ImportExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\Staff;
+use Satis2020\ServicePackage\Imports\Staff\TransactionStaffImport;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -35,34 +38,34 @@ class ImportController extends ApiController
             'etat_update' => 'required|boolean',
             'stop_identite_exist' => 'required|boolean'
         ]);
-
         $datas = [
             'status' => true,
             'staffs' => ''
         ];
-
         $file = $request->file('file');
-
         $myInstitution = false;
-
         $unitRequired = true;
-
         $stop_identite_exist = $request->stop_identite_exist;
-
         $etat = $request->etat_update;
+        $institutions = Institution::query()->get(['id', 'name']);
 
-        $imports = new Staff($etat, $unitRequired, $myInstitution, $stop_identite_exist);
 
-        $imports->import($file);
+        $data = compact("etat","unitRequired","myInstitution","stop_identite_exist","institutions");
+        $transaction =  new TransactionStaffImport(
+            $myInstitution,
+            $data
+        );
 
-        if($imports->getErrors()){
+        Excel::import($transaction, $request->file('file'));
 
-            $datas = [
+        $this->activityLogService->store("Importation des staffs",
+            $this->institution()->id,
+            ActivityLogService::IMPORTATION,
+            'staff',
+            $this->user()
+        );
 
-                'status' => false,
-                'staffs' => $imports->getErrors()
-            ];
-        }
+        $datas['errors'] = $transaction->getImportErrors();
 
         $this->activityLogService->store("Importation des staffs",
             $this->institution()->id,
