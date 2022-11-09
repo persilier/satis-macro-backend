@@ -531,7 +531,9 @@ trait UemoaReports{
             'treated' => 'Traité',
             'rejected' => 'rejeté',
             'unfounded' => 'Non fondé',
-            'validated' => 'Validé'
+            'validated' => 'Validé',
+            'unsatisfied' => 'Insatisfait',
+            'closed' => 'Cloturé'
         ];
     }
 
