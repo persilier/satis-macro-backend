@@ -46,23 +46,15 @@ trait UserTrait
 
         $users = User::with(['identite.staff', 'roles']);
 
-        if($myInstitution){
-
+        if ($myInstitution) {
             $institution = $this->institution();
-
             $users = $users->whereHas('identite', function($query) use ($institution){
-
                 $query->whereHas('staff', function($q) use ($institution){
-
                     $q->where('institution_id', $institution->id);
-
                 });
-
             });
         }
-
         return $users->get();
-
     }
 
     /**

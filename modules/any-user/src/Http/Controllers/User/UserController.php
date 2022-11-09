@@ -43,9 +43,7 @@ class UserController extends ApiController
      */
     public function index()
     {
-
         $users = $this->getAllUser();
-
         return response()->json($users,200);
     }
 
