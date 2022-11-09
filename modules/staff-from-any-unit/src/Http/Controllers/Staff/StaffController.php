@@ -4,6 +4,7 @@ namespace Satis2020\StaffFromAnyUnit\Http\Controllers\Staff;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Satis2020\InstitutionPackage\Http\Resources\Institution as InstitutionResource;
@@ -45,23 +46,28 @@ class StaffController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
-        return response()->json(Staff::with(['identite', 'position', 'unit', 'institution'])
-            ->when($recherche !=null,function(Builder $query) use ($recherche ) {
-                $query
-                    ->leftJoin('identites', 'staff.identite_id', '=', 'identites.id')
-                    ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
-                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
-                    ->orwhereJsonContains('telephone', $recherche)
-                    ->orwhereJsonContains('email', $recherche);
-            })
-            ->paginate($paginationSize),
-            200);
+        $unit_id = \request()->query('unit_id');
+
+
+        return response()->json(
+            Staff::with(['identite', 'position', 'unit', 'institution'])
+                ->where('institution_id', $this->institution()->id)
+                ->when(request()->filled('unit_id'),function (Builder $builder) use($unit_id){
+                    return $builder->where('unit_id',$unit_id);
+                })
+                ->whereHas('identite', function($query) use ($recherche) {
+                    return $query
+                        ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                        ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                        ->orwhereJsonContains('telephone', $recherche)
+                        ->orwhereJsonContains('email', $recherche);
+                })->paginate($paginationSize));
     }
 
     /**
@@ -171,11 +177,15 @@ class StaffController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param \Satis2020\ServicePackage\Models\Staff $staff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Staff $staff)
     {
+        $staff = $staff->load('identite.user');
+        if ($staff->identite && $staff->identite()->has('user')){
+            abort(Response::HTTP_FORBIDDEN,"Impossible de supprimer cet agent, il est lié a un compte utilisateur.");
+        }
         $staff->delete();
 
         return response()->json($staff, 200);

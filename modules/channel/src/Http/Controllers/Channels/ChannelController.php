@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Illuminate\Support\Str;
 
 class ChannelController extends ApiController
 {
@@ -41,8 +42,12 @@ class ChannelController extends ApiController
      */
     public function store(Request $request)
     {
-
-        $request->merge(['is_response' => false]);
+        $request->replace([
+            'name' => Str::upper($request->name)
+        ]);
+        $request->merge([
+            'is_response' => false,
+        ]);
 
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('channels', 'name')],
@@ -77,7 +82,9 @@ class ChannelController extends ApiController
      */
     public function update(Request $request, Channel $channel)
     {
-
+        $request->replace([
+            'name' => Str::upper($request->name)
+        ]);
         $request->merge(['is_response' => false]);
 
         $rules = [
