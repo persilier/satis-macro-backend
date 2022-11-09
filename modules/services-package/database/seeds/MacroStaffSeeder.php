@@ -53,7 +53,8 @@ class MacroStaffSeeder extends Seeder
             'identite_id' => $identity->id,
             'position_id' => Position::all()->random()->id,
             'institution_id' => $unit->institution->id,
-            'unit_id' => $unit->id
+            'unit_id' => $unit->id,
+            'feedback_preferred_channels' => ["email"]
         ]);
     }
 
