@@ -188,7 +188,7 @@ class MessageApiMethod
             "api_secret" => "s_hZkQBxGDwY3f89MOlw0CEp4tumR818pP"
         ];
 
-        $response =   Http::withHeaders([
+        $response = Http::withHeaders([
             'Content-Type' => 'application/json'
         ])->post('https://extranet.nghcorp.net/api/send-sms', $data)->json();
 
