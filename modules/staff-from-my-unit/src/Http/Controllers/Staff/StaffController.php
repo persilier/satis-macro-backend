@@ -194,7 +194,7 @@ class StaffController extends ApiController
     {
         $staff = $staff->load('identite.user');
         if ($staff->identite && $staff->identite()->has('user')){
-            abort(Response::HTTP_FORBIDDEN,"Impossible de supprimer ce staff, il a un compte utilisateur");
+            abort(Response::HTTP_FORBIDDEN,"Impossible de supprimer cet agent, il est lié a un compte utilisateur.");
         }
         $staff->delete();
 
