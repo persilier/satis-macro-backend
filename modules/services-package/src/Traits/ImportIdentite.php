@@ -81,10 +81,8 @@ trait ImportIdentite
      */
     protected function mergeMyInstitution($row){
 
-        if(!$this->myInstitution){
-
+        if ($this->myInstitution) {
             $row['institution'] = $this->myInstitution;
-
         }
 
         return $row;
@@ -104,13 +102,9 @@ trait ImportIdentite
         if(array_key_exists($keyRow, $row)) {
             // put keywords into array
             try {
-
                 $data = Institution::where($column, $row[$keyRow])->first()->id;
-
             } catch (\Exception $exception) {
-
                 $data = null;
-
             }
 
             $row[$keyRow] = $data;

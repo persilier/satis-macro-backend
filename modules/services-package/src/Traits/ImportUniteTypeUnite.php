@@ -34,7 +34,7 @@ trait ImportUniteTypeUnite
             'description_unite' => ['nullable', 'string'],
         ];
 
-        if ($this->withoutInstituion) {
+        if ($this->withoutInstitution) {
 
             $rules['name_unite'] = ['required', new ImportUnitUnicityRule(['belongTable' => 'unit_types',
                     'belongColumn' => 'name', 'foreignKey' => 'unit_type_id',
