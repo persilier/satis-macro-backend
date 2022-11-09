@@ -41,7 +41,7 @@ class NotificationProofRepository
     public function getAll($pagination)
     {
         return $this->notificationProof->newQuery()
-            ->with("institution","to")
+            ->with("institution", "to")
             ->get();
     }
 
@@ -63,36 +63,36 @@ class NotificationProofRepository
      * @param $institutionId
      * @param $request
      * @param $paginate
-     * @return Builder[]|Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getByInstitutionAndFilter($institutionId, $request ,$paginate)
+    public function getByInstitutionAndFilter($institutionId, $request, $paginate)
     {
         $query = $this->notificationProof->newQuery()
             ->with('to')
             ->where('institution_id', $institutionId);
-        if (!is_null($request)) {
 
+        if (!is_null($request)) {
             if ($request->has('channel')) {
                 $query = $query->where('channel', $request->channel);
             }
 
             if ($request->has('to')) {
-                $query = $query->whereHas("to",function ($query) use ($request){
-                    $query->where('firstname', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('lastname', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('telephone', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('email', 'LIKE','%'.$request->to.'%');
+                $query = $query->whereHas("to", function ($query) use ($request) {
+                    $query->where('firstname', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('lastname', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('telephone', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('email', 'LIKE', '%' . $request->to . '%');
                 });
             }
 
             if ($request->has('date_start') && $request->has('date_end')) {
                 $query = $query->whereBetween('sent_at',
-                    [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
+                    [Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
                 );
             }
         }
 
-        return $query->get();
+        return $query->paginate($paginate);
     }
 
 
@@ -109,7 +109,7 @@ class NotificationProofRepository
         if (!is_null($request)) {
             if ($request->has('date_start') && $request->has('date_end')) {
                 $query = $query->whereBetween('sent_at',
-                    [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
+                    [Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
                 );
             }
         }
@@ -122,9 +122,9 @@ class NotificationProofRepository
      * @param $paginate
      * @return Builder[]|Collection
      */
-    public function getAllAndFilter($request ,$paginate)
+    public function getAllAndFilter($request, $paginate)
     {
-        $query = $this->notificationProof->with('institution','to');
+        $query = $this->notificationProof->with('institution', 'to');
         if (!is_null($request)) {
             if ($request->has('institution_id')) {
                 $query = $query->where('institution_id', $request->institution_id);
@@ -135,17 +135,17 @@ class NotificationProofRepository
             }
 
             if ($request->has('to')) {
-                $query = $query->whereHas("to",function ($query) use ($request){
-                    $query->where('firstname', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('lastname', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('telephone', 'LIKE','%'.$request->to.'%')
-                        ->orWhere('email', 'LIKE','%'.$request->to.'%');
+                $query = $query->whereHas("to", function ($query) use ($request) {
+                    $query->where('firstname', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('lastname', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('telephone', 'LIKE', '%' . $request->to . '%')
+                        ->orWhere('email', 'LIKE', '%' . $request->to . '%');
                 });
             }
 
             if ($request->has('date_start') && $request->has('date_end')) {
                 $query = $query->whereBetween('sent_at',
-                    [ Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
+                    [Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay()]
                 );
             }
         }

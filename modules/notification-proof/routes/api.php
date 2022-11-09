@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Satis2020\AuthConfig\Http\Controllers\AuthConfigController;
+use Satis2020\NotificationProof\Http\Controllers\ExportToPdfIndependantNotificationProofController;
 use Satis2020\NotificationProof\Http\Controllers\IndependantNotificationProofController;
 use Satis2020\NotificationProof\Http\Controllers\NotificationProofController;
 
@@ -21,5 +22,7 @@ use Satis2020\NotificationProof\Http\Controllers\NotificationProofController;
  */
 
 Route::post('my/notifications/proofs/{pagination?}', [IndependantNotificationProofController::class,"index"])->name('my.notif.proof.index');
-Route::post('notifications/proofs/{pagination?}',  [NotificationProofController::class,"index"])->name('notif.proof.index');
+Route::post('any/notifications/proofs/{pagination?}',  [NotificationProofController::class,"index"])->name('notif.proof.index');
 Route::get('notifications/proofs/create',  [NotificationProofController::class,"create"])->name('notif.proof.create');
+Route::post('my/export/notifications/proofs/', [ExportToPdfIndependantNotificationProofController::class,"index"])->name('my.notif.proof.index');
+
