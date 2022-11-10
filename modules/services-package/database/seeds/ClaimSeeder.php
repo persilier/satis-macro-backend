@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\User;
 use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Database\Seeder;
@@ -17,6 +18,16 @@ class ClaimSeeder extends Seeder
      */
     public function run()
     {
-        factory(Claim::class, 15)->create();
+        $units = Unit::with('institution.institutionType')
+            ->whereHas('institution.institutionType',function ($query){
+                $query->where('name','<>','holding');
+            })->get();
+
+        foreach ($units as $unit)
+        {
+            $this->command->info(" Génération des réclamation pour l'institution {$unit->name} cours....");
+            factory(Claim::class, 50)->create(['institution_targeted_id' => $unit->institution_id]);
+            $this->command->info(" Génération des réclamation pour terminée !");
+        }
     }
 }
