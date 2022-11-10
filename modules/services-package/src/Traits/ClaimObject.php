@@ -32,7 +32,7 @@ trait ClaimObject
                 'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name', 'id', "{$claimObject->id}")],
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
-                'severity_levels_id' => 'required,exists:severity_levels,id',
+                'severity_levels_id' => 'required|exists:severity_levels,id',
                 'time_limit' => 'required|integer|min:0',
                 'others' => 'array',
             ];
@@ -44,7 +44,7 @@ trait ClaimObject
                 'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
-                'severity_levels_id' => 'required,exists:severity_levels,id',
+                'severity_levels_id' => 'required|exists:severity_levels,id',
                 'time_limit' => 'required|integer|min:0',
                 'others' => 'array',
             ];
