@@ -23,7 +23,7 @@ trait HandleTreatment
         return $activeTreatment;
     }
 
-    protected function transferToUnit($request, $claim)
+    protected function transferToUnit($request, $claim,$sendNotif=true)
     {
         $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
 
@@ -43,17 +43,17 @@ trait HandleTreatment
 
         $claim->update(['status' => 'transferred_to_unit']);
 
-        \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
-
-        $activityLogService = app(ActivityLogService::class);
-        $activityLogService->store("Plainte transférée à une unité",
-            $this->institution()->id,
-            ActivityLogService::TRANSFER_TO_UNIT,
-            'claim',
-            $this->user(),
-            $claim
-        );
-
+        if ($sendNotif){
+            \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
+            $activityLogService = app(ActivityLogService::class);
+            $activityLogService->store("Plainte transférée à une unité",
+                $this->institution()->id,
+                ActivityLogService::TRANSFER_TO_UNIT,
+                'claim',
+                $this->user(),
+                $claim
+            );
+        }
         return $claim;
     }
 
