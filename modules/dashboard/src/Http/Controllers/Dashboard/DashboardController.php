@@ -42,6 +42,10 @@ class DashboardController extends ApiController
 
         $permissions = Auth::user()->getAllPermissions();
 
+        $institutions = Institution::query()->whereHas('institutionType', function ($query) {
+            $query->where('name','<>','holding');
+        })->get();
+
         // initialise statistics collection
         $statistics = $this->getDataCollection($this->getStatisticsKeys(), $permissions);
 
@@ -68,7 +72,7 @@ class DashboardController extends ApiController
         );
 
         // initialise institutionsTargeted collection
-        $institutionsTargeted = $this->getDataCollection(Institution::all()->pluck('name'),
+        $institutionsTargeted = $this->getDataCollection($institutions->pluck('name'),
             $permissions->filter(function ($value, $key) {
                 return $value->name != 'show-dashboard-data-my-institution' && $value->name != 'show-dashboard-data-my-unit' && $value->name != 'show-dashboard-data-my-activity';
             })
@@ -233,7 +237,7 @@ class DashboardController extends ApiController
             });
 
         $statisticsDashboard = [
-            'institutions' => Institution::all(),
+            'institutions' => $institutions,
             'statistics' => $statistics,
             'channelsUse' => $channelsUse,
             'claimObjectsUse' => $claimObjectsUse,
