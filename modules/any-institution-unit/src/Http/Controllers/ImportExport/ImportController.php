@@ -4,6 +4,7 @@ namespace Satis2020\AnyInstitutionUnit\Http\Controllers\ImportExport;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Imports\UniteTypeUnite;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
@@ -28,7 +29,7 @@ class ImportController extends ApiController
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
+     * @throws RetrieveDataUserNatureException
      */
     public function importUnitTypeUnit(Request $request){
 
