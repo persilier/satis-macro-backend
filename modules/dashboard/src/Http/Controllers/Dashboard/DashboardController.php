@@ -233,7 +233,9 @@ class DashboardController extends ApiController
             });
 
         $statisticsDashboard = [
-            'institutions' => Institution::all(),
+            'institutions' => Institution::query()->whereHas('institutionType', function($query){
+                $query->where('name','<>','holding');
+            }),
             'statistics' => $statistics,
             'channelsUse' => $channelsUse,
             'claimObjectsUse' => $claimObjectsUse,
