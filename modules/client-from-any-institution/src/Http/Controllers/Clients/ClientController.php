@@ -37,11 +37,11 @@ class ClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:list-client-from-any-institution')->only(['index']);
+      /*  $this->middleware('permission:list-client-from-any-institution')->only(['index']);
         $this->middleware('permission:store-client-from-any-institution')->only(['create', 'store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['edit', 'update']);
-        $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);
+        $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);*/
 
         $this->activityLogService = $activityLogService;
     }
@@ -281,13 +281,13 @@ class ClientController extends ApiController
 
         $account->secureDelete('claims');
 
-        $this->activityLogService->store('Suppression du numéro de compte d\'un client',
+       /* $this->activityLogService->store('Suppression du numéro de compte d\'un client',
             $this->institution()->id,
             $this->activityLogService::DELETED,
             'account',
             $this->user(),
             $account
-        );
+        );*/
 
         return response()->json($account, 201);
     }
