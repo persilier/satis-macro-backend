@@ -53,7 +53,7 @@ class AssignClaimToStaffSeeder extends Seeder
                     $claim->activeTreatment->update([
                         'responsible_staff_id' => $staff->random()->id,
                         'assigned_to_staff_by' => $unit->lead_id,
-                        'assigned_to_staff_at' => (string)Carbon::parse($claim->created_at)->addDays(random_int(1, 3))
+                        'assigned_to_staff_at' => date('Y-m-d H:i:s', strtotime(Carbon::parse($claim->created_at)->addDays(random_int(1, 3))))
                     ]);
 
                     $claim->update(['status' => 'assigned_to_staff']);
