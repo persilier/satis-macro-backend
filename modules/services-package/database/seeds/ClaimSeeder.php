@@ -17,8 +17,6 @@ class ClaimSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Claim::flushEventListeners();
-        factory(\Satis2020\ServicePackage\Models\Claim::class, 15)->create();
+        factory(Claim::class, 15)->create();
     }
 }

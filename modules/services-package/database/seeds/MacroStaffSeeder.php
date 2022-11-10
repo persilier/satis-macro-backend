@@ -71,7 +71,7 @@ class MacroStaffSeeder extends Seeder
         $units = Unit::with('institution.institutionType') ->get();
         foreach ($units as $unit) {
             $this->command->info("--------------------------- INSTITUTION {$unit->name} ---------------------------");
-            $roles = Role::query()->where('name','like',"%holding%")->get();
+            $roles = Role::query()->get();
             foreach ($roles as $role){
                 $this->command->info("Création des agents pour le rôle {$role->name}...");
 
