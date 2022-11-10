@@ -35,7 +35,12 @@ class ClaimArchivedController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getClaim('archived')->get();
+        $paginationSize = \request()->query('size');
+        $recherche = \request()->query('key');
+        $institutionId = \request()->query('institution_id');
+
+        $claims = $this->getAllMyClaim('archived',true, $paginationSize,$recherche,$institutionId);
+
         return response()->json($claims, 200);
     }
 

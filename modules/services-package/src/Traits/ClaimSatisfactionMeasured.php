@@ -75,13 +75,15 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
-     * @return array
+     * @return mixed
      */
 
-    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null){
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null,$institutionId=null){
         return $paginate
             ?$this->getClaim($status)
-                ->where('institution_targeted_id', $this->institution()->id)
+                ->when($institutionId!=null,function ($builder)use($institutionId){
+                    $builder->where('institution_targeted_id', $institutionId);
+                })
                 ->when($key,function (Builder $query1) use ($key) {
                     $query1->where('reference' , 'LIKE', "%$key%")
 
@@ -97,8 +99,13 @@ trait ClaimSatisfactionMeasured
                         });
                 })->paginate($paginationSize)
 
-            :$this->getClaim($status)->get()->filter(function ($item){
-                return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            :$this->getClaim($status)
+                ->when($institutionId!=null,function ($builder)use($institutionId){
+                    $builder->where('institution_targeted_id', $institutionId);
+                })
+                ->get()
+                ->filter(function ($item) use($institutionId){
+                return ($institutionId && $item->activeTreatment->responsibleStaff &&$institutionId === $item->activeTreatment->responsibleStaff->institution_id);
             })->values();
 
     }
