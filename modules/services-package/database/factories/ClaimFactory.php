@@ -6,7 +6,11 @@ use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Satis2020\ServicePackage\Models\Channel;
+use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\User;
 
 /*
@@ -49,25 +53,28 @@ $factory->define(\Satis2020\ServicePackage\Models\Claim::class, function (Faker 
     }
 
     $sexe = $faker->randomElement(['male', 'female']);
-    $claimer = \Satis2020\ServicePackage\Models\Identite::create([
-        'firstname' => $faker->firstName($sexe),
-        'lastname' => $faker->lastName,
+    $firstName = $faker->firstName($sexe);
+    $lastName = $faker->lastName;
+    $email = strtolower($firstName.$lastName.mt_rand(100,999))."@dmdconsult.com";
+    $claimer = Identite::query()->create([
+        'firstname' => $firstName,
+        'lastname' => $lastName,
         'sexe' => strtoupper(substr($sexe, 0, 1)),
-        'telephone' => [$faker->phoneNumber],
-        'email' => [$faker->safeEmail]
+        'telephone' => [mt_rand(1000000,99999999)],
+        'email' => [$email]
     ]);
 
     return [
         'id' => (string)Str::uuid(),
         'description' => $faker->text,
-        'claim_object_id' => \Satis2020\ServicePackage\Models\ClaimObject::all()->random()->id,
+        'claim_object_id' => ClaimObject::all()->random()->id,
         'claimer_id' => $claimer->id,
-        'institution_targeted_id' => \Satis2020\ServicePackage\Models\Institution::all()->random()->id,
-        'request_channel_slug' => \Satis2020\ServicePackage\Models\Channel::all()->random()->slug,
-        'response_channel_slug' => \Satis2020\ServicePackage\Models\Channel::where('is_response', true)->get()->random()->slug,
+        'institution_targeted_id' => Institution::all()->random()->id,
+        'request_channel_slug' => Channel::all()->random()->slug,
+        'response_channel_slug' => Channel::where('is_response', true)->get()->random()->slug,
         'event_occured_at' => $faker->date('Y-m-d H:i:s'),
         'amount_disputed' => $faker->numberBetween(50000, 1000000),
-        'amount_currency_slug' => \Satis2020\ServicePackage\Models\Currency::all()->random()->slug,
+        'amount_currency_slug' => Currency::all()->random()->slug,
         'is_revival' => $faker->randomElement([true, false]),
         'created_by' => $user->identite->staff->id,
         'status' => 'full',
