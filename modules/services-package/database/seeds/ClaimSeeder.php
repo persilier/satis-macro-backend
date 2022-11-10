@@ -26,7 +26,7 @@ class ClaimSeeder extends Seeder
         foreach ($units as $unit)
         {
             $this->command->info(" Génération des réclamation pour l'institution {$unit->name} cours....");
-            factory(Claim::class, 50)->create(['institution_targeted_id' => $unit->institution_id]);
+            factory(Claim::class, 10)->create(['institution_targeted_id' => $unit->institution_id]);
             $this->command->info(" Génération des réclamation pour terminée !");
         }
     }

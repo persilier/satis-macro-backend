@@ -37,7 +37,7 @@ class ClaimValidatedSeeder extends Seeder
 
             Claim::query()->where('status','assigned_to_staff')
                 ->where('institution_targeted_id',$unit->institution_id)
-                ->inRandomOrder()->take(30)->chunk(5,function ($claims) use($faker,$unit){
+                ->inRandomOrder()->take(5)->chunk(5,function ($claims) use($faker,$unit){
                 foreach ($claims as $claim) {
 
                     //register a treatment

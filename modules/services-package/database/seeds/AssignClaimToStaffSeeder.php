@@ -39,7 +39,7 @@ class AssignClaimToStaffSeeder extends Seeder
         foreach ($units as $unit){
             $this->command->info("Assignation des réclamations des réclamation pour l'institution {$unit->name} cours....");
 
-            Claim::query()->where('institution_targeted_id',$unit->institution_id)->inRandomOrder()->take(40)->chunk(5,function ($claims) use($faker,$unit){
+            Claim::query()->where('institution_targeted_id',$unit->institution_id)->inRandomOrder()->take(8)->chunk(2,function ($claims) use($faker,$unit){
                 foreach ($claims as $claim) {
 
                     $request = new Request();
