@@ -48,8 +48,8 @@ class ClaimValidatedSeeder extends Seeder
                         'amount_returned' => $claim->amount_disputed,
                         'solution' => $faker->text,
                         'preventive_measures' => $faker->text,
-                        'solved_at' => Carbon::parse($claim->activeTreatment->assigned_to_staff_at)->addDays(random_int(1,3)),
-                        'validated_at' => Carbon::parse($claim->activeTreatment->assigned_to_staff_at)->addDays(random_int(3,6)),
+                        'solved_at' => (string) Carbon::parse($claim->activeTreatment->assigned_to_staff_at)->addDays(random_int(1,3)),
+                        'validated_at' => (string) Carbon::parse($claim->activeTreatment->assigned_to_staff_at)->addDays(random_int(3,6)),
                     ]);
 
                     //update claim

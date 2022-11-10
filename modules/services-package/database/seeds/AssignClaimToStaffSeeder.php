@@ -39,7 +39,7 @@ class AssignClaimToStaffSeeder extends Seeder
         foreach ($units as $unit){
             $this->command->info("Assignation des réclamations des réclamation pour l'institution {$unit->name} cours....");
 
-            Claim::query()->where('institution_targeted_id',$unit->institution_id)->inRandomOrder()->take(8)->chunk(2,function ($claims) use($faker,$unit){
+            Claim::query()->where('institution_targeted_id',$unit->institution_id)->inRandomOrder()->take(1)->chunk(1,function ($claims) use($faker,$unit){
                 foreach ($claims as $claim) {
 
                     $request = new Request();
@@ -51,10 +51,11 @@ class AssignClaimToStaffSeeder extends Seeder
                     $claim = $claim->refresh()->load('activeTreatment');
 
                     $staff = $this->getTargetedStaffFromUnit($unit->id);
+
                     $claim->activeTreatment->update([
-                        'responsible_staff_id' => $staff->random()->first()->id,
+                        'responsible_staff_id' => $staff->random()->id,
                         'assigned_to_staff_by' => $unit->lead_id,
-                        'assigned_to_staff_at' => Carbon::parse($faker->dateTimeBetween($claim->created_at, 'now', $timezone = null))]);
+                        'assigned_to_staff_at' => (string) Carbon::parse( $faker->dateTimeBetween($claim->created_at, 'now', $timezone = null))]);
 
                     $claim->update(['status' => 'assigned_to_staff']);
                 }
