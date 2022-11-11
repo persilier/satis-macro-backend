@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\User;
 
 /*
@@ -65,6 +66,11 @@ $factory->define(Claim::class, function (Faker $faker, $institutionId = null) {
         'email' => [$email]
     ]);
 
+    $targetedUnits  = Unit::query()
+        ->where('institution_id',$institutionId['institution_targeted_id'])
+        ->whereHas('unitType',function ($query){
+            $query->where('can_be_target',true);
+        })->get();
 
     return [
         'id' => (string)Str::uuid(),
@@ -80,6 +86,7 @@ $factory->define(Claim::class, function (Faker $faker, $institutionId = null) {
         'is_revival' => $faker->randomElement([true, false]),
         //'created_by' => $user->identite->staff->id,
         'status' => 'full',
+        'unit_targeted_id' => $targetedUnits->random()->id,
         'reference' => createReference($institutionId['institution_targeted_id']),
         'claimer_expectation' => $faker->text,
         'created_at' => Carbon::parse($faker->dateTimeBetween('-11 months')),

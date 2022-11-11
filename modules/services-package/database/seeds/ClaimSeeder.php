@@ -21,7 +21,8 @@ class ClaimSeeder extends Seeder
         $units = Unit::with('institution.institutionType')
             ->whereHas('institution.institutionType',function ($query){
                 $query->where('name','<>','holding');
-            })->get();
+            })
+            ->get();
 
         foreach ($units as $unit)
         {
