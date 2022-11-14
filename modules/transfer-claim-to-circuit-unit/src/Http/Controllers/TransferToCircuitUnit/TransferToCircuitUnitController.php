@@ -20,7 +20,7 @@ class TransferToCircuitUnitController extends ApiController
 
     public function __construct()
     {
-        parent::__construct();
+       parent::__construct();
 
         $this->middleware('auth:api');
 
@@ -56,7 +56,6 @@ class TransferToCircuitUnitController extends ApiController
      */
     public function update(Request $request, Claim $claim)
     {
-
         $rules = [
             'unit_id' => [
                 'required', 'exists:units,id', new UnitBelongsToInstitutionRules($this->institution()->id),
