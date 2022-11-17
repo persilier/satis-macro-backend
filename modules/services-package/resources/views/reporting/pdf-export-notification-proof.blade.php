@@ -24,6 +24,7 @@
                 <tr>
                     <td>
                         {{isset($proof['to']['firstname']) ? $proof['to']['firstname'].' '.$proof['to']['lastname']:'--'}}
+                        {{ isset($proof['to']['email']) && !empty($proof['to']['email'])  ? ' / '.$proof['to']['email'][0]: '-'}}
                     </td>
                     <td>{{$proof['channel']}}</td>
                     <td>{{$proof['message']}}</td>
@@ -38,7 +39,7 @@
                 <th>Destinataire</th>
                 <th>Canal</th>
                 <th>Contenu/message</th>
-                <th>Date</th>
+                <th style="width: 130px">Date</th>
                 <th>Statut</th>
             </tr>
             </tfoot>
