@@ -378,7 +378,7 @@ trait UemoaReports{
             'relationShip' => $this->relationShip($claim),
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
-            'account' => $claim->accountTargeted ? $claim->accountTargeted->number : '',
+            'account' => $claim->accountTargeted ? $claim->accountTargeted->number : $claim['account_number'],
             'telephone' => $this->telephone($claim),
             'agence' =>  $this->agence($claim),
             'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
@@ -528,7 +528,9 @@ trait UemoaReports{
             'treated' => 'Traité',
             'rejected' => 'rejeté',
             'unfounded' => 'Non fondé',
-            'validated' => 'Validé'
+            'validated' => 'Validé',
+            'unsatisfied' => 'Insatisfait',
+            'closed' => 'Clôturé'
         ];
     }
 
