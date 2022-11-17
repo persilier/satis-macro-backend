@@ -54,8 +54,9 @@ class ExportToPdfIndependantNotificationProofController extends ApiController
     public function index(NotificationProofRequest $request)
     {
         $data = $this->allProof($request);
-        //Pdf::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
+
         $pdf = Pdf::loadView('ServicePackage::reporting.pdf-export-notification-proof', compact('data'));
+        $pdf->setPaper('A4', 'landscape');
         return $pdf->download('NotificationProof.pdf');
     }
 
