@@ -64,14 +64,14 @@ class ExportToPdfIndependantNotificationProofController extends ApiController
       $period = \Carbon\Carbon::parse($request->date_start)->format('d M Y') . ' au '. \Carbon\Carbon::parse($request->date_end)->format('d M Y');
 
       return [
-          'institution'=>$this->institution(),
+          'institution' => $this->institution(),
           'logo'=> $this->logo($this->institution()),
           'title' => $this->getMetadataByName(Constants::NOTIFICATION_PROOF)->title,
           'description' => $this->getMetadataByName(Constants::NOTIFICATION_PROOF)->description,
           'colorTableHeader' => $this->colorTableHeader(),
-          'libellePeriode'=>$period,
-          'report_title'=>$this->getMetadataByName(Constants::NOTIFICATION_PROOF)->title,
-          'proof'=>$proof
+          'libellePeriode' => $period,
+          'report_title' => $this->getMetadataByName(Constants::NOTIFICATION_PROOF)->title,
+          'proof' => $proof
       ];
     }
 
