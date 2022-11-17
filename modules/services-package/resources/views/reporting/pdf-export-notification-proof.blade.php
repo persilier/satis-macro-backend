@@ -39,7 +39,7 @@
                 <th>Destinataire</th>
                 <th>Canal</th>
                 <th>Contenu/message</th>
-                <th style="width: 130px">Date</th>
+                <th style="width: 150px">Date</th>
                 <th>Statut</th>
             </tr>
             </tfoot>
