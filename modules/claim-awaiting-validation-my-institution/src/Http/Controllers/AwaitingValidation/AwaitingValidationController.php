@@ -41,7 +41,11 @@ class AwaitingValidationController extends ApiController
      */
     public function index()
     {
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(), 200);
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true,$paginationSize, $key, $type), 200);
     }
 
     /**

@@ -40,30 +40,33 @@ class AwaitingAssignmentController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getClaimsQuery()->get()->map(function ($item, $key) {
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+        $claims = $this->getClaimsQuery()->with($this->getRelations());
 
-            $item = Claim::with($this->getRelations())->find($item->id);
-
-            $item->is_rejected = false;
-
-            if (!is_null($item->activeTreatment)) {
-
-                $item->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
-
-                if (!is_null($item->activeTreatment->rejected_at) && !is_null($item->activeTreatment->rejected_reason)
-                    && !is_null($item->activeTreatment->responsibleUnit)) {
-                    $item->is_rejected = true;
-                }
-
+        if ($key) {
+            switch ($type) {
+                case 'reference':
+                    $claims = $claims->where('reference', 'LIKE', "%$key%");
+                    break;
+                case 'claimObject':
+                    $claims = $claims->whereHas("claimObject", function ($query) use ($key) {
+                        $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                    });
+                    break;
+                default:
+                    $claims = $claims->whereHas("claimer", function ($query) use ($key) {
+                        $query->where('firstname', 'like', "%$key%")
+                            ->orWhere('lastname', 'like', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                    break;
             }
+        }
 
-            $item->is_duplicate = $this->getDuplicatesQuery($this->getClaimsQuery(), $item)->exists();
-
-            return $item;
-
-        });
-
-        return response()->json($claims, 200);
+        return response()->json($claims->paginate($paginationSize), 200);
     }
 
     /**

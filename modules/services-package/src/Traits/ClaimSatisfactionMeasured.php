@@ -24,7 +24,7 @@ trait ClaimSatisfactionMeasured
      * @param string $status
      * @return Builder
      */
-    protected  function getClaim($status = 'validated'){
+    protected function getClaim($status = 'validated'){
 
         return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')

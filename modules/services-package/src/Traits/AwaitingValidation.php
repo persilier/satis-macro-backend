@@ -9,9 +9,49 @@ use Satis2020\ServicePackage\Models\Claim;
 
 trait AwaitingValidation
 {
-    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null)
+
+    protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null)
     {
+
         $institution_id = is_null($institution_id)
+            ? $this->institution()->id
+            : $institution_id;
+
+        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
+            ->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id){ $query->where('institution_id',$institution_id);});
+
+        if ($paginate) {
+
+            if ($key) {
+                switch ($type){
+                    case 'reference':
+                        $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
+                        break;
+                    case 'claimObject':
+                        $claimsTreated = $claimsTreated->whereHas("claimObject",function ($query) use ($key){
+                            $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        });
+                        break;
+                    default:
+                        $claimsTreated = $claimsTreated->whereHas("claimer",function ($query) use ($key){
+                            $query->where('firstname' , 'like', "%$key%")
+                                ->orWhere('lastname' , 'like', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        });
+                        break;
+                }
+            }
+
+            return $claimsTreated->paginate($paginationSize);
+
+        } else {
+
+            return $claimsTreated->get();
+
+        }
+
+        /*$institution_id = is_null($institution_id)
             ? $this->institution()->id
             : $institution_id;
 
@@ -19,7 +59,48 @@ trait AwaitingValidation
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
-        });
+        });*/
+
+    }
+
+    protected function getClaimsAwaitingValidationInAnyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null )
+    {
+        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
+                         ->whereHas('activeTreatment', function ($query) {
+                             $query->with($this->getActiveTreatmentRelations());
+                         });
+
+        if ($paginate) {
+
+            if ($key) {
+                switch ($type){
+                    case 'reference':
+                        $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
+                        break;
+                    case 'claimObject':
+                        $claimsTreated = $claimsTreated->whereHas("claimObject",function ($query) use ($key){
+                            $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        });
+                        break;
+                    default:
+                        $claimsTreated = $claimsTreated->whereHas("claimer",function ($query) use ($key){
+                            $query->where('firstname' , 'like', "%$key%")
+                                ->orWhere('lastname' , 'like', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        });
+                        break;
+                }
+            }
+
+            return $claimsTreated->paginate($paginationSize);
+
+        } else {
+
+            return $claimsTreated->get();
+
+        }
+
     }
 
     /**

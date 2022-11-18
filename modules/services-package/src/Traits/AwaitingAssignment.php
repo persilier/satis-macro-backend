@@ -10,26 +10,28 @@ use Satis2020\ServicePackage\Models\Metadata;
 
 trait AwaitingAssignment
 {
-    protected function getClaimsQuery()
+    protected function getClaimsQuery($institutionId=null)
     {
+        $institutionId = is_null($institutionId)? $this->institution()->id : $institutionId;
+
         $whereRawConditionVariables = [];
         $whereRawCondition = '( ';
 
         $whereRawCondition .= '(`staff`.`institution_id` = ? and `claims`.`status` = ?)';
-        $whereRawConditionVariables[] = $this->institution()->id;
+        $whereRawConditionVariables[] = $institutionId;
         $whereRawConditionVariables[] = "full";
 
         $whereRawCondition .= ' or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?)';
-        $whereRawConditionVariables[] = $this->institution()->id;
+        $whereRawConditionVariables[] = $institutionId;
         $whereRawConditionVariables[] = "transferred_to_targeted_institution";
 
         $whereRawCondition .= ' or (`claims`.`status`= ? and `claims`.`created_by` is null and `claims`.`institution_targeted_id`= ?)';
         $whereRawConditionVariables[] = "full";
-        $whereRawConditionVariables[] = $this->institution()->id;
+        $whereRawConditionVariables[] = $institutionId;
 
         $whereRawCondition .= ' )';
 
-        return DB::table('claims')
+        return Claim::query()
             ->select('claims.*')
             ->leftJoin('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
@@ -37,6 +39,7 @@ trait AwaitingAssignment
             ->whereRaw($whereRawCondition, $whereRawConditionVariables)
             ->whereNull('claims.deleted_at')
             ->whereNull('claims.revoked_at');
+
     }
 
     protected function getDuplicatesQuery($claim_query, $claim)
