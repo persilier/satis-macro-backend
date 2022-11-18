@@ -28,7 +28,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('auth:api');
 
-      // $this->middleware('permission:list-satisfaction-measured-any-claim')->only(['index']);
+        $this->middleware('permission:list-satisfaction-measured-any-claim')->only(['index']);
         $this->middleware('permission:update-satisfaction-measured-any-claim')->only(['show', 'satisfactionMeasured']);
 
         $this->activityLogService = $activityLogService;
