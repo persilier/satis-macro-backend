@@ -68,7 +68,7 @@ class MacroStaffSeeder extends Seeder
     {
         $this->command->info("Génération des agents en cours...");
 
-        $units = Unit::with('institution.institutionType') ->get();
+        $units = Unit::with('institution.institutionType')->get();
         foreach ($units as $unit) {
             $this->command->info("--------------------------- INSTITUTION {$unit->name} ---------------------------");
             $roles = Role::query()->get();
