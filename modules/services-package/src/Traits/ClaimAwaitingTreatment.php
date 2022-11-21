@@ -32,7 +32,7 @@ trait ClaimAwaitingTreatment
      */
     protected function getClaimsQuery($institutionId, $unitId)
     {
-        return DB::table('claims')
+         $claims = Claim::query()
             ->select('claims.*')
             ->leftJoin('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
@@ -48,7 +48,10 @@ trait ClaimAwaitingTreatment
                 '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?)',
                 [$unitId]
             )
-            ->whereNull('claims.deleted_at');
+            ->whereNull('claims.deleted_at')
+            ->with($this->getRelationsAwitingTreatment());
+
+         return $claims;
     }
 
     /**

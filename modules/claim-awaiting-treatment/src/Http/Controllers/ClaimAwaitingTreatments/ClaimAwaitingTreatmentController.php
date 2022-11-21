@@ -3,6 +3,7 @@
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAwaitingTreatments;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -30,7 +31,7 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-claim-awaiting-treatment')->only(['index']);
+       // $this->middleware('permission:list-claim-awaiting-treatment')->only(['index']);
         $this->middleware('permission:show-claim-awaiting-treatment')->only(['show']);
         $this->middleware('permission:rejected-claim-awaiting-treatment')->only(['show', 'rejectedClaim']);
         $this->middleware('permission:self-assignment-claim-awaiting-treatment')->only(['show', 'selfAssignment']);
@@ -49,11 +50,39 @@ class ClaimAwaitingTreatmentController extends ApiController
         $institution = $this->institution();
         $staff = $this->staff();
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+
+        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id);
+
+        if ($key) {
+            switch ($type) {
+                case 'reference':
+                    $claims = $claims->where('reference', 'LIKE', "%$key%");
+                    break;
+                case 'claimObject':
+                    $claims = $claims->whereHas("claimObject", function ($query) use ($key) {
+                        $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                    });
+                    break;
+                default:
+                    $claims = $claims->whereHas("claimer", function ($query) use ($key) {
+                        $query->where('firstname', 'like', "%$key%")
+                            ->orWhere('lastname', 'like', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                break;
+            }
+        }
+
+       /*$claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             return $item;
-        });
-        return response()->json($claims, 200);
+        });*/
+
+        return response()->json($claims->paginate($paginationSize), 200);
     }
 
     /**

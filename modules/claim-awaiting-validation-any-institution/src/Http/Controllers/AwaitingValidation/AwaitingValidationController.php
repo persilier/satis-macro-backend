@@ -32,16 +32,15 @@ class AwaitingValidationController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function index()
     {
-        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')->get();
-        return response()->json($claimsTreated->map(function ($item, $key) {
-            $item->activeTreatment->load($this->getActiveTreatmentRelations());
-            return $item;
-        }), 200);
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+        return response()->json($this->getClaimsAwaitingValidationInAnyInstitution(true,$paginationSize, $key, $type), 200);
     }
 
     /**
