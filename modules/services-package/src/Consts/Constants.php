@@ -91,6 +91,10 @@ class Constants
             [
                 'value' => self::GLOBAL_REPORTING, 'label' => 'Rapport consolidé et rapport spécifique par institution'
             ],
+            [
+                'value' => self::NOTIFICATION_PROOF, 'label' => 'Preuve d\'Accusé de réception'
+            ],
+
 
         ];
     }
