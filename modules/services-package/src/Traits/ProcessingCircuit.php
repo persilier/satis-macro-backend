@@ -128,7 +128,6 @@ trait ProcessingCircuit
             ]);
 
         }
-
         return $collection;
     }
 
@@ -148,7 +147,7 @@ trait ProcessingCircuit
 
             foreach ($collection as $key => $item) {
 
-                $item['claim_object']->units()->sync($item['units_ids']);
+                $item['claim_object']->units()->attach($item['units_ids']);
 
             }
 
