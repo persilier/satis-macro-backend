@@ -64,6 +64,40 @@ trait AwaitingValidation
 
     }
 
+
+    protected function getClaimsAwaitingValidationInAnyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null )
+    {
+        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
+            ->whereHas('activeTreatment', function ($query) {
+                $query->with($this->getActiveTreatmentRelations());
+            });
+        if ($paginate) {
+            if ($key) {
+                switch ($type){
+                    case 'reference':
+                        $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
+                        break;
+                    case 'claimObject':
+                        $claimsTreated = $claimsTreated->whereHas("claimObject",function ($query) use ($key){
+                            $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        });
+                        break;
+                    default:
+                        $claimsTreated = $claimsTreated->whereHas("claimer",function ($query) use ($key){
+                            $query->where('firstname' , 'like', "%$key%")
+                                ->orWhere('lastname' , 'like', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        });
+                        break;
+                }
+            }
+            return $claimsTreated->paginate($paginationSize);
+        } else {
+            return $claimsTreated->get();
+        }
+    }
+
     /**
      * @return array
      */

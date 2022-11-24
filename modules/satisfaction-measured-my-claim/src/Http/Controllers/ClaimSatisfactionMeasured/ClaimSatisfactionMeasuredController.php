@@ -38,7 +38,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getAllMyClaim();
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $claims = $this->getAllMyClaim(  'validated',true,$paginationSize,$key);
         return response()->json($claims, 200);
     }
 

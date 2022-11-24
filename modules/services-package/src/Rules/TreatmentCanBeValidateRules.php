@@ -8,10 +8,11 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\AwaitingValidation;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 
 class TreatmentCanBeValidateRules implements Rule
 {
-    use AwaitingValidation;
+    use AwaitingValidation, DataUserNature;
 
     public $institution_id;
 
