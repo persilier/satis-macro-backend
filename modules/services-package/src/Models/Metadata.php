@@ -13,6 +13,8 @@ class Metadata extends Model
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
     const AUTH_PARAMETERS="auth-parameters";
+    const REGULATORY_LIMIT = "regulatory-limit";
+
 
     /**
      * The attributes that are translatable
