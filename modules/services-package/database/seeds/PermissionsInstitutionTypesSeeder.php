@@ -104,6 +104,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
             'list-notification-proof','pilot-list-notification-proof',
             'export-notification-proof','pilot-export-notification-proof',
+            'logout-user-my-institution'
         ];
 
         $filialPermissions = [
@@ -139,7 +140,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'show-my-staff-monitoring',
-            'list-unit-revivals','list-staff-revivals'
+            'list-unit-revivals','list-staff-revivals',
+            'logout-user-my-institution'
         ];
 
         $observatoryPermissions = [
@@ -196,6 +198,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
             "any-email-claim-configuration",
             'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+            'logout-user-my-institution'
         ];
 
         $memberPermissions = [
@@ -267,7 +270,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'show-my-staff-monitoring',
             'list-notification-proof','pilot-list-notification-proof',
             'export-notification-proof','pilot-export-notification-proof',
-            'list-unit-revivals','list-staff-revivals'
+            'list-unit-revivals','list-staff-revivals',
+            'logout-user-my-institution'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

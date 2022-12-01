@@ -59,7 +59,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
-
+                    'logout-user-my-institution'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
