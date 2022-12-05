@@ -28,7 +28,7 @@
                         {{isset($proof['to']['firstname']) ? $proof['to']['firstname'].' '.$proof['to']['lastname']:'--'}}
                     </td>
                     <td>
-                        {{ isset($proof['to']['email']) && !empty($proof['to']['email'])  ? ' / '.$proof['to']['email'][0]: '-'}}
+                        {{ isset($proof['to']['email']) && !empty($proof['to']['email'])  ? $proof['to']['email'][0]: '-'}}
                     </td>
                     <td>{{$proof['channel']}}</td>
                     <td>{{$proof['message']}}</td>
