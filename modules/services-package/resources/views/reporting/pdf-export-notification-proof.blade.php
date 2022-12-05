@@ -12,6 +12,7 @@
             <thead style="background: {{ $data['colorTableHeader']}}">
             <tr>
                 <th>Destinataire</th>
+                <th>Email</th>
                 <th>Canal</th>
                 <th>Contenu/message</th>
                 <th>Date</th>
@@ -25,6 +26,8 @@
                 <tr>
                     <td>
                         {{isset($proof['to']['firstname']) ? $proof['to']['firstname'].' '.$proof['to']['lastname']:'--'}}
+                    </td>
+                    <td>
                         {{ isset($proof['to']['email']) && !empty($proof['to']['email'])  ? ' / '.$proof['to']['email'][0]: '-'}}
                     </td>
                     <td>{{$proof['channel']}}</td>
