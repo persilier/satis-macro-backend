@@ -41,6 +41,7 @@
             <tfoot style="background: {{ $data['colorTableHeader'] }}">
             <tr>
                 <th>Destinataire</th>
+                <th>Email</th>
                 <th>Canal</th>
                 <th>Contenu/message</th>
                 <th style="width: 150px">Date</th>
