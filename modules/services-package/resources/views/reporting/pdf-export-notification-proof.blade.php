@@ -8,7 +8,7 @@
         <div class="text-center" style="font-size: 12px">Période : @if($data['libellePeriode']) {{ $data['libellePeriode'] }} @endif</div>
     </div>
     <div style="width: 100%;margin-top: 10px">
-        <table class="table table-striped">
+        <table class="table table-striped" style="with:100%">
             <thead style="background: {{ $data['colorTableHeader']}}">
             <tr>
                 <th>Destinataire</th>
@@ -41,6 +41,7 @@
             <tfoot style="background: {{ $data['colorTableHeader'] }}">
             <tr>
                 <th>Destinataire</th>
+                <th>Email</th>
                 <th>Canal</th>
                 <th>Contenu/message</th>
                 <th style="width: 150px">Date</th>
