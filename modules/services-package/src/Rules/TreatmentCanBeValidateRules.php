@@ -33,7 +33,7 @@ class TreatmentCanBeValidateRules implements Rule
     public function passes($attribute, $value)
     {
 
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution($this->institution_id);
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution(false, 10, null, null, $this->institution_id);
 
         return $claims->search(function ($item, $key) use ($value) {
             return $item->id == $value;
@@ -49,5 +49,4 @@ class TreatmentCanBeValidateRules implements Rule
     {
         return 'The claim treatment is already validated or it can not be validated by this pilot';
     }
-
 }
