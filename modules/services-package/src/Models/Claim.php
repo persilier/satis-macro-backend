@@ -24,7 +24,7 @@ class Claim extends Model
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
     const CLAIM_TRANSFERRED_TO_UNIT = "transferred_to_unit";
-    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION= "transferred_to_targeted_institution";
+    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION = "transferred_to_targeted_institution";
     const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
@@ -107,7 +107,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType','canAddAttachment'];
+    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'dateExpire'];
 
     /**
      * @return mixed
@@ -115,14 +115,22 @@ class Claim extends Model
     public function gettimeExpireAttribute()
     {
         $diff = null;
-
-        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
-
+        $dateExpire = $this->getDateExpireAttribute();
+        if ($dateExpire && ($this->status !== 'archived')) {
             $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
             $diff = $dateExpire->diffInDays((now()), false);
         }
 
         return $diff;
+    }
+    public function getDateExpireAttribute()
+    {
+        $dateExpire = null;
+        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+            $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
+        }
+
+        return $dateExpire;
     }
 
     /**
@@ -283,20 +291,19 @@ class Claim extends Model
     {
         $canAttach = false;
 
-        $staffId = request()->query('staff',null);
+        $staffId = request()->query('staff', null);
         $staff = (new StaffService())->getStaffById($staffId);
 
-        if ($staff!=null){
-            if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
+        if ($staff != null) {
+            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF) {
                 $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
             }
 
-           /* if ($this->status==Claim::CLAIM_VALIDATED){
+            /* if ($this->status==Claim::CLAIM_VALIDATED){
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
             }*/
         }
 
         return $canAttach;
     }
-
 }
