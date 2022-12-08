@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Satis2020\ServicePackage\Traits\ActivePilot;
 
 /**
  * Class Claim
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, ActivePilot;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
@@ -303,7 +304,9 @@ class Claim extends Model
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
             }*/
         }
-
+        if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot(auth()->user()->identite->staff)) {
+            $canAttach = true;
+        }
         return $canAttach;
     }
 }
