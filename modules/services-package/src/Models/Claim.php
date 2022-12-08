@@ -3,16 +3,17 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Services\StaffService;
-use Satis2020\ServicePackage\Traits\SecureDelete;
-use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\UuidAsId;
 use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Claim
@@ -20,7 +21,7 @@ use Satis2020\ServicePackage\Traits\ActivePilot;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, ActivePilot;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
@@ -304,7 +305,8 @@ class Claim extends Model
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
             }*/
         }
-        if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot(auth()->user()->identite->staff)) {
+
+        if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
             $canAttach = true;
         }
         return $canAttach;
