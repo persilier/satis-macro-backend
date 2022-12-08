@@ -45,13 +45,12 @@ class AttachFilesController extends ApiController
         ]);
 
         $staff = $this->staff();
-
+        $condition2 = !$this->allowOnlyActivePilot($staff);
         if (!$claim = Claim::where(function ($query) use ($staff) {
-
             $query->where('created_by', $staff->id)->orWhereHas('activeTreatment', function ($q) use ($staff) {
                 $q->where('responsible_staff_id', $staff->id);
             });
-        })->where('status', '!=', 'archived')->find($claim_id) || !$this->allowOnlyActivePilot($staff)) {
+        })->where('status', '!=', 'archived')->find($claim_id) and $condition2) {
 
             return response()->json('Vous n\'êtes pas autorisé à joindre des fichiers à cette réclamation.', 404);
         }
