@@ -20,7 +20,7 @@ use Satis2020\ServicePackage\Traits\ActivePilot;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete,ActivePilot;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, ActivePilot;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
