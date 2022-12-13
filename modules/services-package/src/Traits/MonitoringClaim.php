@@ -275,7 +275,7 @@ trait MonitoringClaim
             ->orWhere('status', '!=', 'unfounded')
             ->get()->filter(function ($item) use ($coef) {
 
-                if (now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+                if (now() >= $this->echeanceNotif($item->created_at, $item->time_limit, $coef))
                     return $item;
 
             })->all();
