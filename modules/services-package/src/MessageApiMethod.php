@@ -195,5 +195,20 @@ class MessageApiMethod
         return $response["status"] == Response::HTTP_OK;
 
     }
+        /**
+     * SONIBANK SMS Gateway
+     *
+     * @param $username
+     * @param $password
+     * @param $to
+     * @param $text
+     * @return array|mixed
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    static function sonibankBeninSMSGateway($username, $password, $to, $text)
+    {
+        return Http::get("http://192.168.1.93:8280/SMS.php?use=$username&pwd=$password&tel=$to&sms=$text")
+            ->throw()->json();
+    }
 
 }
