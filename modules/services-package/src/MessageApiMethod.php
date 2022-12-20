@@ -207,8 +207,10 @@ class MessageApiMethod
      */
     static function sonibankBeninSMSGateway($username, $password, $to, $text)
     {
-        return Http::get("http://192.168.1.93:8280/SMS.php?use=$username&pwd=$password&tel=$to&sms=$text")
+        return Http::get("http://$username:$password@192.168.1.93:8280/SMS.php?tel=$to&sms=$text")
             ->throw()->json();
+            //return Http::get("http://oceanic:192.168.1.93:8280/SMS.php?use=$username&pwd=$password&tel=$to&sms=$text")
+            //->throw()->json();
     }
 
 }
