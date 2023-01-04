@@ -4,16 +4,17 @@ namespace Satis2020\RegisterClaimAgainstMyInstitutionByPortal\Http\Controllers\C
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\Channel;
-use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Currency;
+use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Models\ClaimCategory;
+use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
-use Satis2020\ServicePackage\Traits\Telephone;
-use Satis2020\ServicePackage\Traits\VerifyUnicity;
+use Satis2020\ServicePackage\Http\Controllers\Controller;
 
 /**
  * Class ClaimController
@@ -21,7 +22,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class ClaimController extends Controller
 {
-    use DataUserNature, IdentityManagement, CreateClaim, VerifyUnicity, Telephone;
+    use DataUserNature, IdentityManagement, CreateClaim, VerifyUnicity, Telephone, Notification;
 
     public function __construct()
     {

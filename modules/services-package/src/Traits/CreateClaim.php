@@ -35,7 +35,7 @@ use Faker\Factory as Faker;
  */
 trait CreateClaim
 {
-
+    
     /**
      * @param $request
      * @param bool $with_client
