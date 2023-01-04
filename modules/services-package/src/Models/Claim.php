@@ -3,15 +3,17 @@
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Services\StaffService;
-use Satis2020\ServicePackage\Traits\SecureDelete;
-use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\UuidAsId;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Claim
@@ -19,12 +21,12 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
     const CLAIM_TRANSFERRED_TO_UNIT = "transferred_to_unit";
-    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION= "transferred_to_targeted_institution";
+    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION = "transferred_to_targeted_institution";
     const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
@@ -107,7 +109,7 @@ class Claim extends Model
     ];
 
 
-    protected $appends = ['timeExpire', 'accountType','canAddAttachment'];
+    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'dateExpire'];
 
     /**
      * @return mixed
@@ -115,14 +117,22 @@ class Claim extends Model
     public function gettimeExpireAttribute()
     {
         $diff = null;
-
-        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
-
+        $dateExpire = $this->getDateExpireAttribute();
+        if ($dateExpire && ($this->status !== 'archived')) {
             $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
-            $diff = $dateExpire->diffInDays((now()), false);
+            $diff = now()->diffInDays($dateExpire, false);
         }
 
         return $diff;
+    }
+    public function getDateExpireAttribute()
+    {
+        $dateExpire = null;
+        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+            $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
+        }
+
+        return $dateExpire;
     }
 
     /**
@@ -283,20 +293,22 @@ class Claim extends Model
     {
         $canAttach = false;
 
-        $staffId = request()->query('staff',null);
+        $staffId = request()->query('staff', null);
         $staff = (new StaffService())->getStaffById($staffId);
 
-        if ($staff!=null){
-            if ($this->status==Claim::CLAIM_ASSIGNED_TO_STAFF){
+        if ($staff != null) {
+            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF) {
                 $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
             }
 
-           /* if ($this->status==Claim::CLAIM_VALIDATED){
+            /* if ($this->status==Claim::CLAIM_VALIDATED){
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
             }*/
         }
 
+        if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
+            $canAttach = true;
+        }
         return $canAttach;
     }
-
 }
