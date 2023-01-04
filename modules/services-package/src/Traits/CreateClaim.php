@@ -5,29 +5,30 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
-use Carbon\Exceptions\InvalidFormatException;
+use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Claim;
+use Carbon\Exceptions\InvalidFormatException;
+use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Requirement;
-use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
-use Satis2020\ServicePackage\Notifications\Recurrence;
-use Satis2020\ServicePackage\Notifications\RegisterAClaim;
-use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
-use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
-use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
-use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
-use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
-use Satis2020\ServicePackage\Rules\EmailArray;
+use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
-use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
+use Satis2020\ServicePackage\Notifications\Recurrence;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
-use Faker\Factory as Faker;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Rules\ChannelIsForResponseRules;
+use Satis2020\ServicePackage\Rules\AccountBelongsToClientRules;
+use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
+use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
+use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
 
 /**
  * Trait CreateClaim
@@ -35,7 +36,7 @@ use Faker\Factory as Faker;
  */
 trait CreateClaim
 {
-    
+    use Notification;
     /**
      * @param $request
      * @param bool $with_client
