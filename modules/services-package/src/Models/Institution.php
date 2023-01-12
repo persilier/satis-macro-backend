@@ -98,6 +98,24 @@ class Institution extends Model
     }
 
     /**
+     * Get the activePilot associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function leadActivePilot()
+    {
+        return $this->belongsTo(Staff::class,"active_pilot_id","id");
+    }
+
+    /**
+     * Get the activePilot associated with the institution
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function allActivePilot()
+    {
+        return $this->hasMany(ActivePilot::class);
+    }
+
+    /**
      * Get the positions associated with the institution
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

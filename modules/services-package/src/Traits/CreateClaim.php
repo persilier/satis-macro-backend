@@ -4,12 +4,15 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
+use App\Jobs\ProcessNotifyAllActivePilot;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 use Satis2020\ServicePackage\Models\Claim;
 use Carbon\Exceptions\InvalidFormatException;
 use Satis2020\ServicePackage\Rules\EmailArray;
@@ -36,7 +39,7 @@ use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
  */
 trait CreateClaim
 {
-    use Notification;
+    use Notification, ConfigurationPilotTrait;
     /**
      * @param $request
      * @param bool $with_client
@@ -289,16 +292,19 @@ trait CreateClaim
         if (!is_null($institutionTargeted)) {
 
             if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
-
+                $severityLevel = "normal";
                 if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
 
                     $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaimHighForcefulness($claim));
-
+                    $severityLevel = "high";
                 }else{
 
                     $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
 
                 }
+
+                $process_notify_all_active_pilot = new ProcessNotifyAllActivePilot($claim,$severityLevel, Auth::user()->id);
+                dispatch($process_notify_all_active_pilot);
 
                 // check if the claimObject related to the claim have a time_limit = 1 and send a notification
                 $this->closeTimeLimitNotification($claim);
