@@ -126,4 +126,12 @@ class Treatment extends Model
         return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
+     /**
+     * @return BelongsTo
+     */
+    public function validatedBy()
+    {
+        return $this->belongsTo(Staff::class, 'validated_by');
+    }
+
 }
