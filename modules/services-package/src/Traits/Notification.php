@@ -4,14 +4,15 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
-use Satis2020\ServicePackage\Channels\MessageChannel;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Metadata;
-use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Models\User;
 use Spatie\Permission\Models\Role;
+use Satis2020\ServicePackage\Models\User;
+use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Channels\MessageChannel;
 
 trait Notification
 {
