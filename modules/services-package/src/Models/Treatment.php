@@ -69,7 +69,8 @@ class Treatment extends Model
         'invalidated_reason',
         'number_reject',
         'treatments',
-        'note'
+        'note',
+        'transferred_to_unit_by'
     ];
 
     /**
