@@ -70,7 +70,8 @@ class Treatment extends Model
         'number_reject',
         'treatments',
         'note',
-        'transferred_to_unit_by'
+        'transferred_to_unit_by',
+        'validated_by'
     ];
 
     /**
@@ -115,6 +116,14 @@ class Treatment extends Model
     public function satisfactionMeasuredBy()
     {
         return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
 }
