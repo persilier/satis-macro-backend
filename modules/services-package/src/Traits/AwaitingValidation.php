@@ -121,7 +121,8 @@ trait AwaitingValidation
             'createdBy.identite',
             'completedBy.identite',
             'files',
-            'activeTreatment'
+            'activeTreatment',
+            'activeTreatment.transferredToUnitBy.identite'
         ];
     }
 
