@@ -114,7 +114,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'config-reporting-claim-my-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'pilot-export-notification-proof',
+                    'pilot-export-notification-proof','configuration-pilot'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [

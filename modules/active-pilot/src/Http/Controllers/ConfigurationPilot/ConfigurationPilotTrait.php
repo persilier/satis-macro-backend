@@ -55,7 +55,7 @@ trait ConfigurationPilotTrait
     }
 
     protected function nowConfiguration(){
-        $institution = $this->institution()->load("leadActivePilot","allActivePilot.staff");
+        $institution = $this->institution()->load("leadActivePilot","allActivePilot.staff.identite");
         return $this->infoConfig($institution);
     }
 

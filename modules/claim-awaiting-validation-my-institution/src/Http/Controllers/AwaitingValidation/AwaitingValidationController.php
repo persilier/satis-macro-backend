@@ -119,4 +119,7 @@ class AwaitingValidationController extends ApiController
 
         return response()->json($this->handleInvalidate($request, $claim), 201);
     }
+
+
+
 }
