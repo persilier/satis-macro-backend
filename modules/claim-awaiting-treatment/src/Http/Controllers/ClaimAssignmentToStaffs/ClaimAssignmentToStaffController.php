@@ -133,10 +133,12 @@ class ClaimAssignmentToStaffController extends ApiController
             $this->user(),
             $claim
         );
-
+        // if one actif pilot
         if(!is_null($this->getInstitutionPilot($institution))){
             $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
         }
+        //if many actif pilots
+        
 
         return response()->json($claim, 200);
 
