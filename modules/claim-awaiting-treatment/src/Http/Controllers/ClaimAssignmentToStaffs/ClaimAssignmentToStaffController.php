@@ -91,7 +91,6 @@ class ClaimAssignmentToStaffController extends ApiController
      */
     protected function treatmentClaim(Request $request, $claim)
     {
-        dd($this->nowConfiguration()['configuration']);
         $institution = $this->institution();
 
         $staff = $this->staff();
@@ -108,9 +107,10 @@ class ClaimAssignmentToStaffController extends ApiController
             ],
             'solution' => ['required', 'string'],
             'comments' => ['nullable', 'string'],
-            'preventive_measures' => ['string',
+            'preventive_measures' => [
+                'string',
                 Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
-                && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
+                    && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
             ]
         ];
 
@@ -127,22 +127,39 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
-        $this->activityLogService->store("Traitement d'une réclamation",
+        $this->activityLogService->store(
+            "Traitement d'une réclamation",
             $this->institution()->id,
             $this->activityLogService::TREATMENT_CLAIM,
             'claim',
             $this->user(),
             $claim
         );
-        // if one actif pilot
-        if(!is_null($this->getInstitutionPilot($institution))){
-            $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
+        $responsible_pilot  = null;
+
+        if ($configuration->many_active_pilot  === "0") {
+            if (!is_null($this->getInstitutionPilot($institution))) {
+                $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+            }
+        } else if ($configuration->many_active_pilot  === "1") {
+            foreach ($all_active_pilots as $pilot) {
+                if ($pilot->staff->id == $claim->activeTreatment->transferred_to_unit_by) {
+                    $responsible_pilot =  $pilot->staff;
+                }
+            }
+                if ($lead_pilot->identite) {
+                    $lead_pilot->identite->notify(new TreatAClaim($claim));
+                }
+                if ($responsible_pilot) {
+                        $responsible_pilot->identite->notify(new TreatAClaim($claim));
+                }
+            
         }
-        //if many actif pilots
-        
 
         return response()->json($claim, 200);
-
     }
 
 
@@ -175,7 +192,8 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
-        $this->activityLogService->store("Une réclamation a été déclarée non fondée",
+        $this->activityLogService->store(
+            "Une réclamation a été déclarée non fondée",
             $this->institution()->id,
             $this->activityLogService::UNFOUNDED_CLAIM,
             'claim',
@@ -183,13 +201,10 @@ class ClaimAssignmentToStaffController extends ApiController
             $claim
         );
 
-        if(!is_null($this->getInstitutionPilot($institution))){
+        if (!is_null($this->getInstitutionPilot($institution))) {
             $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
         }
 
         return response()->json($claim, 200);
-
     }
-
-
 }
