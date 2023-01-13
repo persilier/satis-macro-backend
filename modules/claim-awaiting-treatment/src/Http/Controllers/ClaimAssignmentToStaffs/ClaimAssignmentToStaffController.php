@@ -141,10 +141,12 @@ class ClaimAssignmentToStaffController extends ApiController
         $responsible_pilot  = null;
 
         if ($configuration->many_active_pilot  === "0") {
+            // one active pivot
             if (!is_null($this->getInstitutionPilot($institution))) {
                 $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
             }
         } else if ($configuration->many_active_pilot  === "1") {
+            // many active pivot
             foreach ($all_active_pilots as $pilot) {
                 if ($pilot->staff->id == $claim->activeTreatment->transferred_to_unit_by) {
                     $responsible_pilot =  $pilot->staff;

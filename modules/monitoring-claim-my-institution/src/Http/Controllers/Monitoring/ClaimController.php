@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\MonitoringClaim;
 
 /**
@@ -15,7 +17,7 @@ use Satis2020\ServicePackage\Traits\MonitoringClaim;
  */
 class ClaimController extends ApiController
 {
-    use MonitoringClaim;
+    use MonitoringClaim, DataUserNature, ConfigurationPilotTrait;
     public function __construct()
     {
         parent::__construct();
@@ -33,24 +35,41 @@ class ClaimController extends ApiController
     public function index(Request $request)
     {
         $institution = $this->institution();
-
         $request->merge(['institution_id' => $institution->id]);
 
         $this->validate($request, $this->rules($request));
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
 
-        $incompletes = $this->getAllClaim($request , 'incomplete');
+        if ($configuration->many_active_pilot  === "1" && $this->staff()->id != $lead_pilot->id) {
+            $incompletes = $this->getAllClaim($request, 'incomplete');
 
-        $toAssignedToUnit= $this->getAllClaim($request , 'full');
+            $toAssignedToUnit = $this->getAllClaim($request, 'full');
 
-        $toAssignedToUStaff = $this->getAllClaim($request , 'transferred_to_unit', true);
+            $toAssignedToUStaff = $this->getAllClaim($request, 'transferred_to_unit', true);
 
-        $awaitingTreatment = $this->getAllClaim($request , 'assigned_to_staff', true);
+            $awaitingTreatment = $this->getAllClaim($request, 'assigned_to_staff', true);
 
-        $toValidate = $this->getAllClaim($request , 'treated', true);
+            $toValidate = $this->getAllClaim($request, 'treated', true);
 
-        $toMeasureSatisfaction = $this->getAllClaim($request , 'validated', true);
+            $toMeasureSatisfaction = $this->getAllClaim($request, 'validated', true); 
 
-        $claims =  $this->metaData($incompletes , $toAssignedToUnit , $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institution->id);
+        } else {
+            $incompletes = $this->getAllClaim($request, 'incomplete');
+
+            $toAssignedToUnit = $this->getAllClaim($request, 'full');
+
+            $toAssignedToUStaff = $this->getAllClaim($request, 'transferred_to_unit', true);
+
+            $awaitingTreatment = $this->getAllClaim($request, 'assigned_to_staff', true);
+
+            $toValidate = $this->getAllClaim($request, 'treated', true);
+
+            $toMeasureSatisfaction = $this->getAllClaim($request, 'validated', true);
+
+        }
+        $claims =  $this->metaData($incompletes, $toAssignedToUnit, $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institution->id);
 
         return response()->json($claims, 200);
     }
@@ -60,10 +79,10 @@ class ClaimController extends ApiController
      * @param $claim
      * @return JsonResponse
      */
-    public function show($claim){
+    public function show($claim)
+    {
 
         $claim = $this->getOne($claim, $this->institution()->id);
-        return response()->json($claim , 200);
+        return response()->json($claim, 200);
     }
-
 }

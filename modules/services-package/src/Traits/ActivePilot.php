@@ -4,10 +4,11 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Spatie\Permission\Models\Role;
+use Satis2020\ServicePackage\Traits\ApiResponser;
 
 trait ActivePilot
 {
-
+    use ApiResponser;
     protected function checkIfStaffIsPilot($staff)
     {
         // we verify if he has an user account
