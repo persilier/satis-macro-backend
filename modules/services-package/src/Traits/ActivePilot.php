@@ -82,4 +82,17 @@ trait ActivePilot
 
     }
 
+    public function ruleConfiguration($many_pilot){
+        $data = $many_pilot ? [
+            'lead_pilot_id' => 'required|exists:staff,id',
+            'pilots' => 'required|array',
+            'pilots.*' => 'required|exists:staff,id'
+        ] : [
+            'lead_pilot_id' => 'required|exists:staff,id',
+        ];
+        return $data;
+    }
+
+
+
 }

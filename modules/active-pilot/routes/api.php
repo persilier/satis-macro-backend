@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('active-pilot/institutions/{institution}', 'ActivePilot\ActivePilotController@edit')->name('edit.active.pilot');
 Route::put('active-pilot/institutions/{institution}', 'ActivePilot\ActivePilotController@update')->name('update.active.pilot');
+
+Route::get('configuration-active-pilot', 'ConfigurationPilot\ConfigurationPilotController@index')->name('config.active.pilot');
+Route::post('configuration-active-pilot', 'ConfigurationPilot\ConfigurationPilotController@store')->name('config.active.pilot');

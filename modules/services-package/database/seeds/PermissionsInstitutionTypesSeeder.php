@@ -296,7 +296,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
             'bci-monthly-reports', 'bci-annual-reports',
-            'pilot-export-notification-proof', 'export-notification-proof'
+            'pilot-export-notification-proof', 'export-notification-proof','configuration-pilot'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
