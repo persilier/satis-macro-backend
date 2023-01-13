@@ -30,6 +30,7 @@ trait ConfigurationPilotTrait
         $institution_id = $this->institution()->id;
 
         if ($request->many_pilot==true){
+            ActivePilot::where( "institution_id",$institution_id)->delete();
             for ($i=0; $i<sizeof($request->pilots); $i++){
                 ActivePilot::updateOrCreate(["staff_id"=>$request->pilots[$i]], [
                     "staff_id"=>$request->pilots[$i],
