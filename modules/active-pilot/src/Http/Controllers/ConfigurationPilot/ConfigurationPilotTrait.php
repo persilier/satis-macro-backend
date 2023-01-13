@@ -42,7 +42,9 @@ trait ConfigurationPilotTrait
     }
 
     protected function infoConfig($institution){
-        $config = ConfigurationActivePilot::where("institution_id",$institution->id)->get()->last();
+        $config = ConfigurationActivePilot::where("institution_id",$institution->id)
+            ->where("institution_id",$institution->id)
+            ->orderBy("created_at","DESC")->get()->first();
         $lead_pilot = $institution->leadActivePilot;
         $all_active_pilot = $institution->allActivePilot;
         return [
