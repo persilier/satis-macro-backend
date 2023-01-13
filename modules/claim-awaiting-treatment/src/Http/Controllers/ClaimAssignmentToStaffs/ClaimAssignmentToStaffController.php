@@ -2,23 +2,24 @@
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs;
 
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Illuminate\Validation\Rules\RequiredIf;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Notifications\TreatAClaim;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Illuminate\Validation\Rules\RequiredIf;
+use Satis2020\ServicePackage\Models\Metadata;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Notifications\TreatAClaim;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 /**
  * Class ClaimAssignmentToStaffController
@@ -26,7 +27,7 @@ use Satis2020\ServicePackage\Traits\Notification;
  */
 class ClaimAssignmentToStaffController extends ApiController
 {
-    use ClaimAwaitingTreatment;
+    use ClaimAwaitingTreatment, ConfigurationPilotTrait;
 
     protected $activityLogService;
 
@@ -90,7 +91,7 @@ class ClaimAssignmentToStaffController extends ApiController
      */
     protected function treatmentClaim(Request $request, $claim)
     {
-
+        dd($this->nowConfiguration()['configuration']);
         $institution = $this->institution();
 
         $staff = $this->staff();
