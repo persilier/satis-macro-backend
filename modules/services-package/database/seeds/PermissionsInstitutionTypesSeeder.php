@@ -297,7 +297,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'logout-user-my-institution',
             'bci-monthly-reports', 'bci-annual-reports',
             'pilot-export-notification-proof', 'export-notification-proof',
-            'configuration-pilot','pilot-relance-other'
+            'configuration-pilot','pilot-relance-other','reassignment_to_pilot'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
