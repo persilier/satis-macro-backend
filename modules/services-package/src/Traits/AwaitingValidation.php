@@ -18,24 +18,26 @@ trait AwaitingValidation
             : $institution_id;
 
         $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
-            ->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id){ $query->where('institution_id',$institution_id);});
+            ->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
+                $query->where('institution_id', $institution_id);
+            });
 
         if ($paginate) {
 
             if ($key) {
-                switch ($type){
+                switch ($type) {
                     case 'reference':
                         $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
                         break;
                     case 'claimObject':
-                        $claimsTreated = $claimsTreated->whereHas("claimObject",function ($query) use ($key){
-                            $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        $claimsTreated = $claimsTreated->whereHas("claimObject", function ($query) use ($key) {
+                            $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
                         });
                         break;
                     default:
-                        $claimsTreated = $claimsTreated->whereHas("claimer",function ($query) use ($key){
-                            $query->where('firstname' , 'like', "%$key%")
-                                ->orWhere('lastname' , 'like', "%$key%")
+                        $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
+                            $query->where('firstname', 'like', "%$key%")
+                                ->orWhere('lastname', 'like', "%$key%")
                                 ->orwhereJsonContains('telephone', $key)
                                 ->orwhereJsonContains('email', $key);
                         });
@@ -63,29 +65,53 @@ trait AwaitingValidation
 
     }
 
-    protected function getClaimsAwaitingValidationInAnyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null )
+    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs)
+    {
+        $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution(false, null, null, null);
+      //   return $claimsTreated[0]["active_treatment"];
+        if ($configs["configuration"]["many_active_pilot"]) {
+            $leads_with_claims = [];
+            for ($i = 0; $i < sizeof($claimsTreated); $i++) {
+                $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
+                if ($staff_id != null) {
+                    if (!isset($leads_with_claims[$staff_id])) {
+                        $leads_with_claims[$staff_id] = [
+                            "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
+                            "claims" => [],
+                        ];
+                    }
+                    array_push($leads_with_claims[$staff_id]["claims"],$claimsTreated[$i]);
+                }
+            }
+            return $leads_with_claims;
+        } else {
+            return $claimsTreated;
+        }
+    }
+
+    protected function getClaimsAwaitingValidationInAnyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null)
     {
         $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
-                         ->whereHas('activeTreatment', function ($query) {
-                             $query->with($this->getActiveTreatmentRelations());
-                         });
+            ->whereHas('activeTreatment', function ($query) {
+                $query->with($this->getActiveTreatmentRelations());
+            });
 
         if ($paginate) {
 
             if ($key) {
-                switch ($type){
+                switch ($type) {
                     case 'reference':
                         $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
                         break;
                     case 'claimObject':
-                        $claimsTreated = $claimsTreated->whereHas("claimObject",function ($query) use ($key){
-                            $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                        $claimsTreated = $claimsTreated->whereHas("claimObject", function ($query) use ($key) {
+                            $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
                         });
                         break;
                     default:
-                        $claimsTreated = $claimsTreated->whereHas("claimer",function ($query) use ($key){
-                            $query->where('firstname' , 'like', "%$key%")
-                                ->orWhere('lastname' , 'like', "%$key%")
+                        $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
+                            $query->where('firstname', 'like', "%$key%")
+                                ->orWhere('lastname', 'like', "%$key%")
                                 ->orwhereJsonContains('telephone', $key)
                                 ->orwhereJsonContains('email', $key);
                         });
@@ -123,7 +149,8 @@ trait AwaitingValidation
             'files',
             'activeTreatment',
             'activeTreatment.transferredToUnitBy.identite',
-            'activeTreatment.transferredToUnitBy.identite'
+            'activeTreatment.staffTransferredToUnitBy.identite',
+
         ];
     }
 
@@ -158,7 +185,7 @@ trait AwaitingValidation
             'treatments' => $backup
         ]);
 
-        if(!is_null($claim->activeTreatment->declared_unfounded_at)){
+        if (!is_null($claim->activeTreatment->declared_unfounded_at)) {
             // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));

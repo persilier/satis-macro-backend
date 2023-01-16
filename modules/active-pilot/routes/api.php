@@ -20,3 +20,7 @@ Route::put('active-pilot/institutions/{institution}', 'ActivePilot\ActivePilotCo
 
 Route::get('configuration-active-pilot', 'ConfigurationPilot\ConfigurationPilotController@index')->name('config.active.pilot');
 Route::post('configuration-active-pilot', 'ConfigurationPilot\ConfigurationPilotController@store')->name('config.active.pilot');
+
+Route::post('pilot-relaunch-other', 'RelanceByPilot\RelanceByPilotController@store')->name('relaunch.other');
+
+Route::post('reassignment-to-pilot', 'ReassignmentToPilot\ReassignmentToPilotController@store')->name('reassignment.store');

@@ -102,6 +102,15 @@ class Treatment extends Model
     }
 
     /**
+     * Get the staff who assign the claim associated with the treatment
+     * @return BelongsTo
+     */
+    public function staffTransferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
+    }
+
+    /**
      * Get the staff who is responsible for the treatment
      * @return BelongsTo
      */
