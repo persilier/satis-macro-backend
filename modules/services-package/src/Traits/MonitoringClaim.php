@@ -29,7 +29,7 @@ use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilot
  */
 trait MonitoringClaim
 {
-    use ConfigurationPilotTrait, DataUserNature;
+    use ConfigurationPilotTrait, DataUserNature, ConfigurationPilotTrait;
     /**
      * @param $request
      * @param $status
@@ -203,6 +203,9 @@ trait MonitoringClaim
     protected function metaData($incompletes, $toAssignedToUnit, $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institutionId = false)
     {
 
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         $data = [
             'incompletes' => $incompletes,
             'toAssignementToUnit' => $toAssignedToUnit,
@@ -224,6 +227,10 @@ trait MonitoringClaim
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
             $data['staffs'] = Staff::with('identite')->get();
+        }
+        if($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id){
+
+            $data['active_pilot'] = $all_active_pilots;
         }
 
         return $data;
