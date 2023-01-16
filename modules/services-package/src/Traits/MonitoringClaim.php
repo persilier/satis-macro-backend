@@ -230,7 +230,7 @@ trait MonitoringClaim
         }
         if($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id){
 
-            $data['active_pilot'] = $all_active_pilots;
+            $data['activePilots'] = $all_active_pilots;
         }
 
         return $data;
