@@ -90,7 +90,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'export-notification-proof'
+                    'export-notification-proof','configuration-pilot'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
