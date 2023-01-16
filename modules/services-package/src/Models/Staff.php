@@ -76,11 +76,16 @@ class Staff extends Model
             ->pluck('staff_id')->toArray();
         $config = ConfigurationActivePilot::where("institution_id",$this->institution->id)
             ->orderBy("created_at","DESC")->get()->first();
-        if ($config->many_active_pilot){
-            return in_array($this->attributes['id'],$active_pilots) && $this->checkIfStaffIsPilot($this);
+        if ($config){
+            if ($config->many_active_pilot){
+                return in_array($this->attributes['id'],$active_pilots) && $this->checkIfStaffIsPilot($this);
+            }else{
+                return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
+            }
         }else{
             return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
         }
+
     }
 
     /**

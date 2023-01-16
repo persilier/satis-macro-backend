@@ -45,13 +45,23 @@ trait ConfigurationPilotTrait
     protected function infoConfig($institution){
         $config = ConfigurationActivePilot::where("institution_id",$institution->id)
             ->orderBy("created_at","DESC")->get()->first();
-        $lead_pilot = $institution->leadActivePilot;
-        $all_active_pilot = $institution->allActivePilot;
-        return [
-            "configuration"=>$config,
-            "lead_pilot"=>$lead_pilot,
-            "all_active_pilots"=> $config->many_active_pilot==true ? $all_active_pilot : null
-        ];
+        if ($config){
+            $lead_pilot = $institution->leadActivePilot;
+            $all_active_pilot = $institution->allActivePilot;
+            return [
+                "configuration"=>$config,
+                "lead_pilot"=>$lead_pilot,
+                "all_active_pilots"=> $config->many_active_pilot==true ? $all_active_pilot : null
+            ];
+        }else{
+            $lead_pilot = $institution->leadActivePilot;
+            return [
+                "configuration"=>$config,
+                "lead_pilot"=>$lead_pilot,
+                "all_active_pilots"=> []
+            ];
+        }
+
     }
 
     protected function nowConfiguration(){
