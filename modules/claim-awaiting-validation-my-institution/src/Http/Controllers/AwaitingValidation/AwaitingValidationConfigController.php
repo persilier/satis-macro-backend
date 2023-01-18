@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Rules\TreatmentCanBeValidateRules;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\AwaitingValidation;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
 class AwaitingValidationConfigController extends ApiController
@@ -24,9 +25,9 @@ class AwaitingValidationConfigController extends ApiController
     {
         parent::__construct();
 
-      //  $this->middleware('auth:api');
+        $this->middleware('auth:api');
 
-      //  $this->middleware('permission:list-claim-awaiting-validation-my-institution')->only(['index']);
+        $this->middleware('permission:list-claim-awaiting-validation-my-institution')->only(['index']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -40,7 +41,7 @@ class AwaitingValidationConfigController extends ApiController
     public function index()
     {
         $configs = $this->nowConfiguration();
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitutionWithConfig($configs), 200);
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $this->staff(), $this->institution()), 200);
     }
 
 

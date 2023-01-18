@@ -65,24 +65,41 @@ trait AwaitingValidation
 
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution)
     {
         $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution(false, null, null, null);
-      //   return $claimsTreated[0]["active_treatment"];
+        //   return $claimsTreated[0]["active_treatment"];
         if ($configs["configuration"]["many_active_pilot"]) {
             $leads_with_claims = [];
-            for ($i = 0; $i < sizeof($claimsTreated); $i++) {
-                $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
-                if ($staff_id != null) {
-                    if (!isset($leads_with_claims[$staff_id])) {
-                        $leads_with_claims[$staff_id] = [
-                            "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
-                            "claims" => [],
-                        ];
+
+            if ($staff->id == $this->institution->active_pilot_id) {
+                for ($i = 0; $i < sizeof($claimsTreated); $i++) {
+                    $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
+                    if ($staff_id != null) {
+                        if (!isset($leads_with_claims[$staff_id])) {
+                            $leads_with_claims[$staff_id] = [
+                                "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
+                                "claims" => [],
+                            ];
+                        }
+                        array_push($leads_with_claims[$staff_id]["claims"], $claimsTreated[$i]);
                     }
-                    array_push($leads_with_claims[$staff_id]["claims"],$claimsTreated[$i]);
+                }
+            } else {
+                for ($i = 0; $i < sizeof($claimsTreated); $i++) {
+                    $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
+                    if ($staff_id != null && $staff_id==$staff->id) {
+                        if (!isset($leads_with_claims[$staff_id])) {
+                            $leads_with_claims[$staff_id] = [
+                                "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
+                                "claims" => [],
+                            ];
+                        }
+                        array_push($leads_with_claims[$staff_id]["claims"], $claimsTreated[$i]);
+                    }
                 }
             }
+
             return $leads_with_claims;
         } else {
             return $claimsTreated;
