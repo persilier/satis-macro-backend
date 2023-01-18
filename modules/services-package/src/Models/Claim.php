@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -305,10 +306,12 @@ class Claim extends Model
                 $canAttach = $staff->id == $staff->institution->active_pilot_id;
             }*/
         }
-
-        if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
-            $canAttach = true;
+        if(Auth::user()){
+            if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
+                $canAttach = true;
+            }
         }
+
         return $canAttach;
     }
 }
