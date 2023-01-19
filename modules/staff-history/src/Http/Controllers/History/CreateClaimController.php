@@ -29,10 +29,15 @@ class CreateClaimController extends ApiController
      */
     public function index()
     {
+        $staff_id = \request()->query('staff_id');
+        if ($staff_id==null){
+            $staff_id = $this->staff()->id;
+        }
+
         return response()->json(Claim::with([
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
-        ])->where('created_by', $this->staff()->id)->get(), 200);
+        ])->where('created_by', $staff_id)->get(), 200);
     }
 
 }
