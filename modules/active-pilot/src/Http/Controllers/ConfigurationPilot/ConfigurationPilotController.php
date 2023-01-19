@@ -35,6 +35,10 @@ class ConfigurationPilotController extends ApiController
 
         $this->validate($request, $this->ruleConfiguration($request->many_pilot));
 
+        if ($request->many_pilot && !in_array($request->lead_pilot_id,$request->pilots)){
+            return response()->json("Veuillez sélectionner le lead parmi les pilotes actifs", 500);
+        }
+
         $config = $this->storeConfiguration($request->many_pilot);
         if ($config){
             $this->storeActivePilotAndLead($request);

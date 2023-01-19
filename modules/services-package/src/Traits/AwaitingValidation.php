@@ -34,6 +34,12 @@ trait AwaitingValidation
                             $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
                         });
                         break;
+                    case 'transferred_to_unit_by':
+                        $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
+                            $query->where("transferred_to_unit_by", $key);
+                        });
+                        break;
+
                     default:
                         $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
                             $query->where('firstname', 'like', "%$key%")
@@ -65,43 +71,23 @@ trait AwaitingValidation
 
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution, $paginate = true, $paginationSize = 50, $key = null, $type = null)
     {
-        $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution(false, null, null, null);
-        //   return $claimsTreated[0]["active_treatment"];
         if ($configs["configuration"]["many_active_pilot"]) {
-            $leads_with_claims = [];
-
-            if ($staff->id == $this->institution->active_pilot_id) {
-                for ($i = 0; $i < sizeof($claimsTreated); $i++) {
-                    $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
-                    if ($staff_id != null) {
-                        if (!isset($leads_with_claims[$staff_id])) {
-                            $leads_with_claims[$staff_id] = [
-                                "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
-                                "claims" => [],
-                            ];
-                        }
-                        array_push($leads_with_claims[$staff_id]["claims"], $claimsTreated[$i]);
-                    }
+            if ($staff->id == $institution->active_pilot_id) {
+                if ($type) {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type);
+                    return $claimsTreated;
+                } else {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by");
+                    return $claimsTreated;
                 }
             } else {
-                for ($i = 0; $i < sizeof($claimsTreated); $i++) {
-                    $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
-                    if ($staff_id != null && $staff_id==$staff->id) {
-                        if (!isset($leads_with_claims[$staff_id])) {
-                            $leads_with_claims[$staff_id] = [
-                                "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
-                                "claims" => [],
-                            ];
-                        }
-                        array_push($leads_with_claims[$staff_id]["claims"], $claimsTreated[$i]);
-                    }
-                }
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by");
+                return $claimsTreated;
             }
-
-            return $leads_with_claims;
         } else {
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type);
             return $claimsTreated;
         }
     }
