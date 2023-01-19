@@ -345,7 +345,11 @@ trait UemoaReports{
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
                         'percentageTreatedOutDelay' => (string)  $this->percentageOutTime($claims),
-                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims)
+                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims),
+                        'countTreatedInDelay' => (string)  $this->countInTime($claims),
+                        'countTreatedOutDelay' => (string)  $this->countOutTime($claims),
+                        'countNoTreated' => (string) $this->countNotTreated($claims)
+
                     ];
 
                     if($myInstitution){
@@ -654,6 +658,15 @@ trait UemoaReports{
         return ($totalNoValidated && $total) ? (round((($totalNoValidated /$total ) * 100),2)) : 0;
     }
 
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countNotTreated($itemObject){
+
+        return $this->totalNoValidated($itemObject);
+    }
+
 
     /**
      * @param $itemObject
@@ -668,6 +681,16 @@ trait UemoaReports{
         return ($totalTreatedOutDelay && $totalTreated) ? (round((($totalTreatedOutDelay /$totalTreated ) * 100),2)) : 0;
     }
 
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countOutTime($itemObject){
+
+        return $this->totalTreatedOutDelay($itemObject);
+    }
+
     /**
      * @param $itemObject
      * @return float|int
@@ -679,6 +702,14 @@ trait UemoaReports{
         $totalTreated = $this->totalTreated($itemObject);
 
         return ($totalTreatedInDelay && $totalTreated) ? (round((($totalTreatedInDelay /$totalTreated ) * 100),2)) : 0;
+    }
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countInTime($itemObject){
+        return  $this->totalTreatedInDelay($itemObject);
     }
 
 
