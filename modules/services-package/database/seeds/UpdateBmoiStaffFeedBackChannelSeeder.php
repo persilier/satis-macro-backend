@@ -19,18 +19,20 @@ class UpdateBmoiStaffFeedBackChannelSeeder extends Seeder
     {
         $staffs = Staff::all();
 
-        foreach ($staffs as $staff){
-            if(($staff->feedback_preferred_channels && !in_array('email',$staff->feedback_preferred_channels))){
-                $data = array_merge($staff->feedback_preferred_channels,['email']);
+        foreach ($staffs as $staff) {
+            $data = [];
+            if (!$staff->feedback_preferred_channels) {
+                $data = array_merge([], ['email']);
+            } else if (!in_array('email', $staff->feedback_preferred_channels)) {
+                $data = array_merge($staff->feedback_preferred_channels, ['email']);
             } else {
-                $data = ['email'];
+                $data = $staff->feedback_preferred_channels;  
             }
-Log::info($data);
+            Log::info($data);
 
             // $staff->update([
             //     'feedback_preferred_channels' => $data
             // ]);
         }
-
     }
 }
