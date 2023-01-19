@@ -93,8 +93,7 @@ trait MonitoringClaim
             } else {
                 $claims = Claim::with($this->getRelations());
             }
-
-        }else 
+        } else {
             $claims = Claim::with($this->getRelations());
         }
 
