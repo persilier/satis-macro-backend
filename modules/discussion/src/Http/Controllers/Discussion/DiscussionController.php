@@ -36,10 +36,6 @@ class DiscussionController extends ApiController
         return response()->json(Staff::with('discussions.claim')
             ->findOrFail($this->staff()->id)
             ->discussions
-            ->filter(function ($value, $key) {
-                $value->load(['staff']);
-                return $value->claim->status != 'archived';
-            })
             ->values()
             , 200);
     }
