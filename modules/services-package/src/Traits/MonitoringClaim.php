@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Satis2020\ServicePackage\Models\Unit;
@@ -18,6 +19,7 @@ use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\StaffManagement;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Notifications\ReminderAfterDeadline;
 use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
@@ -29,7 +31,7 @@ use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilot
  */
 trait MonitoringClaim
 {
-    use ConfigurationPilotTrait, DataUserNature, ConfigurationPilotTrait;
+    use ConfigurationPilotTrait, DataUserNature, ConfigurationPilotTrait, StaffManagement;
     /**
      * @param $request
      * @param $status
@@ -225,12 +227,14 @@ trait MonitoringClaim
 
             $data['units'] = Unit::where('institution_id', $institutionId)->get();
             $data['staffs'] = Staff::with('identite')->where('institution_id', $institutionId)->get();
+            $data['collectors'] = $this->getAllCollectors($institutionId);
 
         } else {
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
             $data['staffs'] = Staff::with('identite')->get();
+            $data['collectors'] = $this->getAllCollectors();
         }
         if($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id){
 
