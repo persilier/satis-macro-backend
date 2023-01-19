@@ -28,11 +28,10 @@ class UpdateBmoiStaffFeedBackChannelSeeder extends Seeder
             } else {
                 $data = $staff->feedback_preferred_channels;  
             }
-            Log::info($data);
 
-            // $staff->update([
-            //     'feedback_preferred_channels' => $data
-            // ]);
+            $staff->update([
+                'feedback_preferred_channels' => $data
+            ]);
         }
     }
 }
