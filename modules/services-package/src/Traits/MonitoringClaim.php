@@ -86,10 +86,15 @@ trait MonitoringClaim
         $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
         $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         if($configuration->many_active_pilot  === "1" && $this->staff()->id != $lead_pilot->id){
-            $claims = Claim::with($this->getRelations())->whereHas('activeTreatment', function($query){
-                $query->where('transferred_to_unit_by', $this->staff()->id);
-            });
-        }else {
+            if(!in_array($status, [Claim::CLAIM_INCOMPLETE,Claim::CLAIM_ARCHIVED, Claim::CLAIM_FULL, Claim::CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION, Claim::CLAIM_VALIDATED ])){
+                $claims = Claim::with($this->getRelations())->whereHas('activeTreatment', function($query){
+                    $query->where('transferred_to_unit_by', $this->staff()->id);
+                });
+            } else {
+                $claims = Claim::with($this->getRelations());
+            }
+
+        }else 
             $claims = Claim::with($this->getRelations());
         }
 
