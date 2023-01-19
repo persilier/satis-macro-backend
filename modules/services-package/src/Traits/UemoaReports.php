@@ -406,7 +406,7 @@ trait UemoaReports{
             'amountDisputed' =>  $claim->amount_disputed,
             'accountCurrency' => $this->currency($claim),
             'collector' => $claim->createdBy->identite,
-            'unit' => ($claim->activeTreatment && $claim->activeTreatment->responsibleUnit) ? $claim->activeTreatment->responsibleUnit : null,
+            'unit' => ($claim->unitTargeted) ? $claim->unitTargeted : null,
             'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
         ];
 
