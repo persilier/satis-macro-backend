@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/history')->name('history.')->group(function () {
 
-    Route::resource('list-claim', 'History\CreateClaimController', ['only' => ['index']]);
+    Route::resource('list-claim', 'History\CreateClaimController', ['only' => ['index','show']]);
     Route::resource('list-treat', 'History\TreatClaimController', ['only' => ['index']]);
 
 });
