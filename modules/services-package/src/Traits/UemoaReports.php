@@ -38,7 +38,8 @@ trait UemoaReports{
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.responsibleUnit',
-            'activeTreatment.assignedToStaffBy.identite'
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.staffTransferredToUnitBy.identite'
         ];
 
         return $relations;
@@ -386,7 +387,6 @@ trait UemoaReports{
             'reference' => $claim->reference,
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : $claim['account_number'],
             'telephone' => $this->telephone($claim),
-            'reference' => $claim->reference,
             'agence' =>  $this->agence($claim),
             'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
             'claimObject' => optional($claim->claimObject)->name,
@@ -404,7 +404,10 @@ trait UemoaReports{
             'delayTreatWithWeekend' => (string) $this->delayTreatment($claim)['withWeekend'],
             'delayTreatWithoutWeekend' => (string) $this->delayTreatment($claim)['withoutWeekend'],
             'amountDisputed' =>  $claim->amount_disputed,
-            'accountCurrency' => $this->currency($claim)
+            'accountCurrency' => $this->currency($claim),
+            'collector' => $claim->createdBy->identite,
+            'unit' => ($claim->activeTreatment && $claim->activeTreatment->responsibleUnit) ? $claim->activeTreatment->responsibleUnit : null,
+            'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
         ];
 
         if($myInstitution){
