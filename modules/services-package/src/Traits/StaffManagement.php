@@ -63,7 +63,8 @@ trait StaffManagement
             'identite_id' => $identite->id,
             'position_id' => $request->position_id,
             'institution_id' => $request->institution_id,
-            'others' => $request->others
+            'others' => $request->others,
+            'feedback_preferred_channels' => ["email"]
         ];
 
         if ($request->has('unit_id')) {
