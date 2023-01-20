@@ -4,7 +4,6 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
-use App\Jobs\ProcessNotifyAllActivePilot;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
@@ -13,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ProcessNotifyAllActivePilot;
 use Satis2020\ServicePackage\Models\Claim;
 use Carbon\Exceptions\InvalidFormatException;
 use Satis2020\ServicePackage\Rules\EmailArray;
