@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
