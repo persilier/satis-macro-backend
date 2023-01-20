@@ -12,7 +12,7 @@ use Satis2020\ServicePackage\Traits\NotificationProof;
 
 class CommunicateTheSolution extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification,NotificationProof;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification, NotificationProof;
 
     public $claim;
     public $files;
@@ -64,13 +64,19 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
     {
         $ref = formatClaimRef($this->claim->reference);
 
-        return (new MailMessage)
+        $email =  (new MailMessage)
             ->subject($ref . " Réclamation traitée")
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}",
-                'files' => $this->files
             ]);
+        if (count($this->files) > 0) {
+            foreach ($this->files as $file) {
+                $email->attach(url($file->url));
+            }
+        }
+
+        return $email;
     }
 
     /**
@@ -95,11 +101,11 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
     public function toMessage($notifiable)
     {
         return [
-            'to' => $this->institution->iso_code.$notifiable->telephone[0],
+            'to' => $this->institution->iso_code . $notifiable->telephone[0],
             'text' => $this->event->text,
             'institutionMessageApi' => $this->getStaffInstitutionMessageApi($this->institution),
-            'institution_id'=>$this->institution->id,
-            'notifiable_id'=>$notifiable->id
+            'institution_id' => $this->institution->id,
+            'notifiable_id' => $notifiable->id
         ];
     }
 }
