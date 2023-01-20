@@ -3,7 +3,7 @@
 
 {{ $text }}
 
-@if ($files)
+@if (count($files) > 0)
 @foreach ($files as $file)
 <a href="{{url($file->url)}}">{{$file->title}}</a>
 @endforeach
