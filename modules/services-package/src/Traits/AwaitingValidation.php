@@ -6,6 +6,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Claim;
 
 trait AwaitingValidation
@@ -293,6 +294,9 @@ trait AwaitingValidation
         ];
 
         $backup = $this->backupData($claim, $validationData);
+        if($request->mail_attachments){
+            $mail_attachments = File::whereIn('id', $request->mail_attachments);
+        }
 
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
