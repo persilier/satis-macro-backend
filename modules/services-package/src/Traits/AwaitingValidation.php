@@ -39,14 +39,7 @@ trait AwaitingValidation
                         $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
                             $query->where("transferred_to_unit_by", $key);
                         });
-                        /*if ($search_text!=null){
-                            $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
-                                $query->where('firstname', 'like', "%$search_text%")
-                                    ->orWhere('lastname', 'like', "%$search_text%")
-                                    ->orwhereJsonContains('telephone', $search_text)
-                                    ->orwhereJsonContains('email', $search_text);
-                            });
-                        }*/
+
                         break;
 
                     default:
@@ -58,6 +51,15 @@ trait AwaitingValidation
                         });
                         break;
                 }
+            }
+
+            if ($search_text!=null){
+                $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                    $query->where('firstname', 'like', "%$search_text%")
+                        ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orwhereJsonContains('telephone', $search_text)
+                        ->orwhereJsonContains('email', $search_text);
+                });
             }
 
             return $claimsTreated->paginate($paginationSize);
