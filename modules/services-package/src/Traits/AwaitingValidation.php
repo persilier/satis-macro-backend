@@ -308,10 +308,10 @@ trait AwaitingValidation
         if (!is_null($claim->activeTreatment->declared_unfounded_at)) {
             // the claim is declared unfounded
             $claim->update(['status' => 'archived']);
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim, $mail_attachments));
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
             $claim->update(['status' => 'validated']);
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim, $mail_attachments));
         }
 
         $this->activityLogService->store("Une réclamation a été validée",
