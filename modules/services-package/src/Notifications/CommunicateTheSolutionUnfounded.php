@@ -13,6 +13,7 @@ class CommunicateTheSolutionUnfounded extends Notification implements ShouldQueu
     use Queueable, \Satis2020\ServicePackage\Traits\Notification;
 
     public $claim;
+    public $files;
     public $event;
     public $institution;
 
@@ -21,9 +22,11 @@ class CommunicateTheSolutionUnfounded extends Notification implements ShouldQueu
      *
      * @param $claim
      */
-    public function __construct($claim)
+    public function __construct($claim, $files = null)
     {
         $this->claim = $claim;
+
+        $this->files = $files;
 
         $this->event = $this->getNotification('communicate-the-solution-unfounded');
 

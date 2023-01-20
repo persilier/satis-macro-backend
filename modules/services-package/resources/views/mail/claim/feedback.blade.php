@@ -3,4 +3,10 @@
 
 {{ $text }}
 
+@if ($files)
+@foreach ($files as $file)
+<a href="{{$file}}"></a>
+@endforeach
+@endif
+
 @endcomponent
