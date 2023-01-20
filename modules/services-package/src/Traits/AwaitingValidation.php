@@ -5,12 +5,13 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\Claim;
 
 trait AwaitingValidation
 {
 
-    protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null)
+    protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $search_text=null)
     {
 
         $institution_id = is_null($institution_id)
@@ -38,6 +39,16 @@ trait AwaitingValidation
                         $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
                             $query->where("transferred_to_unit_by", $key);
                         });
+                        Log::info($search_text);
+                        if ($search_text!=null){
+
+                            $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                                $query->where('firstname', 'like', "%$search_text%")
+                                    ->orWhere('lastname', 'like', "%$search_text%")
+                                    ->orwhereJsonContains('telephone', $search_text)
+                                    ->orwhereJsonContains('email', $search_text);
+                            });
+                        }
                         break;
 
                     default:
@@ -110,6 +121,7 @@ trait AwaitingValidation
                             $query->where("transferred_to_unit_by", $key);
                         });
                         if ($search_text){
+
                             $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
                                 $query->where('firstname', 'like', "%$search_text%")
                                     ->orWhere('lastname', 'like', "%$search_text%")
@@ -150,23 +162,23 @@ trait AwaitingValidation
 
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution, $paginate = true, $paginationSize = 50, $key = null, $type = null)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution, $paginate = true, $paginationSize = 50, $key = null, $type = null, $search_text=null)
     {
         if ($configs["configuration"]["many_active_pilot"]) {
             if ($staff->id == $institution->active_pilot_id) {
                 if ($type) {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type);
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type,null, $search_text);
                     return $claimsTreated;
                 } else {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by");
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by",null, $search_text);
                     return $claimsTreated;
                 }
             } else {
-                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by");
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by",null, $search_text);
                 return $claimsTreated;
             }
         } else {
-            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type);
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type,null, $search_text);
             return $claimsTreated;
         }
     }
