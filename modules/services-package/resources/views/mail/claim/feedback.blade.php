@@ -5,7 +5,7 @@
 
 @if ($files)
 @foreach ($files as $file)
-<a href="{{$file}}"></a>
+<a href="{{url($file->url)}}"><{{$file->title}}/a>
 @endforeach
 @endif
 
