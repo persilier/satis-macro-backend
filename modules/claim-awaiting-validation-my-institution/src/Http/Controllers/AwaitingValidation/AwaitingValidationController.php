@@ -86,7 +86,8 @@ class AwaitingValidationController extends ApiController
 
         $rules = [
             'claim' => new TreatmentCanBeValidateRules($this->institution()->id),
-            'solution_communicated' => 'required|string'
+            'solution_communicated' => 'required|string',
+            'files' => 'array',
         ];
 
         $this->validate($request, $rules);

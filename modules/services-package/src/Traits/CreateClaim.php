@@ -4,15 +4,15 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
-use App\Jobs\ProcessNotifyAllActivePilot;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\ProcessNotifyAllActivePilot;
 use Illuminate\Support\Facades\Validator;
-use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
+use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Claim;
 use Carbon\Exceptions\InvalidFormatException;
 use Satis2020\ServicePackage\Rules\EmailArray;
@@ -32,6 +32,7 @@ use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 /**
  * Trait CreateClaim
@@ -333,7 +334,7 @@ trait CreateClaim
                 $url = Storage::url("$path");
 
                 // insert the file into database
-                $claim->files()->create(['title' => $title, 'url' => $url]);
+                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF ? File::ATTACH_AT_TREATMENT : null]);
             }
         }
     }

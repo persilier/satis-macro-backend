@@ -245,6 +245,7 @@ trait AwaitingValidation
             'activeTreatment',
             'activeTreatment.transferredToUnitBy.identite',
             'activeTreatment.staffTransferredToUnitBy.identite',
+            'filesAtTreatment'
 
         ];
     }
