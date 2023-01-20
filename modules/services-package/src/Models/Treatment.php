@@ -69,7 +69,9 @@ class Treatment extends Model
         'invalidated_reason',
         'number_reject',
         'treatments',
-        'note'
+        'note',
+        'transferred_to_unit_by',
+        'validated_by'
     ];
 
     /**
@@ -100,6 +102,15 @@ class Treatment extends Model
     }
 
     /**
+     * Get the staff who assign the claim associated with the treatment
+     * @return BelongsTo
+     */
+    public function staffTransferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
+    }
+
+    /**
      * Get the staff who is responsible for the treatment
      * @return BelongsTo
      */
@@ -114,6 +125,22 @@ class Treatment extends Model
     public function satisfactionMeasuredBy()
     {
         return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
+    }
+
+     /**
+     * @return BelongsTo
+     */
+    public function validatedBy()
+    {
+        return $this->belongsTo(Staff::class, 'validated_by');
     }
 
 }

@@ -254,6 +254,15 @@ class Claim extends Model
         return $this->morphMany(File::class, 'attachmentable');
     }
 
+        /**
+     * Get all of the claim's files attach at treatment.
+     * @return MorphMany
+     */
+    public function filesAtTreatment()
+    {
+        return $this->morphMany(File::class, 'attachmentable')->where('attach_at', File::ATTACH_AT_TREATMENT);
+    }
+
     /**
      * Get the treatments associated with the claim
      * @return HasMany

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\User;
 
 /**
  * Trait DataUserNature
@@ -53,6 +54,21 @@ trait DataUserNature
 
         $message = "Unable to find the user institution";
         $staff = $this->user()->load('identite.staff')->identite->staff;
+
+        $this->institution = Institution::with('institutionType')->find($staff->institution_id);
+
+        if ($this->institution==null) {
+            throw new RetrieveDataUserNatureException($message);
+        }
+
+        return $this->institution;
+    }
+
+    protected function institutionWithUserId($user_id)
+    {
+
+        $message = "Unable to find the user institution";
+        $staff = User::find($user_id)->load('identite.staff')->identite->staff;
 
         $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 

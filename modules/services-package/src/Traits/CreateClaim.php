@@ -8,8 +8,11 @@ use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Satis2020\ServicePackage\Models\File;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ProcessNotifyAllActivePilot;
 use Satis2020\ServicePackage\Models\Claim;
 use Carbon\Exceptions\InvalidFormatException;
 use Satis2020\ServicePackage\Rules\EmailArray;
@@ -29,6 +32,7 @@ use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
 use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 use Satis2020\ServicePackage\Rules\ClientBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 /**
  * Trait CreateClaim
@@ -36,7 +40,7 @@ use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
  */
 trait CreateClaim
 {
-    use Notification;
+    use Notification, ConfigurationPilotTrait;
     /**
      * @param $request
      * @param bool $with_client
@@ -289,16 +293,19 @@ trait CreateClaim
         if (!is_null($institutionTargeted)) {
 
             if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
-
+                $severityLevel = "normal";
                 if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
 
                     $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaimHighForcefulness($claim));
-
+                    $severityLevel = "high";
                 }else{
 
                     $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
 
                 }
+
+                $process_notify_all_active_pilot = new ProcessNotifyAllActivePilot($claim,$severityLevel, Auth::user()->id);
+                dispatch($process_notify_all_active_pilot);
 
                 // check if the claimObject related to the claim have a time_limit = 1 and send a notification
                 $this->closeTimeLimitNotification($claim);
@@ -327,7 +334,7 @@ trait CreateClaim
                 $url = Storage::url("$path");
 
                 // insert the file into database
-                $claim->files()->create(['title' => $title, 'url' => $url]);
+                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF ? File::ATTACH_AT_TREATMENT : null]);
             }
         }
     }

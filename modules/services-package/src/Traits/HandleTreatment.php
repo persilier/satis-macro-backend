@@ -29,6 +29,7 @@ trait HandleTreatment
 
         $updateData = [
             'transferred_to_unit_at' => Carbon::now(),
+            'transferred_to_unit_by' => $this->staff()->id,
             'responsible_unit_id' => $request->unit_id,
             'rejected_reason' => NULL,
             'rejected_at' => NULL,
