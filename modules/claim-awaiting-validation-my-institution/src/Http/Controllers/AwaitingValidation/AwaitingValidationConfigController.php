@@ -52,8 +52,9 @@ class AwaitingValidationConfigController extends ApiController
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
+        $search_text = \request()->query('search_text');
         $configs = $this->nowConfiguration();
-        return response()->json($this->getClaimsTransferredInMyInstitutionWithConfig($configs, $this->staff(), $this->institution(),true,$paginationSize,$key, $type ), 200);
+        return response()->json($this->getClaimsTransferredInMyInstitutionWithConfig($configs, $this->staff(), $this->institution(),true,$paginationSize,$key, $type, $search_text ), 200);
 
     }
 
