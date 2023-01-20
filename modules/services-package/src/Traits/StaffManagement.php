@@ -182,4 +182,14 @@ trait StaffManagement
 
         return $collector;
     }
+
+    public function getRegisteredClaims($institutionId = null)
+    {
+        return Staff::with("registeredClaims","identite")
+            ->get()->filter(function ($value){
+                return sizeof($value->registeredClaims)>0;
+            })->values();
+    }
+
+
 }
