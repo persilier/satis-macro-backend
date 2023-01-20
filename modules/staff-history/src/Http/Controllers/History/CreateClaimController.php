@@ -43,7 +43,7 @@ class CreateClaimController extends ApiController
 
     public function create()
     {
-        return response()->json($this->getAllCollectors(), 200);
+        return response()->json($this->getRegisteredClaims(), 200);
     }
 
 
