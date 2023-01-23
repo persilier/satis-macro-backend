@@ -43,7 +43,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
             $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
             $add_permission_to_pilot = [
-                'store-discussion'
+                'store-discussion','add-discussion-contributor'
             ];
 
             $pilot_normal_permissions = [
