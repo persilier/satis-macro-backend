@@ -33,6 +33,7 @@ class PasswordResetController extends ApiController{
     public function create(Request $request)
     {
         $request->validate([ 'email' => 'required|string|email']);
+        $requestParams = [];
 
         if (!$user = User::where('username', $request->email)->first()){
 
@@ -46,9 +47,10 @@ class PasswordResetController extends ApiController{
             'token' => Str::random(80)
         ]);
 
-        if ($user && $passwordReset){
+        $requestParams['origin'] = $request->headers->get('origin');
 
-            $user->notify(new PasswordResetRequest($passwordReset->token, $request));
+        if ($user && $passwordReset){
+            $user->notify(new PasswordResetRequest($passwordReset->token, $requestParams ));
         }
 
         return response()->json([
