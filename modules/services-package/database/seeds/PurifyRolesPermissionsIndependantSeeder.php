@@ -41,6 +41,36 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
         $nature = Config::get('services.app_nature', 'PRO');
         if ($nature === 'PRO') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+            $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
+            $add_permission_to_pilot = [
+                'store-discussion','add-discussion-contributor'
+            ];
+
+            $pilot_normal_permissions = [
+                'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
+                'store-claim-against-my-institution',
+                'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
+                'list-my-claim-archived', 'show-my-claim-archived',
+                'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
+                'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
+                'list-monitoring-claim-my-institution',
+                'list-reporting-claim-my-institution',
+                'transfer-claim-to-circuit-unit',
+                'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
+                'show-dashboard-data-my-institution',
+                'history-list-create-claim',
+                'update-active-pilot',
+                'unfounded-claim-awaiting-assignment',
+                'search-claim-my-reference',
+                'attach-files-to-claim',
+                'revive-staff',
+                'pilot-list-notification-proof',
+                'config-reporting-claim-my-institution',
+                'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                'bci-monthly-reports', 'bci-annual-reports',
+                'pilot-export-notification-proof','configuration-pilot','pilot-relance-other','reassignment_to_pilot',
+                'list-claim-transferred-my-institution',
+            ];
 
             $independantRoles = [
                 "admin-pro" => [
@@ -92,31 +122,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof','configuration-pilot'
                 ],
-                "pilot" => [
-                    'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
-                    'store-claim-against-my-institution',
-                    'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
-                    'list-my-claim-archived', 'show-my-claim-archived',
-                    'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
-                    'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
-                    'list-monitoring-claim-my-institution',
-                    'list-reporting-claim-my-institution',
-                    'transfer-claim-to-circuit-unit',
-                    'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
-                    'show-dashboard-data-my-institution',
-                    'history-list-create-claim',
-                    'update-active-pilot',
-                    'unfounded-claim-awaiting-assignment',
-                    'search-claim-my-reference',
-                    'attach-files-to-claim',
-                    'revive-staff',
-                    'pilot-list-notification-proof',
-                    'config-reporting-claim-my-institution',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports',
-                    'pilot-export-notification-proof','configuration-pilot','pilot-relance-other','reassignment_to_pilot',
-                    'list-claim-transferred-my-institution','store-discussion'
-                ],
+                "pilot" => $allow_pilot_create_discussion==1 ? array_merge($pilot_normal_permissions,$add_permission_to_pilot) : $pilot_normal_permissions,
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
                     'store-claim-against-my-institution',
