@@ -279,6 +279,8 @@ trait AwaitingValidation
      */
     protected function handleValidate($request, $claim)
     {
+        $mail_attachments = [];
+
         $validationData = [
             'invalidated_reason' => NULL,
             'validated_at' => Carbon::now()
@@ -287,10 +289,8 @@ trait AwaitingValidation
         $backup = $this->backupData($claim, $validationData);
         if (count($request->mail_attachments)>0) {
             $mail_attachments = File::whereIn('id', $request->mail_attachments)->get();
-        } else {
-            $mail_attachments = [];
         }
-       // dd(url($mail_attachments[1]->url), "/home/dmd_dev_elie/Documents/satis-server-backend/public/storage/claim-attachments/9oOvlrmnIE50VCf5ZKsk7F97U7OZw1rjszjvHMIt.xlsx");
+        
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),

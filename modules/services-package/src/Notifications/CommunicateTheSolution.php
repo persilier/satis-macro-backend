@@ -71,10 +71,13 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}",
             ]);
+         
         if (count($this->files) > 0) {
-               foreach ($this->files as $file) {
-                   $email->attach(url($file->url));
-               }
+            foreach ($this->files as $file) {
+                $email->attach(url($file->url), [
+                    'as' => $file->title
+                ]);
+            }
         }
 
         return $email;
