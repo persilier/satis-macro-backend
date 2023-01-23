@@ -53,6 +53,12 @@ class MetadataTableSeeder extends Seeder
             'data' => json_encode($mail_parameters)
         ]);
 
+        Metadata::create([
+            'id' => (string)Str::uuid(),
+            'name' => 'coef-relance-domaine-prefixe',
+            'data' => json_encode([])
+        ]);
+
 
         /*Metadata::create([
             'id' => (string)Str::uuid(),
