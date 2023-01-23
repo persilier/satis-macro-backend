@@ -3,12 +3,13 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
-use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Traits\NotificationProof;
+use Satis2020\ServicePackage\Consts\NotificationConsts;
 
 class CommunicateTheSolution extends Notification implements ShouldQueue
 {
@@ -70,12 +71,11 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}",
             ]);
-            $email->attach("/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/claim-attachments/9oOvlrmnIE50VCf5ZKsk7F97U7OZw1rjszjvHMIt.xlsx");
-        // if (count($this->files) > 0) {
-        //     foreach ($this->files as $file) {
-        //         $email->attach(public_path() . $file->url);
-        //     }
-        // }
+        if (count($this->files) > 0) {
+               foreach ($this->files as $file) {
+                   $email->attach(url($file->url));
+               }
+        }
 
         return $email;
     }
