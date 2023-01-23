@@ -290,6 +290,7 @@ trait AwaitingValidation
         } else {
             $mail_attachments = [];
         }
+        dd(public_path() . $mail_attachments[0]->url);
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),

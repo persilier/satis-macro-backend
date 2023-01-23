@@ -72,7 +72,7 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
             ]);
         if (count($this->files) > 0) {
             foreach ($this->files as $file) {
-                $email->attach(url($file->url));
+                $email->attach(public_path() . $file->url);
             }
         }
 
