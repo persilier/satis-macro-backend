@@ -290,7 +290,7 @@ trait AwaitingValidation
         } else {
             $mail_attachments = [];
         }
-        dd(public_path() . $mail_attachments[0]->url, "/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/claim-attachments/9oOvlrmnIE50VCf5ZKsk7F97U7OZw1rjszjvHMIt.xlsx");
+       // dd(public_path() . $mail_attachments[0]->url, "/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/claim-attachments/9oOvlrmnIE50VCf5ZKsk7F97U7OZw1rjszjvHMIt.xlsx");
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
