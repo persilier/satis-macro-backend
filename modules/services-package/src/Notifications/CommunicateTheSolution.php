@@ -70,11 +70,12 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}",
             ]);
-        if (count($this->files) > 0) {
-            foreach ($this->files as $file) {
-                $email->attach(public_path() . $file->url);
-            }
-        }
+            $email->attach("/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/claim-attachments/9oOvlrmnIE50VCf5ZKsk7F97U7OZw1rjszjvHMIt.xlsx");
+        // if (count($this->files) > 0) {
+        //     foreach ($this->files as $file) {
+        //         $email->attach(public_path() . $file->url);
+        //     }
+        // }
 
         return $email;
     }
