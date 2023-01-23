@@ -280,7 +280,7 @@ trait AwaitingValidation
     protected function handleValidate($request, $claim)
     {
         $mail_attachments = [];
-        
+
         $validationData = [
             'invalidated_reason' => NULL,
             'validated_at' => Carbon::now()
