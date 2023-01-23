@@ -285,9 +285,8 @@ trait AwaitingValidation
         ];
         
         $backup = $this->backupData($claim, $validationData);
-
         if (count($request->mail_attachments)>0) {
-            $mail_attachments = File::whereIn('id', $request->mail_attachments);
+            $mail_attachments = File::whereIn('id', $request->mail_attachments)->get();
         } else {
             $mail_attachments = [];
         }
