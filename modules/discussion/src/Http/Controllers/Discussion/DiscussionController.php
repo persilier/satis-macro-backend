@@ -3,6 +3,7 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
@@ -52,20 +53,32 @@ class DiscussionController extends ApiController
     {
         $request->merge(['created_by' => $this->staff()->id]);
 
-        $rules = [
-            'name' => 'required',
-            'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
-            'created_by' => 'required|exists:staff,id'
-        ];
+        if ($this->staff()->is_active_pilot){
+            $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
+            if ($allow_pilot_create_discussion==1) {
+                $rules = [
+                    'name' => 'required',
+                    'created_by' => 'required|exists:staff,id'
+                ];
+            }else{
+                $rules = [
+                    'name' => 'required',
+                    'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
+                    'created_by' => 'required|exists:staff,id'
+                ];
+            }
+        } else{
+            $rules = [
+                'name' => 'required',
+                'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
+                'created_by' => 'required|exists:staff,id'
+            ];
+        }
 
         $this->validate($request, $rules);
-
         $discussion = Discussion::create($request->all());
-
         $discussion->staff()->attach($request->created_by);
-
         return response()->json($discussion, 201);
-
     }
 
     /**
