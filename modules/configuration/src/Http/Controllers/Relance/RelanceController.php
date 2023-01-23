@@ -32,7 +32,10 @@ class RelanceController extends ApiController
      */
     public function show()
     {
-        return response()->json(["coef" => json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance')->firstOrFail()->data)], 200);
+        return response()->json([
+            "coef" => json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance')->firstOrFail()->data),
+            "domaine_prefixe" => json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance-domaine-prefixe')->firstOrFail()->data),
+        ], 200);
     }
 
 
@@ -45,12 +48,17 @@ class RelanceController extends ApiController
     {
         $rules = [
             'coef' => 'required|integer',
+            'domaine_prefixe' => 'required|array',
         ];
 
         $this->validate($request, $rules);
 
         $metadata = Metadata::where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode
         ($request->coef)]);
+
+        Metadata::where('name', 'coef-relance-domaine-prefixe')
+            ->firstOrFail()->update(['data' => json_encode
+        ($request->domaine_prefixe)]);
 
         $this->activityLogService->store('Configuration du coefficient applicable pour l\'envoie de relance',
             $this->institution()->id,
