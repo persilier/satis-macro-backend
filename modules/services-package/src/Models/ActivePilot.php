@@ -33,7 +33,7 @@ class ActivePilot extends Model
      * @var array
      */
     protected $fillable = [
-        'staff_id','institution_id'
+        'staff_id', 'institution_id'
     ];
 
 
