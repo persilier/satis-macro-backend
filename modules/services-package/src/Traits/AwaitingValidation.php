@@ -5,12 +5,14 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Claim;
 
 trait AwaitingValidation
 {
 
-    protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null)
+    protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $search_text = null)
     {
 
         $institution_id = is_null($institution_id)
@@ -34,6 +36,99 @@ trait AwaitingValidation
                             $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
                         });
                         break;
+                    case 'transferred_to_unit_by':
+                        $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
+                            $query->where("transferred_to_unit_by", $key);
+                        });
+
+                        break;
+
+                    default:
+                        $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
+                            $query->where('firstname', 'like', "%$key%")
+                                ->orWhere('lastname', 'like', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        });
+                        break;
+                }
+            }
+
+            if ($search_text != null) {
+                $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                    $query->where('firstname', 'like', "%$search_text%")
+                        ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orwhereJsonContains('telephone', $search_text)
+                        ->orwhereJsonContains('email', $search_text);
+                });
+            }
+
+            return $claimsTreated->paginate($paginationSize);
+        } else {
+
+            return $claimsTreated->get();
+        }
+
+        /*$institution_id = is_null($institution_id)
+            ? $this->institution()->id
+            : $institution_id;
+
+        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')->get();
+        return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
+            $value->activeTreatment->load($this->getActiveTreatmentRelations());
+            return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
+        });*/
+    }
+
+    protected function getClaimsAwaitingValidationInMyInstitutionWithParams($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $status = null, $transferred_to_unit_by = null, $search_text = null)
+    {
+
+        $institution_id = is_null($institution_id)
+            ? $this->institution()->id
+            : $institution_id;
+
+        $claimsTreated = Claim::with($this->getRelations());
+        if ($status) {
+            $claimsTreated->where('status', 'treated');
+        }
+
+
+        $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
+            $query->where('institution_id', $institution_id);
+        });
+        if ($transferred_to_unit_by) {
+            $claimsTreated->whereHas('activeTreatment', function ($query) {
+                $query->where('transferred_to_unit_by', '<>', null);
+            });
+        }
+
+        if ($paginate) {
+
+            if ($key) {
+                switch ($type) {
+                    case 'reference':
+                        $claimsTreated = $claimsTreated->where('reference', 'LIKE', "%$key%");
+                        break;
+                    case 'claimObject':
+                        $claimsTreated = $claimsTreated->whereHas("claimObject", function ($query) use ($key) {
+                            $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                        });
+                        break;
+                    case 'transferred_to_unit_by':
+                        $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
+                            $query->where("transferred_to_unit_by", $key);
+                        });
+                        if ($search_text) {
+
+                            $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                                $query->where('firstname', 'like', "%$search_text%")
+                                    ->orWhere('lastname', 'like', "%$search_text%")
+                                    ->orwhereJsonContains('telephone', $search_text)
+                                    ->orwhereJsonContains('email', $search_text);
+                            });
+                        }
+                        break;
+
                     default:
                         $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
                             $query->where('firstname', 'like', "%$key%")
@@ -46,11 +141,9 @@ trait AwaitingValidation
             }
 
             return $claimsTreated->paginate($paginationSize);
-
         } else {
 
             return $claimsTreated->get();
-
         }
 
         /*$institution_id = is_null($institution_id)
@@ -62,29 +155,46 @@ trait AwaitingValidation
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
         });*/
-
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithConfig($configs, $staff, $institution, $paginate = true, $paginationSize = 50, $key = null, $type = null, $search_text = null)
     {
-        $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution(false, null, null, null);
-      //   return $claimsTreated[0]["active_treatment"];
         if ($configs["configuration"]["many_active_pilot"]) {
-            $leads_with_claims = [];
-            for ($i = 0; $i < sizeof($claimsTreated); $i++) {
-                $staff_id = $claimsTreated[$i]["activeTreatment"]["transferred_to_unit_by"];
-                if ($staff_id != null) {
-                    if (!isset($leads_with_claims[$staff_id])) {
-                        $leads_with_claims[$staff_id] = [
-                            "identity" => $claimsTreated[$i]["activeTreatment"]["staffTransferredToUnitBy"]["identite"],
-                            "claims" => [],
-                        ];
-                    }
-                    array_push($leads_with_claims[$staff_id]["claims"],$claimsTreated[$i]);
+            if ($staff->id == $institution->active_pilot_id) {
+                if ($type) {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type, null, $search_text);
+                    return $claimsTreated;
+                } else {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", null, $search_text);
+                    return $claimsTreated;
                 }
+            } else {
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", null, $search_text);
+                return $claimsTreated;
             }
-            return $leads_with_claims;
         } else {
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitution($paginate, $paginationSize, $key, $type, null, $search_text);
+            return $claimsTreated;
+        }
+    }
+
+    protected function getClaimsTransferredInMyInstitutionWithConfig($configs, $staff, $institution, $paginate = true, $paginationSize = 50, $key = null, $type = null, $search_text = null)
+    {
+        if ($configs["configuration"]["many_active_pilot"]) {
+            if ($staff->id == $institution->active_pilot_id) {
+                if ($type) {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
+                    return $claimsTreated;
+                } else {
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                    return $claimsTreated;
+                }
+            } else {
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                return $claimsTreated;
+            }
+        } else {
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
             return $claimsTreated;
         }
     }
@@ -120,13 +230,10 @@ trait AwaitingValidation
             }
 
             return $claimsTreated->paginate($paginationSize);
-
         } else {
 
             return $claimsTreated->get();
-
         }
-
     }
 
     /**
@@ -150,6 +257,7 @@ trait AwaitingValidation
             'activeTreatment',
             'activeTreatment.transferredToUnitBy.identite',
             'activeTreatment.staffTransferredToUnitBy.identite',
+            'filesAtTreatment'
 
         ];
     }
@@ -171,13 +279,18 @@ trait AwaitingValidation
      */
     protected function handleValidate($request, $claim)
     {
+        $mail_attachments = [];
+
         $validationData = [
             'invalidated_reason' => NULL,
             'validated_at' => Carbon::now()
         ];
-
+        
         $backup = $this->backupData($claim, $validationData);
-
+        if (count($request->mail_attachments)>0) {
+            $mail_attachments = File::whereIn('id', $request->mail_attachments)->get();
+        }
+        
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
@@ -191,10 +304,11 @@ trait AwaitingValidation
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
             $claim->update(['status' => 'validated']);
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim, $mail_attachments));
         }
 
-        $this->activityLogService->store("Une réclamation a été validée",
+        $this->activityLogService->store(
+            "Une réclamation a été validée",
             $this->institution()->id,
             $this->activityLogService::VALIDATED_CLAIM,
             'claim',
@@ -236,7 +350,8 @@ trait AwaitingValidation
             }
         }
 
-        $this->activityLogService->store("Une réclamation a été invalide",
+        $this->activityLogService->store(
+            "Une réclamation a été invalide",
             $this->institution()->id,
             $this->activityLogService::INVALIDATED_CLAIM,
             'claim',

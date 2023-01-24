@@ -38,7 +38,8 @@ trait UemoaReports{
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.responsibleUnit',
-            'activeTreatment.assignedToStaffBy.identite'
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.staffTransferredToUnitBy.identite'
         ];
 
         return $relations;
@@ -345,7 +346,11 @@ trait UemoaReports{
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
                         'percentageTreatedOutDelay' => (string)  $this->percentageOutTime($claims),
-                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims)
+                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims),
+                        'countTreatedInDelay' => (string)  $this->countInTime($claims),
+                        'countTreatedOutDelay' => (string)  $this->countOutTime($claims),
+                        'countNoTreated' => (string) $this->countNotTreated($claims)
+
                     ];
 
                     if($myInstitution){
@@ -382,7 +387,6 @@ trait UemoaReports{
             'reference' => $claim->reference,
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : $claim['account_number'],
             'telephone' => $this->telephone($claim),
-            'reference' => $claim->reference,
             'agence' =>  $this->agence($claim),
             'claimCategorie' => optional( optional($claim->claimObject)->claimCategory)->name,
             'claimObject' => optional($claim->claimObject)->name,
@@ -400,7 +404,10 @@ trait UemoaReports{
             'delayTreatWithWeekend' => (string) $this->delayTreatment($claim)['withWeekend'],
             'delayTreatWithoutWeekend' => (string) $this->delayTreatment($claim)['withoutWeekend'],
             'amountDisputed' =>  $claim->amount_disputed,
-            'accountCurrency' => $this->currency($claim)
+            'accountCurrency' => $this->currency($claim),
+            'collector' => $claim->createdBy->identite,
+            'unit' => ($claim->unitTargeted) ? $claim->unitTargeted : null,
+            'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
         ];
 
         if($myInstitution){
@@ -654,6 +661,15 @@ trait UemoaReports{
         return ($totalNoValidated && $total) ? (round((($totalNoValidated /$total ) * 100),2)) : 0;
     }
 
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countNotTreated($itemObject){
+
+        return $this->totalNoValidated($itemObject);
+    }
+
 
     /**
      * @param $itemObject
@@ -668,6 +684,16 @@ trait UemoaReports{
         return ($totalTreatedOutDelay && $totalTreated) ? (round((($totalTreatedOutDelay /$totalTreated ) * 100),2)) : 0;
     }
 
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countOutTime($itemObject){
+
+        return $this->totalTreatedOutDelay($itemObject);
+    }
+
     /**
      * @param $itemObject
      * @return float|int
@@ -679,6 +705,14 @@ trait UemoaReports{
         $totalTreated = $this->totalTreated($itemObject);
 
         return ($totalTreatedInDelay && $totalTreated) ? (round((($totalTreatedInDelay /$totalTreated ) * 100),2)) : 0;
+    }
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countInTime($itemObject){
+        return  $this->totalTreatedInDelay($itemObject);
     }
 
 

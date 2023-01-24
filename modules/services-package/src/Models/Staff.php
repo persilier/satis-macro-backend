@@ -59,7 +59,7 @@ class Staff extends Model
             : $this->unit->lead_id === $this->attributes['id'];
     }
 
-    public function getIsInstitutionLeadAttribute()
+    public function getIsPilotLeadAttribute()
     {
         return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
     }
@@ -93,7 +93,7 @@ class Staff extends Model
      *
      * @var array
      */
-    protected $appends = ['is_lead', 'is_active_pilot', 'is_institution_lead'];
+    protected $appends = ['is_lead', 'is_active_pilot', 'is_pilot_lead'];
 
     /**
      * Get the identite associated with the staff

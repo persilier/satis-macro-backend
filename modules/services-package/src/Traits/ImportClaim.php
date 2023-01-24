@@ -82,9 +82,7 @@ trait ImportClaim
         $rules['relance'] = ['required', Rule::in(['OUI', 'NON'])];
 
         if($with_client){
-
             $rules['numero_compte_concerne'] = ['nullable','exists:accounts,number', new AccountValidationForImportClaimRules([
-
                 'telephone' => $request['telephone'],
                 'email' => $request['email'],
                 'acronyme' => $request['institution_concernee']])

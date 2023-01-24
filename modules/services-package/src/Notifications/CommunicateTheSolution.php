@@ -3,18 +3,20 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
-use Satis2020\ServicePackage\Consts\NotificationConsts;
 use Satis2020\ServicePackage\Traits\NotificationProof;
+use Satis2020\ServicePackage\Consts\NotificationConsts;
 
 class CommunicateTheSolution extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification,NotificationProof;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification, NotificationProof;
 
     public $claim;
+    public $files;
     public $event;
     public $institution;
 
@@ -23,9 +25,11 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
      *
      * @param $claim
      */
-    public function __construct($claim)
+    public function __construct($claim, $files = null)
     {
         $this->claim = $claim;
+
+        $this->files = $files;
 
         $this->event = $this->getNotification('communicate-the-solution');
 
@@ -61,12 +65,23 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
     {
         $ref = formatClaimRef($this->claim->reference);
 
-        return (new MailMessage)
-            ->subject("${$ref} Réclamation traitée")
+        $email =  (new MailMessage)
+            ->subject($ref . " Réclamation traitée")
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
-                'name' => "{$notifiable->firstname} {$notifiable->lastname}"
+                'name' => "{$notifiable->firstname} {$notifiable->lastname}",
             ]);
+         
+        if (count($this->files) > 0) {
+            foreach ($this->files as $file) {
+                Log::info(public_path($file->url));
+                $email->attach(public_path($file->url), [
+                    'as' => $file->title,
+                ]);
+            }
+        }
+
+        return $email;
     }
 
     /**
@@ -91,11 +106,11 @@ class CommunicateTheSolution extends Notification implements ShouldQueue
     public function toMessage($notifiable)
     {
         return [
-            'to' => $this->institution->iso_code.$notifiable->telephone[0],
+            'to' => $this->institution->iso_code . $notifiable->telephone[0],
             'text' => $this->event->text,
             'institutionMessageApi' => $this->getStaffInstitutionMessageApi($this->institution),
-            'institution_id'=>$this->institution->id,
-            'notifiable_id'=>$notifiable->id
+            'institution_id' => $this->institution->id,
+            'notifiable_id' => $notifiable->id
         ];
     }
 }

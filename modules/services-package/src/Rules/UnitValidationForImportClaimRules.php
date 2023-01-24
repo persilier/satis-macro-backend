@@ -52,25 +52,19 @@ class UnitValidationForImportClaimRules implements Rule
                     return $item;
 
             })->first()){
-
                 return false;
             }
 
             $unit = Unit::with('institution', 'unitType')->find($unit->id);
 
-            if($unit->institution->acronyme !== $this->params['acronyme']){
-
-                return false;
-
-            }
-
-            if(!$unit->unitType->can_be_target){
-
+            if ($unit->institution->acronyme !== $this->params['acronyme']) {
                 return false;
             }
 
+            if (!$unit->unitType->can_be_target) {
+                return false;
+            }
             return true;
-
         } catch (\Exception $exception) {
 
             return false;

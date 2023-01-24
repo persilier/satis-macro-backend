@@ -190,7 +190,8 @@ trait ImportStaff
             'identite_id' => $identite->id,
             'position_id' => $position->id,
             'institution_id' => $row['institution'],
-            'others' => null
+            'others' => null,
+            'feedback_preferred_channels' => ["email"]
         ];
 
         if ($this->unitRequired) {
