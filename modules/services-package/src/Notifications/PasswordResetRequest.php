@@ -2,6 +2,7 @@
 
 namespace Satis2020\ServicePackage\Notifications;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,18 +19,18 @@ class PasswordResetRequest extends Notification implements ShouldQueue
     use Queueable;
 
     protected $token;
-    protected $request;
+    protected $requestParams;
 
     /**
      * Create a new notification instance.
      *
      * @param $token
-     * @param null $request
+     * @param $requestParams
      */
-    public function __construct($token, $request = null)
+    public function __construct($token, $requestParams)
     {
         $this->token = $token;
-        $this->request = $request;
+        $this->requestParams = $requestParams;
     }
 
     /**
@@ -51,14 +52,20 @@ class PasswordResetRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = $this->request->headers->get('origin').'/forgot-password/'.$this->token;
 
-        return (new MailMessage)
+        $url = $this->requestParams['origin'].'/forgot-password/'.$this->token;
+        try {
+            return (new MailMessage)
             ->subject(__('passwords.email_password_reset_request_subject'))
+            ->greeting(__('messages.greetings'))
             ->line(__('passwords.email_password_reset_request_line1'))
             ->line(__('passwords.email_password_reset_request_line2'))
             ->action(__('passwords.email_password_reset_request_action'), url($url))
-            ->line(__('passwords.email_password_reset_request_line2'));
+           ->line(__('passwords.email_password_reset_request_line2'));
+        }  catch (Exception $e) {
+            Log::info($e->getMessage());
+        }
+        
     }
 
     /**
