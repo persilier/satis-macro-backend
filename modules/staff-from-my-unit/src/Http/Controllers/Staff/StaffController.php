@@ -104,6 +104,10 @@ class StaffController extends ApiController
 
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
+        if (!$this->checkEmailAllowDomain($request)){
+            return response()->json("Cet email ne respecte pas les noms de domaines configurés", 500);
+        }
+
         // Institution & Unit Consistency Verification
         $this->handleUnitInstitutionVerification($request->institution_id, $request->unit_id);
 
