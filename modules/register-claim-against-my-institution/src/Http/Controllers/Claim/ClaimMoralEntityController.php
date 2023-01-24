@@ -3,20 +3,21 @@
 namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
-use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Currency;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\CreateClaim;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\Telephone;
+use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\ClaimsMoralEntity;
+use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 
 
 /**
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ClaimController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone,ClaimsMoralEntity;
 
     /**
      * @var ActivityLogService
@@ -39,32 +40,11 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store']);
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
-     */
-    public function create()
-    {
-        $institution = $this->institution();
-
-        return response()->json([
-            'claimCategories' => ClaimCategory::all(),
-            'units' => $institution->units()
-                ->whereHas('unitType', function ($q) {
-                    $q->where('can_be_target', true);
-                })->get(),
-            'channels' => Channel::all(),
-            'currencies' => Currency::all()
-        ], 200);
-    }
-
-
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -84,7 +64,7 @@ class ClaimController extends ApiController
         
         $this->convertEmailInStrToLower($request);
         
-        $this->validate($request, $this->rules($request));
+        $this->validate($request, $this->rulesForMoralEntity($request));
        
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 

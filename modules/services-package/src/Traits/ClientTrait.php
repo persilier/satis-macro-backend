@@ -30,9 +30,11 @@ trait ClientTrait
     protected function rulesClient($requestInstitution = false)
     {
         $rules = [
-            'firstname' => 'required|string',
-            'lastname' => 'required|string',
-            'sexe' => ['required', Rule::in(['M', 'F', 'A'])],
+            'firstname' => 'required_if:type_client,Physique|string',
+            'lastname' => 'required_if:type_client,Physique|string',
+            'sexe' => ['required_if:type_client,Physique', Rule::in(['M', 'F', 'A'])],
+            'raison_sociale' => 'required_if:type_client,Moral|string',
+            'type_client' => 'required|string',
             'telephone' => 'required|array',
             'email' => [
                 'required', 'array', new EmailValidationRules,
@@ -48,7 +50,6 @@ trait ClientTrait
         if ($requestInstitution) {
 
             $rules['institution_id'] = 'required|exists:institutions,id';
-
         }
 
         return $rules;
@@ -69,7 +70,6 @@ trait ClientTrait
         if ($requestInstitution) {
 
             $rules['institution_id'] = 'required|exists:institutions,id';
-
         }
 
         return $rules;
@@ -90,6 +90,8 @@ trait ClientTrait
             'telephone' => $request->telephone,
             'email' => $request->email,
             'ville' => $request->ville,
+            'type_client' => $request->type_client,
+            'raison_sociale' => $request->raison_sociale,
             'other_attributes' => $request->other_attributes
         ];
 
@@ -115,13 +117,10 @@ trait ClientTrait
             if (!$client = Client::where('identites_id', $identiteId)->first()) {
 
                 $client = Client::create($store);
-
             }
-
         } else {
 
             $client = Client::create($store);
-
         }
 
         return $client;
@@ -148,9 +147,7 @@ trait ClientTrait
             if (!$clientInstitution = ClientInstitution::where('client_id', $clientId)->where('institution_id', $institutionId)->first()) {
 
                 $clientInstitution = ClientInstitution::create($store);
-
             }
-
         } else {
 
             $clientInstitution = ClientInstitution::create($store);
@@ -175,7 +172,8 @@ trait ClientTrait
 
         $account = Account::create($store);
 
-        $this->activityLogService->store("Enregistrement d'un compte client",
+        $this->activityLogService->store(
+            "Enregistrement d'un compte client",
             $this->institution()->id,
             $this->activityLogService::CREATED,
             'account',
@@ -200,7 +198,6 @@ trait ClientTrait
             'institution',
             'accounts.accountType'
         )->where('institution_id', $institutionId)->where('client_id', $clientId)->firstOrFail();
-
     }
 
     /**
@@ -212,7 +209,7 @@ trait ClientTrait
      * @return LengthAwarePaginator|Builder[]|Collection
      */
 
-    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize= 10,$key=null)
+    protected function getAllClientByInstitution($institutionId, $paginate = false, $paginationSize = 10, $key = null)
     {
 
         $clients = ClientInstitution::query()
@@ -224,26 +221,26 @@ trait ClientTrait
                 'accounts',
                 'accounts.accountType:id,name',
             ])
-            ->whereHas("accounts",function (Builder $builder) use ($key){
+            ->whereHas("accounts", function (Builder $builder) use ($key) {
                 $builder->whereNull("deleted_at");
             })
             ->where('institution_id', $institutionId)
-            ->when($key,function (Builder $query1) use ($key) {
+            ->when($key, function (Builder $query1) use ($key) {
 
-                $query1->whereHas("client",function ($query2) use ($key){
-                    $query2->whereHas("identite",function ($query3) use($key){
+                $query1->whereHas("client", function ($query2) use ($key) {
+                    $query2->whereHas("identite", function ($query3) use ($key) {
                         $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
                             ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
                             ->orwhereJsonContains('telephone', $key)
                             ->orwhereJsonContains('email', $key);
                     });
-                })->orWhereHas("accounts",function ($query4) use ($key){
+                })->orWhereHas("accounts", function ($query4) use ($key) {
                     $query4->where('number', $key);
                 });
             });
 
-        return $paginate?
-            $clients->paginate($paginationSize):
+        return $paginate ?
+            $clients->paginate($paginationSize) :
             $clients->get();
     }
 
@@ -268,7 +265,6 @@ trait ClientTrait
                 }
 
             ])->where('institution_id', $institutionId)->firstOrFail();
-
         } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
@@ -298,11 +294,9 @@ trait ClientTrait
                     $q->where('id', $accountId);
                 });
             })->firstOrFail();
-
         } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
-
         }
 
         return $client;
@@ -319,17 +313,14 @@ trait ClientTrait
         try {
 
             $account = Account::where('number', $number)->first();
-
         } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de retrouver ce compte client.");
-
         }
 
         if (!is_null($account)) {
 
             return ['code' => 409, 'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
-
         }
 
         return ['status' => true];
@@ -348,8 +339,5 @@ trait ClientTrait
             'institution',
             'category_client'
         ])->where('client_id', $clientId)->where('institution_id', $request->institution_id)->first();
-
     }
-
-
 }
