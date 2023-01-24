@@ -5,6 +5,8 @@ namespace Satis2020\ServicePackage\Traits;
 
 use Spatie\Permission\Models\Role;
 use Satis2020\ServicePackage\Traits\ApiResponser;
+use Satis2020\ServicePackage\Models\ConfigurationActivePilot as ConfigurationActivePilotModel;
+use Satis2020\ServicePackage\Models\ActivePilot as ActivePilotModel;
 
 trait ActivePilot
 {
@@ -92,6 +94,25 @@ trait ActivePilot
             'lead_pilot_id' => 'required|exists:staff,id',
         ];
         return $data;
+    }
+
+    public function getConfigurationAnyPilotActif($institution)
+    {
+        return ConfigurationActivePilotModel::where("institution_id", $institution->id)
+                    ->withCasts(['many_active_pilot' => 'boolean'])
+                    ->orderBy("created_at","DESC")->get()->first();
+    }
+
+    public function getAllIdentitePilotActif($institution) {
+        $identite = collect([]);
+        $staffPilotActif = ActivePilotModel::with('staff.identite')->whereInstitutionId($institution->id)->get();
+        foreach ($staffPilotActif as $staff) {
+            if ($staff && $staff->staff && $staff->staff->identite) {
+                $identite->push($staff->staff->identite);
+            }
+        }
+
+        return $identite;
     }
 
 
