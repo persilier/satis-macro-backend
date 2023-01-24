@@ -60,13 +60,6 @@ class RelanceController extends ApiController
             ->firstOrFail()->update(['data' => json_encode
         ($request->domaine_prefixe)]);
 
-        $this->activityLogService->store('Configuration du coefficient applicable pour l\'envoie de relance',
-            $this->institution()->id,
-            $this->activityLogService::UPDATED,
-            'metadata',
-            $this->user(), $metadata
-        );
-
         return response()->json($request->only('coef'), 200);
     }
 
