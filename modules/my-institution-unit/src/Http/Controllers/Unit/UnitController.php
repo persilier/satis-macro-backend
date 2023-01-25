@@ -58,7 +58,7 @@ class UnitController extends ApiController
         'unitTypes' => UnitType::all(),
         'units' => $this->getAllUnitByInstitution($this->institution()->id),
         'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-        'countries'=> $countryService->getCountries()
+        'countries'=> $countryService->getCountriesWithStates()
     ], 200);
 
     }
@@ -129,10 +129,7 @@ class UnitController extends ApiController
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
             'leads' => Staff::with('identite')->where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-            'countries'=>Country::query()
-                ->where('region', 'Africa')
-                ->with('states')
-                ->get()
+            'countries'=> $countryService->getCountriesWithStates()
         ], 200);
 
     }
