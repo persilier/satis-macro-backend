@@ -33,8 +33,8 @@ class AllowPilotCollectorToDiscussionController extends ApiController
     {
         $parameters = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->data));
         $parameters = [
-            "canPilotsDisc" => $parameters["allow_pilot"],
-            "canCollectorsDisc" => $parameters["allow_collector"],
+            "canPilotsDisc" => (int) $parameters["allow_pilot"],
+            "canCollectorsDisc" => (int) $parameters["allow_collector"],
         ];
         return response()->json($parameters, 200);
     }
