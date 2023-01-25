@@ -33,7 +33,7 @@ class StaffCanBeAddToDiscussionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        return $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
+        return $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
                 return $item->id == $value;
             }) !== false;
     }
