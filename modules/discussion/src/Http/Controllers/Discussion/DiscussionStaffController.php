@@ -26,7 +26,7 @@ class DiscussionStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-discussion-contributors')->only(['index']);
-        $this->middleware('permission:add-discussion-contributor')->only(['store', 'create']);
+        //$this->middleware('permission:add-discussion-contributor')->only(['store', 'create']);
         $this->middleware('permission:remove-discussion-contributor')->only(['destroy']);
     }
 
@@ -78,7 +78,7 @@ class DiscussionStaffController extends ApiController
         $discussion->load('staff.identite', 'createdBy.unit');
 
         return response()->json([
-            'staff' => $this->getContributors($discussion),
+            'staff' => $this->getContributorsWithClaimCreator($discussion),
         ], 200);
     }
 
