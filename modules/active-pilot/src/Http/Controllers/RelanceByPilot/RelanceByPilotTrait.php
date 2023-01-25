@@ -6,6 +6,7 @@ namespace Satis2020\ActivePilot\Http\Controllers\RelanceByPilot;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\RelanceOther;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Notifications\RegisterAClaimHighForcefulness;
@@ -17,6 +18,7 @@ trait RelanceByPilotTrait
         return [
             "message" => "required|string",
             "staff" => "required|string",
+            "claim_id" => "required|string",
         ];
     }
 
@@ -29,7 +31,7 @@ trait RelanceByPilotTrait
           "pilot_id"=> $pilot->id,
         ];
         $staff = Staff::find($request->staff)->load("identite");
-
+        Claim::findOrFail($request->claim_id)->update(["transferred_to_unit_by"=>$request->staff]);
         try {
             Notification::route('mail', [
                 $staff["identite"]["email"][0] =>  $staff["identite"]["firstname"],
