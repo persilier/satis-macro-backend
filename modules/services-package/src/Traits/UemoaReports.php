@@ -323,7 +323,6 @@ trait UemoaReports{
                 return optional($item->claimObject)->name;
             }
         ]);
-
         $claimCollection = collect([]);
 
         $claims = $claims->map(function ($categories, $keyInstitution) use ($claimCollection, $myInstitution){
@@ -331,7 +330,6 @@ trait UemoaReports{
             $categories->map(function ($objects, $keyCategory) use ($claimCollection, $myInstitution, $keyInstitution){
 
                 $objects->map(function ($claims, $keyObject)  use ($claimCollection, $myInstitution,$keyInstitution, $keyCategory){
-
                     $data = [
                         'filiale' =>  $keyInstitution,
                         'claimCategorie' => $keyCategory,
@@ -341,7 +339,7 @@ trait UemoaReports{
                         'totalUnfounded' => (string) $this->totalUnfounded($claims),
                         'totalNoValidated' => (string) $this->totalNoValidated($claims),
                         'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
-                        'delayPlanned' => optional((string) $claims->first()->claimObject)->time_limit,
+                        'delayPlanned' => (string) optional($claims->first()->claimObject)->time_limit,
                         'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
