@@ -33,8 +33,8 @@ class AllowPilotCollectorToDiscussionController extends ApiController
     {
         $parameters = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->data));
         $parameters = [
-            "canPilotsDisc" => $parameters["allow-pilot"],
-            "canCollectorsDisc" => $parameters["allow-collector"],
+            "canPilotsDisc" => $parameters["allow_pilot"],
+            "canCollectorsDisc" => $parameters["allow_collector"],
         ];
         return response()->json($parameters, 200);
     }
@@ -49,32 +49,28 @@ class AllowPilotCollectorToDiscussionController extends ApiController
     public function update(Request $request)
     {
 
-        $parameters = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->data);
-
-        $request->merge([
-            "canPilotsDisc" => $request->boolean("canPilotsDisc"),
-            "canCollectorsDisc" => $request->boolean("canCollectorsDisc"),
+        $this->validate($request, [
+            'canPilotsDisc' => ['required', Rule::in([1, 0])],
+            'canCollectorsDisc' => ['required', Rule::in([1, 0])],
         ]);
 
-        $rules = [
-            'canPilotsDisc' => ['required', Rule::in([true, false])],
-            'canCollectorsDisc' => ['required', Rule::in([true, false])],
-        ];
+        $metadata = Metadata::where('name', 'allow-pilot-collector-to-discussion')->first();
+        $metadata->update([
+            'data' => json_encode([
+               "allow_pilot" => $request->canPilotsDisc,
+                "allow_collector" => $request->canCollectorsDisc
+            ])
+        ]);
 
-        $this->validate($request, $rules);
-        
-        $new_parameters = $request->only(['canPilotsDisc', 'canCollectorsDisc']);
-        
-        $metadata = Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->update(['data'=> json_encode($new_parameters)]);
-
-        $this->activityLogService->store('Configuration des attributs des pilotes et des collecteurs',
+        $this->activityLogService->store(
+            'Configuration des attributs des pilotes et des collecteurs',
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'metadata',
-            $this->user(), $metadata
+            $this->user(),
+            $metadata
         );
 
-        return response()->json($new_parameters, 200);
+        return response()->json(json_decode($metadata->data), 200);
     }
-
 }
