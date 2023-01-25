@@ -185,8 +185,8 @@ class InstallMetadataSeeder extends Seeder
             [
                 'name' => 'allow-pilot-collector-to-discussion',
                 'data' => json_encode([
-                    "allow-pilot" => "0",
-                    "allow-collector" => "0",
+                    "allow-pilot" => 0,
+                    "allow-collector" => 0,
                 ])
             ]
         ];

@@ -51,19 +51,23 @@ class AllowPilotCollectorToDiscussionController extends ApiController
 
         $parameters = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->data);
 
+        $request->merge([
+            "canPilotsDisc" => $request->boolean("canPilotsDisc"),
+            "canCollectorsDisc" => $request->boolean("canCollectorsDisc"),
+        ]);
+
         $rules = [
-            'canPilotsDisc' =>['required', Rule::in([true, false])],
+            'canPilotsDisc' => ['required', Rule::in([true, false])],
             'canCollectorsDisc' => ['required', Rule::in([true, false])],
         ];
 
         $this->validate($request, $rules);
         
         $new_parameters = $request->only(['canPilotsDisc', 'canCollectorsDisc']);
-        dd($new_parameters);
         
         $metadata = Metadata::where('name', 'allow-pilot-collector-to-discussion')->first()->update(['data'=> json_encode($new_parameters)]);
 
-        $this->activityLogService->store('Configuration des des ',
+        $this->activityLogService->store('Configuration des attributs des pilotes et des collecteurs',
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'metadata',
