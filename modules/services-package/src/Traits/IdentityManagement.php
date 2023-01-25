@@ -13,7 +13,7 @@ trait IdentityManagement
 {
     protected function createIdentity($request)
     {
-        return $identite = Identite::create($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
+        return $identite = Identite::create($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'raison_sociale', 'type_client', 'other_attributes']));
     }
 
     protected function updateIdentity($request, $identite)

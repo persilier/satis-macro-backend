@@ -5,6 +5,7 @@ namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Currency;
+use Satis2020\ServicePackage\Models\Identite;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\CreateClaim;
@@ -21,10 +22,10 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 
 
 /**
- * Class ClaimController
+ * Class ClaimMoralEntityController
  * @package Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim
  */
-class ClaimController extends ApiController
+class ClaimMoralEntityController extends ApiController
 {
 
     use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone,ClaimsMoralEntity;
@@ -57,24 +58,23 @@ class ClaimController extends ApiController
      */
     public function store(Request $request)
     {
-
-        
         $request->merge(['created_by' => $this->staff()->id]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
         
         $this->convertEmailInStrToLower($request);
         
         $this->validate($request, $this->rulesForMoralEntity($request));
-       
+        
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
-
+        
+        
         // create reference
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
         // create claimer if claimer_id is null
         if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
-
+            
             // register claimer
             $claimer = $this->createIdentity($request);
             $request->merge(['claimer_id' => $claimer->id]);
