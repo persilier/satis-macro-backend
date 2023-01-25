@@ -312,6 +312,7 @@ trait DataUserNature
                     $end_email = substr($item, strpos($item, "@") + 1);
                     if (!in_array($end_email, $config)) {
                         $element_state = false;
+                        break;
                     }
                 }
                 return $element_state;
