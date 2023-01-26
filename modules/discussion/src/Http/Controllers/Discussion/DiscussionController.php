@@ -66,7 +66,7 @@ class DiscussionController extends ApiController
             } else {
                 $rules = [
                     'name' => 'required',
-                    'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
+                    'claim_id' => ['required', 'exists:claims,id'],
                     'created_by' => 'required|exists:staff,id'
                 ];
             }
