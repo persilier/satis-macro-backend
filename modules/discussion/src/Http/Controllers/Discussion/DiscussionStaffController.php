@@ -80,7 +80,7 @@ class DiscussionStaffController extends ApiController
         $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
 
         return response()->json([
-            'staff' => (int) $config["allow_collector"] === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
+            'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);
     }
 
