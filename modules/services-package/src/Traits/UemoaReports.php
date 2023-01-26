@@ -408,6 +408,9 @@ trait UemoaReports{
             'collector' => $claim->createdBy->identite,
             'unit' => ($claim->unitTargeted) ? $claim->unitTargeted : null,
             'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
+            'collector_info' => $claim->createdBy->identite->firstname ." ". $claim->createdBy->identite->lastname,
+            'unit_info' => ($claim->unitTargeted) ? $claim->unitTargeted->name->fr : "",
+            'pilot_in_charge_info' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite->firstname. " ". $claim->activeTreatment->staffTransferredToUnitBy->identite->lastname : "",
         ];
 
         if($myInstitution){

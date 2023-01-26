@@ -75,7 +75,10 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'delayTreatWithWeekend' =>  'Délai de traitement (J) avec Weekend',
             'delayTreatWithoutWeekend' => 'Délai de traitement (J) sans Weekend',
             'amountDisputed' => 'Montant réclamé' ,
-            'accountCurrency' => 'Devise du montant'
+            'accountCurrency' => 'Devise du montant',
+            'collector_info' => 'Collecteur',
+            'unit_info' => 'Unité',
+            'pilot_in_charge_info' => 'Pilote en charge',
         ];
 
         if($this->myInstitution){
