@@ -124,6 +124,10 @@
                     <th>% de réclamations traités dans le délai</th>
                     <th>% de réclamations traités hors délai</th>
                     <th>% de réclamations en cours de traitement</th>
+                    <th>Nombre de réclamations traités dans le délai</th>
+                    <th>Nombre de réclamations traités hors délai</th>
+                    <th>Nombre de réclamations en cours de traitement</th>
+
                 </tr>
             </thead>
             <tbody class="tbody_claim_object tbtable">
@@ -150,6 +154,10 @@
                         <td>{{ $claim['percentageTreatedInDelay'] }}</td>
                         <td>{{ $claim['percentageTreatedOutDelay'] }}</td>
                         <td>{{ $claim['percentageNoTreated'] }}</td>
+                        <td>{{ $claim['countTreatedInDelay'] }}</td>
+                        <td>{{ $claim['countTreatedOutDelay'] }}</td>
+                        <td>{{ $claim['countNoTreated'] }}</td>
+
                     </tr>
 
                 @endforeach
