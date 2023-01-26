@@ -36,7 +36,7 @@ class StaffCanBeAddToDiscussionRules implements Rule
     {
         $config = $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
 
-        return (int)$config["allow_collector"] === 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
+        return (int)$config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
             return $item->id == $value;
         }) !== false
             : $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
