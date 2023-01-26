@@ -58,6 +58,7 @@ class ClaimMoralEntityController extends ApiController
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $request->merge(['created_by' => $this->staff()->id]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
         
