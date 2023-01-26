@@ -127,10 +127,10 @@
                 <th>Catégorie réclamation</th>
                 <th>Objet réclamation</th>
                 <th>Canal de réception</th>
-                <th>Fonction de traitement</th>
+                <th>Unité de traitement</th>
                 <th>Staff traitant</th>
                 <th>Collecteur</th>
-                <th>Unité</th>
+                <th>Unité concernée</th>
                 <th>Pilote en charge</th>
                 <th>Status</th>
             </tr>
@@ -158,9 +158,9 @@
                         <td>{{ $claim['requestChannel'] }}</td>
                         <td>{{ $claim['functionTreating'] }}</td>
                         <td>{{ $claim['staffTreating'] }}</td>
-                        <td>{{ $claim['collector']["firstname"] }} {{ $claim['collector']["lastname"] }}</td>
-                        <td>@if($claim['unit']!=null) {{ $claim['unit']["name"]["fr"] }} @endif</td>
-                        <td>@if($claim['pilot_in_charge']!=null) {{ $claim['pilot_in_charge']["firstname"] }} {{ $claim['pilot_in_charge']["lastname"] }} @endif</td>
+                        <td>{{ $claim['collector_info'] }}</td>
+                        <td>{{ $claim['unit_info'] }} </td>
+                        <td> {{ $claim['pilot_in_charge_info'] }} </td>
                         <td>{{ $claim['status'] }}</td>
                     </tr>
 
