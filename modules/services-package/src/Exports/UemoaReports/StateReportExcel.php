@@ -56,6 +56,7 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'relationShip' => 'Relation avec le réclamant',
             'typeClient' => 'Type Client',
             'client' => 'Client',
+            'reference' => 'Référence',
             'account' => 'N° compte',
             'telephone' => 'Téléphone',
             'agence' => 'Agence',
@@ -63,7 +64,7 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'claimObject' => 'Objet réclamation',
             'requestChannel' => 'Canal de réception',
             'commentClient' => 'Commentaire (client)',
-            'functionTreating' => 'Fonction de traitement',
+            'functionTreating' => 'Unité de traitement',
             'staffTreating' => 'Staff traitant',
             'solution' => 'Solution apportée par le staff',
             'status' => 'Statut',
@@ -77,7 +78,7 @@ class StateReportExcel implements FromCollection, WithHeadings, ShouldAutoSize
             'amountDisputed' => 'Montant réclamé' ,
             'accountCurrency' => 'Devise du montant',
             'collector_info' => 'Collecteur',
-            'unit_info' => 'Unité',
+            'unit_info' => 'Unité concernée',
             'pilot_in_charge_info' => 'Pilote en charge',
         ];
 
