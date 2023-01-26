@@ -16,5 +16,7 @@ trait AllowPilotCollectorToDiscussion
         ];
         return $parameters;
     }
-    public function setPermissionForBi
+    public function setPilotPermissionForDiscussion(){
+        
+    }
 }
