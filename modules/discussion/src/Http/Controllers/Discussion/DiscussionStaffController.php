@@ -76,8 +76,9 @@ class DiscussionStaffController extends ApiController
         $this->validate($request, $rules);
 
         $discussion->load('staff.identite', 'createdBy.unit');
-        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
 
+        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
+        
         return response()->json([
             'staff' => $config["allow_collector"] == 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);

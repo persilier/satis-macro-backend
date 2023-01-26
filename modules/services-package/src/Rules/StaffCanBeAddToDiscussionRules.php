@@ -8,12 +8,13 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Traits\AllowPilotCollectorToDiscussion;
 use Satis2020\ServicePackage\Traits\Discussion;
 
 class StaffCanBeAddToDiscussionRules implements Rule
 {
 
-    use Discussion;
+    use Discussion, AllowPilotCollectorToDiscussion;
 
     protected $discussion;
 
@@ -33,7 +34,12 @@ class StaffCanBeAddToDiscussionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        return $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
+        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
+
+        return $config["allow_collector"] == 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
+            return $item->id == $value;
+        }) !== false
+            : $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
                 return $item->id == $value;
             }) !== false;
     }
@@ -47,5 +53,4 @@ class StaffCanBeAddToDiscussionRules implements Rule
     {
         return 'This staff does not belong to the list of the possible contributors of the discussion';
     }
-
 }
