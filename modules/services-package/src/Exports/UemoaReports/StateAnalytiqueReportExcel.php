@@ -63,6 +63,9 @@ class StateAnalytiqueReportExcel implements FromCollection, WithHeadings, Should
             'percentageTreatedInDelay' => '% de réclamations traités dans le délai',
             'percentageTreatedOutDelay' => '% de réclamations traités hors délai',
             'percentageNoTreated' => '% de réclamations en cours de traitement',
+            'countTreatedInDelay' => 'Nombre de réclamations traités dans le délai',
+            'countTreatedOutDelay' => 'Nombre de réclamations traités hors délai',
+            'countNoTreated' => 'Nombre de réclamations en cours de traitement',
         ];
 
         if($this->myInstitution){
