@@ -43,12 +43,12 @@ trait AllowPilotCollectorToDiscussion
         $collector_role = Role::where('name', 'collector-filial-pro')->first();
         if ($config == 1) {
             $collector_role->givePermissionTo([
-                'contribute-discussion'
+                'contribute-discussion', 'list-my-discussions'
             ]);
         }
         else if ($config == 0) {
             $collector_role->revokePermissionTo([
-                'contribute-discussion'
+                'contribute-discussion', 'list-my-discussions'
             ]);
         }
     }
