@@ -129,6 +129,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'contribute-discussion', 'list-my-discussions',
+                    'list-discussion-contributors',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
