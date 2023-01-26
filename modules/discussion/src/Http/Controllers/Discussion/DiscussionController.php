@@ -36,7 +36,7 @@ class DiscussionController extends ApiController
     {
 
         return response()->json(
-            Staff::with('discussions.claim')
+            Staff::with('discussions.claim', 'discussion.staff')
                 ->findOrFail($this->staff()->id)
                 ->discussions
                 ->values(),
