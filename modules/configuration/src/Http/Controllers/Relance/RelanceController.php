@@ -48,7 +48,7 @@ class RelanceController extends ApiController
     {
         $rules = [
             'coef' => 'required|integer',
-            'domaine_prefixe' => 'required|array',
+            'domaine_prefixe' => 'present|array',
         ];
 
         $this->validate($request, $rules);
