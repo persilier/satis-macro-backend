@@ -3,21 +3,21 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
-use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
-use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
-use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
+use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
 
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\Metadata;
 
     public function __construct()
     {
