@@ -307,12 +307,15 @@ trait DataUserNature
         if ($config) {
             if (sizeof($config) > 0) {
                 $email = $request->email;
-                $end_email = substr($email, strpos($email, "@") + 1);
-                if (in_array($end_email, $config)) {
-                    return true;
-                } else {
-                    return false;
+                $element_state = true;
+                foreach ($email as $item){
+                    $end_email = substr($item, strpos($item, "@") + 1);
+                    if (!in_array($end_email, $config)) {
+                        $element_state = false;
+                        break;
+                    }
                 }
+                return $element_state;
             } else {
                 return true;
             }
