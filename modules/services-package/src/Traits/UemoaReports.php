@@ -405,11 +405,11 @@ trait UemoaReports{
             'delayTreatWithoutWeekend' => (string) $this->delayTreatment($claim)['withoutWeekend'],
             'amountDisputed' =>  $claim->amount_disputed,
             'accountCurrency' => $this->currency($claim),
-            'collector' => $claim->createdBy->identite,
+            'collector' => $claim->createdBy= null ? $claim->createdBy->identite : null,
             'unit' => ($claim->unitTargeted) ? $claim->unitTargeted : null,
             'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
-            'collector_info' => $claim->createdBy->identite->firstname ." ". $claim->createdBy->identite->lastname,
-            'unit_info' => ($claim->unitTargeted) ? $claim->unitTargeted->name["fr"] : "",
+            'collector_info' =>  $claim->createdBy= null ? $claim->createdBy->identite->firstname ." ". $claim->createdBy->identite->lastname : "",
+            'unit_info' => ($claim->unitTargeted) ? $claim->unitTargeted->name : "",
             'pilot_in_charge_info' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite->firstname. " ". $claim->activeTreatment->staffTransferredToUnitBy->identite->lastname : "",
         ];
 
