@@ -223,7 +223,7 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsGlobalState($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
+    protected function resultatsGlobalState($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true, $for_excel=false){
 
         $datas = collect([]);
 
@@ -231,7 +231,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship, $for_excel);
 
             $datas->push($data);
         }
@@ -377,7 +377,7 @@ trait UemoaReports{
      * @param $with_relationship
      * @return array
      */
-    protected function tabDatas($claim, $myInstitution, $with_relationship){
+    protected function tabDatas($claim, $myInstitution, $with_relationship, $for_excel){
 
         $data =  [
             'filiale' => $claim->institutionTargeted->name,
@@ -412,6 +412,12 @@ trait UemoaReports{
             'unit_info' => ($claim->unitTargeted) ? $claim->unitTargeted->name : "",
             'pilot_in_charge_info' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite->firstname. " ". $claim->activeTreatment->staffTransferredToUnitBy->identite->lastname : "",
         ];
+
+        if ($for_excel){
+            unset($data["collector"]);
+            unset($data["unit"]);
+            unset($data["pilot_in_charge"]);
+        }
 
         if($myInstitution){
 

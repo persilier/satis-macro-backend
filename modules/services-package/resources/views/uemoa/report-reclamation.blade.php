@@ -127,10 +127,10 @@
                 <th>Catégorie réclamation</th>
                 <th>Objet réclamation</th>
                 <th>Canal de réception</th>
-                <th>Fonction de traitement</th>
+                <th>Unité de traitement</th>
                 <th>Staff traitant</th>
                 <th>Collecteur</th>
-                <th>Unité</th>
+                <th>Unité concernée</th>
                 <th>Pilote en charge</th>
                 <th>Status</th>
             </tr>
