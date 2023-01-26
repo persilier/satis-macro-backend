@@ -6,12 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Traits\AllowPilotCollectorToDiscussion;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class AllowPilotCollectorToDiscussionController extends ApiController
 {
-    use AllowPilotCollectorToDiscussion;
     protected $activityLogService;
 
     public function __construct(ActivityLogService $activityLogService)
@@ -62,8 +60,7 @@ class AllowPilotCollectorToDiscussionController extends ApiController
                 "allow_collector" => $request->canCollectorsDisc
             ])
         ]);
-        $this->setPilotPermissionForDiscussion($this->institution());
-        $this->setCollectorPermissionForDiscussion($this->institution());
+
         $this->activityLogService->store(
             'Configuration des attributs des pilotes et des collecteurs',
             $this->institution()->id,

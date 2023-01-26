@@ -20,9 +20,9 @@ class DiscussionController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-my-discussions')->only(['index']);
-        $this->middleware('permission:store-discussion')->only(['store']);
-        $this->middleware('permission:destroy-discussion')->only(['destroy']);
+        $this->middleware(['permission:list-my-discussions', 'allow.pilot.collector.to.discussion:collector-filial-pro'])->only(['index']);
+        $this->middleware(['permission:store-discussion', 'allow.pilot.collector.to.discussion:pilot'])->only(['store']);
+        $this->middleware(['permission:destroy-discussion', 'allow.pilot.collector.to.discussion:pilot'])->only(['destroy']);
     }
 
     /**
@@ -34,11 +34,14 @@ class DiscussionController extends ApiController
 
     public function index()
     {
-        return response()->json(Staff::with('discussions.claim')
-            ->findOrFail($this->staff()->id)
-            ->discussions
-            ->values()
-            , 200);
+
+        return response()->json(
+            Staff::with('discussions.claim')
+                ->findOrFail($this->staff()->id)
+                ->discussions
+                ->values(),
+            200
+        );
     }
 
     /**
@@ -53,21 +56,21 @@ class DiscussionController extends ApiController
     {
         $request->merge(['created_by' => $this->staff()->id]);
 
-        if ($this->staff()->is_active_pilot){
+        if ($this->staff()->is_active_pilot) {
             $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
-            if ($allow_pilot_create_discussion==1) {
+            if ($allow_pilot_create_discussion == 1) {
                 $rules = [
                     'name' => 'required',
                     'created_by' => 'required|exists:staff,id'
                 ];
-            }else{
+            } else {
                 $rules = [
                     'name' => 'required',
                     'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
                     'created_by' => 'required|exists:staff,id'
                 ];
             }
-        } else{
+        } else {
             $rules = [
                 'name' => 'required',
                 'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
@@ -89,7 +92,6 @@ class DiscussionController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -103,7 +105,6 @@ class DiscussionController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**

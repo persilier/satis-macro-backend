@@ -17,7 +17,7 @@ use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\AllowPilotCollectorToDiscussion;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
 
     public function __construct()
     {
@@ -26,8 +26,8 @@ class DiscussionStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-discussion-contributors')->only(['index']);
-        $this->middleware('permission:add-discussion-contributor')->only(['store', 'create']);
-        $this->middleware('permission:remove-discussion-contributor')->only(['destroy']);
+        $this->middleware(['permission:add-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['store', 'create']);
+        $this->middleware(['permission:remove-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['destroy']);
     }
 
     /**
@@ -77,10 +77,10 @@ class DiscussionStaffController extends ApiController
 
         $discussion->load('staff.identite', 'createdBy.unit');
 
-        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
-        
+        $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
+
         return response()->json([
-            'staff' => $config["allow_collector"] == 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
+            'staff' => (int) $config["allow_collector"] === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);
     }
 

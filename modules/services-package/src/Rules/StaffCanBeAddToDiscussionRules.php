@@ -8,13 +8,13 @@ use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Traits\AllowPilotCollectorToDiscussion;
 use Satis2020\ServicePackage\Traits\Discussion;
+use Satis2020\ServicePackage\Traits\Metadata;
 
 class StaffCanBeAddToDiscussionRules implements Rule
 {
 
-    use Discussion, AllowPilotCollectorToDiscussion;
+    use Discussion, Metadata;
 
     protected $discussion;
 
@@ -34,9 +34,9 @@ class StaffCanBeAddToDiscussionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
+        $config = $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
 
-        return $config["allow_collector"] == 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
+        return (int)$config["allow_collector"] === 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
             return $item->id == $value;
         }) !== false
             : $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
