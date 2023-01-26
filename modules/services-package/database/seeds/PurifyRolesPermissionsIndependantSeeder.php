@@ -120,7 +120,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'export-notification-proof','configuration-pilot'
+                    'export-notification-proof','configuration-pilot',
+                    'configure-pilot-collector-discussion-attribute',
                 ],
                 "pilot" => $allow_pilot_create_discussion==1 ? array_merge($pilot_normal_permissions,$add_permission_to_pilot) : $pilot_normal_permissions,
                 "supervisor-pro" => [],

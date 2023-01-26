@@ -20,8 +20,7 @@ class AllowPilotCollectorToDiscussionController extends ApiController
 
         $this->middleware('auth:api');
 
-        //$this->middleware('permission:show-pilot-contributor-discussion-attribute')->only(['show']);
-        //$this->middleware('permission:update-pilot-contributor-attribute-discussion-parameters')->only(['update']);
+        $this->middleware('permission:configure-pilot-collector-discussion-attribute')->only(['show', 'update']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -59,11 +58,12 @@ class AllowPilotCollectorToDiscussionController extends ApiController
         $metadata = Metadata::where('name', 'allow-pilot-collector-to-discussion')->first();
         $metadata->update([
             'data' => json_encode([
-               "allow_pilot" => $request->canPilotsDisc,
+                "allow_pilot" => $request->canPilotsDisc,
                 "allow_collector" => $request->canCollectorsDisc
             ])
         ]);
-
+        $this->setPilotPermissionForDiscussion($this->institution());
+        $this->setCollectorPermissionForDiscussion($this->institution());
         $this->activityLogService->store(
             'Configuration des attributs des pilotes et des collecteurs',
             $this->institution()->id,

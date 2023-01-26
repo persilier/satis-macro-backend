@@ -86,7 +86,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'config-reporting-claim-any-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'export-notification-proof'
+                    'export-notification-proof',
+                    'configure-pilot-collector-discussion-attribute',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

@@ -17,7 +17,7 @@ use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\AllowPilotCollectorToDiscussion;
 
     public function __construct()
     {
@@ -76,9 +76,10 @@ class DiscussionStaffController extends ApiController
         $this->validate($request, $rules);
 
         $discussion->load('staff.identite', 'createdBy.unit');
+        $config = $this->getAllowPilotCollectorToDiscussionConfiguration();
 
         return response()->json([
-            'staff' => $this->getContributorsWithClaimCreator($discussion),
+            'staff' => $config["allow_collector"] == 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);
     }
 
@@ -98,11 +99,15 @@ class DiscussionStaffController extends ApiController
         $request->merge(['discussion' => $discussion->id]);
 
         $rules = [
-            'discussion' => ['required', 'exists:discussions,id',
-                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())],
+            'discussion' => [
+                'required', 'exists:discussions,id',
+                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())
+            ],
             'staff_id' => 'required|array',
-            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
-                new StaffCanBeAddToDiscussionRules($discussion)],
+            'staff_id.*' => [
+                'required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
+                new StaffCanBeAddToDiscussionRules($discussion)
+            ],
         ];
 
         $this->validate($request, $rules);
@@ -122,7 +127,6 @@ class DiscussionStaffController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -136,7 +140,6 @@ class DiscussionStaffController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**

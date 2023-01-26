@@ -113,7 +113,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
             'bci-monthly-reports', 'bci-annual-reports',
-            'pilot-export-notification-proof', 'export-notification-proof'
+            'pilot-export-notification-proof', 'export-notification-proof',
+            'configure-pilot-collector-discussion-attribute'
 
         ];
 
@@ -222,6 +223,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'system-any-efficiency-report',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
             'logout-user-my-institution',
+            'configure-pilot-collector-discussion-attribute',
         ];
 
         $memberPermissions = [
@@ -298,7 +300,8 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'bci-monthly-reports', 'bci-annual-reports',
             'pilot-export-notification-proof', 'export-notification-proof',
             'configuration-pilot','pilot-relance-other','reassignment_to_pilot',
-            'list-claim-transferred-my-institution'
+            'list-claim-transferred-my-institution',
+            'configure-pilot-collector-discussion-attribute',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

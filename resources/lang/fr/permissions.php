@@ -177,6 +177,7 @@ return [
             "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
             "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
             "list_global_reporting" =>'Voir le rapport global',
+            "configure_pilot_collector_discussion_attribute" =>'Configurer les l\'autorisations des pilotes et des collecteurs sur les discussions',
         ],
 
     //pilot and collector
