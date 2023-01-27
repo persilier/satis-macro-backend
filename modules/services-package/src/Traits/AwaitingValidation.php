@@ -12,19 +12,14 @@ use Satis2020\ServicePackage\Models\Treatment;
 
 trait AwaitingValidation
 {
-<<<<<<< HEAD
 
     protected function getClaimsAwaitingValidationInMyInstitution($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $search_text = null)
-=======
-    protected function getClaimsAwaitingValidationInMyInstitution($institution_id = null, $type = "normal")
->>>>>>> develop
     {
 
         $institution_id = is_null($institution_id)
             ? $this->institution()->id
             : $institution_id;
 
-<<<<<<< HEAD
         $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
             ->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
                 $query->where('institution_id', $institution_id);
@@ -80,12 +75,10 @@ trait AwaitingValidation
             : $institution_id;
 
         $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')->get();
-=======
         $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
 
         $claimsTreated = Claim::with($this->getRelations())->where($statusColumn, 'treated')->get();
 
->>>>>>> develop
         return $claimsTreated->filter(function ($value, $key) use ($institution_id) {
             $value->activeTreatment->load($this->getActiveTreatmentRelations());
             return $value->activeTreatment->responsibleStaff->institution_id == $institution_id;
@@ -266,13 +259,10 @@ trait AwaitingValidation
             'createdBy.identite',
             'completedBy.identite',
             'files',
-<<<<<<< HEAD
             'activeTreatment',
             'activeTreatment.transferredToUnitBy.identite',
             'activeTreatment.staffTransferredToUnitBy.identite',
-            'filesAtTreatment'
-
-=======
+            'filesAtTreatment',
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.assignedToStaffBy.identite',
@@ -280,9 +270,7 @@ trait AwaitingValidation
             'revivals',
             'activeTreatment.validatedBy.identite',
             'activeTreatment.transferredToTargetInstitutionBy.identite',
-            'activeTreatment.transferredToUnitBy.identite',
             'treatmentBoard',
->>>>>>> develop
         ];
     }
 
@@ -329,17 +317,12 @@ trait AwaitingValidation
             $claim->update(['status' => 'archived']);
             $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolutionUnfounded($claim));
         } else { // the claim is solved
-<<<<<<< HEAD
-            $claim->update(['status' => 'validated']);
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim, $mail_attachments));
-=======
             if (isEscalationClaim($claim)) {
                 $claim->update(['escalation_status' => 'validated']);
             } else {
                 $claim->update(['status' => 'validated']);
             }
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
->>>>>>> develop
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim, $mail_attachments));
         }
 
         $this->activityLogService->store(

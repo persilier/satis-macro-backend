@@ -57,11 +57,10 @@ class RelanceController extends ApiController
         $metadata->update(['data' => json_encode
         ($request->coef)]);
 
-<<<<<<< HEAD
         Metadata::where('name', 'coef-relance-domaine-prefixe')
             ->firstOrFail()->update(['data' => json_encode
         ($request->domaine_prefixe)]);
-=======
+        
         $this->activityLogService->store('Configuration du coefficient applicable pour l\'envoie de relance',
             $this->institution()->id,
             $this->activityLogService::UPDATED,
@@ -69,7 +68,6 @@ class RelanceController extends ApiController
             $this->user(),
             $metadata
         );
->>>>>>> develop
 
         return response()->json($request->only('coef'), 200);
     }

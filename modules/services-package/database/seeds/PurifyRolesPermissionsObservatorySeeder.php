@@ -85,12 +85,9 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'config-reporting-claim-any-institution',
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-<<<<<<< HEAD
                     'configure-pilot-collector-discussion-attribute',
-=======
                     'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'show-proxy-config','update-proxy-config','delete-proxy-config'
->>>>>>> develop
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',

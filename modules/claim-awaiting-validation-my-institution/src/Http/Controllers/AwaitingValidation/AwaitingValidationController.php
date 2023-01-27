@@ -41,16 +41,11 @@ class AwaitingValidationController extends ApiController
      */
     public function index(Request $request)
     {
-<<<<<<< HEAD
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
 
         return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true,$paginationSize, $key, $type), 200);
-=======
-        $type = $request->query('type','normal');
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(null,$type), 200);
->>>>>>> develop
     }
 
     /**
@@ -93,15 +88,10 @@ class AwaitingValidationController extends ApiController
         $type = isEscalationClaim($claim)?"unsatisfied":"normal";
 
         $rules = [
-<<<<<<< HEAD
-            'claim' => new TreatmentCanBeValidateRules($this->institution()->id),
             'solution_communicated' => 'required|string',
             'mail_attachments' => 'array',
             'mail_attachments.*' => 'exists:files,id',
-=======
             'claim' => new TreatmentCanBeValidateRules($this->institution()->id,$type),
-            'solution_communicated' => 'required|string'
->>>>>>> develop
         ];
 
         $this->validate($request, $rules);

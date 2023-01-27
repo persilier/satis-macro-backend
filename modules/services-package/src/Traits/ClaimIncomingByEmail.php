@@ -152,8 +152,6 @@ trait ClaimIncomingByEmail
 
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
-<<<<<<< HEAD
-=======
 
 //        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
 //
@@ -165,7 +163,6 @@ trait ClaimIncomingByEmail
 //        }
 
         $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
->>>>>>> develop
 
         $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
@@ -178,11 +175,7 @@ trait ClaimIncomingByEmail
 
             return [
                 "error" => true,
-<<<<<<< HEAD
                 "message" => __('messages.invalid_params', [], getAppLang()),
-=======
-                "message" => __('messages.invalid_params',[],getAppLang()),
->>>>>>> develop
                 "serviceErrors" => $subscriber['message']
             ];
         }

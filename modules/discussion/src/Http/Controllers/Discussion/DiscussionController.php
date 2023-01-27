@@ -35,18 +35,8 @@ class DiscussionController extends ApiController
 
     public function index(Request $request)
     {
-<<<<<<< HEAD
-
-        return response()->json(
-            Staff::with('discussions.claim', 'discussions.staff')
-                ->findOrFail($this->staff()->id)
-                ->discussions
-                ->values(),
-            200
-        );
-=======
         $type = $request->query('type','normal');
-        return response()->json(Staff::with('discussions.claim')
+        return response()->json(Staff::with('discussions.claim', 'discussions.staff')
             ->findOrFail($this->staff()->id)
             ->discussions
             ->filter(function ($value, $key) use($type){
@@ -63,7 +53,6 @@ class DiscussionController extends ApiController
             })
             ->values()
             , 200);
->>>>>>> develop
     }
 
     /**

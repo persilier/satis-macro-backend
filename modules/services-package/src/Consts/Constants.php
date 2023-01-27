@@ -26,14 +26,10 @@ class Constants
     const SYSTEM_EFFICIENCY_REPORTING = 'system-efficiency-reporting';
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
-<<<<<<< HEAD
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
     const NOTIFICATION_PROOF= 'notification-proof';
     const ALL_STAFF = "allStaff";
 
-=======
-    const REGULATORY_STATE_REPORTING = 'regulatory-state-reporting';
->>>>>>> develop
 
     const PROXY = "proxy";
     const PROXY_MODULES = "proxy_modules";
@@ -42,7 +38,6 @@ class Constants
     const PROXY_HTTP_PORT = "proxy_http_port";
     const PROXY_HTTPS_PORT = "proxy_https_port";
 
-    const ALL_STAFF = "allStaff";
 
     static public function paginationSize()
     {
@@ -148,7 +143,6 @@ class Constants
         return $names;
     }
 
-<<<<<<< HEAD
     static function getSatisYearsFromCreation()
     {
         $years = [];
@@ -173,7 +167,6 @@ class Constants
     }
 
 
-=======
     static function getClaimRelations()
     {
         return [
@@ -206,5 +199,4 @@ class Constants
     {
 
     }
->>>>>>> develop
 }

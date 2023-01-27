@@ -8,12 +8,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Satis2020\ServicePackage\Models\Unit;
-<<<<<<< HEAD
 use Satis2020\ServicePackage\Models\Staff;
-=======
 use Satis2020\ServicePackage\Models\User;
-use Satis2020\ServicePackage\Repositories\UserRepository;
->>>>>>> develop
 use Satis2020\ServicePackage\Rules\EmailArray;
 use Satis2020\ServicePackage\Rules\TelephoneArray;
 use Satis2020\ServicePackage\Traits\DataUserNature;
@@ -172,7 +168,6 @@ trait StaffManagement
         }
     }
 
-<<<<<<< HEAD
     public function getAllCollectors($institutionId = null)
     {
         $collector_role = Role::with('users')->where('name', 'collector-filial-pro')->first();
@@ -192,37 +187,34 @@ trait StaffManagement
 
     public function getRegisteredClaims($institutionId = null)
     {
-        return Staff::with("registeredClaims","identite")
-            ->get()->filter(function ($value){
-                return sizeof($value->registeredClaims)>0;
+        return Staff::with("registeredClaims", "identite")
+            ->get()->filter(function ($value) {
+                return sizeof($value->registeredClaims) > 0;
             })->values();
-=======
+    }
     public function checkIfStaffHasUserAccount($staff)
     {
         $userRepo = app(UserRepository::class);
-        return $userRepo->getUserByIdentity($staff->identite_id)!=null;
+        return $userRepo->getUserByIdentity($staff->identite_id) != null;
     }
 
     protected function getAllStaff()
     {
         return Staff::with('identite.user')
             ->get()
-            ->filter(function ($value, $key){
+            ->filter(function ($value, $key) {
                 if (is_null($value->identite)) {
                     return false;
                 }
                 if (is_null($value->identite->user)) {
                     return false;
                 }
-                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
+                if ($value->identite != null && $value->identite->user != null && $value->identite->user->disabled_at != null) {
                     return false;
                 }
 
                 return $value->identite->user->hasRole('staff');
             })
             ->values();
->>>>>>> develop
     }
-
-
 }

@@ -174,16 +174,13 @@ return [
             'destroy_staff_from_maybe_no_unit' => 'Supprimer un staff n\'ayant peut etre pas d\'unite',
             'show_staff_from_maybe_no_unit' => 'Afficher un staff n\'ayant peut etre pas d\'unite',
             "any_email_claim_configuration" =>'Voir toute configuration de reclamation par mail',
-<<<<<<< HEAD
             "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
             "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
             "list_global_reporting" =>'Voir le rapport global',
             "configure_pilot_collector_discussion_attribute" =>'Configurer les l\'autorisations des pilotes et des collecteurs sur les discussions',
-=======
             'show_proxy_config' => 'Voir La configuration des proxy',
             'update_proxy_config' => 'Mettre à jour les configurations des proxy',
             'delete_proxy_config' => 'Supprimer les configurations des proxy',
->>>>>>> develop
         ],
 
     //pilot and collector

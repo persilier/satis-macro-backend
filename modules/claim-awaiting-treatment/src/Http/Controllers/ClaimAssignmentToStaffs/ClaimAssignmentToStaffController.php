@@ -9,22 +9,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
-<<<<<<< HEAD
 use Illuminate\Validation\Rules\RequiredIf;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Validation\ValidationException;
-=======
 use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
->>>>>>> develop
 use Satis2020\ServicePackage\Traits\Notification;
-use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
@@ -77,8 +71,6 @@ class ClaimAssignmentToStaffController extends ApiController
             });
         }
 
-<<<<<<< HEAD
-=======
         $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
 
         $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id,$statusColumn)
@@ -88,7 +80,6 @@ class ClaimAssignmentToStaffController extends ApiController
             $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
             return $item;
         });
->>>>>>> develop
         return response()->json($claims, 200);
     }
 

@@ -56,14 +56,6 @@ class UnitController extends ApiController
     public function create(CountryService $countryService)
     {
         return response()->json([
-<<<<<<< HEAD
-        'unitTypes' => UnitType::all(),
-        'units' => $this->getAllUnitByInstitution($this->institution()->id),
-        'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-        'countries'=> $countryService->getCountries()
-    ], 200);
-=======
-
             'unitTypes' => UnitType::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
@@ -72,7 +64,6 @@ class UnitController extends ApiController
                 ->with('states')
                 ->get()
         ], 200);
->>>>>>> develop
 
     }
 
@@ -145,11 +136,7 @@ class UnitController extends ApiController
             'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
             'unitTypes' => UnitType::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
-<<<<<<< HEAD
-            'leads' => Staff::with('identite')->where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
-=======
-            'loads' => Staff::with('identite')->where('institution_id', $this->institution()->id)->where('unit_id', $unit)->get(),
->>>>>>> develop
+            'leads' => Staff::with('identite')->where('institution_id', $this->institution()->id)->where('unit_id', $unit)->get(),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
             'countries' => Country::query()
                 ->where('region', 'Africa')

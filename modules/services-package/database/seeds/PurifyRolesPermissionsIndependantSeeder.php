@@ -82,18 +82,14 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     "my-email-claim-configuration",
                     'list-auth-config', 'update-auth-config',
                     'activity-log',
-                    'list-notification-proof',
-<<<<<<< HEAD
                     'config-reporting-claim-my-institution',
-                    'config-reporting-claim-my-institution',
-                    'list-notification-proof',
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-=======
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-notification-proof' ,
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution',
+                    'update-config-reporting-claim-my-institution',
+                    'delete-config-reporting-claim-my-institution','list-reporting-titles-configs',
+                    'update-reporting-titles-configs','edit-reporting-titles-configs',
                     'show-proxy-config','update-proxy-config','delete-proxy-config',
                     'list-escalation-config','update-escalation-config',
->>>>>>> develop
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof', 'configuration-pilot',
@@ -118,13 +114,10 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'config-reporting-claim-my-institution',
-<<<<<<< HEAD
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof', 'configuration-pilot', 'pilot-relance-other', 'reassignment_to_pilot',
                     'list-claim-transferred-my-institution',
                     'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
-=======
                     'pilot-list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'system-any-efficiency-report',
@@ -136,7 +129,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
 
 
->>>>>>> develop
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [

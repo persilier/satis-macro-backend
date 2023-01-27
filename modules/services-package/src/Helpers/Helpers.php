@@ -4,11 +4,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 
-
-if (!function_exists('getAppLang')) {
-    function getAppLang()
-    {
-
 if (!function_exists('getAppLang')){
     function getAppLang(){
         return app()->getLocale();

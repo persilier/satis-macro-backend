@@ -58,7 +58,6 @@ trait HandleTreatment
             $claim->update(['status' => 'transferred_to_unit']);
         }
 
-<<<<<<< HEAD
         if ($sendNotif){
             \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
             $activityLogService = app(ActivityLogService::class);
@@ -70,19 +69,6 @@ trait HandleTreatment
                 $claim
             );
         }
-=======
-        \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
-
-        $activityLogService = app(ActivityLogService::class);
-        $activityLogService->store(__('activity_logs.claim_transferred',[],getAppLang()),
-            $this->institution()->id,
-            ActivityLogService::TRANSFER_TO_UNIT,
-            'claim',
-            $this->user(),
-            $claim
-        );
-
->>>>>>> develop
         return $claim;
     }
 

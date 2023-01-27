@@ -4,13 +4,10 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-=======
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 use Satis2020\ServicePackage\Services\StaffService;
@@ -18,18 +15,8 @@ use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
->>>>>>> develop
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Traits\UuidAsId;
-use Satis2020\ServicePackage\Traits\ActivePilot;
-use Satis2020\ServicePackage\Traits\SecureDelete;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Satis2020\ServicePackage\Services\StaffService;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Claim
@@ -124,22 +111,13 @@ class Claim extends Model
         'revoked_at',
         'revoked_by',
         'account_number',
-<<<<<<< HEAD
-        'plain_text_description'
-=======
         'plain_text_description',
         'closed_at',
         'treatment_board_id',
         'escalation_status'
->>>>>>> develop
     ];
 
-    protected $appends = ['timeExpire', 'accountType','lastRevival','canAddAttachment',"oldActiveTreatment"];
-
-<<<<<<< HEAD
-    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'dateExpire'];
-=======
->>>>>>> develop
+    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival','canAddAttachment',"oldActiveTreatment", 'dateExpire'];
 
     /**
      * @return mixed
@@ -365,8 +343,6 @@ class Claim extends Model
 
         return $canAttach;
     }
-<<<<<<< HEAD
-=======
 
     /**
      * @return HasMany
@@ -402,5 +378,4 @@ class Claim extends Model
         return $this->belongsTo(TreatmentBoard::class);
     }
 
->>>>>>> develop
 }

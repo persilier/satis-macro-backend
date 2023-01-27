@@ -72,18 +72,13 @@ class Treatment extends Model
         'number_reject',
         'treatments',
         'note',
-<<<<<<< HEAD
         'transferred_to_unit_by',
-        'validated_by'
-=======
         'closed_reason',
         'closed_at',
         'closed_by',
         'validated_by',
-        'transferred_to_unit_by',
         'transferred_to_targeted_institution_by',
         'type'
->>>>>>> develop
     ];
 
     /**
@@ -162,20 +157,5 @@ class Treatment extends Model
         return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
-    /**
-     * @return BelongsTo
-     */
-    public function transferredToUnitBy()
-    {
-        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
-    }
-
-     /**
-     * @return BelongsTo
-     */
-    public function validatedBy()
-    {
-        return $this->belongsTo(Staff::class, 'validated_by');
-    }
 
 }
