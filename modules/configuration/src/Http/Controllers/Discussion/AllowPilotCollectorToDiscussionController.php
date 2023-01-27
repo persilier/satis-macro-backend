@@ -18,7 +18,7 @@ class AllowPilotCollectorToDiscussionController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:configure-pilot-collector-discussion-attribute')->only(['show', 'update']);
+        $this->middleware('permission:configure-pilot-collector-discussion-attribute')->only(['update']);
 
         $this->activityLogService = $activityLogService;
     }
