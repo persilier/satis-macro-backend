@@ -79,7 +79,7 @@ class ClaimController extends ApiController
     public function update(Request $request, $claimId)
     {
 
-        dd($claimId,$request->all());
+        
         $claim = $this->getClaimUpdateForMyInstitution($this->institution()->id, $claimId, 'incomplete');
 
         $request->merge(['claimer_id' => $claim->claimer_id]);
