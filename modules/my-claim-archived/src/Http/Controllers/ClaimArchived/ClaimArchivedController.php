@@ -35,7 +35,6 @@ class ClaimArchivedController extends ApiController
      */
     public function index()
     {
-
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
 

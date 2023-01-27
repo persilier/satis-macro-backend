@@ -17,7 +17,6 @@ class ReportingTitlesSeeder extends Seeder
     {
         $reportsTypes = Constants::reportTypes();
 
-
         foreach ($reportsTypes as $type){
             $name = $type['value'];
             $data = ["title"=>$type['label'],"description"=>$type['label']];

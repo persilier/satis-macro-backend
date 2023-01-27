@@ -67,7 +67,7 @@ class UserRepository
 
     /**
      * @param $identityId
-     * @return User
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
     public function getUserByIdentity($identityId)
     {

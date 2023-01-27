@@ -22,7 +22,10 @@ class UnitController extends ApiController
     public function index()
     {
         return response()->json(Unit::with(['unitType', 'institution','state'])->get(), 200);
+<<<<<<< HEAD
+=======
 
+>>>>>>> 65cf39c61226a6ef1aa446c73d6ff128014a5310
     }
 
     /**

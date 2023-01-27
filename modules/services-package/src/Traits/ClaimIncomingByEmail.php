@@ -152,6 +152,20 @@ trait ClaimIncomingByEmail
 
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
+<<<<<<< HEAD
+=======
+
+//        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
+//
+//        if ($testSmtp['error']) {
+//            return [
+//                "error" => true,
+//                "message" => $testSmtp['message']
+//            ];
+//        }
+
+        $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
+>>>>>>> develop
 
         $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
@@ -164,7 +178,11 @@ trait ClaimIncomingByEmail
 
             return [
                 "error" => true,
+<<<<<<< HEAD
                 "message" => __('messages.invalid_params', [], getAppLang()),
+=======
+                "message" => __('messages.invalid_params',[],getAppLang()),
+>>>>>>> develop
                 "serviceErrors" => $subscriber['message']
             ];
         }
@@ -278,6 +296,19 @@ trait ClaimIncomingByEmail
                     $this->getInstitutionPilot($claimStore->institutionTargeted)->notify(new RegisterAClaim($claimStore));
                 }
             }
+
+            $claim = $claimStore->load('claimer','institutionTargeted');
+            // send notification to claimer
+            if (!is_null($claim->claimer)) {
+                $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
+            }
+
+            // send notification to pilot
+                if (!is_null($claim->institutionTargeted)) {
+                    if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
+                        $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
+                    }
+                }
 
             return true;
 

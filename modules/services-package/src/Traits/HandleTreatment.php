@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Carbon\Carbon;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Notifications\TransferredToUnit;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
@@ -18,6 +19,15 @@ trait HandleTreatment
         $activeTreatment = $claim->activeTreatment;
         if (is_null($activeTreatment)) {
             $activeTreatment = Treatment::create(['claim_id' => $claim->id]);
+        }else{
+            if ($claim->status == Claim::CLAIM_UNSATISFIED){
+                if ($activeTreatment->type == Treatment::NORMAL){
+                    $activeTreatment = Treatment::create([
+                        'claim_id' => $claim->id,
+                        'type'=>Treatment::ESCALATION
+                    ]);
+                }
+            }
         }
         $claim->update(['active_treatment_id' => $activeTreatment->id]);
         return $activeTreatment;
@@ -42,8 +52,13 @@ trait HandleTreatment
 
         $activeTreatment->update($updateData);
 
-        $claim->update(['status' => 'transferred_to_unit']);
+        if ($claim->status == Claim::CLAIM_UNSATISFIED){
+            $claim->update(['escalation_status' => 'transferred_to_unit']);
+        }else{
+            $claim->update(['status' => 'transferred_to_unit']);
+        }
 
+<<<<<<< HEAD
         if ($sendNotif){
             \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
             $activityLogService = app(ActivityLogService::class);
@@ -55,6 +70,19 @@ trait HandleTreatment
                 $claim
             );
         }
+=======
+        \Illuminate\Support\Facades\Notification::send($this->getUnitStaffIdentities($request->unit_id), new TransferredToUnit($claim));
+
+        $activityLogService = app(ActivityLogService::class);
+        $activityLogService->store(__('activity_logs.claim_transferred',[],getAppLang()),
+            $this->institution()->id,
+            ActivityLogService::TRANSFER_TO_UNIT,
+            'claim',
+            $this->user(),
+            $claim
+        );
+
+>>>>>>> develop
         return $claim;
     }
 

@@ -3,7 +3,11 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Satis2020\ServicePackage\Models\Staff;
+=======
+use Illuminate\Support\Arr;
+>>>>>>> develop
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Models\Discussion;
@@ -11,13 +15,26 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
+<<<<<<< HEAD
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
+=======
+use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToEscalationDiscussionRules;
+use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
+>>>>>>> develop
 
 class DiscussionStaffController extends ApiController
 {
 
+<<<<<<< HEAD
     use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\Metadata;
+=======
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification,ClaimAwaitingTreatment;
+>>>>>>> develop
 
     public function __construct()
     {
@@ -61,7 +78,7 @@ class DiscussionStaffController extends ApiController
      *
      * @param Request $request
      * @param Discussion $discussion
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -77,11 +94,27 @@ class DiscussionStaffController extends ApiController
 
         $discussion->load('staff.identite', 'createdBy.unit');
 
+<<<<<<< HEAD
         $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
 
         return response()->json([
             'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);
+=======
+
+        if (isEscalationClaim($discussion->claim)){
+            $response = [
+                'staff' => $this->getContributors($discussion),
+                "escalation_staff"=>$this->getTargetedStaffFromUnit($this->getNormalTreatment($discussion->claim_id)->responsible_unit_id)
+            ];
+        }else{
+            $response = [
+                'staff' => $this->getContributors($discussion),
+            ];
+        }
+
+        return response()->json($response);
+>>>>>>> develop
     }
 
     /**
@@ -105,17 +138,29 @@ class DiscussionStaffController extends ApiController
                 new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())
             ],
             'staff_id' => 'required|array',
+<<<<<<< HEAD
             'staff_id.*' => [
                 'required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
                 new StaffCanBeAddToDiscussionRules($discussion)
             ],
+=======
+            'escalation_staff' => 'array',
+            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion), new StaffCanBeAddToDiscussionRules($discussion)],
+            'escalation_staff.*' => [ 'exists:staff,id',  new StaffCanBeAddToEscalationDiscussionRules($discussion)],
+>>>>>>> develop
         ];
 
         $this->validate($request, $rules);
 
-        $discussion->staff()->attach($request->staff_id);
+        if ($request->filled('escalation_staff')){
+            $staff = array_merge($request->staff_id,$request->escalation_staff);
+        }else{
+            $staff = $request->staff_id;
+        }
 
-        Notification::send($this->getStaffIdentities($request->staff_id), new AddContributorToDiscussion($discussion));
+        $discussion->staff()->attach($staff);
+
+        Notification::send($this->getStaffIdentities($staff), new AddContributorToDiscussion($discussion));
 
         return response()->json($discussion->staff, 201);
     }

@@ -31,6 +31,12 @@ class InstallSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
+<<<<<<< HEAD
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\MetadataTableSeeder::class);
+=======
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ProxyConfigSeeder::class);
+
+
+>>>>>>> develop
     }
 }

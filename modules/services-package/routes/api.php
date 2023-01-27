@@ -15,3 +15,4 @@ use Satis2020\ServicePackage\Http\Controllers\StateController;
 */
 Route::get('satis-years',[SatisYearController::class,"index"])->name('satis.years');
 Route::get("country/{country_id}/states", [StateController::class,"index"])->name("country.states");
+Route::get("claims/details/{claim_id}",[Satis2020\ServicePackage\Http\Controllers\Claim\ClaimController::class,"show"]);

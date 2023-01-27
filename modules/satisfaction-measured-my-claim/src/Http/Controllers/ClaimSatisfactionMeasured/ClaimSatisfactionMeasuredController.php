@@ -39,12 +39,18 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
+<<<<<<< HEAD
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
 
         $claims = $this->getAllMyClaim(  'validated',true,$paginationSize,$key);
+=======
+        $statusColumn = $request->query('type',"normal")==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+        $claims = $this->getAllMyClaim(Claim::CLAIM_VALIDATED,false,10,null,$statusColumn);
+
+>>>>>>> develop
         return response()->json($claims, 200);
     }
 
@@ -52,10 +58,12 @@ class ClaimSatisfactionMeasuredController extends ApiController
     /**
      * @param $claim
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function show($claim)
+    public function show(Claim $claim)
     {
-        $claim = $this->getOneMyClaim($claim);
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
+        $claim = $this->getOneMyClaim($claim->id,Claim::CLAIM_VALIDATED,$statusColumn);
         return response()->json($claim, 200);
     }
 
@@ -68,7 +76,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function satisfactionMeasured(Request $request, $claim)
+    public function satisfactionMeasured(Request $request, Claim $claim)
     {
 
         if ($request->isNotFilled("note")){
@@ -76,7 +84,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
         }
         $this->validate($request, $this->rules($request));
 
-        $claim = $this->getOneMyClaim($claim);
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
+        $claim = $this->getOneMyClaim($claim->id,Claim::CLAIM_VALIDATED,$statusColumn);
 
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,
@@ -86,7 +95,11 @@ class ClaimSatisfactionMeasuredController extends ApiController
             'note' => $request->note
         ]);
 
-        $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
+        if ($request->is_claimer_satisfied) {
+            $claim->update([$statusColumn => Claim::CLAIM_ARCHIVED, 'archived_at' => Carbon::now()]);
+        }else{
+            $claim->update([$statusColumn => Claim::CLAIM_UNSATISFIED]);
+        }
 
         $this->activityLogService->store("Mesure de satisfaction",
             $this->institution()->id,

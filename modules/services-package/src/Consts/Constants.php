@@ -10,7 +10,7 @@ class Constants
 {
 
     const COUNTRIES_SERVICE_URL = "http://163.172.106.97:8020/api/";
-    const BENIN_COUNTRY_ID=24;
+    const BENIN_COUNTRY_ID = 24;
     const PAGINATION_SIZE = 10;
 
     const GLOBAL_STATE_REPORTING = 'global-state-reporting';
@@ -26,13 +26,25 @@ class Constants
     const SYSTEM_EFFICIENCY_REPORTING = 'system-efficiency-reporting';
     const BENCHMARKING_REPORTING = 'benchmarking-report';
     const GLOBAL_REPORTING = 'global-report';
+<<<<<<< HEAD
     const REGULATORY_STATE_REPORTING= 'regulatory-state-reporting';
     const NOTIFICATION_PROOF= 'notification-proof';
     const ALL_STAFF = "allStaff";
 
+=======
+    const REGULATORY_STATE_REPORTING = 'regulatory-state-reporting';
+>>>>>>> develop
 
+    const PROXY = "proxy";
+    const PROXY_MODULES = "proxy_modules";
+    const PROXY_HTTP_SERVER = "proxy_http_server";
+    const PROXY_HTTPS_SERVER = "proxy_https_server";
+    const PROXY_HTTP_PORT = "proxy_http_port";
+    const PROXY_HTTPS_PORT = "proxy_https_port";
 
-    static public function  paginationSize()
+    const ALL_STAFF = "allStaff";
+
+    static public function paginationSize()
     {
         return self::PAGINATION_SIZE;
     }
@@ -40,8 +52,8 @@ class Constants
     static function getReportTypesNames()
     {
         $names = [];
-        foreach (self::reportTypes() as $type){
-            array_push($names,$type['value']);
+        foreach (self::reportTypes() as $type) {
+            array_push($names, $type['value']);
         }
         return $names;
     }
@@ -99,7 +111,8 @@ class Constants
         ];
     }
 
-    static function periodList(){
+    static function periodList()
+    {
 
         return [
             [
@@ -120,15 +133,22 @@ class Constants
         ];
     }
 
+
+    static function proxyModules()
+    {
+        return ['mail', 'sms', 'incoming_mail_service'];
+    }
+
     static function getPeriodValues()
     {
         $names = [];
-        foreach (self::periodList() as $type){
-            array_push($names,$type['value']);
+        foreach (self::periodList() as $type) {
+            array_push($names, $type['value']);
         }
         return $names;
     }
 
+<<<<<<< HEAD
     static function getSatisYearsFromCreation()
     {
         $years = [];
@@ -153,4 +173,38 @@ class Constants
     }
 
 
+=======
+    static function getClaimRelations()
+    {
+        return [
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.responsibleUnit.parent',
+            'revivals',
+            'activeTreatment.validatedBy.identite',
+            'activeTreatment.transferredToTargetInstitutionBy.identite',
+            'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard'
+        ];
+
+    }
+
+    static function getTreatmentRelations()
+    {
+
+    }
+>>>>>>> develop
 }

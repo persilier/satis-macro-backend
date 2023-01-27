@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Satis2020\Escalation\Database\Seeds\EscalationConfigSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -140,6 +141,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdatePermissionsDescriptionSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ProxyConfigSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
 
@@ -165,6 +167,8 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
         //$this->call(\Satis2020\ServicePackage\Database\Seeds\MetadataTableSeeder::class);
         //$this->call(RevokeTokensSeeder::class);
+        $this->call(RevokeTokensSeeder::class);
+        $this->call(EscalationConfigSeeder::class);
 
 
 

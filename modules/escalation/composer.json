@@ -1,0 +1,31 @@
+{
+    "name": "satis2020/escalation",
+    "description": "Package des escalades",
+    "license": "DMD",
+    "version" : "1.0.0",
+    "authors": [
+        {
+            "name": "Arafath ATTA YAYA",
+            "email": "arafath@dmdconsult.com"
+        }
+    ],
+    "require": {
+        "satis2020/external-dependencies-package": "1.0.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Satis2020\\Escalation\\": "src/",
+            "Satis2020\\Escalation\\Database\\Seeds\\": "database/seeds/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Satis2020\\Escalation\\Providers\\EscalationServiceProvider",
+                "Satis2020\\Escalation\\Providers\\EventServiceProvider"
+            ]
+        }
+    }
+}

@@ -83,10 +83,17 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-auth-config', 'update-auth-config',
                     'activity-log',
                     'list-notification-proof',
+<<<<<<< HEAD
                     'config-reporting-claim-my-institution',
                     'config-reporting-claim-my-institution',
                     'list-notification-proof',
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+=======
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-escalation-config','update-escalation-config',
+>>>>>>> develop
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof', 'configuration-pilot',
@@ -110,13 +117,26 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'pilot-list-notification-proof',
                     'config-reporting-claim-my-institution',
+<<<<<<< HEAD
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof', 'configuration-pilot', 'pilot-relance-other', 'reassignment_to_pilot',
                     'list-claim-transferred-my-institution',
                     'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
+=======
+                    'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-my-claim-unsatisfied',
+                    'list-closed-my-claims','close-my-claims',
+                    'list-escalation-config','update-escalation-config',
+                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+
+
+>>>>>>> develop
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -138,7 +158,11 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
+
                 ]
             ];
 

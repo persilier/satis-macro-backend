@@ -33,9 +33,12 @@ class UnitBelongsToCircuitRules implements Rule
     {
         $claim = Claim::with('claimObject.units')->findOrFail($this->claim_id);
 
-        return $claim->claimObject->units->search(function ($item, $key) use($value) {
-                return $item->id == $value;
-            }) !== false;
+        if (!isEscalationClaim($claim)){
+            return $claim->claimObject->units->search(function ($item, $key) use($value) {
+                    return $item->id == $value;
+                }) !== false;
+        }
+        return true;
     }
 
     /**

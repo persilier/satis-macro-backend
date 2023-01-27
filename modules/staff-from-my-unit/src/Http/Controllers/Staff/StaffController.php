@@ -196,11 +196,19 @@ class StaffController extends ApiController
      */
     public function destroy(Staff $staff)
     {
+<<<<<<< HEAD
         $staff = $staff->load('identite.user');
         if ($staff->identite && $staff->identite()->has('user')){
             abort(Response::HTTP_FORBIDDEN,"Impossible de supprimer cet agent, il est lié a un compte utilisateur.");
         }
         $staff->delete();
+=======
+        if ($this->checkIfStaffHasUserAccount($staff)){
+            abort(Response::HTTP_FORBIDDEN,__('messages.user_has_account'));
+        }else{
+            $staff->delete();
+        }
+>>>>>>> develop
 
         return response()->json($staff, 200);
     }

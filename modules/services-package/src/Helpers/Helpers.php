@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
@@ -8,10 +9,17 @@ use Satis2020\ServicePackage\Models\Claim;
 if (!function_exists('getAppLang')) {
     function getAppLang()
     {
+=======
+use Satis2020\ServicePackage\Models\Claim;
+
+if (!function_exists('getAppLang')){
+    function getAppLang(){
+>>>>>>> develop
         return app()->getLocale();
     }
 }
 
+<<<<<<< HEAD
 if (!function_exists('formatClaimRef')) {
     function formatClaimRef($reference)
     {
@@ -45,3 +53,10 @@ function claimsExists($references)
 {
     return Claim::query()->whereIn('reference',$references)->count()>0;
 }
+=======
+if (!function_exists('isEscalationClaim')){
+    function isEscalationClaim($claim){
+        return $claim->status == Claim::CLAIM_UNSATISFIED;
+    }
+}
+>>>>>>> develop

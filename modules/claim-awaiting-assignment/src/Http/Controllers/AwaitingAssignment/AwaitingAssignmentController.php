@@ -36,14 +36,38 @@ class AwaitingAssignmentController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+<<<<<<< HEAD
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
         $claims = $this->getClaimsQuery()->with($this->getRelations());
+=======
+        $type = $request->query('type','normal');
+
+        $claims = $this->getClaimsQuery()
+            ->when($type==Claim::CLAIM_UNSATISFIED,function ($query){
+                $query->where('status',Claim::CLAIM_UNSATISFIED);
+            })
+            ->get()->map(function ($item, $key) {
+
+            $item = Claim::with($this->getRelations())->find($item->id);
+
+            $item->is_rejected = false;
+
+            if (!is_null($item->activeTreatment)) {
+
+                $item->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
+
+                if (!is_null($item->activeTreatment->rejected_at) && !is_null($item->activeTreatment->rejected_reason)
+                    && !is_null($item->activeTreatment->responsibleUnit)) {
+                    $item->is_rejected = true;
+                }
+>>>>>>> develop
 
         if ($key) {
             switch ($type) {

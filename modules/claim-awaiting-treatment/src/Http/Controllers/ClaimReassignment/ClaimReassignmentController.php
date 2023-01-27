@@ -11,6 +11,7 @@ use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
@@ -37,35 +38,47 @@ class ClaimReassignmentController extends ApiController
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
+     * @throws CustomException
      */
-    protected function index(){
+    protected function index(Request $request){
 
+        $type = $request->query('type','normal');
         $this->checkLeadReassignment();
-        return response()->json($this->queryClaimReassignment()->get(), 200);
+
+        return response()->json($this->queryClaimReassignment($type)->get(), 200);
     }
 
 
     /**
+     * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
      */
-    protected function show($claim){
+    protected function show(Request $request,$claim){
+        $type = $request->query('type','normal');
 
         $this->checkLeadReassignment();
-        return response()->json($this->queryClaimReassignment()->find($claim), 200);
+        return response()->json($this->queryClaimReassignment($type)->find($claim), 200);
     }
 
 
     /**
+     * @param Request $request
      * @param $claim
      * @return JsonResponse
+     * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
-    protected function edit($claim){
+    protected function edit(Request $request,$claim){
+
+        $type = $request->query('type','normal');
 
         $staff = $this->staff();
         $this->checkLeadReassignment();
-        $claimToReassign = $this->queryClaimReassignment()->find($claim);
+        $claimToReassign = $this->queryClaimReassignment($type)->find($claim);
         $staffs = $claimToReassign->activeTreatment->responsible_staff_id!=null?
             $this->getTargetedStaffFromUnit($staff->unit_id,true,$claimToReassign->activeTreatment->responsible_staff_id):$this->getTargetedStaffFromUnit($staff->unit_id);
         return response()->json([
@@ -85,8 +98,10 @@ class ClaimReassignmentController extends ApiController
      */
     protected function update(Request $request, $claim){
 
+        $type = $request->query('type','normal');
+
         $this->checkLeadReassignment();
-        $claim = $this->queryClaimReassignment()->find($claim);
+        $claim = $this->queryClaimReassignment($type)->find($claim);
         $this->validate($request, $this->rules($this->staff()));
         $claim->activeTreatment->update([
             'responsible_staff_id' => $request->staff_id,

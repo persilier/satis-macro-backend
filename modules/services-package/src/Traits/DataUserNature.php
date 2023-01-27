@@ -52,7 +52,7 @@ trait DataUserNature
     protected function institution()
     {
 
-        $message = "Unable to find the user institution";
+        $message = __('messages.unable_to_fin_user_institution',[],getAppLang());
         $staff = $this->user()->load('identite.staff')->identite->staff;
 
         $this->institution = Institution::with('institutionType')->find($staff->institution_id);
@@ -95,11 +95,12 @@ trait DataUserNature
     protected function staff()
     {
 
-        $message = "Unable to find the user staff";
+        $message = __('messages.unable_to_fin_user_staff',[],getAppLang());
 
         try {
             $this->staff = $this->user()->load('identite.staff')->identite->staff;
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -117,7 +118,7 @@ trait DataUserNature
     protected function nature()
     {
 
-        $message = "Unable to find the nature of the application";
+        $message = __('messages.unable_to_find_app_nature',[],getAppLang());
 
         try {
             $this->nature = json_decode(Metadata::where('name', 'app-nature')->firstOrFail()->data);

@@ -3,6 +3,7 @@
 namespace Satis2020\MyClaimIncomingByEmail\Http\Controllers\IncomingMails;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Http\Controllers\Controller;
 use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
@@ -25,10 +26,12 @@ class IncomingMailsController extends Controller
 
     public function store(Request $request)
     {
-        if (! $configuration = EmailClaimConfiguration::where('email', $request->route('email'))->first()) {
+        $configuration = EmailClaimConfiguration::where('email', $request->route('email'))->first();
+        Log::info("configuration ".json_encode($configuration));
+        if (! $configuration) {
             return json_encode([]);
         }
-
+        Log::info("request mail ".json_encode($request->all()));
         return json_encode(($this->readEmails($request, 'html_text', 'incomplete', $configuration)));
     }
 

@@ -13,6 +13,8 @@ class Treatment extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
+    const NORMAL="normal";
+    const ESCALATION="escalation";
     /**
      * The attributes that are translatable
      *
@@ -35,7 +37,7 @@ class Treatment extends Model
      */
     protected $dates = [
         'transferred_to_targeted_institution_at', 'transferred_to_unit_at', 'assigned_to_staff_at',
-        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at'
+        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at','closed_at'
     ];
 
     /**
@@ -70,8 +72,18 @@ class Treatment extends Model
         'number_reject',
         'treatments',
         'note',
+<<<<<<< HEAD
         'transferred_to_unit_by',
         'validated_by'
+=======
+        'closed_reason',
+        'closed_at',
+        'closed_by',
+        'validated_by',
+        'transferred_to_unit_by',
+        'transferred_to_targeted_institution_by',
+        'type'
+>>>>>>> develop
     ];
 
     /**
@@ -125,6 +137,29 @@ class Treatment extends Model
     public function satisfactionMeasuredBy()
     {
         return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
+    }
+    /**
+     * @return BelongsTo
+     */
+    public function validatedBy()
+    {
+        return $this->belongsTo(Staff::class, 'validated_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToTargetInstitutionBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_targeted_institution_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
     /**

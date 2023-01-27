@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddColumnsToClaimsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('claims', function (Blueprint $table) {
+            $table->uuid("treatment_board_id")->nullable()->after("active_treatment_id");
+            $table->foreign("treatment_board_id")
+                ->references('id')
+                ->on('treatment_boards')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('claims', function (Blueprint $table) {
+            //
+        });
+    }
+}

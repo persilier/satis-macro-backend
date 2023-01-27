@@ -14,9 +14,22 @@ class AddColumnsToTreatmentsTable extends Migration
     public function up()
     {
         Schema::table('treatments', function (Blueprint $table) {
+<<<<<<< HEAD
             $table->uuid("transferred_to_unit_by")->nullable()->after("transferred_to_targeted_institution_at");
             $table->uuid("validated_by")->nullable()->after("comments");
 
+=======
+            $table->uuid("transferred_to_targeted_institution_by")->nullable()->after("claim_id");
+            $table->uuid("transferred_to_unit_by")->nullable()->after("transferred_to_targeted_institution_at");
+            $table->uuid("validated_by")->nullable()->after("comments");
+
+            $table->foreign("transferred_to_targeted_institution_by")
+                ->references('id')
+                ->on('staff')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+
+>>>>>>> develop
             $table->foreign("transferred_to_unit_by")
                 ->references('id')
                 ->on('staff')
@@ -42,4 +55,8 @@ class AddColumnsToTreatmentsTable extends Migration
             //
         });
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> develop

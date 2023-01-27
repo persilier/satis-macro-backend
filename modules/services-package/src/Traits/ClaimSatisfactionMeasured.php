@@ -22,13 +22,24 @@ trait ClaimSatisfactionMeasured
 
     /**
      * @param string $status
+     * @param $statusColumn
      * @return Builder
      */
+<<<<<<< HEAD
     protected  function getClaim($status = 'validated') {
         return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
         })->where('claims.status', $status)->select('claims.*');
+=======
+    protected  function getClaim($status = 'validated',$statusColumn="status"){
+
+        return $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
+            $join->on('claims.id', '=', 'treatments.claim_id')
+                ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
+        })->where("claims.$statusColumn", $status)->select('claims.*');
+
+>>>>>>> develop
     }
 
 
@@ -50,29 +61,13 @@ trait ClaimSatisfactionMeasured
      */
     protected function getRelations()
     {
-        return [
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite',
-            'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit'
-        ];
+        return Constants::getClaimRelations();
     }
 
 
     /**
      * @param string $status
+<<<<<<< HEAD
      * @return mixed
      */
 
@@ -83,6 +78,21 @@ trait ClaimSatisfactionMeasured
                     $builder->where('institution_targeted_id', $institutionId);
                 })
                 ->when($key, function (Builder $query1) use ($key) {
+=======
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @param string $statusColumn
+     * @return mixed
+     */
+
+    protected function getAllMyClaim($status = 'validated',$paginate = false, $paginationSize = 10,$key=null,$statusColumn='status'){
+
+        return $paginate
+            ?$this->getClaim($status,$statusColumn)
+                ->where('institution_targeted_id', $this->institution()->id)
+                ->when($key,function (Builder $query1) use ($key) {
+>>>>>>> develop
                     $query1->where('reference' , 'LIKE', "%$key%")
                         ->orWhereHas("claimer",function ($query2) use ($key){
                             $query2->where('firstname' , 'LIKE', "%$key%")
@@ -94,6 +104,7 @@ trait ClaimSatisfactionMeasured
                         })->orWhereHas("unitTargeted", function ($query4) use ($key) {
                             $query4->where("name->".App::getLocale(), 'LIKE', "%$key%");
                         });
+<<<<<<< HEAD
                 })->paginate($paginationSize) :
                 $this->getClaim($status)
                     ->when($institutionId != null, function ($builder) use ($institutionId) {
@@ -102,21 +113,76 @@ trait ClaimSatisfactionMeasured
                     ->filter(function ($item) use ($institutionId) {
                         return ($institutionId && $item->activeTreatment->responsibleStaff && ($institutionId === $item->activeTreatment->responsibleStaff->institution_id));
                     })->all();
+=======
+                })->paginate($paginationSize)
+
+
+            :$this->getClaim($status)->get()->filter(function ($item){
+                return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            })->values();
+>>>>>>> develop
 
     }
 
 
     /**
+     * @param int $paginationSize
+     * @param null $key
+     * @param null $type
+     * @return mixed
+     */
+
+    protected function getAllMyUnsatisfiedClaim($paginationSize = 10,$key=null,$type=null){
+       $claims = $this->getClaim(Claim::CLAIM_UNSATISFIED)
+                ->where('institution_targeted_id', $this->institution()->id)
+                ->whereHas("activeTreatment",function ($builder){
+                    $builder->where('is_claimer_satisfied',false);
+                });
+
+       switch ($type){
+           case 'claimObject':
+               $claims->whereHas("claimObject",function ($query) use ($key){
+                   $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+               });
+               break;
+           case 'claimer':
+               $claims->whereHas("claimer",function ($query) use ($key){
+                   $query->where('firstname' , 'like', "%$key%")
+                       ->orWhere('lastname' , 'like', "%$key%")
+                       ->orwhereJsonContains('telephone', $key)
+                       ->orwhereJsonContains('email', $key);
+               });
+               break;
+           default:
+               $claims->where('reference', 'LIKE', "%$key%");
+               break;
+       }
+
+       return $claims->paginate($paginationSize);
+    }
+
+
+    /**
      * @param $claim
-     * @param $status
+     * @param string $status
+     * @param string $statusColum
      * @return Builder|Builder[]|Collection|Model
      * @throws CustomException
      */
-    protected function getOneMyClaim($claim, $status = 'validated'){
+    protected function getOneMyClaim($claim, $status = 'validated',$statusColum="status"){
 
+<<<<<<< HEAD
         $claim = $this->getClaim($status)->findOrFail($claim);
         if($claim->activeTreatment->responsibleStaff->institution_id !== $this->institution()->id){
             throw new CustomException("Impossible de récupérer cette réclamation.");
+=======
+        $claim = $this->getClaim($status,$statusColum)->findOrFail($claim);
+
+        if($claim->activeTreatment->responsibleStaff->institution_id !== $this->institution()->id){
+
+            throw new CustomException(__('messages.cant_get_claim',[],getAppLang()));
+
+>>>>>>> develop
         }
         return $claim;
 

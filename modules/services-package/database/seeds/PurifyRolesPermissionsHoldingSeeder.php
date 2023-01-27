@@ -85,9 +85,15 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-any-notification-proof',
                     'config-reporting-claim-any-institution',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+<<<<<<< HEAD
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof',
                     'configure-pilot-collector-discussion-attribute',
+=======
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+>>>>>>> develop
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -133,8 +139,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'history-list-treat-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
-
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
                 ]
             ];
 

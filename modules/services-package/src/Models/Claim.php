@@ -4,6 +4,21 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
+=======
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Satis2020\ServicePackage\Traits\UuidAsId;
+>>>>>>> develop
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,6 +47,8 @@ class Claim extends Model
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
     const CLAIM_ARCHIVED = "archived";
+    const CLAIM_CLOSED = "closed";
+    const CLAIM_UNSATISFIED = "unsatisfied";
 
 
     /**
@@ -71,7 +88,8 @@ class Claim extends Model
         'archived_at',
         'created_at',
         'updated_at',
-        'revoked_at'
+        'revoked_at',
+        'closed_at',
     ];
 
     /**
@@ -106,11 +124,22 @@ class Claim extends Model
         'revoked_at',
         'revoked_by',
         'account_number',
+<<<<<<< HEAD
         'plain_text_description'
+=======
+        'plain_text_description',
+        'closed_at',
+        'treatment_board_id',
+        'escalation_status'
+>>>>>>> develop
     ];
 
+    protected $appends = ['timeExpire', 'accountType','lastRevival','canAddAttachment',"oldActiveTreatment"];
 
+<<<<<<< HEAD
     protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'dateExpire'];
+=======
+>>>>>>> develop
 
     /**
      * @return mixed
@@ -282,6 +311,19 @@ class Claim extends Model
     }
 
     /**
+     * Get the active treatment associated with the claim
+     * @return Builder|Model|object
+     */
+    public function getOldActiveTreatmentAttribute()
+    {
+        if (isEscalationClaim($this)){
+            return  (new TreatmentRepository)->getClaimOldTreatment($this->id);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the discussions associated with the claim
      * @return HasMany
      */
@@ -323,4 +365,42 @@ class Claim extends Model
 
         return $canAttach;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * @return HasMany
+     */
+    public function revivals()
+    {
+        return $this->hasMany(Revival::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function getLastRevivalAttribute()
+    {
+        return collect($this->revivals)->sortByDesc('created_at')->first();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainTextDescriptionAttribute()
+    {
+        return $this->attributes['plain_text_description']==null?
+            $this->attributes['description']:
+            $this->attributes['plain_text_description'];
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function treatmentBoard()
+    {
+        return $this->belongsTo(TreatmentBoard::class);
+    }
+
+>>>>>>> develop
 }

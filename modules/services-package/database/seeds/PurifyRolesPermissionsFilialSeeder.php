@@ -57,12 +57,18 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-auth-config','update-auth-config',
                     'list-notification-proof',
                     'config-reporting-claim-my-institution',
-                    'config-reporting-claim-my-institution',
                     'list-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+<<<<<<< HEAD
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof','update-mail-parameters'
+=======
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-escalation-config','update-escalation-config',
+                        'logout-user-my-institution',
+>>>>>>> develop
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -85,11 +91,18 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'pilot-list-notification-proof',
                     'list-regulatory-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
-                    'system-my-efficiency-report',
-                    'config-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+<<<<<<< HEAD
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
+=======
+                    'list-my-claim-unsatisfied',
+                    'list-closed-my-claims','close-my-claims',
+                    'list-escalation-config','update-escalation-config',
+                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+
+>>>>>>> develop
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -108,7 +121,10 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-my-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff'
                 ]
             ];
 

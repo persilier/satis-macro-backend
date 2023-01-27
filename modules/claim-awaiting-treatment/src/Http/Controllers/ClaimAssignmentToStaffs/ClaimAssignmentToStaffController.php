@@ -9,9 +9,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Staff;
+<<<<<<< HEAD
 use Illuminate\Validation\Rules\RequiredIf;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Validation\ValidationException;
+=======
+use Satis2020\ServicePackage\Models\Treatment;
+use Satis2020\ServicePackage\Notifications\TreatAClaim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+>>>>>>> develop
 use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Exceptions\CustomException;
@@ -45,11 +52,13 @@ class ClaimAssignmentToStaffController extends ApiController
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->query('type',"normal");
         $institution = $this->institution();
         $staff = $this->staff();
         $claims = [];
@@ -68,6 +77,18 @@ class ClaimAssignmentToStaffController extends ApiController
             });
         }
 
+<<<<<<< HEAD
+=======
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+
+        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id,$statusColumn)
+           ->get()->map(function ($item, $key) {
+            $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+            $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+            $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
+            return $item;
+        });
+>>>>>>> develop
         return response()->json($claims, 200);
     }
 
@@ -76,13 +97,14 @@ class ClaimAssignmentToStaffController extends ApiController
      *
      * @param Claim $claim
      * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
      * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claim)
     {
         $institution = $this->institution();
         $staff = $this->staff();
+
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
         $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
@@ -134,7 +156,11 @@ class ClaimAssignmentToStaffController extends ApiController
             'unfounded_reason' => NULL
         ]);
 
-        $claim->update(['status' => 'treated']);
+        if (isEscalationClaim($claim)){
+            $claim->update(['escalation_status' => 'treated']);
+        }else{
+            $claim->update(['status' => 'treated']);
+        }
 
         $this->activityLogService->store(
             "Traitement d'une réclamation",

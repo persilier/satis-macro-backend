@@ -60,6 +60,7 @@ trait CreateClaim
             'lieu' => 'nullable|string',
             'event_occured_at' => [
                 'required',
+<<<<<<< HEAD
                 'date_format:Y-m-d H:i',
                 function ($attribute, $value, $fail) {
                     try {
@@ -73,6 +74,11 @@ trait CreateClaim
             ],
             'amount_disputed' => ['nullable', 'filled', 'integer', 'min:1', Rule::requiredIf($request->filled('amount_currency_slug'))],
             'amount_currency_slug' => ['nullable', 'filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
+=======
+                'date_format:Y-m-d H:i','after_or_equal:today'],
+            'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
+            'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
+>>>>>>> develop
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
@@ -87,6 +93,7 @@ trait CreateClaim
             $data['sexe'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = ["required", 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
+            $data['email.*'] = ["email"];
             $data['account_targeted_id'] = ['exists:accounts,id', new AccountBelongsToClientRules($request->institution_targeted_id, $request->claimer_id)];
         } else {
             $data['firstname'] = 'required';
@@ -94,6 +101,7 @@ trait CreateClaim
             $data['sexe'] = ['required', Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = ['required', 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
+            $data['email.*'] = ["email"];
         }
 
         if ($with_relationship) {
@@ -159,7 +167,12 @@ trait CreateClaim
             }
         } catch (\Exception $exception) {
 
+<<<<<<< HEAD
             throw new CustomException("Can't retrieve the claimObject requirements");
+=======
+            throw new CustomException(__('errors.retrieve_claim_object',[],app()->getLocale()));
+
+>>>>>>> develop
         }
 
         $status = 'full';

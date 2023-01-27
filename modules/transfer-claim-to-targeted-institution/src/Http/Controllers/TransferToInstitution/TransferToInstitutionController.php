@@ -51,7 +51,10 @@ class TransferToInstitutionController extends ApiController
         if (is_null($activeTreatment)) {
             $activeTreatment = Treatment::create(['claim_id' => $claim->id]);
         }
-        $activeTreatment->update(['transferred_to_targeted_institution_at' => Carbon::now()]);
+        $activeTreatment->update([
+            'transferred_to_targeted_institution_at' => Carbon::now(),
+            'transferred_to_targeted_institution_by'=>$this->staff()->id
+            ]);
         $claim->update(['status' => 'transferred_to_targeted_institution']);
 
         // send notification to pilot
