@@ -103,6 +103,8 @@ trait UpdateClaim
             'lastname',
             'sexe',
             'telephone',
+            'raison_sociale',
+            'type_client',
             'email',
             'unit_targeted_id',
         ]);
@@ -450,7 +452,7 @@ trait UpdateClaim
 
         $dataIdentite = [];
 
-        foreach (['firstname', 'lastname', 'sexe', 'telephone', 'email'] as $value) {
+        foreach (['firstname', 'lastname', 'sexe', 'telephone', 'email', 'raison_sociale','type_client'] as $value) {
 
             if(!is_null($request->{$value})){
                 $dataIdentite[] = $value;
