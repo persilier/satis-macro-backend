@@ -24,7 +24,7 @@ class DiscussionMessageController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware(['permission:contribute-discussion', 'allow.pilot.collector.to.discussion:collector-filial-pro'])->only(['index', 'store', 'destroy']);
+        $this->middleware(['permission:contribute-discussion'])->only(['index', 'store', 'destroy']);
     }
 
     /**

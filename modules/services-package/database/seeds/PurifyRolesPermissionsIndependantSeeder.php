@@ -116,7 +116,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof', 'configuration-pilot', 'pilot-relance-other', 'reassignment_to_pilot',
                     'list-claim-transferred-my-institution',
-                    'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
+                    // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -128,8 +128,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'contribute-discussion', 'list-my-discussions',
-                    'list-discussion-contributors',
+                    // 'contribute-discussion', 'list-my-discussions',
+                    // 'list-discussion-contributors',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
