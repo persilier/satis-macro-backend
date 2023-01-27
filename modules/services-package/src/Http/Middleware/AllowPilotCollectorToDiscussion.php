@@ -26,7 +26,6 @@ class AllowPilotCollectorToDiscussion
         $user_roles = $request->user() ? $request->user()->roles()->pluck('name') : null;
 
         $roles = $concerne_role ? explode("|", $concerne_role) : [];
-
         if (count($roles) > 0) {
             if (in_array("pilot",  $roles)) {
                 if ($user_roles && $user_roles->contains("pilot") && $allow_pilot === 1) {
@@ -34,12 +33,9 @@ class AllowPilotCollectorToDiscussion
                 } else {
                     return  response()->json('L\'utilisateur n\'a pas la bonne autorisation.', 401);
                 }
-            } else {
-                return $next($request);
             }
             if (in_array("collector-filial-pro",  $roles)) {
                 if ($user_roles && $user_roles->contains("collector-filial-pro") && $allow_collector === 1) {
-                    dd(in_array("pilot",  $roles));
                     return $next($request);
                 } else {
                     return  response()->json('L\'utilisateur n\'a pas la bonne autorisation.', 401);
@@ -47,6 +43,8 @@ class AllowPilotCollectorToDiscussion
             } else {
                 return $next($request);
             }
+        } else {
+            return  response()->json('Veuillez préciser le role à verifier', 422);
         }
     }
 }
