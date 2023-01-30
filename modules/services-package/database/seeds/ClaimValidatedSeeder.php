@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\HandleTreatment;
 
