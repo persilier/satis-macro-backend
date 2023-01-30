@@ -73,7 +73,7 @@ class ProcessingCircuitAnyInstitutionController extends ApiController
 
         $collection = collect([]);
 
-        $collection = $this->rules($request->all(), $collection, $institutionId);
+        $collection = $this->rules($request->all(), $collection, "$institutionId");
 
         $this->detachAttachUnits($collection , $institutionId);
 

@@ -42,8 +42,37 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function index()
     {
-        $claims = $this->getClaim()->get();
-        return response()->json($claims, 200);
+
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+
+        $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
+            $join->on('claims.id', '=', 'treatments.claim_id')
+                ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
+        })->where('claims.status', 'validated')->select('claims.*');
+
+        if ($key) {
+            switch ($type){
+                case 'reference':
+                    $claims = $claims->where('reference', 'LIKE', "%$key%");
+                    break;
+                case 'claimObject':
+                    $claims = $claims->whereHas("claimObject",function ($query) use ($key){
+                        $query->where("name->".App::getLocale(), 'LIKE', "%$key%");
+                    });
+                    break;
+                default:
+                    $claims = $claims->whereHas("claimer",function ($query) use ($key){
+                        $query->where('firstname' , 'like', "%$key%")
+                            ->orWhere('lastname' , 'like', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                    break;
+            }
+        }
+        return response()->json($claims->paginate($paginationSize), 200);
     }
 
 

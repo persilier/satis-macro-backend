@@ -15,6 +15,7 @@ class Metadata extends Model
     const AUTH_PARAMETERS="auth-parameters";
     const REGULATORY_LIMIT = "regulatory-limit";
 
+    const ESCALATION="escalation";
 
     /**
      * The attributes that are translatable

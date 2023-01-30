@@ -25,7 +25,7 @@ class AwaitingValidationController extends ApiController
 
         $this->middleware('auth:api');
 
-     //   $this->middleware('permission:list-claim-awaiting-validation-any-institution')->only(['index']);
+        $this->middleware('permission:list-claim-awaiting-validation-any-institution')->only(['index']);
         $this->middleware('permission:show-claim-awaiting-validation-any-institution')->only(['show']);
         $this->middleware('permission:validate-treatment-any-institution')->only(['validate', 'invalidate']);
 
@@ -42,11 +42,11 @@ class AwaitingValidationController extends ApiController
      */
     public function index()
     {
-        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')->get();
-        return response()->json($claimsTreated->map(function ($item, $key) {
-            $item->activeTreatment->load($this->getActiveTreatmentRelations());
-            return $item;
-        }), 200);
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
+
+        return response()->json($this->getClaimsAwaitingValidationInAnyInstitution(true,$paginationSize, $key, $type), 200);
     }
 
     /**

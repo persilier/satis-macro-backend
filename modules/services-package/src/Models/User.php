@@ -57,6 +57,12 @@ class User extends Authenticate
     ];
 
     /**
+     * @var string
+     */
+    protected $guard_name = 'api';
+
+
+    /**
      * @return bool
      */
     public function isEnabled()

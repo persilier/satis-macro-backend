@@ -3,21 +3,25 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
-use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
 use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
-use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToEscalationDiscussionRules;
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
 
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\Metadata, ClaimAwaitingTreatment;
 
     public function __construct()
     {
@@ -25,9 +29,9 @@ class DiscussionStaffController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-discussion-contributors')->only(['index']);
-        $this->middleware('permission:add-discussion-contributor')->only(['store', 'create']);
-        $this->middleware('permission:remove-discussion-contributor')->only(['destroy']);
+        $this->middleware(['permission:list-discussion-contributors', 'allow.pilot.collector.to.discussion:collector-filial-pro'])->only(['index']);
+        $this->middleware(['permission:add-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['store', 'create']);
+        $this->middleware(['permission:remove-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['destroy']);
     }
 
     /**
@@ -61,7 +65,7 @@ class DiscussionStaffController extends ApiController
      *
      * @param Request $request
      * @param Discussion $discussion
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -77,9 +81,20 @@ class DiscussionStaffController extends ApiController
 
         $discussion->load('staff.identite', 'createdBy.unit');
 
-        return response()->json([
-            'staff' => $this->getContributors($discussion),
-        ], 200);
+        $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
+
+        if (isEscalationClaim($discussion->claim)){
+            $response = [
+                'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
+                "escalation_staff"=>$this->getTargetedStaffFromUnit($this->getNormalTreatment($discussion->claim_id)->responsible_unit_id)
+            ];
+        }else{
+            $response = [
+                'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
+            ];
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -98,18 +113,30 @@ class DiscussionStaffController extends ApiController
         $request->merge(['discussion' => $discussion->id]);
 
         $rules = [
-            'discussion' => ['required', 'exists:discussions,id',
-                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())],
+            'discussion' => [
+                'required', 'exists:discussions,id',
+                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())
+            ],
             'staff_id' => 'required|array',
-            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
-                new StaffCanBeAddToDiscussionRules($discussion)],
+            'staff_id.*' => [
+                'required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
+                new StaffCanBeAddToDiscussionRules($discussion)
+            ],
+            'escalation_staff' => 'array',
+            'escalation_staff.*' => [ 'exists:staff,id',  new StaffCanBeAddToEscalationDiscussionRules($discussion)],
         ];
 
         $this->validate($request, $rules);
 
-        $discussion->staff()->attach($request->staff_id);
+        if ($request->filled('escalation_staff')){
+            $staff = array_merge($request->staff_id,$request->escalation_staff);
+        }else{
+            $staff = $request->staff_id;
+        }
 
-        Notification::send($this->getStaffIdentities($request->staff_id), new AddContributorToDiscussion($discussion));
+        $discussion->staff()->attach($staff);
+
+        Notification::send($this->getStaffIdentities($staff), new AddContributorToDiscussion($discussion));
 
         return response()->json($discussion->staff, 201);
     }
@@ -122,7 +149,6 @@ class DiscussionStaffController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -136,7 +162,6 @@ class DiscussionStaffController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**

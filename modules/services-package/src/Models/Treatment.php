@@ -13,6 +13,8 @@ class Treatment extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
+    const NORMAL="normal";
+    const ESCALATION="escalation";
     /**
      * The attributes that are translatable
      *
@@ -35,7 +37,7 @@ class Treatment extends Model
      */
     protected $dates = [
         'transferred_to_targeted_institution_at', 'transferred_to_unit_at', 'assigned_to_staff_at',
-        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at'
+        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at','closed_at'
     ];
 
     /**
@@ -69,7 +71,14 @@ class Treatment extends Model
         'invalidated_reason',
         'number_reject',
         'treatments',
-        'note'
+        'note',
+        'transferred_to_unit_by',
+        'closed_reason',
+        'closed_at',
+        'closed_by',
+        'validated_by',
+        'transferred_to_targeted_institution_by',
+        'type'
     ];
 
     /**
@@ -100,6 +109,15 @@ class Treatment extends Model
     }
 
     /**
+     * Get the staff who assign the claim associated with the treatment
+     * @return BelongsTo
+     */
+    public function staffTransferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
+    }
+
+    /**
      * Get the staff who is responsible for the treatment
      * @return BelongsTo
      */
@@ -115,5 +133,29 @@ class Treatment extends Model
     {
         return $this->belongsTo(Staff::class, 'satisfaction_measured_by');
     }
+    /**
+     * @return BelongsTo
+     */
+    public function validatedBy()
+    {
+        return $this->belongsTo(Staff::class, 'validated_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToTargetInstitutionBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_targeted_institution_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transferredToUnitBy()
+    {
+        return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
+    }
+
 
 }

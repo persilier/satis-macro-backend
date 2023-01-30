@@ -2,6 +2,8 @@
 
 namespace Satis2020\NotificationProof\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
@@ -14,7 +16,6 @@ use Satis2020\ServicePackage\Requests\NotificationProofRequest;
 
 use Satis2020\ServicePackage\Services\NotificationProof\NotificationProofService;
 use Satis2020\ServicePackage\Traits\ActivePilot;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UemoaReports;
 

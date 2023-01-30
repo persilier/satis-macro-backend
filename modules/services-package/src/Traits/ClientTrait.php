@@ -175,7 +175,7 @@ trait ClientTrait
 
         $account = Account::create($store);
 
-        $this->activityLogService->store("Enregistrement d'un compte client",
+        $this->activityLogService->store(__('messages.customer_registration',[],getAppLang()),
             $this->institution()->id,
             $this->activityLogService::CREATED,
             'account',
@@ -271,7 +271,7 @@ trait ClientTrait
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Impossible de retrouver ce compte client.");
+            throw new CustomException(__('cant_find_customer_account',[],getAppLang()));
         }
 
         return $client;
@@ -301,7 +301,7 @@ trait ClientTrait
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Impossible de retrouver ce compte client.");
+            throw new CustomException(__('cant_find_customer_account',[],getAppLang()));
 
         }
 
@@ -322,13 +322,13 @@ trait ClientTrait
 
         } catch (\Exception $exception) {
 
-            throw new CustomException("Impossible de retrouver ce compte client.");
+            throw new CustomException(__('cant_find_customer_account',[],getAppLang()));
 
         }
 
         if (!is_null($account)) {
 
-            return ['code' => 409, 'status' => false, 'message' => 'Impossible d\'enregistrer ce compte. Ce numéro de compte existe déjà.'];
+            return ['code' => 409, 'status' => false, 'message' => __('messages.account_number_already_exist',[],getAppLang())];
 
         }
 

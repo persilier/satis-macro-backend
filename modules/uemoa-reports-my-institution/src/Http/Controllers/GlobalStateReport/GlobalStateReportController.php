@@ -56,11 +56,12 @@ class GlobalStateReportController extends ApiController
 
         $this->validate($request, $this->rulePeriode());
 
-        $claims = $this->resultatsGlobalState($request, true);
+        $claims = $this->resultatsGlobalState($request, true, true, false, true, true );
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);
 
         $titleDescription = $this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->title.' : '.$this->getMetadataByName(Constants::GLOBAL_STATE_REPORTING)->description;
+       //dd($claims);
         Excel::store(new StateReportExcel($claims, true, $libellePeriode, $titleDescription, false), 'rapport-uemoa-etat-global-reclamation-my-institution.xlsx');
 
 

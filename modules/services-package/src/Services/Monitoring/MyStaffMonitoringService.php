@@ -1,5 +1,6 @@
 <?php
 namespace Satis2020\ServicePackage\Services\Monitoring;
+
 use Illuminate\Support\Facades\Http;
 use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
@@ -7,9 +8,13 @@ use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\StaffMonitoring;
 use Satis2020\ServicePackage\Traits\Metadata;
+
+
 class MyStaffMonitoringService
 {
+
     use Metadata,StaffMonitoring,ClaimSatisfactionMeasured,DataUserNature;
+
     public function MyStaffMonitoring($request,$unitId)
     {
         $paginationSize = \request()->query('size');

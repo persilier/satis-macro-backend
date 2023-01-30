@@ -45,15 +45,20 @@ class ClaimAwaitingTreatmentController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->query('type',"normal");
+
         $institution = $this->institution();
         $staff = $this->staff();
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
+        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id,$statusColumn)
+            ->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             return $item;
         });

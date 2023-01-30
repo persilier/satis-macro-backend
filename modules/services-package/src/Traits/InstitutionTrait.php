@@ -21,7 +21,7 @@ trait InstitutionTrait
      */
     protected  function getMaximumInstitution($type_id, $nature){
 
-        $message = "Impossible d'accéder au type de l'institution de l'utilisateur connecté.";
+        $message = __('messages.unable_to_find_unit_type',[],getAppLang());
 
         try {
 

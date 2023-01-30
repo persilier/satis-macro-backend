@@ -41,7 +41,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
         $nature = Config::get('services.app_nature', 'PRO');
         if ($nature === 'PRO') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-
             $independantRoles = [
                 "admin-pro" => [
                     'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
@@ -81,12 +80,23 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
-                    'list-notification-proof',
-                    'export-notification-proof',
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports',
+                    
+                    
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
-                    'logout-user-my-institution'
+                    'list-auth-config', 'update-auth-config',
+                    'activity-log',
+                    'config-reporting-claim-my-institution',
+                    'list-notification-proof' ,
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution',
+                    'update-config-reporting-claim-my-institution',
+                    'delete-config-reporting-claim-my-institution','list-reporting-titles-configs',
+                    'update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-escalation-config','update-escalation-config',
+                    'logout-user-my-institution',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'export-notification-proof', 'configuration-pilot',
+                    'configure-pilot-collector-discussion-attribute',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -106,11 +116,22 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'pilot-list-notification-proof',
-                    'pilot-export-notification-proof',
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports',
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+                    'config-reporting-claim-my-institution',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof', 'configuration-pilot', 'pilot-relance-other', 'reassignment_to_pilot',
+                    'list-claim-transferred-my-institution',
+                    'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
+                    'pilot-list-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-my-claim-unsatisfied',
+                    'list-closed-my-claims','close-my-claims',
+                    'list-escalation-config','update-escalation-config',
+                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+
 
                 ],
                 "supervisor-pro" => [],
@@ -123,6 +144,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'contribute-discussion', 'list-my-discussions',
+                    'list-discussion-contributors',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -133,8 +156,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
-                    'list-unit-revivals','list-staff-revivals',
+                    'list-staff-revivals','list-unit-revivals',
                     'revive-staff',
+
                 ]
             ];
 
@@ -161,7 +185,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     $role->syncPermissions($permissions);
                     $role->update(['is_editable' => 0]);
                 }
-
             }
 
             Permission::doesntHave('roles')->delete();
@@ -170,9 +193,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
 
             $modules = [
                 "Collecte" => "collector-filial-pro",
-                "Traitement" => "staff",
+                "Traitement" =>  "staff",
                 "Pilotage du processus" => "pilot",
-                "Administration" => "admin-pro"
+                "Administration" =>  "admin-pro"
             ];
 
             $permissionsAssociatedToModules = collect([]);

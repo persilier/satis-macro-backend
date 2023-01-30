@@ -361,10 +361,16 @@ trait Metadata
 
     protected function getAllDataByTypes($types)
     {
-
         return MetadataModel::query()
             ->whereIn("name",$types)
             ->get();
+    }
+
+    protected function getAllDataProxyByTypes($types)
+    {
+        return MetadataModel::query()
+            ->where("name",$types)
+            ->first();
     }
 
     protected function formatReportTitleMetas($types)
@@ -385,6 +391,8 @@ trait Metadata
         }
         return$response;
     }
+
+
 
     /*public function getData(Request $request, $datas){
         $actions = [];

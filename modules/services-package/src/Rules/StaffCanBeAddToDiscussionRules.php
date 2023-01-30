@@ -9,11 +9,12 @@ use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\Discussion;
+use Satis2020\ServicePackage\Traits\Metadata;
 
 class StaffCanBeAddToDiscussionRules implements Rule
 {
 
-    use Discussion;
+    use Discussion, Metadata;
 
     protected $discussion;
 
@@ -33,7 +34,12 @@ class StaffCanBeAddToDiscussionRules implements Rule
 
     public function passes($attribute, $value)
     {
-        return $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
+        $config = $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
+
+        return (int)$config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($this->discussion)->search(function ($item, $key) use ($value) {
+            return $item->id == $value;
+        }) !== false
+            : $this->getContributors($this->discussion)->search(function ($item, $key) use ($value) {
                 return $item->id == $value;
             }) !== false;
     }
@@ -47,5 +53,4 @@ class StaffCanBeAddToDiscussionRules implements Rule
     {
         return 'This staff does not belong to the list of the possible contributors of the discussion';
     }
-
 }

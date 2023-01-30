@@ -55,11 +55,17 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
                     'list-notification-proof',
-                    'export-notification-proof',
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports',
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
-                    'logout-user-my-institution'
+                    'config-reporting-claim-my-institution',
+                    'list-notification-proof',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'export-notification-proof','update-mail-parameters',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-escalation-config','update-escalation-config',
+                    'logout-user-my-institution',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -80,11 +86,17 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'pilot-export-notification-proof',
-                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-                    'bci-monthly-reports', 'bci-annual-reports',
                     'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+                    'list-regulatory-reporting-claim-my-institution',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+                    'system-any-efficiency-report',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof',
+                    'list-my-claim-unsatisfied',
+                    'list-closed-my-claims','close-my-claims',
+                    'list-escalation-config','update-escalation-config',
+                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
 
                 ],
                 "supervisor-filial" => [],
@@ -106,9 +118,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
-                    'list-unit-revivals','list-staff-revivals',
-                    'revive-staff',
-
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff'
                 ]
             ];
 

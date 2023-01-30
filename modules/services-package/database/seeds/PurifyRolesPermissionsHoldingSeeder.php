@@ -82,6 +82,12 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'list-any-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'export-notification-proof',
+                    'configure-pilot-collector-discussion-attribute',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -104,6 +110,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'revive-staff',
                     'pilot-list-any-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -122,8 +130,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
                     'history-list-treat-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
-
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
                 ]
             ];
 
@@ -142,9 +152,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 } else {
                     // sync permissions
                     foreach ($permissions as $permissionName) {
-                        if (Permission::where('name', $permissionName)->where('guard_name', 'api')->doesntExist()) {
-                            Permission::create(['name' => $permissionName, 'guard_name' => 'api']);
-                        }
+                            Permission::query()->updateOrCreate(
+                                ['name' => $permissionName],
+                                ['name' => $permissionName, 'guard_name' => 'api','institution_types' => $institutionTypes]);
                     }
 
                     $role->syncPermissions($permissions);

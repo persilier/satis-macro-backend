@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Repositories;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Metadata;
 
 class MetadataRepository
@@ -18,9 +19,9 @@ class MetadataRepository
      * MetadataRepository constructor.
      * @param Metadata $metadata
      */
-    public function __construct(Metadata $metadata)
+    public function __construct()
     {
-        $this->metadata = $metadata;
+        $this->metadata = new Metadata;
     }
 
     public function getByName($name)
@@ -58,6 +59,21 @@ class MetadataRepository
         }
         $metadata->data = json_encode($updatedData);
         $metadata->save();
+        return $metadata->refresh();
+    }
+
+
+    /**
+     * @param $data
+     * @param $name
+     * @return Builder|Model|object
+     */
+    public function updateProxy($data)
+    {
+        $metadata = $this->getByName(Constants::PROXY);
+        $metadata->data = json_encode($data);
+        $metadata->save();
+
         return $metadata->refresh();
     }
 

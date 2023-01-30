@@ -15,6 +15,7 @@ class MyStaffMonitoringRequest extends FormRequest
     {
         return true;
     }
+
     /**
      * @return array
      */

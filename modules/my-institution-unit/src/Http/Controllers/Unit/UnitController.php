@@ -23,14 +23,15 @@ use Satis2020\ServicePackage\Traits\UnitTrait;
 class UnitController extends ApiController
 {
     use UnitTrait, SecureDelete;
+
     public function __construct()
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-my-unit')->only(['index']);
-        $this->middleware('permission:store-my-unit')->only(['create','store']);
+        $this->middleware('permission:store-my-unit')->only(['create', 'store']);
         $this->middleware('permission:show-my-unit')->only(['show']);
-        $this->middleware('permission:update-my-unit')->only(['edit','update']);
+        $this->middleware('permission:update-my-unit')->only(['edit', 'update']);
         $this->middleware('permission:destroy-my-unit')->only(['destroy']);
     }
 
@@ -55,11 +56,14 @@ class UnitController extends ApiController
     public function create(CountryService $countryService)
     {
         return response()->json([
-        'unitTypes' => UnitType::all(),
-        'units' => $this->getAllUnitByInstitution($this->institution()->id),
-        'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-        'countries'=> $countryService->getCountriesWithStates()
-    ], 200);
+            'unitTypes' => UnitType::all(),
+            'units' => $this->getAllUnitByInstitution($this->institution()->id),
+            'parents' => $this->getAllUnitByInstitution($this->institution()->id),
+            'countries' => Country::query()
+                ->where('region', 'Africa')
+                ->with('states')
+                ->get()
+        ], 200);
 
     }
 
@@ -73,25 +77,30 @@ class UnitController extends ApiController
      */
     public function store(Request $request)
     {
+
+        if ($request->isNotFilled('parent_id')) {
+            $request->request->remove('parent_id');
+        }
+
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
+            'parent_id' => ['sometimes', Rule::exists('units', 'id')->where(function ($query) {
                 $query->where('institution_id', $this->institution()->id);
-            }),
-            'state_id'=>['nullable','numeric',new StateExistRule]
+            })],
+            'state_id' => ['nullable', 'numeric', 'exists:states,id']
         ];
 
         $this->validate($request, $rules);
 
         $unit = Unit::create([
-            'name'=> $request->name,
-            'description'=> $request->description,
-            'unit_type_id'=> $request->unit_type_id,
-            'parent_id'=> $request->parent_id,
-            'institution_id'=> $this->institution()->id,
-            'state_id'=>$request->state_id
+            'name' => $request->name,
+            'description' => $request->description,
+            'unit_type_id' => $request->unit_type_id,
+            'parent_id' => $request->parent_id,
+            'institution_id' => $this->institution()->id,
+            'state_id' => $request->state_id
         ]);
         return response()->json($unit, 201);
     }
@@ -120,16 +129,19 @@ class UnitController extends ApiController
      * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    public function edit($unit,CountryService $countryService,StateService $stateService)
+    public function edit($unit, CountryService $countryService, StateService $stateService)
     {
 
         return response()->json([
             'unit' => $this->getOneUnitByInstitution($this->institution()->id, $unit),
             'unitTypes' => UnitType::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
-            'leads' => Staff::with('identite')->where('institution_id',$this->institution()->id)->where('unit_id',$unit)->get(),
+            'leads' => Staff::with('identite')->where('institution_id', $this->institution()->id)->where('unit_id', $unit)->get(),
             'parents' => $this->getAllUnitByInstitution($this->institution()->id),
-            'countries'=> $countryService->getCountriesWithStates()
+            'countries' => Country::query()
+                ->where('region', 'Africa')
+                ->with('states')
+                ->get()
         ], 200);
 
     }
@@ -146,28 +158,32 @@ class UnitController extends ApiController
      */
     public function update(Request $request, $unit)
     {
+        if ($request->isNotFilled('parent_id')) {
+            $request->request->remove('parent_id');
+        }
+
         $unit = $this->getOneUnitByInstitution($this->institution()->id, $unit);
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('units', 'name', 'id', "{$unit->id}")],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
-            'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
+            'lead_id' => 'sometimes|', Rule::exists('staff', 'id')->where(function ($query) use ($unit) {
                 $query->where('institution_id', $this->institution()->id)->where('unit_id', $unit->id);
             }),
-            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query){
+            'parent_id' => ['sometimes', Rule::exists('units', 'id')->where(function ($query) {
                 $query->where('institution_id', $this->institution()->id);
-            }),
-            'state_id'=>['nullable','numeric',new StateExistRule]
+            })],
+            'state_id' => ['nullable', 'numeric', new StateExistRule]
         ];
 
         $this->validate($request, $rules);
 
-        if(!$request->has('parent_id'))
+        if (!$request->has('parent_id'))
             $unit->parent_id = null;
-        if(!$request->has('lead_id'))
+        if (!$request->has('lead_id'))
             $unit->lead_id = null;
 
-        $unit->update($request->only(['name', 'description', 'unit_type_id', 'lead_id', 'parent_id', 'others','state_id']));
+        $unit->update($request->only(['name', 'description', 'unit_type_id', 'lead_id', 'parent_id', 'others', 'state_id']));
 
         return response()->json($unit, 201);
     }

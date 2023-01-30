@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Satis2020\ServicePackage\Database\Seeds\RegulatoryLimitMetadataSeeder;
+use Satis2020\Escalation\Database\Seeds\EscalationConfigSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -133,12 +134,15 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallInstitutionTypeSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallInstitutionSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallMetadataSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallMetadataSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsHoldingSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsFilialSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsMembreSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsObservatorySeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PurifyRolesPermissionsIndependantSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\PermissionsInstitutionTypesSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdatePermissionsDescriptionSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ProxyConfigSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallRequirementSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InstallAdministratorSeeder::class);
 
@@ -153,6 +157,12 @@ class DatabaseSeeder extends Seeder
         $this->call(\Satis2020\ServicePackage\Database\Seeds\VerifyChannelsWhichCanBeTargetedSeeder::class);
         $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
         $this->call(RegulatoryLimitMetadataSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\DelaiQualificationTreatmentSeeder::class);
+        $this->call(\Satis2020\ServicePackage\Database\Seeds\ReportingTitlesSeeder::class);
+        //$this->call(\Satis2020\ServicePackage\Database\Seeds\MetadataTableSeeder::class);
+        //$this->call(RevokeTokensSeeder::class);
+        $this->call(RevokeTokensSeeder::class);
+        $this->call(EscalationConfigSeeder::class);
 
 
 

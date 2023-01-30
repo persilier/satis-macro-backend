@@ -4,8 +4,8 @@ namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis\CountriesPackage\Models\State;
 use Satis\CountriesPackage\Traits\HasStateTrait;
-use Satis2020\ServicePackage\Services\StateService;
 use Satis2020\ServicePackage\Traits\ActivityTrait;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
@@ -126,6 +126,11 @@ class Unit extends Model
     public function treatments()
     {
         return $this->hasMany(Treatment::class, 'responsible_unit_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
     }
 
 }

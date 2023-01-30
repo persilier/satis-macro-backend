@@ -70,10 +70,11 @@ trait ImportClaim
             function ($attribute, $value, $fail) {
                 try{
                     if (Carbon::parse($value)->gt(Carbon::now())) {
-                        $fail($attribute . ' is invalid! The value is greater than now');
+                        $fail(__('validation.date_gte',["attribute"=>$attribute],getAppLang()));
                     }
                 }catch (InvalidFormatException $e){
-                    $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
+
+                    $fail(__('validation.date_format',['attribute'=>$attribute,':format'=>"Y-m-d H:i"],getAppLang()));
                 }
             }
         ];
@@ -82,9 +83,7 @@ trait ImportClaim
         $rules['relance'] = ['required', Rule::in(['OUI', 'NON'])];
 
         if($with_client){
-
             $rules['numero_compte_concerne'] = ['nullable','exists:accounts,number', new AccountValidationForImportClaimRules([
-
                 'telephone' => $request['telephone'],
                 'email' => $request['email'],
                 'acronyme' => $request['institution_concernee']])

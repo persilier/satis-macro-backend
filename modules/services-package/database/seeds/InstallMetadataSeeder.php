@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Channel;
+use Satis2020\ServicePackage\Models\Metadata;
 
 class InstallMetadataSeeder extends Seeder
 {
@@ -176,13 +177,24 @@ class InstallMetadataSeeder extends Seeder
             [
                 'name' => 'measure-preventive',
                 'data' => json_encode(false)
+            ],
+            [
+                'name' => 'coef-relance-domaine-prefixe',
+                'data' => json_encode([])
+            ],
+            [
+                'name' => 'allow-pilot-collector-to-discussion',
+                'data' => json_encode([
+                    "allow_pilot" => 0,
+                    "allow_collector" => 0,
+                ])
             ]
         ];
 
         foreach ($metadataList as $metadata) {
-
-            \Satis2020\ServicePackage\Models\Metadata::create($metadata);
-
+            if (!Metadata::whereName($metadata['name'])->first()) {
+                \Satis2020\ServicePackage\Models\Metadata::create($metadata);
+            }
         }
 
     }

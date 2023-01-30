@@ -1,5 +1,7 @@
 <?php
+
 namespace Satis2020\ServicePackage\Traits;
+
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,22 +15,26 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Notifications\RejectAClaim;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
+
 /**
-* Trait ClaimAwaitingTreatment
-* @package Satis2020\ServicePackage\Traits
-*/
+ * Trait ClaimAwaitingTreatment
+ * @package Satis2020\ServicePackage\Traits
+ */
 trait ClaimAwaitingTreatment
 {
     /**
      * @param $institutionId
      * @param $unitId
+     * @param string $statusColumn
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function getClaimsQuery($institutionId, $unitId)
+    protected function getClaimsQuery($institutionId, $unitId, $statusColumn = "status")
     {
-         $claims = Claim::query()
+        $claims = Claim::query()
             ->select('claims.*')
             ->leftJoin('staff', function ($join) {
                 $join->on('claims.created_by', '=', 'staff.id');
@@ -38,7 +44,7 @@ trait ClaimAwaitingTreatment
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })
             ->whereRaw(
-                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                '( (`staff`.`institution_id` = ? and `claims`.`' . $statusColumn . '` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`' . $statusColumn . '` = ?) )',
                 [$institutionId, 'transferred_to_unit', $institutionId, 'transferred_to_unit']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?)',
@@ -46,7 +52,7 @@ trait ClaimAwaitingTreatment
             )
             ->whereNull('claims.deleted_at')
             ->with($this->getRelationsAwitingTreatment());
-         return $claims;
+        return $claims;
     }
     /**
      * @param $unitId
@@ -58,11 +64,21 @@ trait ClaimAwaitingTreatment
     {
         $claim = Claim::with($this->getRelationsAwitingTreatment())->findOrFail($claim);
         try {
-            if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit") {
-                throw new CustomException("Impossible de traiter cette réclammation");
+
+            if (isEscalationClaim($claim)) {
+                if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->escalation_status != "transferred_to_unit") {
+
+                    throw new CustomException(__('messages.cant_get_claim', [], getAppLang()));
+                }
+            } else {
+                if ($claim->activeTreatment->responsible_unit_id != $unitId || $claim->status != "transferred_to_unit") {
+
+                    throw new CustomException(__('messages.cant_get_claim', [], getAppLang()));
+                }
             }
         } catch (\Exception $exception) {
-            throw new CustomException("Imposible de récupérer cette réclammation.");
+
+            throw new CustomException(__('messages.cant_get_claim', [], getAppLang()));
         }
         return $claim;
     }
@@ -85,7 +101,13 @@ trait ClaimAwaitingTreatment
     protected function assignmentClaim($claim, $staffId)
     {
         $claim->activeTreatment->update(['responsible_staff_id' => $staffId, 'assigned_to_staff_by' => $this->staff()->id, 'assigned_to_staff_at' => Carbon::now()]);
-        $claim->update(['status' => 'assigned_to_staff']);
+
+        if (isEscalationClaim($claim)) {
+            $claim->update(['escalation_status' => 'assigned_to_staff']);
+        } else {
+            $claim->update(['status' => 'assigned_to_staff']);
+        }
+
         return $claim;
     }
     /**
@@ -101,11 +123,13 @@ trait ClaimAwaitingTreatment
             'rejected_at' => Carbon::now(),
             'number_reject' => (int) $claim->activeTreatment->number_reject + 1,
         ]);
+
+        $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
         if (!is_null($claim->transfered_to_targeted_institution_at)) {
-            $claim->update(['status' => 'transferred_to_targeted_institution']);
+            $claim->update([$statusColumn => 'transferred_to_targeted_institution']);
             $institution = Institution::find($claim->institution_targeted_id);
         } else {
-            $claim->update(['status' => 'full']);
+            $claim->update([$statusColumn => 'full']);
             $institution = is_null($claim->createdBy) ? $claim->institutionTargeted : $claim->createdBy->institution;
         }
         if (!is_null($this->getInstitutionPilot($institution))) {
@@ -160,7 +184,7 @@ trait ClaimAwaitingTreatment
             $data['rejected_reason'] = ['required', 'string'];
         }
         if ($assignment === 'treatment') {
-            $data['amount_returned'] = ['nullable','filled', 'integer'];
+            $data['amount_returned'] = ['nullable', 'filled', 'integer'];
             $data['solution'] = ['required', 'string'];
             $data['comments'] = ['required', 'string'];
             $data['preventive_measures'] = ['string'];
@@ -171,9 +195,10 @@ trait ClaimAwaitingTreatment
      * @param $institutionId
      * @param $unitId
      * @param $staffId
+     * @param string $statusColumn
      * @return \Illuminate\Database\Query\Builder
      */
-    protected function getClaimsTreat($institutionId, $unitId, $staffId)
+    protected function getClaimsTreat($institutionId, $unitId, $staffId, $statusColumn = "status")
     {
         return DB::table('claims')
             ->select('claims.*')
@@ -185,7 +210,7 @@ trait ClaimAwaitingTreatment
                     ->on('claims.active_treatment_id', '=', 'treatments.id');
             })
             ->whereRaw(
-                '( (`staff`.`institution_id` = ? and `claims`.`status` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`status` = ?) )',
+                '( (`staff`.`institution_id` = ? and `claims`.`' . $statusColumn . '` = ?) or (`claims`.`institution_targeted_id` = ? and `claims`.`' . $statusColumn . '` = ?) )',
                 [$institutionId, 'assigned_to_staff', $institutionId, 'assigned_to_staff']
             )->whereRaw(
                 '(`treatments`.`transferred_to_unit_at` IS NOT NULL) and (`treatments`.`responsible_unit_id` = ?) and (`treatments`.`responsible_staff_id` = ?) and (`treatments`.`assigned_to_staff_at` IS NOT NULL)',
@@ -203,8 +228,12 @@ trait ClaimAwaitingTreatment
      */
     protected function getOneClaimQueryTreat($institutionId, $unitId, $staffId, $claim)
     {
-        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId)->where('claims.id', $claim)->first())
-            throw new CustomException("Impossible de récupérer cette réclammation");
+
+        $claim = Claim::query()->find($claim);
+        $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
+
+        if (!$claim = $this->getClaimsTreat($institutionId, $unitId, $staffId, $statusColumn)->where('claims.id', $claim->id)->first())
+            throw new CustomException(__('messages.cant_get_claim', [], getAppLang()));
         else
             return Claim::with($this->getRelationsAwitingTreatment())->find($claim->id);
     }
@@ -237,17 +266,33 @@ trait ClaimAwaitingTreatment
         return $numberReject < $numberRejectMax;
     }
     /**
+     * @param string $type
      * @return mixed
      */
-    protected function queryClaimReassignment(){
-        return Claim::with($this->getRelationsAwitingTreatment())->whereHas('activeTreatment', function ($query){
-            $query->where('responsible_staff_id', '!=' ,NULL)->where('responsible_unit_id', $this->staff()->unit_id);
-        })->whereStatus('assigned_to_staff');
+    protected function queryClaimReassignment($type = "normal")
+    {
+
+        $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
+
+        return Claim::with($this->getRelationsAwitingTreatment())
+            ->when($type == Claim::CLAIM_UNSATISFIED, function ($query) {
+                $query->where('status', Claim::CLAIM_UNSATISFIED);
+            })
+            ->whereHas('activeTreatment', function ($query) {
+
+                $query->where('responsible_staff_id', '!=', NULL)->where('responsible_unit_id', $this->staff()->unit_id);
+            })->where($statusColumn, 'assigned_to_staff');
     }
-    protected function checkLeadReassignment(){
+    protected function checkLeadReassignment()
+    {
         $staff = $this->staff();
         if (!$this->checkLead($staff)) {
-            throw new CustomException("Seul le lead de votre unité est autorisé à effectuer cette action.");
+            throw new CustomException(__('messages.only_lead_can_is_allow', [], getAppLang()));
         }
+    }
+
+    protected function getNormalTreatment($claimId)
+    {
+        return (new TreatmentRepository())->getByClaimId($claimId, Treatment::NORMAL);
     }
 }

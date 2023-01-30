@@ -9,8 +9,6 @@ use Satis2020\ServicePackage\Services\Reporting\BenchmarkingReportService;
 
 class BenchmarkingReportController extends ApiController
 {
-
-
     public function __construct()
     {
         parent::__construct();

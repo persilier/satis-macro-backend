@@ -4,10 +4,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
 
-
-if (!function_exists('getAppLang')) {
-    function getAppLang()
-    {
+if (!function_exists('getAppLang')){
+    function getAppLang(){
         return app()->getLocale();
     }
 }
@@ -51,4 +49,9 @@ function getTagContents($string, $tag_open = '[', $tag_close = ']')
 function claimsExists($reference)
 {
     return Claim::query()->where('reference',$reference)->first()!=null;
+}
+if (!function_exists('isEscalationClaim')){
+    function isEscalationClaim($claim){
+        return $claim->status == Claim::CLAIM_UNSATISFIED;
+    }
 }

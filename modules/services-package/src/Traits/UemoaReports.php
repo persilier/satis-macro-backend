@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\UnitBelongsToInstitutionRules;
 use Satis2020\ServicePackage\Rules\UnitCanBeTargetRules;
@@ -37,7 +38,8 @@ trait UemoaReports{
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.responsibleUnit',
-            'activeTreatment.assignedToStaffBy.identite'
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.staffTransferredToUnitBy.identite'
         ];
 
         return $relations;
@@ -221,7 +223,7 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsGlobalState($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
+    protected function resultatsGlobalState($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true, $for_excel=false){
 
         $datas = collect([]);
 
@@ -229,7 +231,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship, $for_excel);
 
             $datas->push($data);
         }
@@ -246,7 +248,7 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsStateMore30Days($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
+    protected function resultatsStateMore30Days($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true,  $for_excel=false){
 
         $datas = collect([]);
 
@@ -258,7 +260,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship, $for_excel);
 
             $datas->push($data);
         }
@@ -276,7 +278,7 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsStateOutTime($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
+    protected function resultatsStateOutTime($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true , $for_excel){
 
         $datas = collect([]);
 
@@ -288,7 +290,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship, $for_excel);
 
             $datas->push($data);
         }
@@ -321,7 +323,6 @@ trait UemoaReports{
                 return optional($item->claimObject)->name;
             }
         ]);
-
         $claimCollection = collect([]);
 
         $claims = $claims->map(function ($categories, $keyInstitution) use ($claimCollection, $myInstitution){
@@ -329,7 +330,6 @@ trait UemoaReports{
             $categories->map(function ($objects, $keyCategory) use ($claimCollection, $myInstitution, $keyInstitution){
 
                 $objects->map(function ($claims, $keyObject)  use ($claimCollection, $myInstitution,$keyInstitution, $keyCategory){
-
                     $data = [
                         'filiale' =>  $keyInstitution,
                         'claimCategorie' => $keyCategory,
@@ -339,12 +339,16 @@ trait UemoaReports{
                         'totalUnfounded' => (string) $this->totalUnfounded($claims),
                         'totalNoValidated' => (string) $this->totalNoValidated($claims),
                         'delayMediumQualification' => (string) $this->delayMediumQualification($claims),
-                        'delayPlanned' => optional((string) $claims->first()->claimObject)->time_limit,
+                        'delayPlanned' => (string) optional($claims->first()->claimObject)->time_limit,
                         'delayMediumTreatmentWithWeekend' => (string)  $this->delayMediumTreatmentWithWeekend($claims),
                         'delayMediumTreatmentWithoutWeekend' => (string)  $this->delayMediumTreatmentWithoutWeekend($claims),
                         'percentageTreatedInDelay' => (string)  $this->percentageInTime($claims),
                         'percentageTreatedOutDelay' => (string)  $this->percentageOutTime($claims),
-                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims)
+                        'percentageNoTreated' => (string) $this->percentageNotTreated($claims),
+                        'countTreatedInDelay' => (string)  $this->countInTime($claims),
+                        'countTreatedOutDelay' => (string)  $this->countOutTime($claims),
+                        'countNoTreated' => (string) $this->countNotTreated($claims)
+
                     ];
 
                     if($myInstitution){
@@ -358,7 +362,7 @@ trait UemoaReports{
 
             });
 
-      });
+        });
 
         return $claimCollection;
 
@@ -371,13 +375,14 @@ trait UemoaReports{
      * @param $with_relationship
      * @return array
      */
-    protected function tabDatas($claim, $myInstitution, $with_relationship){
+    protected function tabDatas($claim, $myInstitution, $with_relationship, $for_excel){
 
         $data =  [
             'filiale' => $claim->institutionTargeted->name,
             'relationShip' => $this->relationShip($claim),
             'typeClient' => $claim->accountType,
             'client' => $this->client($claim),
+            'reference' => $claim->reference,
             'account' => $claim->accountTargeted ? $claim->accountTargeted->number : $claim['account_number'],
             'telephone' => $this->telephone($claim),
             'agence' =>  $this->agence($claim),
@@ -397,8 +402,20 @@ trait UemoaReports{
             'delayTreatWithWeekend' => (string) $this->delayTreatment($claim)['withWeekend'],
             'delayTreatWithoutWeekend' => (string) $this->delayTreatment($claim)['withoutWeekend'],
             'amountDisputed' =>  $claim->amount_disputed,
-            'accountCurrency' => $this->currency($claim)
+            'accountCurrency' => $this->currency($claim),
+            'collector' => $claim->createdBy= null ? $claim->createdBy->identite : null,
+            'unit' => ($claim->unitTargeted) ? $claim->unitTargeted : null,
+            'pilot_in_charge' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite : null,
+            'collector_info' =>  $claim->createdBy= null ? $claim->createdBy->identite->firstname ." ". $claim->createdBy->identite->lastname : "",
+            'unit_info' => ($claim->unitTargeted) ? $claim->unitTargeted->name : "",
+            'pilot_in_charge_info' => ($claim->activeTreatment && $claim->activeTreatment->staffTransferredToUnitBy) ?  $claim->activeTreatment->staffTransferredToUnitBy->identite->firstname. " ". $claim->activeTreatment->staffTransferredToUnitBy->identite->lastname : "",
         ];
+
+        if ($for_excel){
+            unset($data["collector"]);
+            unset($data["unit"]);
+            unset($data["pilot_in_charge"]);
+        }
 
         if($myInstitution){
 
@@ -651,6 +668,15 @@ trait UemoaReports{
         return ($totalNoValidated && $total) ? (round((($totalNoValidated /$total ) * 100),2)) : 0;
     }
 
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countNotTreated($itemObject){
+
+        return $this->totalNoValidated($itemObject);
+    }
+
 
     /**
      * @param $itemObject
@@ -665,6 +691,16 @@ trait UemoaReports{
         return ($totalTreatedOutDelay && $totalTreated) ? (round((($totalTreatedOutDelay /$totalTreated ) * 100),2)) : 0;
     }
 
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countOutTime($itemObject){
+
+        return $this->totalTreatedOutDelay($itemObject);
+    }
+
     /**
      * @param $itemObject
      * @return float|int
@@ -676,6 +712,14 @@ trait UemoaReports{
         $totalTreated = $this->totalTreated($itemObject);
 
         return ($totalTreatedInDelay && $totalTreated) ? (round((($totalTreatedInDelay /$totalTreated ) * 100),2)) : 0;
+    }
+
+    /**
+     * @param $itemObject
+     * @return float|int
+     */
+    protected function countInTime($itemObject){
+        return  $this->totalTreatedInDelay($itemObject);
     }
 
 
@@ -703,6 +747,47 @@ trait UemoaReports{
 
             return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($item->time_limit) > $item->activeTreatment->validated_at));
 
+        })->count();
+    }
+
+    /**
+     * @param $itemObject
+     * @param int $timelimit
+     * @return mixed
+     */
+    protected function totalTreatedOutRegulatoryDelay($itemObject,$timelimit){
+
+        return $itemObject->filter(function ($item) use($timelimit){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at && ($item->created_at->copy()->addWeekdays($timelimit) > $item->activeTreatment->validated_at));
+
+        })->count();
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutDelay($claims){
+
+        return $claims->filter(function ($item){
+            return ($item->created_at->copy()->addWeekdays($item->time_limit) < now());
+        })->count();
+    }
+
+    protected function getRegulatoryLimit()
+    {
+        return (int)json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data);
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function totalOutRegulatoryDelay($claims,$timelimit){
+
+        return $claims->filter(function ($item) use($timelimit){
+            return ($item->created_at->copy()->addWeekdays($timelimit) < now());
         })->count();
     }
 
@@ -789,6 +874,32 @@ trait UemoaReports{
         })->count();
     }
 
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function claimTreated($claims){
+
+        return $claims->filter(function ($item){
+
+            return ($item->activeTreatment && $item->activeTreatment->validated_at);
+
+        });
+    }
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
+    protected function claimsNotTreated($claims){
+
+        return $claims->filter(function ($item){
+
+            return (!$item->activeTreatment || !$item->activeTreatment->validated_at);
+        });
+    }
+
+
 
     /**
      * @param $itemObject
@@ -841,7 +952,7 @@ trait UemoaReports{
      */
     protected function colorTableHeader(){
 
-       return "#7F9CF5";
+        return "#7F9CF5";
     }
 
 

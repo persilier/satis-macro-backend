@@ -36,34 +36,59 @@ class AwaitingAssignmentController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $claims = $this->getClaimsQuery()->get()->map(function ($item, $key) {
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $type = \request()->query('type');
 
-            $item = Claim::with($this->getRelations())->find($item->id);
+        $claims = $this->getClaimsQuery()
+            ->when($type == Claim::CLAIM_UNSATISFIED, function ($query) {
+                $query->where('status', Claim::CLAIM_UNSATISFIED);
+            })
+            ->get()->map(function ($item, $key) {
 
-            $item->is_rejected = false;
+                $item = Claim::with($this->getRelations())->find($item->id);
 
-            if (!is_null($item->activeTreatment)) {
+                $item->is_rejected = false;
 
-                $item->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
+                if (!is_null($item->activeTreatment)) {
 
-                if (!is_null($item->activeTreatment->rejected_at) && !is_null($item->activeTreatment->rejected_reason)
-                    && !is_null($item->activeTreatment->responsibleUnit)) {
-                    $item->is_rejected = true;
+                    $item->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
+
+                    if (
+                        !is_null($item->activeTreatment->rejected_at) && !is_null($item->activeTreatment->rejected_reason)
+                        && !is_null($item->activeTreatment->responsibleUnit)
+                    ) {
+                        $item->is_rejected = true;
+                    }
                 }
-
+            });
+        if ($key) {
+            switch ($type) {
+                case 'reference':
+                    $claims = $claims->where('reference', 'LIKE', "%$key%");
+                    break;
+                case 'claimObject':
+                    $claims = $claims->whereHas("claimObject", function ($query) use ($key) {
+                        $query->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                    });
+                    break;
+                default:
+                    $claims = $claims->whereHas("claimer", function ($query) use ($key) {
+                        $query->where('firstname', 'like', "%$key%")
+                            ->orWhere('lastname', 'like', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    });
+                    break;
             }
+        }
 
-            $item->is_duplicate = $this->getDuplicatesQuery($this->getClaimsQuery(), $item)->exists();
-
-            return $item;
-
-        });
-
-        return response()->json($claims, 200);
+        return response()->json($claims->paginate($paginationSize), 200);
     }
 
     /**
@@ -117,7 +142,8 @@ class AwaitingAssignmentController extends ApiController
             $redirect = $duplicate;
         }
 
-        $this->activityLogService->store("Fusion de réclamation pour les cas de doublon",
+        $this->activityLogService->store(
+            "Fusion de réclamation pour les cas de doublon",
             $this->institution()->id,
             $this->activityLogService::FUSION_CLAIM,
             'claim',
@@ -126,5 +152,4 @@ class AwaitingAssignmentController extends ApiController
 
         return response()->json($this->showClaim($redirect), 200);
     }
-
 }

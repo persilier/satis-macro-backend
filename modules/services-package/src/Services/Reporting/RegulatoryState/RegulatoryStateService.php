@@ -30,9 +30,11 @@ class RegulatoryStateService
             'claimObject.claimCategory',
         ];
         $receivedClaims = $this->getAllClaimsByPeriod($request,$relations)->get();
-        $treatedClaims = $this->getClaimsByStatus($this->getAllClaimsByPeriod($request,$relations),$relations,Claim::CLAIM_VALIDATED)->get();
+        $treatedClaims = $this->getClaimsByStatus($this->getAllClaimsByPeriod($request,$relations),Claim::CLAIM_VALIDATED,$relations)->get();
         $unresolvedClaims = $this->getAllClaimsByPeriod($request,$relations)
-            ->whereNotIn("id",$this->getClaimsByStatus($this->getAllClaimsByPeriod($request,$relations),$request,Claim::CLAIM_VALIDATED)
+                ->whereNotIn("id",
+                        $this->getClaimsByStatus($this->getAllClaimsByPeriod($request,$relations),
+                        $request,Claim::CLAIM_VALIDATED)
                 ->pluck("id")->toArray())->get();
 
         $libellePeriode = $this->libellePeriode(['startDate' => $this->periodeParams($request)['date_start'], 'endDate' =>$this->periodeParams($request)['date_end']]);

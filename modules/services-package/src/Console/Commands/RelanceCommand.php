@@ -26,6 +26,8 @@ class RelanceCommand extends Command
     public function handle()
     {
 
+        $this->info("Envoie de relance en cours...");
+
         $this->treatmentRelance( false);
 
         $this->treatmentRelance(true);

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\SecureDelete;
@@ -58,6 +59,11 @@ class Staff extends Model
             : $this->unit->lead_id === $this->attributes['id'];
     }
 
+    public function getIsPilotLeadAttribute()
+    {
+        return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
+    }
+
     /**
      * Get the activePilot flag for the staff.
      *
@@ -66,7 +72,20 @@ class Staff extends Model
     public function getIsActivePilotAttribute()
     {
         // return true if the user corresponding to the staff has the role pilot and he is the active one in this institution
-        return $this->institution->active_pilot_id === $this->attributes['id'] && $this->checkIfStaffIsPilot($this);
+        $active_pilots = \Satis2020\ServicePackage\Models\ActivePilot::where("institution_id",$this->institution->id)
+            ->pluck('staff_id')->toArray();
+        $config = ConfigurationActivePilot::where("institution_id",$this->institution->id)
+            ->orderBy("created_at","DESC")->get()->first();
+        if ($config){
+            if ($config->many_active_pilot){
+                return in_array($this->attributes['id'],$active_pilots) && $this->checkIfStaffIsPilot($this);
+            }else{
+                return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
+            }
+        }else{
+            return $this->institution->active_pilot_id === $this->attributes['id']  && $this->checkIfStaffIsPilot($this);
+        }
+
     }
 
     /**
@@ -74,7 +93,7 @@ class Staff extends Model
      *
      * @var array
      */
-    protected $appends = ['is_lead', 'is_active_pilot'];
+    protected $appends = ['is_lead', 'is_active_pilot', 'is_pilot_lead'];
 
     /**
      * Get the identite associated with the staff

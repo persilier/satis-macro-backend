@@ -82,6 +82,9 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-notification-proof',
                     'export-notification-proof',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'configure-pilot-collector-discussion-attribute',
+                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
+                    'show-proxy-config','update-proxy-config','delete-proxy-config'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -103,6 +106,9 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'revive-staff',
                     'pilot-list-notification-proof',
                     'pilot-export-notification-proof',
+                    'list-regulatory-reporting-claim-my-institution',
+                    'system-any-efficiency-report',
+                    'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
                 ],
                 "supervisor-observatory" => [],
@@ -122,7 +128,10 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
                     'history-list-treat-claim',
                     'search-claim-any-reference',
-                    'attach-files-to-claim'
+                    'attach-files-to-claim',
+                    'show-my-staff-monitoring',
+                    'list-staff-revivals','list-unit-revivals',
+                    'revive-staff',
                 ]
             ];
 

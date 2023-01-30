@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\User;
 
 /**
  * Trait DataUserNature
@@ -51,12 +52,27 @@ trait DataUserNature
     protected function institution()
     {
 
-        $message = "Unable to find the user institution";
+        $message = __('messages.unable_to_fin_user_institution',[],getAppLang());
         $staff = $this->user()->load('identite.staff')->identite->staff;
 
         $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 
-        if ($this->institution==null) {
+        if ($this->institution == null) {
+            throw new RetrieveDataUserNatureException($message);
+        }
+
+        return $this->institution;
+    }
+
+    protected function institutionWithUserId($user_id)
+    {
+
+        $message = "Unable to find the user institution";
+        $staff = User::find($user_id)->load('identite.staff')->identite->staff;
+
+        $this->institution = Institution::with('institutionType')->find($staff->institution_id);
+
+        if ($this->institution == null) {
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -79,11 +95,12 @@ trait DataUserNature
     protected function staff()
     {
 
-        $message = "Unable to find the user staff";
+        $message = __('messages.unable_to_fin_user_staff',[],getAppLang());
 
         try {
             $this->staff = $this->user()->load('identite.staff')->identite->staff;
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -101,7 +118,7 @@ trait DataUserNature
     protected function nature()
     {
 
-        $message = "Unable to find the nature of the application";
+        $message = __('messages.unable_to_find_app_nature',[],getAppLang());
 
         try {
             $this->nature = json_decode(Metadata::where('name', 'app-nature')->firstOrFail()->data);
@@ -279,6 +296,33 @@ trait DataUserNature
         } catch (\Exception $exception) {
         }
 
+    }
+
+    /**
+     * @param $request
+     */
+    protected function checkEmailAllowDomain($request)
+    {
+
+        $config = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance-domaine-prefixe')->firstOrFail()->data);
+        if ($config) {
+            if (sizeof($config) > 0) {
+                $email = $request->email;
+                $element_state = true;
+                foreach ($email as $item){
+                    $end_email = substr($item, strpos($item, "@") + 1);
+                    if (!in_array($end_email, $config)) {
+                        $element_state = false;
+                        break;
+                    }
+                }
+                return $element_state;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
 

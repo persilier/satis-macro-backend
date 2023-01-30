@@ -4,6 +4,7 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Imports\Institution;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Position;
 use Satis2020\ServicePackage\Models\Role;
@@ -81,11 +82,29 @@ trait ImportStaff
 
                 return [
                     'status' => false,
-                    'message' => 'L\'unité que vous avez choisir n\'existe pas dans cette institution.'
+                    'message' => __('messages.unit_do_not_exist',[],getAppLang())
                 ];
             }
         }
 
+        return ['status' => true];
+    }
+
+    /**
+     * @param $row
+     * @return array|bool
+     */
+    protected function handleInstitutionVerification($row)
+    {
+        $institution = \Satis2020\ServicePackage\Models\Institution::query()->where('name', $row['institution'])->first();
+        $myInstitution = $this->institution();
+
+        if($institution->id!=$myInstitution->id){
+            return [
+                'status' => false,
+                'message' => 'Institution non valide.'
+            ];
+        }
         return ['status' => true];
     }
 
@@ -127,7 +146,7 @@ trait ImportStaff
             if (!$this->stop_identite_exist) {
 
                 $status = false;
-                $message = 'Un identité a été retrouvé avec les informations du staff.';
+                $message = __('messages.unit_found_for_staff',[],getAppLang());
 
             } else {
 
@@ -190,7 +209,8 @@ trait ImportStaff
             'identite_id' => $identite->id,
             'position_id' => $position->id,
             'institution_id' => $row['institution'],
-            'others' => null
+            'others' => null,
+            'feedback_preferred_channels' => ["email"]
         ];
 
         if ($this->unitRequired) {

@@ -63,6 +63,7 @@ trait UnitTrait
     {
         return Unit::query()->find($unitId)? Unit::query()->find($unitId)->lead_id:null;
     }
+
     protected function staffIsUnitLead($staff)
     {
         return $staff->is_lead;
