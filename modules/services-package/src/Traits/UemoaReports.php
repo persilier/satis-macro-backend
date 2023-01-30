@@ -209,6 +209,15 @@ trait UemoaReports{
             $claims = $claims->where('status', $request->status);
         }
 
+        if($request->has('type_client')){
+
+            $claims = $claims->whereHas('claimer', function ($o) use ($request){
+
+                $o->where('type_client', $request->type_client);
+
+            });
+        }
+
 
         return $claims;
 
