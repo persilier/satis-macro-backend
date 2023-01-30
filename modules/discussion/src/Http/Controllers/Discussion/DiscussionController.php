@@ -21,9 +21,9 @@ class DiscussionController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware(['permission:list-my-discussions', 'allow.pilot.collector.to.discussion:collector-filial-pro'])->only(['index']);
-        $this->middleware(['permission:store-discussion', 'allow.pilot.collector.to.discussion:pilot'])->only(['store']);
-        $this->middleware(['permission:destroy-discussion', 'allow.pilot.collector.to.discussion:pilot'])->only(['destroy']);
+        $this->middleware(['permission:list-my-discussions'])->only(['index']);
+        $this->middleware(['permission:store-discussion'])->only(['store']);
+        $this->middleware(['permission:destroy-discussion'])->only(['destroy']);
     }
 
     /**

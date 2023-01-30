@@ -29,9 +29,9 @@ class DiscussionStaffController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware(['permission:list-discussion-contributors', 'allow.pilot.collector.to.discussion:collector-filial-pro'])->only(['index']);
-        $this->middleware(['permission:add-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['store', 'create']);
-        $this->middleware(['permission:remove-discussion-contributor',  'allow.pilot.collector.to.discussion:pilot'])->only(['destroy']);
+        $this->middleware(['permission:list-discussion-contributors'])->only(['index']);
+        $this->middleware(['permission:add-discussion-contributor'])->only(['store', 'create']);
+        $this->middleware(['permission:remove-discussion-contributor'])->only(['destroy']);
     }
 
     /**

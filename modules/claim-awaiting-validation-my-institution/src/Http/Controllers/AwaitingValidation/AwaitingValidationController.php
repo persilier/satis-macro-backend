@@ -3,6 +3,7 @@
 namespace Satis2020\ClaimAwaitingValidationMyInstitution\Http\Controllers\AwaitingValidation;
 
 use Illuminate\Validation\ValidationException;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
@@ -15,7 +16,7 @@ use Satis2020\ServicePackage\Traits\SeveralTreatment;
 class AwaitingValidationController extends ApiController
 {
 
-    use AwaitingValidation, SeveralTreatment;
+    use AwaitingValidation, SeveralTreatment, ConfigurationPilotTrait;
 
     protected $activityLogService;
 
@@ -45,7 +46,7 @@ class AwaitingValidationController extends ApiController
         $key = \request()->query('key');
         $type = \request()->query('type');
 
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true,$paginationSize, $key, $type), 200);
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true, $paginationSize, $key, $type), 200);
     }
 
     /**
@@ -125,7 +126,6 @@ class AwaitingValidationController extends ApiController
 
         return response()->json($this->handleInvalidate($request, $claim), 201);
     }
-
 
 
 }
