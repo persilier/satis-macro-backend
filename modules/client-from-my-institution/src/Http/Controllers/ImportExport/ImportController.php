@@ -82,7 +82,6 @@ class ImportController extends ApiController
             $transaction,
             $request->file('file')
         );
-       // dd($transaction->failures(), $transaction->errors());
         $this->activityLogService->store("Importation des clients",
             $this->institution()->id,
             $this->activityLogService::IMPORTATION,
@@ -91,6 +90,7 @@ class ImportController extends ApiController
         );
 
         $datas['errors'] = $transaction->getImportErrors();
+        $datas['failures'] = $transaction->failures();
 
         return response()->json($datas, 201);
     }
