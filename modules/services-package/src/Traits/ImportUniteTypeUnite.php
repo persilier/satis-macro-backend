@@ -3,6 +3,8 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Rules\ImportUnitUnicityRule;
 use Satis2020\ServicePackage\Rules\NameModelRuleBelongsToParent;
 use Satis2020\ServicePackage\Rules\NameModelRules;
@@ -34,7 +36,7 @@ trait ImportUniteTypeUnite
             'description_unite' => ['nullable', 'string'],
         ];
 
-        if ($this->withoutInstituion) {
+        if ($this->withoutInstitution) {
 
             $rules['name_unite'] = ['required', new ImportUnitUnicityRule(['belongTable' => 'unit_types',
                     'belongColumn' => 'name', 'foreignKey' => 'unit_type_id',
@@ -60,7 +62,7 @@ trait ImportUniteTypeUnite
 
         if(is_null($type)){
 
-            $type = \Satis2020\ServicePackage\Models\UnitType::create([
+            $type = UnitType::create([
                 'name' => $nameType,
                 'description' => $row['description_type_unite'],
                 'can_be_target' => ($row['can_be_target'] === 'OUI') ? 1 : 0,
@@ -70,7 +72,7 @@ trait ImportUniteTypeUnite
             ])->id;
         }
 
-        return \Satis2020\ServicePackage\Models\Unit::create([
+        return Unit::create([
             'name' => $row['name_unite'],
             'description' => $row['description_unite'],
             'institution_id' => $row['institution'],

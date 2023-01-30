@@ -2,12 +2,18 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
+use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
@@ -19,8 +25,20 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, AwaitingAssignment;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot, AwaitingAssignment;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
+    const CLAIM_INCOMPLETE = "incomplete";
+    const CLAIM_FULL = "full";
+    const CLAIM_TRANSFERRED_TO_UNIT = "transferred_to_unit";
+    const CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION = "transferred_to_targeted_institution";
+    const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
+    const CLAIM_TREATED = "treated";
+    const CLAIM_VALIDATED = "validated";
+    const CLAIM_ARCHIVED = "archived";
+    const CLAIM_CLOSED = "closed";
+    const CLAIM_UNSATISFIED = "unsatisfied";
+
+
     /**
      * The "booted" method of the model.
      *
@@ -58,7 +76,8 @@ class Claim extends Model
         'archived_at',
         'created_at',
         'updated_at',
-        'revoked_at'
+        'revoked_at',
+        'closed_at',
     ];
 
     /**
@@ -92,11 +111,14 @@ class Claim extends Model
         'time_limit',
         'revoked_at',
         'revoked_by',
-        'account_number'
+        'account_number',
+        'plain_text_description',
+        'closed_at',
+        'treatment_board_id',
+        'escalation_status'
     ];
 
-
-    protected $appends = ['timeExpire', 'accountType','lastRevival','is_rejected','is_duplicate'];
+    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival','canAddAttachment',"oldActiveTreatment", 'dateExpire','is_rejected','is_duplicate'];
 
     /**
      * @return mixed
@@ -104,14 +126,22 @@ class Claim extends Model
     public function gettimeExpireAttribute()
     {
         $diff = null;
-
-        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
-
+        $dateExpire = $this->getDateExpireAttribute();
+        if ($dateExpire && ($this->status !== 'archived')) {
             $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
-            $diff = $dateExpire->diffInDays((now()), false);
+            $diff = now()->diffInDays($dateExpire, false);
         }
 
         return $diff;
+    }
+    public function getDateExpireAttribute()
+    {
+        $dateExpire = null;
+        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+            $dateExpire = $this->created_at->copy()->addWeekdays($this->time_limit);
+        }
+
+        return $dateExpire;
     }
 
     /**
@@ -232,6 +262,15 @@ class Claim extends Model
         return $this->morphMany(File::class, 'attachmentable');
     }
 
+        /**
+     * Get all of the claim's files attach at treatment.
+     * @return MorphMany
+     */
+    public function filesAtTreatment()
+    {
+        return $this->morphMany(File::class, 'attachmentable')->where('attach_at', File::ATTACH_AT_TREATMENT);
+    }
+
     /**
      * Get the treatments associated with the claim
      * @return HasMany
@@ -248,6 +287,19 @@ class Claim extends Model
     public function activeTreatment()
     {
         return $this->belongsTo(Treatment::class);
+    }
+
+    /**
+     * Get the active treatment associated with the claim
+     * @return Builder|Model|object
+     */
+    public function getOldActiveTreatmentAttribute()
+    {
+        if (isEscalationClaim($this)){
+            return  (new TreatmentRepository)->getClaimOldTreatment($this->id);
+        }
+
+        return null;
     }
 
     /**
@@ -268,6 +320,31 @@ class Claim extends Model
         return $this->belongsTo(Staff::class, 'revoked_by');
     }
 
+    function getCanAddAttachmentAttribute()
+    {
+        $canAttach = false;
+
+        $staffId = request()->query('staff', null);
+        $staff = (new StaffService())->getStaffById($staffId);
+
+        if ($staff != null) {
+            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF) {
+                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+            }
+
+            /* if ($this->status==Claim::CLAIM_VALIDATED){
+                $canAttach = $staff->id == $staff->institution->active_pilot_id;
+            }*/
+        }
+        if(Auth::user()){
+            if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
+                $canAttach = true;
+            }
+        }
+
+        return $canAttach;
+    }
+
     /**
      * @return HasMany
      */
@@ -276,10 +353,6 @@ class Claim extends Model
         return $this->hasMany(Revival::class);
     }
 
-
-    /**
-     * @return HasMany
-     */
     public function getLastRevivalAttribute()
     {
         return collect($this->revivals)->sortByDesc('created_at')->first();
@@ -297,6 +370,24 @@ class Claim extends Model
     public function getIsDuplicateAttribute()
     {
         return $this->getDuplicatesQuery($this->getClaimsQuery($this->attributes['institution_targeted_id']), $this)->exists();
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getPlainTextDescriptionAttribute()
+    {
+        return $this->attributes['plain_text_description']==null?
+            $this->attributes['description']:
+            $this->attributes['plain_text_description'];
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function treatmentBoard()
+    {
+        return $this->belongsTo(TreatmentBoard::class);
     }
 
 }

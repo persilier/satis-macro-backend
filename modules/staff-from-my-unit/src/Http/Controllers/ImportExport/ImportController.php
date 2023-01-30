@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Imports\Client\TransactionClientImport;
-use Satis2020\ServicePackage\Imports\Staff;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Imports\Staff\TransactionStaffImport;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Requests\Imports\ImportStaffRequest;
@@ -18,11 +17,15 @@ use Satis2020\ServicePackage\Requests\Imports\ImportStaffRequest;
  */
 class ImportController extends ApiController
 {
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:store-staff-from-my-unit')->only(['importStaffs']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -33,7 +36,6 @@ class ImportController extends ApiController
     public function importStaffs(ImportStaffRequest $request){
 
         $institution = $this->institution();
-
 
         $datas = [
             'status' => true,
@@ -57,6 +59,13 @@ class ImportController extends ApiController
         );
 
         Excel::import($transaction, $request->file('file'));
+
+        $this->activityLogService->store("Importation des staffs",
+            $this->institution()->id,
+            ActivityLogService::IMPORTATION,
+            'staff',
+            $this->user()
+        );
 
         $datas['errors'] = $transaction->getImportErrors();
 

@@ -1,14 +1,11 @@
 <?php
-
 namespace Satis2020\ServicePackage\Requests\Monitoring;
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-
 /**
- * Class ActivityLogFilterRequest
- * @package Satis2020\ServicePackage\Requests
- */
+* Class ActivityLogFilterRequest
+* @package Satis2020\ServicePackage\Requests
+*/
 class MyStaffMonitoringRequest extends FormRequest
 {
     /**

@@ -23,8 +23,7 @@ trait IdentiteVerifiedTrait
             if($filtered->first())
                 return ['valide'=> false, 'message'=>
                     [
-                        "message" => "L'un des clients est retrouvé dans l\'institution sélectionnée avec ce numéro de compte. 
-                                        Souhaitez vous apporter une modification à ce compte ?",
+                        "message" => __('messages.a_client_found',[],getAppLang()),
                         "client" => $filtered->first(),
                         "posts" => $posts
                     ]

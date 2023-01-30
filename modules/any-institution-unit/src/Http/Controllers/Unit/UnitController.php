@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\AnyInstitutionUnit\Http\Controllers\Unit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
@@ -8,7 +9,9 @@ use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Rules\StateExistRule;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Satis2020\ServicePackage\Services\CountryService;
 use Satis2020\ServicePackage\Traits\UnitTrait;
 
 class UnitController extends ApiController
@@ -28,24 +31,26 @@ class UnitController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead.identite'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'])->get(), 200);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param CountryService $countryService
+     * @return JsonResponse
      */
-    public function create()
+    public function create(CountryService $countryService)
     {
         return response()->json([
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
-            'units' => Unit::all()
+            'units' => Unit::all(),
+            'countries'=>$countryService->getCountries()
         ], 200);
     }
 
@@ -53,7 +58,7 @@ class UnitController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
@@ -67,10 +72,11 @@ class UnitController extends ApiController
             'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
             }),
+            'state_id'=>['nullable','numeric',new StateExistRule]
         ];
         $this->validate($request, $rules);
 
-        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'parent_id', 'others']));
+        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'parent_id', 'others','state_id']));
 
         return response()->json($unit, 201);
     }
@@ -90,9 +96,10 @@ class UnitController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param Unit $unit
-     * @return \Illuminate\Http\Response
+     * @param CountryService $countryService
+     * @return JsonResponse
      */
-    public function edit(Unit $unit)
+    public function edit(Unit $unit,CountryService $countryService)
     {
         return response()->json([
             'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite'),
@@ -101,6 +108,7 @@ class UnitController extends ApiController
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
                             ->where('unit_id', $unit->id)->get(),
             'units' => Unit::where('institution_id', $unit->institution->id)->get(),
+            'countries'=>$countryService->getCountries()
         ], 200);
     }
 
@@ -109,7 +117,7 @@ class UnitController extends ApiController
      *
      * @param \Illuminate\Http\Request $request
      * @param Unit $unit
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Unit $unit)
@@ -126,6 +134,7 @@ class UnitController extends ApiController
             'parent_id' =>  'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
             }),
+            'state_id'=>['nullable','numeric',new StateExistRule]
         ];
 
         $this->validate($request, $rules);
@@ -137,7 +146,7 @@ class UnitController extends ApiController
         if(!$request->has('lead_id'))
             $unit->lead_id = null;
 
-        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others']));
+        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others','state_id']));
 
         return response()->json($unit, 201);
     }
@@ -146,7 +155,7 @@ class UnitController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param \Satis2020\ServicePackage\Models\Unit $unit
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      * @throws \Exception
      */
     public function destroy(Unit $unit)

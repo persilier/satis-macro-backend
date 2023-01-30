@@ -30,6 +30,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'app_nature' => env("APP_NATURE")
+    'app_nature' => env("APP_NATURE"),
+    'allow_pilot_create_discussion' => env("ALLOW_PILOT_CREATE_DISCUSSION"),
 
 ];

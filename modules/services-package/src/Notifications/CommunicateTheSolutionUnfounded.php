@@ -57,8 +57,10 @@ class CommunicateTheSolutionUnfounded extends Notification implements ShouldQueu
      */
     public function toMail($notifiable)
     {
+        $ref = formatClaimRef($this->claim->reference);
+
         return (new MailMessage)
-            ->subject('Réclamation traitée')
+            ->subject("${ref} Réclamation traitée")
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

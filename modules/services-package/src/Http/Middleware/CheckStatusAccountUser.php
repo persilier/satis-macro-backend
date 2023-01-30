@@ -15,7 +15,8 @@ class CheckStatusAccountUser
      */
     public function handle($request, Closure $next)
     {
-        if(!is_null(Auth::user()->disabled_at)){
+
+        if(Auth::check() && !is_null(Auth::user()->disabled_at)){
 
             return response()->json('Aucune action n\'est autorisé, votre compte est désactivé.', 401);
         }

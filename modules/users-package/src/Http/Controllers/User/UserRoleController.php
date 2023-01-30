@@ -17,6 +17,13 @@ class UserRoleController extends ApiController
     public function __construct()
     {
         parent::__construct();
+        $this->middleware('auth:api');
+        $this->middleware('permission:list-my-institution-type-role')->only(['index']);
+        $this->middleware('permission:store-my-institution-type-role')->only(['store']);
+        //$this->middleware('permission:show-my-institution-type-role')->only(['show']);
+        //$this->middleware('permission:update-my-institution-type-role')->only(['update']);
+        //$this->middleware('permission:destroy-my-institution-type-role')->only(['destroy']);
+
     }
 
     /**
@@ -27,7 +34,7 @@ class UserRoleController extends ApiController
      */
     public function index(User $user)
     {
-        return response()->json($user->roles, 200);
+        return response()->json($user->roles, -200);
     }
 
     /**

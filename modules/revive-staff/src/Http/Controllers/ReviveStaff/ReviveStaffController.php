@@ -9,7 +9,8 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Notifications\ReviveStaff;
 use Satis2020\ServicePackage\Services\RevivalService;
 use Satis2020\ServicePackage\Services\StaffService;
-    use Satis2020\ServicePackage\Traits\UnitTrait;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\UnitTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReviveStaffController extends ApiController

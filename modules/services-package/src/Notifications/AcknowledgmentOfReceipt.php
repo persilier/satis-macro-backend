@@ -6,8 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Channels\MessageChannel;
+use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
 
 /**
  * Class AcknowledgmentOfReceipt
@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Channels\MessageChannel;
  */
 class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification;
+    use Queueable, \Satis2020\ServicePackage\Traits\Notification, ClaimIncomingByEmail;
 
     public $claim;
     public $event;
@@ -30,7 +30,17 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
     {
         $this->claim = $claim;
 
-        $this->event = $this->getNotification('acknowledgment-of-receipt');
+        $event = $claim->claimObject && $claim->claimObject!=null?
+            'acknowledgment-of-receipt':'acknowledgment-of-receipt-incoming';
+        $this->event = $this->getNotification($event);
+
+        if ($claim->claimObject && $claim->claimObject != null) {
+            $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
+            $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
+        } else {
+            $this->event->text = str_replace('{claim_object}', "--", $this->event->text);
+            $this->event->text = str_replace('{day_replay}', "--", $this->event->text);
+        }
 
         if ($claim->claimObject && $claim->claimObject != null) {
             $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
@@ -62,17 +72,22 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      *
      * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
+        $ref = formatClaimRef($this->claim->reference);
 
         return (new MailMessage)
-            ->subject('Accusé de reception')
-            ->markdown('ServicePackage::mail.claim.feedback', [
+            ->replyTo($this->getConfiguration($this->claim->institution_targeted_id)->email,env('MAIL_FROM_NAME'))
+            ->replyTo(['email' => $this->getConfiguration($this->claim->institution_targeted_id)->email])
+            ->subject("$ref Accusé de reception")
+            ->markdown('ServicePackage::mail.claim.feedback',
+                [
+           
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"
-            ]);
+                ]);
     }
 
     /**

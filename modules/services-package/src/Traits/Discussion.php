@@ -35,22 +35,20 @@ trait Discussion
     protected function getContributors($discussion)
     {
 
-        return Staff::with('identite.user')
+        $staff =  Staff::with('identite.user')
             ->get()
             ->filter(function ($value, $key) use ($discussion) {
 
                 $value->load('unit');
 
-                if(is_null($discussion->createdBy) || is_null($value->identite)){
+                if (is_null($discussion->createdBy) || is_null($value->identite)) {
 
                     return false;
-
                 }
 
-                if(is_null($discussion->createdBy->unit) || is_null($value->identite->user)){
+                if (is_null($discussion->createdBy->unit) || is_null($value->identite->user)) {
 
                     return false;
-
                 }
 
                 return is_null($discussion->createdBy->unit->institution_id) // en gros, si on est dans un hub
@@ -66,8 +64,45 @@ trait Discussion
                     && $discussion->staff->search(function ($item, $key) use ($value) {
                         return $item->id == $value->id;
                     }) === false;
-
             });
-    }
 
+        return $staff;
+    }
+    protected function getContributorsWithClaimCreator($discussion)
+    {
+
+        $staffs = Staff::with('identite.user')
+            ->get()
+            ->filter(function ($value, $key) use ($discussion) {
+
+                $value->load('unit');
+
+                if (is_null($discussion->createdBy) || is_null($value->identite)) {
+
+                    return false;
+                }
+
+                if (is_null($discussion->createdBy->unit) || is_null($value->identite->user)) {
+
+                    return false;
+                }
+
+                return is_null($discussion->createdBy->unit->institution_id) // en gros, si on est dans un hub
+
+                    ? (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
+                        || $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id)))
+                    ||  $discussion->claim->createdBy && $value->id == $discussion->claim->createdBy->id
+                    && $discussion->staff->search(function ($item, $key) use ($value) {
+                        return $item->id == $value->id;
+                    }) === false
+
+                    : (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
+                        || ($value->institution_id == $discussion->createdBy->institution_id && $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id))))
+                    || $discussion->claim->createdBy && $value->id == $discussion->claim->createdBy->id
+                    && $discussion->staff->search(function ($item, $key) use ($value) {
+                        return $item->id == $value->id;
+                    }) === false;
+            });
+        return $staffs;
+    }
 }

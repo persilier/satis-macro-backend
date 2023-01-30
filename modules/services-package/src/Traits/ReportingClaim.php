@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Jobs\PdfReportingSendMail;
 use Satis2020\ServicePackage\Models\Channel;
@@ -36,7 +37,7 @@ trait ReportingClaim
         $data = [
 
             'date_start' => 'date_format:Y-m-d',
-            'date_end' => 'date_format:Y-m-d|after:date_start'
+            'date_end' => 'date_format:Y-m-d|after_or_equal:date_start'
         ];
 
         if($institution){
@@ -46,7 +47,6 @@ trait ReportingClaim
 
         return $data;
     }
-
 
     /**
      * @param $request
@@ -503,8 +503,16 @@ trait ReportingClaim
             ],
             [
                 'value' => 'biannual', 'label' => 'Semestriel'
-            ]
+            ],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function typeList(){
+
+        return Constants::reportTypes();
     }
 
 
@@ -515,12 +523,9 @@ trait ReportingClaim
 
         $institution = $this->institution();
 
-        return Staff::with('identite')->whereHas('identite', function ($query){
-
+        return Staff::query()->with('identite')->whereHas('identite', function ($query){
             $query->whereNotNull('email');
-
         })->where('institution_id', $institution->id)->get();
-
     }
 
 
@@ -531,8 +536,8 @@ trait ReportingClaim
     protected function rulesTasksConfig($institution = true)
     {
         $data = [
-
             'period' => ['required', Rule::in(['days', 'weeks', 'months', 'quarterly', 'biannual'])],
+            'reporting_type' => ['required', Rule::in(Constants::getReportTypesNames())],
             'staffs' => [
                 'required', 'array',
             ],
@@ -570,9 +575,9 @@ trait ReportingClaim
     protected  function createFillableTasks($request, $institution){
 
         $data = [
-
             'institution_id' => $institution->id,
             'period' => $request->period,
+            "reporting_type"=>$request->reporting_type
         ];
 
         if($request->has('institution_id')){
@@ -591,9 +596,14 @@ trait ReportingClaim
      */
     protected function reportingTasksExists($request, $institution, $reportingTask = null){
 
-        if(ReportingTask::where('period', $request->period)->where('institution_targeted_id',$request->institution_id)
-            ->where('institution_id', $institution->id)->where('id', '!=', $reportingTask)->first()){
-            throw new CustomException("Cette configuration de rapport automatique existe déjà pour la période choisie.");
+
+        if(ReportingTask::query()
+            ->where('period', $request->period)
+            ->where('reporting_type', $request->reporting_type)
+            ->where('institution_targeted_id',$request->institution_id)
+            ->where('institution_id', $institution->id)->where('id', '!=', $reportingTask)
+            ->first()){
+            throw new CustomException(__('messages.config_already_exist',[],app()->getLocale()));
         }
     }
 
@@ -613,7 +623,7 @@ trait ReportingClaim
 
             if($institution->id !== $data['filter']['institution']){
 
-                throw new CustomException("Vous n'êtes pas autorité à accéder au reporting de cette insitution.");
+                throw new CustomException(__('messages.not_allowed_to_access_reporting',[],app()->getLocale()));
             }
         }
 
@@ -1432,6 +1442,8 @@ trait ReportingClaim
         $pdf->save($file);
 
         $details = [
+            'title' => $this->getMetadataByName(Constants::BIANNUAL_REPORTING)->title,
+            'description' => $this->getMetadataByName(Constants::BIANNUAL_REPORTING)->description,
             'file' => $file,
             'email' => $this->emailDestinatairesReportingTasks($reportinTask),
             'reportingTask' => $reportinTask,
@@ -1493,7 +1505,7 @@ trait ReportingClaim
 
         if(is_null($data)){
 
-            throw new CustomException("Impossible de récupérer cette configuration.");
+            throw new CustomException(__('messages.cant_get_config',[],getAppLang()));
         }
 
         return $data;
@@ -1542,7 +1554,7 @@ trait ReportingClaim
         if(!$infinite){
 
             if($request->borne_sup <= $request->borne_inf)
-                throw new CustomException("La borne supérieur doit être supérieur à la borne inférieur.");
+                throw new CustomException(__('messages.bound_alert',[],getAppLang()));
 
         }
 
@@ -1555,7 +1567,7 @@ trait ReportingClaim
 
                     if(!($request->borne_inf >= $parameter->borne_sup && $request->borne_inf > $parameter->borne_inf) && !($request->borne_sup <= $parameter->borne_inf && $request->borne_inf < $parameter->borne_inf)){
 
-                        throw new CustomException("Cette configuration est invalide.");
+                        throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                     }
 
@@ -1563,13 +1575,13 @@ trait ReportingClaim
 
                     if($infinite){
 
-                        throw new CustomException("Cette configuration est invalide.");
+                        throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                     }else{
 
                         if(!($request->borne_sup <= $parameter->borne_inf && $request->borne_inf < $parameter->borne_inf)){
 
-                            throw new CustomException("Cette configuration est invalide.");
+                            throw new CustomException(__('messages.invalid_config',[],getAppLang()));
 
                         }
                     }

@@ -4,22 +4,26 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Database\Eloquent\Collection;
+use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\ClaimCategory;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\StaffManagement;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Notifications\ReminderAfterDeadline;
 use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 /**
  * Trait MonitoringClaim
@@ -27,6 +31,7 @@ use Satis2020\ServicePackage\Notifications\ReminderBeforeDeadline;
  */
 trait MonitoringClaim
 {
+    use ConfigurationPilotTrait, DataUserNature, ConfigurationPilotTrait, StaffManagement;
     /**
      * @param $request
      * @param $status
@@ -79,7 +84,20 @@ trait MonitoringClaim
      */
     protected function getAllDataFilter($request, $status, $treatment)
     {
-        $claims = Claim::with($this->getRelations());
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
+        if($configuration->many_active_pilot  === "1" && $this->staff()->id != $lead_pilot->id){
+            if(!in_array($status, [Claim::CLAIM_INCOMPLETE,Claim::CLAIM_ARCHIVED, Claim::CLAIM_FULL, Claim::CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION, Claim::CLAIM_VALIDATED ])){
+                $claims = Claim::with($this->getRelations())->whereHas('activeTreatment', function($query){
+                    $query->where('transferred_to_unit_by', $this->staff()->id);
+                });
+            } else {
+                $claims = Claim::with($this->getRelations());
+            }
+        } else {
+            $claims = Claim::with($this->getRelations());
+        }
 
         if ($request->has('institution_id')) {
 
@@ -145,7 +163,7 @@ trait MonitoringClaim
         $relations = [
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite', 'activeTreatment.assignedToStaffBy.identite'
+            'activeTreatment.responsibleStaff.identite', 'activeTreatment.assignedToStaffBy.identite', 'activeTreatment.responsibleUnit', 'activeTreatment.staffTransferredToUnitBy'
         ];
 
         return $relations;
@@ -172,7 +190,7 @@ trait MonitoringClaim
                 $query->where('id', $request->staff_id)->where('institution_id', $request->institution_id);
             }),
             'date_start' => 'sometimes|date_format:Y-m-d',
-            'date_end' => 'sometimes|date_format:Y-m-d|after:date_start'
+            'date_end' => 'sometimes|date_format:Y-m-d|after_or_equal:date_start'
         ];
 
         return $data;
@@ -191,6 +209,9 @@ trait MonitoringClaim
     protected function metaData($incompletes, $toAssignedToUnit, $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institutionId = false)
     {
 
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         $data = [
             'incompletes' => $incompletes,
             'toAssignementToUnit' => $toAssignedToUnit,
@@ -206,12 +227,18 @@ trait MonitoringClaim
 
             $data['units'] = Unit::where('institution_id', $institutionId)->get();
             $data['staffs'] = Staff::with('identite')->where('institution_id', $institutionId)->get();
+            $data['collectors'] = $this->getAllCollectors($institutionId);
 
         } else {
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
             $data['staffs'] = Staff::with('identite')->get();
+            $data['collectors'] = $this->getAllCollectors();
+        }
+        if($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id){
+
+            $data['activePilots'] = $all_active_pilots;
         }
 
         return $data;
@@ -273,9 +300,9 @@ trait MonitoringClaim
 
         return $claims->where('status', '!=', 'archived')
             ->orWhere('status', '!=', 'unfounded')
+            ->whereNotNull('claim_object_id')
             ->get()->filter(function ($item) use ($coef) {
-
-                if (now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+                if ($item->claimObject!=null && now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
                     return $item;
 
             })->all();
@@ -357,11 +384,8 @@ trait MonitoringClaim
         $time = $this->stringDateInterval($interval);
 
         if ($interval->invert === 1) {
-
             $notif = new ReminderAfterDeadline($claim, $time);
-
         } else {
-
             $notif = new ReminderBeforeDeadline($claim, $time);
         }
 

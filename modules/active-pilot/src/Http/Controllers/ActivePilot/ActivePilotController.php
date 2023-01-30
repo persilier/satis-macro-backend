@@ -7,8 +7,7 @@ use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Traits\ActivePilot;
-use Spatie\Permission\Models\Role;
-
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 /**
  * Class UnitTypeController
  * @package Satis2020\ActivePilot\Http\Controllers\UnitType
@@ -18,11 +17,15 @@ class ActivePilotController extends ApiController
 
     use ActivePilot;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:update-active-pilot')->only(['edit', 'update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -48,14 +51,17 @@ class ActivePilotController extends ApiController
             return response()->json("Can not found any pilot", 404);
         }
 
-        return response()->json(Staff::with('identite.user')
+        $staff = Staff::with('identite.user')
             ->where('institution_id', $institution->id)
             ->get()
             ->filter(function ($value, $key) use ($roleName, $staff, $checkIfStaffIsPilot) {
-                if ($checkIfStaffIsPilot && $staff->is_active_pilot && $staff->id == $value->id) {
+                if ($value->identite!=null && $value->identite->user!=null && $value->identite->user->disabled_at!=null) {
                     return false;
                 }
 
+                if ($checkIfStaffIsPilot && $staff->is_active_pilot && $staff->id == $value->id) {
+                    return false;
+                }
 
                 if(!is_null($value->identite)){
                     if(!is_null($value->identite->user)){
@@ -65,7 +71,9 @@ class ActivePilotController extends ApiController
 
                 return false;
             })
-            ->values(), 200);
+            ->values();
+
+        return response()->json($staff, 200);
     }
 
     /**
@@ -73,7 +81,7 @@ class ActivePilotController extends ApiController
      *
      * @param Request $request
      * @param Institution $institution
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
@@ -106,6 +114,14 @@ class ActivePilotController extends ApiController
         $this->validate($request, $rules);
 
         $institution->update(['active_pilot_id' => $request->staff_id]);
+
+        $this->activityLogService->store('Mise à jour du pilot actif',
+            $this->institution()->id,
+            $this->activityLogService::UPDATE_PILOT_ACTIVE,
+            'institution',
+            $this->user(),
+            $institution->activePilot
+        );
 
         return response()->json($institution, 201);
     }

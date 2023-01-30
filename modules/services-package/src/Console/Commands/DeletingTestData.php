@@ -2,13 +2,10 @@
 
 namespace Satis2020\ServicePackage\Console\Commands;
 
-use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\Component;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Identite;
@@ -30,6 +27,7 @@ class DeletingTestData extends Command
      *
      * @var string
      */
+
     protected $description = 'test data deletion script';
 
     /**
@@ -50,7 +48,8 @@ class DeletingTestData extends Command
     public function handle()
     {
         $appNature = Config::get('services.app_nature', 'PRO');
-        if ($appNature === 'PRO') {
+
+       // if ($appNature === 'PRO') {
             $this->info('--------------------------- VIDAGE DES DONNEES TESTS -----------------------------');
             $this->warn('------------------------ CETTE ACTION EST IRREVERSIBLE --------------------------');
             if ($this->confirm('êtes-vous sûr de vouloir supprimer les données tests ? (yes|no)[no]',true)) {
@@ -77,6 +76,6 @@ class DeletingTestData extends Command
             } else {
                 $this->info('Suppression annulée...');
             }
-        }
+      //  }
     }
 }

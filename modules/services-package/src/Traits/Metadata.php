@@ -361,10 +361,16 @@ trait Metadata
 
     protected function getAllDataByTypes($types)
     {
-
         return MetadataModel::query()
             ->whereIn("name",$types)
             ->get();
+    }
+
+    protected function getAllDataProxyByTypes($types)
+    {
+        return MetadataModel::query()
+            ->where("name",$types)
+            ->first();
     }
 
     protected function formatReportTitleMetas($types)
@@ -377,7 +383,7 @@ trait Metadata
             $description = json_decode($meta->data)->description;
             $name = $meta->name;
             array_push($response,[
-                //"id"=>$meta->id,
+                "id"=>$meta->id,
                 "name"=>$name,
                 "title"=>$title,
                 "description"=>$description,
@@ -385,6 +391,8 @@ trait Metadata
         }
         return$response;
     }
+
+
 
     /*public function getData(Request $request, $datas){
         $actions = [];
@@ -416,7 +424,7 @@ trait Metadata
      */
     public function getMetadataByName($name)
     {
-        $metadataRepository = new MetadataRepository(new MetadataModel());
-        return json_decode($metadataRepository->getByName($name)->data);
+       $metadataRepository = new MetadataRepository(new MetadataModel());
+       return json_decode($metadataRepository->getByName($name)->data);
     }
 }

@@ -9,21 +9,26 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Requirement;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 class ClaimObjectRequirementController extends ApiController
 {
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
 
         $this->middleware('permission:update-claim-object-requirement')->only(['update', 'edit']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Edit the form for creating a new resource.
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit()
     {
@@ -37,7 +42,7 @@ class ClaimObjectRequirementController extends ApiController
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      * @throws RetrieveDataUserNatureException
      */
@@ -52,7 +57,7 @@ class ClaimObjectRequirementController extends ApiController
             // Check if requirement_ids don't contain same values and exist
             $requirement_ids_collection = collect([]);
 
-            if(!is_null($requirement_ids)){
+            if(!is_null($requirement_ids) && is_array($requirement_ids)){
 
                 foreach ($requirement_ids as $requirement_id) {
 
@@ -80,10 +85,19 @@ class ClaimObjectRequirementController extends ApiController
             $item['claim_object']->requirements()->sync($item['requirement_ids']);
         });
 
-        return response()->json([
+        $requirements = [
             'claimCategories' => ClaimCategory::with('claimObjects.requirements')->get(),
             'requirements' => Requirement::all()
-        ], 201);
+        ];
+
+        $this->activityLogService->store('Configuration des requirements',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'requirement',
+            $this->user()
+        );
+
+        return response()->json($requirements, 201);
 
     }
 

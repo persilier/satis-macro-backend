@@ -12,6 +12,7 @@ class File extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
+    const ATTACH_AT_TREATMENT = 'attach_at_treatment';
     /**
      * The attributes that are translatable
      *
@@ -37,7 +38,7 @@ class File extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'url'];
+    protected $fillable = ['title', 'url','attach_at'];
 
     /**
      * Get the lead flag for the staff.

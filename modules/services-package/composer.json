@@ -22,12 +22,16 @@
         "psr-4": {
             "Satis2020\\ServicePackage\\": "src/",
             "Satis2020\\ServicePackage\\Database\\Seeds\\": "database/seeds/"
-        }
+        },
+        "files": [
+            "src/Helpers/Helpers.php"
+        ]
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Satis2020\\ServicePackage\\Providers\\ServicePackageServiceProvider"
+                "Satis2020\\ServicePackage\\Providers\\ServicePackageServiceProvider",
+                "Satis2020\\ServicePackage\\Providers\\EventServiceProvider"
             ]
         }
     }

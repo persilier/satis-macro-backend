@@ -44,6 +44,9 @@ trait BCIReportsTrait
             foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
                 foreach ($category->claimObjects as $object) {
                     $claims = $object->claims()
+                        ->when($request->filled('institution_id'),function ($query)use($request){
+                            $query->where('institution_targeted_id',$request->institution_id);
+                        })
                         ->whereYear("created_at", $year)
                         ->whereMonth("created_at", $months[$i])
                         ->get();
@@ -93,6 +96,10 @@ trait BCIReportsTrait
                         $decemberLastYearClaims = $object->claims()
                             ->whereYear("created_at", "<", $year)
                             // ->whereMonth("created_at", 12)
+                            ->when($request->filled('institution_id'),function ($query)use($request){
+                                $query->where('institution_targeted_id',$request->institution_id);
+                            })
+                            ->whereYear("created_at", "<", $year)
                             ->get();
 
                         if (empty($decemberLastYearClaims)) {
@@ -212,6 +219,9 @@ trait BCIReportsTrait
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
             foreach ($category->claimObjects as $object) {
                 $claims = $object->claims()
+                    ->when($request->filled('institution_id'),function ($query)use($request){
+                        $query->where('institution_targeted_id',$request->institution_id);
+                    })
                     ->whereYear("created_at", $year)
                     ->get();
 
@@ -324,6 +334,9 @@ trait BCIReportsTrait
         foreach (ClaimCategory::with('claimObjects.claims')->get() as $category) {
             foreach ($category->claimObjects as $object) {
                 $claims = $object->claims()
+                    ->when($request->filled('institution_id'),function ($query)use($request){
+                        $query->where('institution_targeted_id',$request->institution_id);
+                    })
                     ->whereYear("created_at", $previousYear)
                     ->get();
 

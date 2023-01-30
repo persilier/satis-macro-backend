@@ -7,6 +7,7 @@ use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Institution;
@@ -26,7 +27,10 @@ class ReportingTasksController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:config-reporting-claim-any-institution')->only(['show']);
+        $this->middleware('permission:list-config-reporting-claim-my-institution')->only(['index']);
+        $this->middleware('permission:store-config-reporting-claim-my-institution')->only(['create','store']);
+        $this->middleware('permission:update-config-reporting-claim-my-institution')->only(['update','edit']);
+        $this->middleware('permission:delete-config-reporting-claim-my-institution')->only(['destroy']);
     }
 
 
@@ -52,6 +56,7 @@ class ReportingTasksController extends ApiController
         $staffs = $this->getAllStaffsReportingTasks();
 
         return response()->json([
+            "types"=>Constants::reportTypes(),
             'period' => $period,
             'staffs' => $staffs
         ],200);
@@ -93,6 +98,7 @@ class ReportingTasksController extends ApiController
         $period = $this->periodList();
 
         return response()->json([
+            "types"=>Constants::reportTypes(),
             'period' => $period,
             'staffs' => $this->getAllStaffsReportingTasks(),
             'reportingTask' =>  $this->reportingTaskMap($reportingTask),

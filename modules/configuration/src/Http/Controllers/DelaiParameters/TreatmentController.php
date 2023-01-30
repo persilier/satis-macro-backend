@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ReportingClaim;
 
 /**
@@ -17,7 +18,9 @@ class TreatmentController extends ApiController
 {
     use ReportingClaim;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -27,6 +30,8 @@ class TreatmentController extends ApiController
         $this->middleware('permission:show-delai-treatment-parameters')->only(['show']);
         $this->middleware('permission:store-delai-treatment-parameters')->only(['store']);
         $this->middleware('permission:destroy-delai-treatment-parameters')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -60,11 +65,20 @@ class TreatmentController extends ApiController
         $parameters = $this->getAllDelaiParameters('delai-treatment-parameters');
         $this->validate($request, $this->rulesParameters());
 
-        if($request->borne_sup === '+'){
+        if ($request->borne_sup === '+') {
             $infinite = true;
         }
         $this->verifiedStore($request, $parameters, $infinite);
+
         $data = $this->storeParameters($request, $parameters, 'delai-treatment-parameters');
+
+        $this->activityLogService->store('Configuration des paramètres de bornes pour les délais de traitement',
+            $this->institution()->id,
+            'metadata',
+            $this->activityLogService::CREATED,
+            $this->user()
+        );
+
         return response()->json($data, 201);
     }
 
@@ -76,6 +90,14 @@ class TreatmentController extends ApiController
     protected function destroy($parameter){
 
         $parameter = $this->destroyDelaiParameters('delai-treatment-parameters', $parameter);
+
+        $this->activityLogService->store('Suppression du configuration des paramètres de bornes pour les délais de traitement',
+            $this->institution()->id,
+            'metadata',
+            $this->activityLogService::DELETED,
+            $this->user()
+        );
+
         return response()->json($parameter, 200);
     }
 

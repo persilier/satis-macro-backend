@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Row;
+use Satis2020\ServicePackage\Rules\RoleValidationForImport;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ImportIdentite;
 use Satis2020\ServicePackage\Traits\ImportStaff;
@@ -47,7 +48,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $this->unitRequired = $data['unitRequired'];
         $this->stop_identite_exist = $data['stop_identite_exist'];
         $this->etat = $data['etat'];
-        $this->errors = collect([]);
+        $this->errors = [];
     }
 
     /***
@@ -64,6 +65,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
      */
     public function onRow(Row $row)
     {
+
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
@@ -74,32 +76,40 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
         $error['data'] =  $row;
 
         if (!$validator->fails()) {
-            $data = $this->modifiedDataKeysInId($row);
+                $data = $this->modifiedDataKeysInId($row);
 
-            // Unité Verification
-            $verifiedUnit = $this->handleUnitVerification($data);
+                // Institution Verification
+                $verifiedInstitution = $this->handleInstitutionVerification($row);
 
-            if (!$verifiedUnit['status']) {
-                $error['message'] =  $verifiedUnit['message'];
-                $this->hasError = true;
-            } else {
-                $staff = $this->verificationAndStoreStaff($data);
-
-                if ($staff['status'] === false) {
-                    $error['message'] =  $staff['message'];
+                if (!$verifiedInstitution['status']) {
+                    $error['message'] =  $verifiedInstitution['message'];
                     $this->hasError = true;
+                } else {
+                    // Unité Verification
+                    $verifiedUnit = $this->handleUnitVerification($data);
 
+                    if (!$verifiedUnit['status']) {
+                        $error['message'] =  $verifiedUnit['message'];
+                        $this->hasError = true;
+                    } else {
+                        $staff = $this->verificationAndStoreStaff($data);
+
+                        if ($staff['status'] === false) {
+                            $error['message'] =  $staff['message'];
+                            $this->hasError = true;
+
+                        }
+                    }
                 }
-            }
 
-            if ($this->hasError){
-                $this->errors->push($error);
-            }
+                if ($this->hasError){
+                    array_push($this->errors,$error);
+                }
 
             } else {
             Log::error($validator->errors());
-            //throw ValidationException::withMessages($validator->getMessageBag()->getMessages());
-            $error['message'] =  $validator->getMessageBag()->getMessages();
+            $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,"line"=>$rowIndex];
+            array_push($this->errors,$error);
             $this->hasError = true;
         }
 
@@ -143,7 +153,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
 
         foreach ($data['roles'] as $key => $value) {
             $value = preg_replace("/\s+/", "", $value);
-            $value = preg_replace("/-/", "", $value);
+     //       $value = preg_replace("/-/", "", $value);
             $value = preg_replace("/\./", "", $value);
 
             if (empty($value)) {
@@ -180,6 +190,7 @@ class TransactionStaffImport implements OnEachRow, WithHeadingRow, WithChunkRead
             }
         }
 
+       // dd($data);
         return $data;
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 
 
@@ -19,7 +20,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
 {
     use ClaimSatisfactionMeasured;
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -27,6 +30,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('permission:list-satisfaction-measured-any-claim')->only(['index']);
         $this->middleware('permission:update-satisfaction-measured-any-claim')->only(['show', 'satisfactionMeasured']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -37,13 +42,16 @@ class ClaimSatisfactionMeasuredController extends ApiController
      */
     public function index()
     {
+
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
+
         $claims = Claim::with($this->getRelations())->join('treatments', function ($join){
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
         })->where('claims.status', 'validated')->select('claims.*');
+
         if ($key) {
             switch ($type){
                 case 'reference':
@@ -102,6 +110,14 @@ class ClaimSatisfactionMeasuredController extends ApiController
         ]);
 
         $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
+
+        $this->activityLogService->store("Mesure de satisfaction",
+            $this->institution()->id,
+            $this->activityLogService::MEASURE_SATISFACTION,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         return response()->json($claim, 200);
     }

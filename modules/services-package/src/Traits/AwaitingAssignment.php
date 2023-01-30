@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Traits;
 
 
 use Illuminate\Support\Facades\DB;
+use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Metadata;
 
@@ -39,6 +40,7 @@ trait AwaitingAssignment
             ->whereRaw($whereRawCondition, $whereRawConditionVariables)
             ->whereNull('claims.deleted_at')
             ->whereNull('claims.revoked_at');
+
     }
 
     protected function getDuplicatesQuery($claim_query, $claim)
@@ -69,24 +71,7 @@ trait AwaitingAssignment
 
     public function getRelations()
     {
-        return [
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment.responsibleUnit',
-            'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleStaff.identite',
-            'activeTreatment.satisfactionMeasuredBy.identite',
-        ];
+        return Constants::getClaimRelations();
     }
 
     protected function getActiveTreatmentRelationsAwaitingAssignment()

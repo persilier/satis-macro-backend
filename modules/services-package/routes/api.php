@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
+use Satis2020\ServicePackage\Http\Controllers\StateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +13,6 @@ use Satis2020\ServicePackage\Http\Controllers\SatisYearController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::get('satis-years',[SatisYearController::class,"index"])->name('satis.years');
+Route::get("country/{country_id}/states", [StateController::class,"index"])->name("country.states");
 Route::get("claims/details/{claim_id}",[Satis2020\ServicePackage\Http\Controllers\Claim\ClaimController::class,"show"]);

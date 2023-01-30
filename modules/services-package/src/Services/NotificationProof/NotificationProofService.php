@@ -28,7 +28,6 @@ class NotificationProofService
     }
 
     /***
-     * @param $institutionId
      * @param $paginate
      * @return mixed
      */

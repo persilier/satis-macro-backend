@@ -13,6 +13,7 @@ use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Traits\Notification;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
@@ -22,7 +23,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
  */
 class OthersClaimsController extends Controller
 {
-    use DataUserNature, IdentityManagement, CreateClaim, VerifyUnicity, Telephone;
+    use DataUserNature, IdentityManagement, CreateClaim, VerifyUnicity, Telephone, Notification;
 
     public function __construct()
     {
@@ -33,6 +34,11 @@ class OthersClaimsController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->isNotFilled('amount_disputed') || $request->isNotFilled('amount_currency_slug')) {
+            $request->request->remove('amount_disputed');
+            $request->request->remove('amount_currency_slug');
+        }
+
         $rulesRequest = $this->rules($request);
 
         $rulesRequest['created_by'] = 'nullable';

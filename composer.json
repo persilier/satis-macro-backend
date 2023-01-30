@@ -20,6 +20,7 @@
     "laravel/tinker": "^2.0",
     "satis2020/account-type": "^1.0",
     "satis2020/active-pilot": "^1.0",
+    "satis2020/activity-log": "^1.0",
     "satis2020/any-claim-archived": "^1.0",
     "satis2020/any-claim-incoming-by-email": "^1.0",
     "satis2020/any-institution": "^1.0",
@@ -28,6 +29,8 @@
     "satis2020/any-user": "^1.0",
     "satis2020/attach-files-to-claim": "^1.0",
     "satis2020/bci-reports": "^1.0",
+    "satis2020/auth-config": "^1.0",
+    "satis2020/benchmarking-report": "^1.0",
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
     "satis2020/claim-awaiting-assignment": "^1.0",
@@ -44,6 +47,7 @@
     "satis2020/dashboard": "^1.0",
     "satis2020/discussion": "^1.0",
     "satis2020/faq": "^1.0",
+    "satis2020/global-report": "^1.0",
     "satis2020/institution": "^1.0",
     "satis2020/message-api": "^1.0",
     "satis2020/metadata-package": "^1.0",
@@ -99,7 +103,14 @@
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/webhooks": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0"
+    "satis2020/without-link-with-institution-unit": "^1.0",
+    "satis2020/system-usage-report": "^1.0",
+    "satis2020/system-efficiency-report-my-institution": "^1.0",
+    "ext-curl": "*",
+    "satis2020/countries-package": "dev-main",
+    "satis2020/escalation": "1.0.0",
+    "satis2020/useful-data-for-claims-classification": "1.0.0"
+
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -723,10 +734,72 @@
     },
     {
       "type": "path",
+      "url": "modules/auth-config/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/activity-log/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
       "url": "modules/notification-proof/",
       "options": {
         "symlink": true
       }
+    },
+    {
+      "type": "path",
+      "url": "modules/bci-reports/",
+      "url": "modules/system-usage-report/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/webhooks/",
+      "url": "modules/benchmarking-report/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/system-efficiency-report-my-institution/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/global-report/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/my-staff-monitoring/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/escalation/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "vcs",
+      "url":  "https://github.com/FathDMD/satis2020-countries-package"
     },
     {
       "type": "path",
@@ -737,14 +810,7 @@
     },
     {
       "type": "path",
-      "url": "modules/webhooks/",
-      "options": {
-        "symlink": true
-      }
-    },
-    {
-      "type": "path",
-      "url": "modules/my-staff-monitoring/",
+      "url": "modules/useful-data-for-claims-classification/",
       "options": {
         "symlink": true
       }

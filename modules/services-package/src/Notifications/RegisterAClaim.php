@@ -38,6 +38,13 @@ class RegisterAClaim extends Notification implements ShouldQueue
         }
 
         $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
+
+        if ($claim->claimObject && $claim->claimObject!=null){
+            $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
+        }else{
+            $this->event->text = str_replace('{claim_object}', '--', $this->event->text);
+        }
+
         $this->event->text = str_replace('{claim_status}', $this->claim->status, $this->event->text);
     }
 

@@ -10,6 +10,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 
 class AwaitingAssignmentController extends ApiController
@@ -17,7 +18,9 @@ class AwaitingAssignmentController extends ApiController
 
     use AwaitingAssignment;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -28,21 +31,44 @@ class AwaitingAssignmentController extends ApiController
         $this->middleware('permission:merge-claim-awaiting-assignment')->only(['merge']);
 
         $this->middleware('active.pilot')->only(['index', 'show', 'merge']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
-        $claims = $this->getClaimsQuery()->with($this->getRelations());
 
+        $claims = $this->getClaimsQuery()
+            ->when($type == Claim::CLAIM_UNSATISFIED, function ($query) {
+                $query->where('status', Claim::CLAIM_UNSATISFIED);
+            })
+            ->get()->map(function ($item, $key) {
+
+                $item = Claim::with($this->getRelations())->find($item->id);
+
+                $item->is_rejected = false;
+
+                if (!is_null($item->activeTreatment)) {
+
+                    $item->activeTreatment->load($this->getActiveTreatmentRelationsAwaitingAssignment());
+
+                    if (
+                        !is_null($item->activeTreatment->rejected_at) && !is_null($item->activeTreatment->rejected_reason)
+                        && !is_null($item->activeTreatment->responsibleUnit)
+                    ) {
+                        $item->is_rejected = true;
+                    }
+                }
+            });
         if ($key) {
             switch ($type) {
                 case 'reference':
@@ -85,7 +111,7 @@ class AwaitingAssignmentController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
     public function show(Claim $claim)
@@ -99,7 +125,7 @@ class AwaitingAssignmentController extends ApiController
      * @param Request $request
      * @param Claim $claim
      * @param Claim $duplicate
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function merge(Request $request, Claim $claim, Claim $duplicate)
@@ -132,7 +158,14 @@ class AwaitingAssignmentController extends ApiController
             $redirect = $duplicate;
         }
 
+        $this->activityLogService->store(
+            "Fusion de réclamation pour les cas de doublon",
+            $this->institution()->id,
+            $this->activityLogService::FUSION_CLAIM,
+            'claim',
+            $this->user()
+        );
+
         return response()->json($this->showClaim($redirect), 200);
     }
-
 }

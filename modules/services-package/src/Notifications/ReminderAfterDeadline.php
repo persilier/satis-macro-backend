@@ -57,6 +57,7 @@ class ReminderAfterDeadline extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+
         return (new MailMessage)
             ->subject(__('messages.after_relance_title'))
             ->markdown('ServicePackage::mail.claim.feedback', [

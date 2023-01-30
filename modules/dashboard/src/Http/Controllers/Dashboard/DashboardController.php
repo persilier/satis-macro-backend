@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Claim;
@@ -37,11 +38,12 @@ class DashboardController extends ApiController
 
     public function index(DashboardRequest $request)
     {
-        $this->validate($request, [
-            'institution_targeted_id' => 'nullable|exists:institutions,id'
-        ]);
 
         $permissions = Auth::user()->getAllPermissions();
+
+        $institutions = Institution::query()->whereHas('institutionType', function ($query) {
+            $query->where('name','<>','holding');
+        })->get();
 
         // initialise statistics collection
         $statistics = $this->getDataCollection($this->getStatisticsKeys(), $permissions);
@@ -69,7 +71,7 @@ class DashboardController extends ApiController
         );
 
         // initialise institutionsTargeted collection
-        $institutionsTargeted = $this->getDataCollection(Institution::all()->pluck('name'),
+        $institutionsTargeted = $this->getDataCollection($institutions->pluck('name'),
             $permissions->filter(function ($value, $key) {
                 return $value->name != 'show-dashboard-data-my-institution' && $value->name != 'show-dashboard-data-my-unit' && $value->name != 'show-dashboard-data-my-activity';
             })
@@ -108,26 +110,26 @@ class DashboardController extends ApiController
             ->get()
             ->map(function ($claim, $key) use ($request, $statistics, $channelsUse, $claimObjectsUse, $claimerSatisfactionEvolution, $claimerProcessEvolution, $totalClaimsRegisteredStatistics, $pointOfServicesTargeted, $institutionsTargeted) {
 
-                switch ($request->type){
-                    case "day":
-                        $periode = $claim->created_at->between(Carbon::parse($request->day)->startOfDay(), Carbon::parse($request->day)->endOfDay());
-                        break;
-                    case "period":
-                        $periode = $claim->created_at->between(Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay());
-                        break;
-                    case "month":
-                        $periode = $claim->created_at->between(Carbon::now()->startOfMonth(),Carbon::now()->endOfMonth());
-                        break;
-                    case "30days":
-                        $periode = $claim->created_at->between(Carbon::now()->subDays(30), Carbon::now());
-                        break;
-                    case "45days":
-                        $periode = $claim->created_at->between(Carbon::now()->subDays(45), Carbon::now());
-                        break;
-                    case "3months":
-                        $periode = $claim->created_at->between(Carbon::now()->subMonth(3), Carbon::now());
-                        break;
-                }
+               switch ($request->type){
+                   case "day":
+                       $periode = $claim->created_at->between(Carbon::parse($request->day)->startOfDay(), Carbon::parse($request->day)->endOfDay());
+                       break;
+                   case "period":
+                       $periode = $claim->created_at->between(Carbon::parse($request->date_start)->startOfDay(), Carbon::parse($request->date_end)->endOfDay());
+                       break;
+                   case "month":
+                       $periode = $claim->created_at->between(Carbon::now()->startOfMonth(),Carbon::now()->endOfMonth());
+                       break;
+                   case "30days":
+                       $periode = $claim->created_at->between(Carbon::now()->subDays(30), Carbon::now());
+                       break;
+                   case "45days":
+                       $periode = $claim->created_at->between(Carbon::now()->subDays(45), Carbon::now());
+                       break;
+                   case "3months":
+                       $periode = $claim->created_at->between(Carbon::now()->subMonth(3), Carbon::now());
+                       break;
+               }
 
                 if ($periode) {
 
@@ -255,7 +257,7 @@ class DashboardController extends ApiController
             });
 
         $statisticsDashboard = [
-            'institutions' => Institution::all(),
+            'institutions' => $institutions,
             'statistics' => $statistics,
             'channelsUse' => $channelsUse,
             'claimObjectsUse' => $claimObjectsUse,

@@ -84,21 +84,22 @@ trait Dashboard
     public function incrementTotalRegistered($claim, $subKeys)
     {
         // allInstitution
-        if (array_key_exists('allInstitution', $subKeys)) {
+        if ($subKeys!=null && array_key_exists('allInstitution', $subKeys)) {
             $subKeys['allInstitution']++;
         }
 
         // myInstitution
         try {
-            if (
-                array_key_exists('myInstitution', $subKeys)
+            if ($subKeys !=null
+                && array_key_exists('myInstitution', $subKeys)
                 && ($claim->createdBy->institution_id == $this->institution()->id)
             ) {
                 $subKeys['myInstitution']++;
             }
         } catch (\Exception $exception) {
             if (
-                array_key_exists('myInstitution', $subKeys)
+                $subKeys!=null
+                && array_key_exists('myInstitution', $subKeys)
                 && is_null($claim->createdBy)
                 && ($claim->institution_targeted_id == $this->institution()->id)
             ) {

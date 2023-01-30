@@ -74,6 +74,7 @@ class ServicePackageServiceProvider extends ServiceProvider
                 \Satis2020\ServicePackage\Console\Commands\RelanceCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\SendSMSCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\SendMailCommand::class,
+                \Satis2020\ServicePackage\Console\Commands\RegulatorySemesterReportingCommand::class,
                 \Satis2020\ServicePackage\Console\Commands\DeletingTestData::class,
             ]);
 
@@ -211,6 +212,8 @@ class ServicePackageServiceProvider extends ServiceProvider
         $router->aliasMiddleware('mystaff', \Satis2020\ServicePackage\Http\Middleware\MyStaff::class);
         $router->aliasMiddleware('active.pilot', \Satis2020\ServicePackage\Http\Middleware\ActivePilot::class);
         $router->aliasMiddleware('client.credentials', \Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
+        $router->aliasMiddleware('allow.pilot.collector.to.discussion', \Satis2020\ServicePackage\Http\Middleware\AllowPilotCollectorToDiscussion::class);
+
     }
 
     /**

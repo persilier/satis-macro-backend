@@ -3,8 +3,10 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Rules\ClaimIsAssignedToStaffRules;
@@ -19,9 +21,9 @@ class DiscussionController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-my-discussions')->only(['index']);
-        $this->middleware('permission:store-discussion')->only(['store']);
-        $this->middleware('permission:destroy-discussion')->only(['destroy']);
+        $this->middleware(['permission:list-my-discussions'])->only(['index']);
+        $this->middleware(['permission:store-discussion'])->only(['store']);
+        $this->middleware(['permission:destroy-discussion'])->only(['destroy']);
     }
 
     /**
@@ -31,14 +33,23 @@ class DiscussionController extends ApiController
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Staff::with('discussions.claim')
+        $type = $request->query('type','normal');
+        return response()->json(Staff::with('discussions.claim', 'discussions.staff')
             ->findOrFail($this->staff()->id)
             ->discussions
-            ->filter(function ($value, $key) {
+            ->filter(function ($value, $key) use($type){
                 $value->load(['staff']);
-                return $value->claim->status != 'archived';
+
+                if ($type==Claim::CLAIM_UNSATISFIED){
+                    return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                }
+                if ($type==Claim::CLAIM_UNSATISFIED){
+                    return $value->claim->escalation_status != 'archived'&& $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                }else{
+                    return $value->claim->status != 'archived' && $value->claim->escalation_status == null;
+                }
             })
             ->values()
             , 200);
@@ -56,20 +67,32 @@ class DiscussionController extends ApiController
     {
         $request->merge(['created_by' => $this->staff()->id]);
 
-        $rules = [
-            'name' => 'required',
-            'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
-            'created_by' => 'required|exists:staff,id'
-        ];
+        if ($this->staff()->is_active_pilot) {
+            $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
+            if ($allow_pilot_create_discussion == 1) {
+                $rules = [
+                    'name' => 'required',
+                    'created_by' => 'required|exists:staff,id'
+                ];
+            } else {
+                $rules = [
+                    'name' => 'required',
+                    'claim_id' => ['required', 'exists:claims,id'],
+                    'created_by' => 'required|exists:staff,id'
+                ];
+            }
+        } else {
+            $rules = [
+                'name' => 'required',
+                'claim_id' => ['required', 'exists:claims,id', new ClaimIsAssignedToStaffRules($request->created_by)],
+                'created_by' => 'required|exists:staff,id'
+            ];
+        }
 
         $this->validate($request, $rules);
-
         $discussion = Discussion::create($request->all());
-
         $discussion->staff()->attach($request->created_by);
-
         return response()->json($discussion, 201);
-
     }
 
     /**
@@ -80,7 +103,6 @@ class DiscussionController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -94,7 +116,6 @@ class DiscussionController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**

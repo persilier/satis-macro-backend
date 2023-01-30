@@ -101,9 +101,23 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'search-claim-any-reference',
             'attach-files-to-claim',
             'revive-staff',
-            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
             'list-notification-proof','pilot-list-notification-proof',
-            'export-notification-proof','pilot-export-notification-proof',
+            'list-auth-config','update-auth-config',
+            'activity-log',
+            'list-any-notification-proof','pilot-list-any-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution','show-my-staff-monitoring',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals',
+            'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof',
+            'configure-pilot-collector-discussion-attribute'
+
         ];
 
         $filialPermissions = [
@@ -134,12 +148,23 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'attach-files-to-claim',
             'revive-staff',
             "my-email-claim-configuration",
-            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
-            'bci-monthly-reports', 'bci-annual-reports',
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+            'list-auth-config','update-auth-config',
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-my-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'system-my-efficiency-report','show-my-staff-monitoring',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-            'show-my-staff-monitoring',
-            'list-unit-revivals','list-staff-revivals'
+            'list-staff-revivals','list-unit-revivals',
+            'list-my-claim-unsatisfied',
+            'list-closed-my-claims','close-my-claims',
+            'list-escalation-config','update-escalation-config',
+            'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+            'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof','update-mail-parameters'
+
         ];
 
         $observatoryPermissions = [
@@ -195,7 +220,20 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'revive-staff',
             'list-any-institution', 'store-any-institution', 'show-any-institution', 'update-any-institution', 'destroy-any-institution',
             "any-email-claim-configuration",
-            'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+            'list-auth-config','update-auth-config',
+            'activity-log',
+            'list-notification-proof','pilot-list-notification-proof',
+            'list-regulatory-reporting-claim-my-institution',
+            'config-reporting-claim-any-institution',
+            'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
+            'list-regulatory-reporting-claim-any-institution',
+            'config-reporting-claim-any-institution',
+            'system-any-efficiency-report',
+            'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+            'list-staff-revivals','list-unit-revivals',
+            'show-my-staff-monitoring',
+            'logout-user-my-institution',
+            'configure-pilot-collector-discussion-attribute',
         ];
 
         $memberPermissions = [
@@ -264,10 +302,19 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'bci-monthly-reports', 'bci-annual-reports',
             'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
             'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-            'show-my-staff-monitoring',
             'list-notification-proof','pilot-list-notification-proof',
-            'export-notification-proof','pilot-export-notification-proof',
-            'list-unit-revivals','list-staff-revivals'
+            'list-staff-revivals','list-unit-revivals',
+            'show-my-staff-monitoring',
+            'list-my-claim-unsatisfied',
+            'list-closed-my-claims','close-my-claims',
+            'list-escalation-config','update-escalation-config',
+            'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+            'logout-user-my-institution',
+            'bci-monthly-reports', 'bci-annual-reports',
+            'pilot-export-notification-proof', 'export-notification-proof',
+            'configuration-pilot','pilot-relance-other','reassignment_to_pilot',
+            'list-claim-transferred-my-institution',
+            'configure-pilot-collector-discussion-attribute',
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');

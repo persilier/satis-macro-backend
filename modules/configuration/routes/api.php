@@ -53,3 +53,8 @@ Route::put("/configurations/reject-unit-transfer-limitation", "RejectUnitTransfe
 // Min Fusion Percent configurations
 Route::get("/configurations/min-fusion-percent", "MinFusionPercent\MinFusionPercentController@show")->name("configurations.min.fusion.percent.limitation.show");
 Route::put("/configurations/min-fusion-percent", "MinFusionPercent\MinFusionPercentController@update")->name("configurations.min.fusion.percent.limitation.update");
+
+// Pilot and Collector attribute in discussions configurations
+
+Route::get("/configurations/allow-pilot-collector-discussion", "Discussion\AllowPilotCollectorToDiscussionController@show")->name("configurations.allow.pilot.collector.discussion.show");
+Route::put("/configurations/allow-pilot-collector-discussion", "Discussion\AllowPilotCollectorToDiscussionController@update")->name("configurations.allow.pilot.collector.discussion.update");

@@ -10,8 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Satis2020\ServicePackage\MessageApiMethod;
+use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\File;
 use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\InstitutionMessageApi;
+use Satis2020\ServicePackage\Models\Message;
+use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Requests\UpdatePasswordRequest;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
@@ -20,8 +28,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, NotificationTrait, CreateClaim, DataUserNature;
 
+
     public function index(Request $request)
     {
+        #dd(config('auth.password_reset_link'));
+        #dd(parse_url($request->headers->get('origin'),  PHP_URL_HOST));
         //dd(Config::get('email-claim-configuration.app_url_incoming_mail').route('passport.token', null, false));
         //        $sendMail = $this->londoSMSApi(
 //            "BciGatewayLogin",
@@ -42,8 +53,8 @@ class Controller extends BaseController
        //     dump('no');
        // }
 
-       // dd($proxyConfigs);
-
+        //verif
+        return response()->json(MessageApiMethod::uimcecSMSGateway($request->phone,"Test SMS IUMCEC 2"));
     }
 
     public function download(File $file)
@@ -110,4 +121,16 @@ class Controller extends BaseController
         return Http::withHeaders($headers)->post("https://gateway.londo-tech.com/api/v1/send/sms", $data);
 
     }
+
+    public function claimRef()
+    {
+        $subject = "[SATISPR-202201001437-INDEPENDANT] Accusé de reception";
+        $content = "Bonjour M ATTA YAYA ARAFATH, [SATISPR-202201001437-INDEPENDANTE] Nous acusons reception de votre [SATISPR-202201001437-INDEPENDANTE] reclamation en ce jour ! [SATISPR-202201001437-INDEPENDANTE]";
+
+        $references = array_unique(array_merge(extractClaimRefs($subject),extractClaimRefs($content)));
+
+        return response()->json($references);
+    }
+
+
 }

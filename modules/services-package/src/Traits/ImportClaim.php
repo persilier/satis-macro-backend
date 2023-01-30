@@ -70,10 +70,11 @@ trait ImportClaim
             function ($attribute, $value, $fail) {
                 try{
                     if (Carbon::parse($value)->gt(Carbon::now())) {
-                        $fail($attribute . ' is invalid! The value is greater than now');
+                        $fail(__('validation.date_gte',["attribute"=>$attribute],getAppLang()));
                     }
                 }catch (InvalidFormatException $e){
-                    $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
+
+                    $fail(__('validation.date_format',['attribute'=>$attribute,':format'=>"Y-m-d H:i"],getAppLang()));
                 }
             }
         ];
@@ -82,9 +83,7 @@ trait ImportClaim
         $rules['relance'] = ['required', Rule::in(['OUI', 'NON'])];
 
         if($with_client){
-
             $rules['numero_compte_concerne'] = ['nullable','exists:accounts,number', new AccountValidationForImportClaimRules([
-
                 'telephone' => $request['telephone'],
                 'email' => $request['email'],
                 'acronyme' => $request['institution_concernee']])
@@ -162,8 +161,8 @@ trait ImportClaim
             'description'   => $row['description'],
             'claim_object_id' => $row['objet_reclamation'],
             'institution_targeted_id'   => $row['institution_concernee'],
-            'request_channel_slug' => $row['canal_reception_slug'],
-            'response_channel_slug' => $row['canal_reponse_slug'] ,
+            'request_channel_slug' => strtolower($row['canal_reception_slug']),
+            'response_channel_slug' => strtolower($row['canal_reponse_slug']),
             'event_occured_at' => $row['date_evenement'],
             'amount_disputed' => $row['montant_reclame'],
             'amount_currency_slug' => $row['devise_slug'],
@@ -331,11 +330,11 @@ trait ImportClaim
 
         if($with_client){
 
-            $data = $this->getIds($data, 'accounts', 'numero_compte_concerne', 'number');
+            $data = $this->getAccountIds($data, 'accounts', 'numero_compte_concerne', 'number');
 
         }
 
-        if($data['relance'] =='OUI'){
+        if(strtolower($data['relance']) =='oui'){
 
             $data['relance'] = true;
 

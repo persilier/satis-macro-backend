@@ -128,7 +128,6 @@ trait ProcessingCircuit
             ]);
 
         }
-
         return $collection;
     }
 

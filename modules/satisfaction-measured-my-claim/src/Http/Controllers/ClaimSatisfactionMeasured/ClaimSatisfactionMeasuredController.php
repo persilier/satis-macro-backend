@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 use Satis2020\Webhooks\Consts\Event;
 use Satis2020\Webhooks\Facades\SendEvent;
@@ -20,7 +21,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
 {
     use ClaimSatisfactionMeasured;
 
-    public function __construct()
+    private $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -28,6 +31,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('permission:list-satisfaction-measured-my-claim')->only(['index']);
         $this->middleware('permission:update-satisfaction-measured-my-claim')->only(['show', 'satisfactionMeasured']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -36,11 +41,13 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
-        $claims = $this->getAllMyClaim(  'validated',true,$paginationSize,$key);
+        $statusColumn = $request->query('type',"normal")==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+
+        $claims = $this->getAllMyClaim(Claim::CLAIM_VALIDATED, false, $paginationSize, $key, $statusColumn);
         return response()->json($claims, 200);
     }
 
@@ -48,10 +55,12 @@ class ClaimSatisfactionMeasuredController extends ApiController
     /**
      * @param $claim
      * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function show($claim)
+    public function show(Claim $claim)
     {
-        $claim = $this->getOneMyClaim($claim);
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
+        $claim = $this->getOneMyClaim($claim->id,Claim::CLAIM_VALIDATED,$statusColumn);
         return response()->json($claim, 200);
     }
 
@@ -64,7 +73,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
      * @throws ValidationException
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    public function satisfactionMeasured(Request $request, $claim)
+    public function satisfactionMeasured(Request $request, Claim $claim)
     {
 
         if ($request->isNotFilled("note")){
@@ -72,7 +81,8 @@ class ClaimSatisfactionMeasuredController extends ApiController
         }
         $this->validate($request, $this->rules($request));
 
-        $claim = $this->getOneMyClaim($claim);
+        $statusColumn = isEscalationClaim($claim)?"escalation_status":"status";
+        $claim = $this->getOneMyClaim($claim->id,Claim::CLAIM_VALIDATED,$statusColumn);
 
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,
@@ -82,7 +92,19 @@ class ClaimSatisfactionMeasuredController extends ApiController
             'note' => $request->note
         ]);
 
-        $claim->update(['status' => 'archived', 'archived_at' => Carbon::now()]);
+        if ($request->is_claimer_satisfied) {
+            $claim->update([$statusColumn => Claim::CLAIM_ARCHIVED, 'archived_at' => Carbon::now()]);
+        }else{
+            $claim->update([$statusColumn => Claim::CLAIM_UNSATISFIED]);
+        }
+
+        $this->activityLogService->store("Mesure de satisfaction",
+            $this->institution()->id,
+            $this->activityLogService::MEASURE_SATISFACTION,
+            'claim',
+            $this->user(),
+            $claim
+        );
 
         $claim->refresh();
         //sending webhook event

@@ -24,7 +24,7 @@ class DiscussionMessageController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:contribute-discussion')->only(['index', 'store', 'destroy']);
+        $this->middleware(['permission:contribute-discussion'])->only(['index', 'store', 'destroy']);
     }
 
     /**
@@ -64,7 +64,6 @@ class DiscussionMessageController extends ApiController
      */
     public function create()
     {
-
     }
 
     /**
@@ -105,16 +104,16 @@ class DiscussionMessageController extends ApiController
                 // insert the file into database
                 $message->files()->create(['title' => $title, 'url' => Storage::url($path)]);
             }
-
         }
 
-        Notification::send($this->getStaffIdentities($discussion->staff->pluck('id')->all(), [$this->staff()->id])
-            , new PostDiscussionMessage($message));
+        Notification::send(
+            $this->getStaffIdentities($discussion->staff->pluck('id')->all(), [$this->staff()->id]),
+            new PostDiscussionMessage($message)
+        );
 
         $message->load(['files']);
 
         return response()->json($message, 200);
-
     }
 
     /**
@@ -125,7 +124,6 @@ class DiscussionMessageController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -139,7 +137,6 @@ class DiscussionMessageController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**
@@ -161,8 +158,10 @@ class DiscussionMessageController extends ApiController
 
         $rules = [
             'message' => ['required', 'exists:messages,id', new MessageBelongsToDiscussionRules($discussion)],
-            'staff' => ['required', 'exists:staff,id', new MessageIsPostedByStaffRules($message),
-                new StaffBelongsToDiscussionContributorsRules($discussion)],
+            'staff' => [
+                'required', 'exists:staff,id', new MessageIsPostedByStaffRules($message),
+                new StaffBelongsToDiscussionContributorsRules($discussion)
+            ],
         ];
 
         $this->validate($request, $rules);

@@ -12,17 +12,21 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Account;
 use Satis2020\ServicePackage\Models\AccountType;
 use Satis2020\ServicePackage\Models\CategoryClient;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClientTrait;
 use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
+use Satis2020\ServicePackage\Traits\Search;
 use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete;
+    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete,Search;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
 
         parent::__construct();
@@ -32,6 +36,8 @@ class ClientController extends ApiController
         $this->middleware('permission:show-client-from-my-institution')->only(['show']);
         $this->middleware('permission:update-client-from-my-institution')->only(['edit', 'update']);
         $this->middleware('permission:destroy-client-from-my-institution')->only(['destroy']);
+
+        $this->activityLogService = $activityLogService;
     }
 
 
@@ -46,6 +52,7 @@ class ClientController extends ApiController
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
 
+
         if ($paginationSize==null)
             $paginationSize = Constants::PAGINATION_SIZE;
 
@@ -56,15 +63,14 @@ class ClientController extends ApiController
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
-     * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    public function create()
+    public function create(Request $request)
     {
         $institution = $this->institution();
         return response()->json([
-            'client_institutions' => $this->getAllClientByInstitution($institution->id),
             'accountTypes' => AccountType::all(),
             'clientCategories' => CategoryClient::all()
         ], 200);
@@ -138,7 +144,11 @@ class ClientController extends ApiController
             'client_institution.client.identite',
             'client_institution.category_client',
             'client_institution.institution'
-        ])->find($accountId);
+        ])->findOrFail($accountId);
+
+        $account->makeVisible(['account_number']);
+        $account->makeHidden(['number']);
+
 
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id)
@@ -151,14 +161,14 @@ class ClientController extends ApiController
     /**
      * @param Request $request
      * @param $clientId
-     * @return void
+     * @return JsonResponse
      */
     public function show(Request $request, $clientId)
     {
         $request->merge(['institution_id' => $this->institution()->id]);
         if (!$client = $this->getOneClient($request, $clientId)) {
 
-            throw new CustomException("Impossible de retrouver ce client dans votre institution.");
+            throw new CustomException(__('errors.client_not_found',[],app()->getLocale()));
         }
 
         return response()->json($client, 200);
@@ -191,7 +201,7 @@ class ClientController extends ApiController
 
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id) {
-            return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
+            return $this->errorResponse(__('errors.account_do_not_exist',[],app()->getLocale()), Response::HTTP_NOT_FOUND);
         }
 
         $client = $account->client_institution->client;
@@ -208,7 +218,7 @@ class ClientController extends ApiController
 
         if (!$verifyPhone['status']) {
 
-            $verifyPhone['message'] = "We can't perform your request. The phone number " . $verifyPhone['verify']['conflictValue'] . " belongs to someone else";
+            $verifyPhone['message'] = __('errors.phone_conflict',['phone'=>$verifyPhone['verify']['conflictValue']],app()->getLocale());
             throw new CustomException($verifyPhone, 409);
 
         }
@@ -218,7 +228,7 @@ class ClientController extends ApiController
 
         if (!$verifyEmail['status']) {
 
-            $verifyEmail['message'] = "We can't perform your request. The email address " . $verifyEmail['verify']['conflictValue'] . " belongs to someone else";
+            $verifyEmail['message'] = __('errors.email_conflict',['email'=>$verifyEmail['verify']['conflictValue']],app()->getLocale());
             throw new CustomException($verifyEmail, 409);
 
         }
@@ -226,6 +236,14 @@ class ClientController extends ApiController
         $account->update($request->only(['number', 'account_type_id']));
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
+
+        $this->activityLogService->store(__('messages.client_updated',[],app()->getLocale()),
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'account',
+            $this->user(),
+            $account
+        );
 
         return response()->json($client, 201);
     }
@@ -252,6 +270,14 @@ class ClientController extends ApiController
             return $this->errorResponse("Compte inexistant", Response::HTTP_NOT_FOUND);
 
         $account->secureDelete('claims');
+
+        $this->activityLogService->store('Suppression du compte d\'un client',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'account',
+            $this->user(),
+            $account
+        );
 
         return response()->json($account, 201);
     }

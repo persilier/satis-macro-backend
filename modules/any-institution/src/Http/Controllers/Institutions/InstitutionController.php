@@ -2,16 +2,17 @@
 
 namespace Satis2020\AnyInstitution\Http\Controllers\Institutions;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Exceptions\SecureDeleteException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\InstitutionType;
-use Satis2020\ServicePackage\Rules\FieldUnicityRules;
 use Satis2020\ServicePackage\Traits\InstitutionTrait;
 use Satis2020\ServicePackage\Traits\UploadFile;
 
@@ -48,8 +49,7 @@ class InstitutionController extends ApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function create()
     {
@@ -63,8 +63,7 @@ class InstitutionController extends ApiController
      * Show the form for editing the specified resource.
      *
      * @param Institution $institution
-     * @return \Illuminate\Http\Response
-     * @throws RetrieveDataUserNatureException
+     * @return JsonResponse
      */
     public function edit(Institution $institution)
     {
@@ -78,10 +77,10 @@ class InstitutionController extends ApiController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws RetrieveDataUserNatureException
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws ValidationException
+     * @throws CustomException
      */
     public function store(Request $request)
     {
@@ -128,35 +127,26 @@ class InstitutionController extends ApiController
      * Display the specified resource.
      *
      * @param $institution
-     * @return void
+     * @return JsonResponse
      */
     public function show(Institution $institution)
     {
         return response()->json($institution->load('institutionType', 'defaultCurrency'), 200);
     }
 
-
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param $institution
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      * @throws RetrieveDataUserNatureException
-     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     * @throws CustomException
      */
     public function update(Request $request, Institution $institution)
     {
-
-        if ($this->institution()->institutionType->name == 'holding' || $this->institution()->institutionType->name == 'observatory') {
-            $request->merge([
-                'institution_type_id' => $this->institution()->institutionType->name == 'holding'
-                    ? InstitutionType::where('name', 'filiale')->firstOrFail()->id
-                    : InstitutionType::where('name', 'membre')->firstOrFail()->id
-            ]);
-        }
-
+        $request->merge(['institution_type_id' => $institution->institution_type_id]);
         $this->validate($request, $this->rules($institution));
 
         if (false === $this->getVerifiedStore($request->institution_type_id, $this->nature()))
@@ -192,8 +182,8 @@ class InstitutionController extends ApiController
      *
      * @param Request $request
      * @param $institution
-     * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function updateLogo(Request $request, Institution $institution)
     {
@@ -218,7 +208,7 @@ class InstitutionController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param $institution
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws SecureDeleteException
      * @throws \Exception
      */

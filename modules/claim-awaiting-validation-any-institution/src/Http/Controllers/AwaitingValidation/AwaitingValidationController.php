@@ -8,6 +8,7 @@ use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Rules\TreatmentCanBeValidateRules;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\AwaitingValidation;
 use Satis2020\ServicePackage\Traits\SeveralTreatment;
 
@@ -16,7 +17,9 @@ class AwaitingValidationController extends ApiController
 
     use AwaitingValidation, SeveralTreatment;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -27,6 +30,8 @@ class AwaitingValidationController extends ApiController
         $this->middleware('permission:validate-treatment-any-institution')->only(['validate', 'invalidate']);
 
         $this->middleware('active.pilot')->only(['index', 'show', 'validate', 'invalidate']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -40,6 +45,7 @@ class AwaitingValidationController extends ApiController
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
+
         return response()->json($this->getClaimsAwaitingValidationInAnyInstitution(true,$paginationSize, $key, $type), 200);
     }
 
@@ -47,7 +53,7 @@ class AwaitingValidationController extends ApiController
      * Display the specified resource.
      *
      * @param Claim $claim
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Claim $claim)
     {
@@ -55,20 +61,7 @@ class AwaitingValidationController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Claim $claim
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws ValidationException
-     */
-    public function validated(Request $request, Claim $claim)
-    {
-        $claim->load($this->getRelations());
 
-        $rules = [
-            'solution_communicated' => 'required|string'
-        ];
 
         $this->validate($request, $rules);
 
@@ -80,7 +73,7 @@ class AwaitingValidationController extends ApiController
      *
      * @param Request $request
      * @param Claim $claim
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
     public function invalidated(Request $request, Claim $claim)

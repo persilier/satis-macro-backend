@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\User;
 
 /**
  * Trait DataUserNature
@@ -51,19 +53,40 @@ trait DataUserNature
     protected function institution()
     {
 
-        $message = "Unable to find the user institution";
+        $message = __('messages.unable_to_fin_user_institution',[],getAppLang());
+        $staff = $this->user()->load('identite.staff')->identite->staff;
 
-        try {
-            $this->institution = Institution::with('institutionType')->findOrFail($this->staff()->institution_id);
-        } catch (\Exception $exception) {
-            throw new RetrieveDataUserNatureException($message);
-        }
+        $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 
-        if (is_null($this->institution)) {
+        if ($this->institution == null) {
             throw new RetrieveDataUserNatureException($message);
         }
 
         return $this->institution;
+    }
+
+    protected function institutionWithUserId($user_id)
+    {
+
+        $message = "Unable to find the user institution";
+        $staff = User::find($user_id)->load('identite.staff')->identite->staff;
+
+        $this->institution = Institution::with('institutionType')->find($staff->institution_id);
+
+        if ($this->institution == null) {
+            throw new RetrieveDataUserNatureException($message);
+        }
+
+        return $this->institution;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @throws RetrieveDataUserNatureException
+     */
+    protected function connectedInstitution()
+    {
+        return $this->institution();
     }
 
     /**
@@ -73,11 +96,12 @@ trait DataUserNature
     protected function staff()
     {
 
-        $message = "Unable to find the user staff";
+        $message = __('messages.unable_to_fin_user_staff',[],getAppLang());
 
         try {
             $this->staff = $this->user()->load('identite.staff')->identite->staff;
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -95,7 +119,7 @@ trait DataUserNature
     protected function nature()
     {
 
-        $message = "Unable to find the nature of the application";
+        $message = __('messages.unable_to_find_app_nature',[],getAppLang());
 
         try {
             $this->nature = json_decode(Metadata::where('name', 'app-nature')->firstOrFail()->data);
@@ -151,6 +175,32 @@ trait DataUserNature
             $model = DB::table($table)
                 ->whereNull('deleted_at')
                 ->where($column . '->' . App::getLocale(), $row[$keyRow])
+                ->first();
+
+            $row[$keyRow] = optional($model)->id;
+
+        }
+
+        return $row;
+
+    }
+
+
+    /**
+     * @param $row
+     * @param $table
+     * @param $keyRow
+     * @param $column
+     * @param bool $id
+     * @return mixed
+     */
+    public function getAccountIds($row, $table, $keyRow, $column)
+    {
+        if (array_key_exists($keyRow, $row)) {
+
+            $model = DB::table($table)
+                ->whereNull('deleted_at')
+                ->where($column, $row[$keyRow])
                 ->first();
 
             $row[$keyRow] = optional($model)->id;
@@ -247,6 +297,33 @@ trait DataUserNature
         } catch (\Exception $exception) {
         }
 
+    }
+
+    /**
+     * @param $request
+     */
+    protected function checkEmailAllowDomain($request)
+    {
+
+        $config = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance-domaine-prefixe')->firstOrFail()->data);
+        if ($config) {
+            if (sizeof($config) > 0) {
+                $email = $request->email;
+                $element_state = true;
+                foreach ($email as $item){
+                    $end_email = substr($item, strpos($item, "@") + 1);
+                    if (!in_array($end_email, $config)) {
+                        $element_state = false;
+                        break;
+                    }
+                }
+                return $element_state;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
 

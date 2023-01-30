@@ -19,13 +19,14 @@ class UniteTypeUnite implements ToCollection, WithHeadingRow
 {
     use Importable, SkipsFailures, DataUserNature, ImportUniteTypeUnite, ImportIdentite;
     private $myInstitution;
-    private $withoutInstituion;
+    private $withoutInstitution;
     private $errors; // array to accumulate errors
 
-    public function __construct($myInstitution, $withoutInstituion = false)
+    public function __construct($myInstitution, $withoutInstitution = false)
     {
         $this->myInstitution = $myInstitution;
-        $this->withoutInstituion = $withoutInstituion;
+        $this->withoutInstitution = $withoutInstitution;
+        $this->errors = [];
     }
 
     /**
@@ -36,42 +37,24 @@ class UniteTypeUnite implements ToCollection, WithHeadingRow
     {
 
         $collection = $collection->toArray();
-
+        $index = 1;
         if(empty($collection)){
 
-            throw new CustomException("Le fichier excel d'import des types d'unités et unités est vide.", 404);
+            throw new CustomException(__("messages.empty_unity_file_alert",[],app()->getLocale()), 404);
         }
         // iterating each row and validating it:
         foreach ($collection as $key => $row) {
-
+            $index++;
             $validator = Validator::make($row, $this->rulesImport($row));
             // fields validations
             if ($validator->fails()) {
-
-                $errors_validations = [];
-
-                foreach ($validator->errors()->messages() as $messages) {
-
-                    foreach ($messages as $error) {
-                        $errors_validations[] = $error;
-                    }
-                }
-
-                $this->errors[$key] = [
-                    'error' => $errors_validations,
-                    'data' => $row
-                ];
-
+                $error=['messages'=>$validator->getMessageBag()->getMessages(),'data'=>$row,"line"=>$index];
+                array_push($this->errors,$error);
             } else {
-
                 $data = $this->mergeMyInstitution($row);
-
                 $data = $this->getIdInstitution($data, 'institution', 'name');
-
                 $data = $this->getIds($data, 'unit_types', 'name_type_unite', 'name');
-
                 $this->storeImportUniteTypeUnite($data, $row['name_type_unite']);
-
             }
 
         }

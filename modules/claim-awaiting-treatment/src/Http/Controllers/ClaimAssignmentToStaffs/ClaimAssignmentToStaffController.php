@@ -2,22 +2,25 @@
 
 namespace Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs;
 
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Illuminate\Validation\Rules\RequiredIf;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\Metadata;
 use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Validation\Rules\RequiredIf;
+use Satis2020\ServicePackage\Models\Metadata;
+use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Models\Treatment;
 use Satis2020\ServicePackage\Notifications\TreatAClaim;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 /**
  * Class ClaimAssignmentToStaffController
@@ -25,9 +28,11 @@ use Satis2020\ServicePackage\Traits\Notification;
  */
 class ClaimAssignmentToStaffController extends ApiController
 {
-    use ClaimAwaitingTreatment;
+    use ClaimAwaitingTreatment, ConfigurationPilotTrait;
 
-    public function __construct()
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
@@ -35,19 +40,41 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
         $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim', 'unfoundedClaim']);
+
+        $this->activityLogService = $activityLogService;
     }
 
 
     /**
+     * @param Request $request
      * @return JsonResponse
      * @throws RetrieveDataUserNatureException
      */
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->query('type',"normal");
         $institution = $this->institution();
         $staff = $this->staff();
+        $claims = [];
+        if ($this->checkIfStaffIsPilot($staff)){
 
-        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
+            $claims = $this->getClaimsQuery($institution->id,$staff->unit_id)->get()->map(function ($item, $key) {
+                $item->with($this->getRelationsAwitingTreatment());
+            });
+
+        }else{
+            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
+                $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+                $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+                $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
+                return $item;
+            });
+        }
+
+        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
+
+        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id,$statusColumn)
+           ->get()->map(function ($item, $key) {
             $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
             $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
             $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
@@ -61,13 +88,14 @@ class ClaimAssignmentToStaffController extends ApiController
      *
      * @param Claim $claim
      * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
      * @throws CustomException
+     * @throws RetrieveDataUserNatureException
      */
     public function show($claim)
     {
         $institution = $this->institution();
         $staff = $this->staff();
+
 
         $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
         $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
@@ -85,7 +113,6 @@ class ClaimAssignmentToStaffController extends ApiController
      */
     protected function treatmentClaim(Request $request, $claim)
     {
-
         $institution = $this->institution();
 
         $staff = $this->staff();
@@ -102,9 +129,10 @@ class ClaimAssignmentToStaffController extends ApiController
             ],
             'solution' => ['required', 'string'],
             'comments' => ['nullable', 'string'],
-            'preventive_measures' => ['string',
+            'preventive_measures' => [
+                'string',
                 Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
-                && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
+                    && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
             ]
         ];
 
@@ -119,14 +147,47 @@ class ClaimAssignmentToStaffController extends ApiController
             'unfounded_reason' => NULL
         ]);
 
-        $claim->update(['status' => 'treated']);
+        if (isEscalationClaim($claim)){
+            $claim->update(['escalation_status' => 'treated']);
+        }else{
+            $claim->update(['status' => 'treated']);
+        }
 
-        if(!is_null($this->getInstitutionPilot($institution))){
-            $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+        $this->activityLogService->store(
+            "Traitement d'une réclamation",
+            $this->institution()->id,
+            $this->activityLogService::TREATMENT_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
+        $configuration  = $this->nowConfiguration()['configuration'];
+        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
+        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
+        $responsible_pilot  = null;
+
+        if ($configuration->many_active_pilot  === "0") {
+            // one active pivot
+            if (!is_null($this->getInstitutionPilot($institution))) {
+                $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
+            }
+        } else if ($configuration->many_active_pilot  === "1") {
+            // many active pivot
+            foreach ($all_active_pilots as $pilot) {
+                if ($pilot->staff->id == $claim->activeTreatment->transferred_to_unit_by) {
+                    $responsible_pilot =  $pilot->staff;
+                }
+            }
+                if ($lead_pilot->identite) {
+                    $lead_pilot->identite->notify(new TreatAClaim($claim));
+                }
+                if ($responsible_pilot) {
+                        $responsible_pilot->identite->notify(new TreatAClaim($claim));
+                }
+            
         }
 
         return response()->json($claim, 200);
-
     }
 
 
@@ -159,13 +220,19 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $claim->update(['status' => 'treated']);
 
-        if(!is_null($this->getInstitutionPilot($institution))){
+        $this->activityLogService->store(
+            "Une réclamation a été déclarée non fondée",
+            $this->institution()->id,
+            $this->activityLogService::UNFOUNDED_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
+
+        if (!is_null($this->getInstitutionPilot($institution))) {
             $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
         }
 
         return response()->json($claim, 200);
-
     }
-
-
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 
 /**
  * Class RelanceController
@@ -14,13 +15,15 @@ use Satis2020\ServicePackage\Models\Metadata;
  */
 class RelanceController extends ApiController
 {
-
-    public function __construct()
+    protected $activityLogService;
+    public function __construct(ActivityLogService $activityLogService)
     {
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:update-relance-parameters')->only(['show','update']);
+        $this->middleware('permission:update-relance-parameters')->only(['show', 'update']);
+
+        $this->activityLogService = $activityLogService;
     }
 
     /**
@@ -34,7 +37,11 @@ class RelanceController extends ApiController
             [
                 "coef" => json_decode(Metadata::query()->where('name', 'coef-relance')->firstOrFail()->data),
                 "limit" => json_decode(Metadata::query()->where('name', Metadata::REGULATORY_LIMIT)->firstOrFail()->data),
-            ], 200);
+                "domaine_prefixe" => json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance-domaine-prefixe')->firstOrFail()->data),
+
+            ],
+            200
+        );
     }
 
 
@@ -47,13 +54,26 @@ class RelanceController extends ApiController
     {
         $rules = [
             'coef' => 'required|integer',
+            'domaine_prefixe' => 'present|array',
         ];
 
         $this->validate($request, $rules);
 
-        Metadata::query()->where('name', 'coef-relance')->firstOrFail()->update(['data' => json_encode($request->coef)]);
+        $metadata = Metadata::where('name', 'coef-relance')->firstOrFail();
+        $metadata->update(['data' => json_encode($request->coef)]);
+
+        Metadata::where('name', 'coef-relance-domaine-prefixe')
+            ->firstOrFail()->update(['data' => json_encode($request->domaine_prefixe)]);
+
+        $this->activityLogService->store(
+            'Configuration du coefficient applicable pour l\'envoie de relance',
+            $this->institution()->id,
+            $this->activityLogService::UPDATED,
+            'metadata',
+            $this->user(),
+            $metadata
+        );
 
         return response()->json($request->only('coef'), 200);
     }
-
 }

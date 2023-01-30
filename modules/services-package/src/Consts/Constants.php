@@ -10,7 +10,7 @@ class Constants
 {
 
     const COUNTRIES_SERVICE_URL = "http://163.172.106.97:8020/api/";
-    const BENIN_COUNTRY_ID=24;
+    const BENIN_COUNTRY_ID = 24;
     const PAGINATION_SIZE = 10;
 
     const GLOBAL_STATE_REPORTING = 'global-state-reporting';
@@ -31,7 +31,17 @@ class Constants
     const ALL_STAFF = "allStaff";
 
 
-    static public function  paginationSize()
+
+
+    const PROXY = "proxy";
+    const PROXY_MODULES = "proxy_modules";
+    const PROXY_HTTP_SERVER = "proxy_http_server";
+    const PROXY_HTTPS_SERVER = "proxy_https_server";
+    const PROXY_HTTP_PORT = "proxy_http_port";
+    const PROXY_HTTPS_PORT = "proxy_https_port";
+
+
+    static public function paginationSize()
     {
         return self::PAGINATION_SIZE;
     }
@@ -39,8 +49,8 @@ class Constants
     static function getReportTypesNames()
     {
         $names = [];
-        foreach (self::reportTypes() as $type){
-            array_push($names,$type['value']);
+        foreach (self::reportTypes() as $type) {
+            array_push($names, $type['value']);
         }
         return $names;
     }
@@ -94,10 +104,13 @@ class Constants
                 'value' => self::NOTIFICATION_PROOF, 'label' => 'Preuve d\'Accusé de réception'
             ],
 
+
         ];
     }
 
-    static function periodList(){
+
+    static function periodList()
+    {
 
         return [
             [
@@ -118,11 +131,17 @@ class Constants
         ];
     }
 
+
+    static function proxyModules()
+    {
+        return ['mail', 'sms', 'incoming_mail_service'];
+    }
+
     static function getPeriodValues()
     {
         $names = [];
-        foreach (self::periodList() as $type){
-            array_push($names,$type['value']);
+        foreach (self::periodList() as $type) {
+            array_push($names, $type['value']);
         }
         return $names;
     }
@@ -149,6 +168,8 @@ class Constants
 
         return $years;
     }
+
+
     static function getClaimRelations()
     {
         return [
@@ -170,8 +191,16 @@ class Constants
             'activeTreatment.responsibleUnit.parent',
             'revivals',
             'activeTreatment',
+            'activeTreatment.validatedBy.identite',
+            'activeTreatment.transferredToTargetInstitutionBy.identite',
+            'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard'
         ];
 
     }
 
+    static function getTreatmentRelations()
+    {
+
+    }
 }

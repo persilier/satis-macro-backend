@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\StaffManagement;
 
 
 /**
@@ -15,7 +16,7 @@ use Satis2020\ServicePackage\Traits\DataUserNature;
  */
 class CreateClaimController extends ApiController
 {
-    use DataUserNature;
+    use StaffManagement;
     public function __construct()
     {
         parent::__construct();
@@ -29,10 +30,21 @@ class CreateClaimController extends ApiController
      */
     public function index()
     {
+        $staff_id = \request()->query('staff_id');
+        if ($staff_id==null){
+            $staff_id = $this->staff()->id;
+        }
+
         return response()->json(Claim::with([
             'claimObject.claimCategory', 'claimer', 'relationship', 'accountTargeted', 'institutionTargeted', 'unitTargeted', 'requestChannel',
             'responseChannel', 'amountCurrency', 'createdBy.identite', 'completedBy.identite', 'files', 'activeTreatment'
-        ])->where('created_by', $this->staff()->id)->get(), 200);
+        ])->where('created_by', $staff_id)->get(), 200);
     }
+
+    public function create()
+    {
+        return response()->json($this->getRegisteredClaims(), 200);
+    }
+
 
 }

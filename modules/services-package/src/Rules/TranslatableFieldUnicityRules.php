@@ -35,6 +35,7 @@ class TranslatableFieldUnicityRules implements Rule
     public function passes($attribute, $value)
     {
         $this->message = "{$value} is already used";
+        $value = strtolower($value);
 
         try {
 
@@ -43,8 +44,8 @@ class TranslatableFieldUnicityRules implements Rule
                     ->get()
                     ->search(function ($item, $key) use ($value) {
                         return is_null($this->except)
-                            ? $value == json_decode($item->{$this->column})->{app()->getLocale()}
-                            : $item->{$this->idColumn} != $this->except && $value == json_decode($item->{$this->column})->{app()->getLocale()};
+                            ? $value == strtolower(json_decode($item->{$this->column})->{app()->getLocale()})
+                            : $item->{$this->idColumn} != $this->except && $value == strtolower(json_decode($item->{$this->column})->{app()->getLocale()});
                     }) === false;
 
         } catch (Exception $exception) {
