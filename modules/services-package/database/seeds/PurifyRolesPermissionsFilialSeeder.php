@@ -66,6 +66,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-proxy-config','update-proxy-config','delete-proxy-config',
                     'list-escalation-config','update-escalation-config',
                     'logout-user-my-institution',
+                    'list-reporting-claim-my-institution',
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
