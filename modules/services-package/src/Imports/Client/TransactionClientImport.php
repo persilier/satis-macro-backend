@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Validators\Failure;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Satis2020\ServicePackage\Models\Client;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Satis2020\ServicePackage\Models\Account;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Satis2020\ServicePackage\Models\Identite;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -23,13 +26,13 @@ use Satis2020\ServicePackage\Rules\UniqueTelephoneRule;
 use Satis2020\ServicePackage\Rules\EmailValidationRules;
 use Satis2020\ServicePackage\Rules\UniqueEmailInIdentiteRule;
 
-class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, SkipsOnFailure //, ShouldQueue
+class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkReading, SkipsOnFailure, SkipsOnError //, ShouldQueue
 {
-
+    use SkipsFailures, SkipsErrors;
     protected $myInstitution;
     protected $data;
     private $hasError = false;
-    private $errors; // array to accumulate errors
+    //private $errors; // array to accumulate errors
     private $stop_identite_exist;
     private $etat_update;
 
@@ -45,7 +48,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
     {
         $this->myInstitution = $myInstitution;
         $this->data = $data;
-        $this->errors = [];
+       // $this->errors = [];
         $this->stop_identite_exist = $stop_identite_exist;
         $this->etat_update = $etat_update;
     }
@@ -55,7 +58,7 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function chunkSize(): int
     {
-        return 500;
+        return 30;
     }
 
 
@@ -283,6 +286,11 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function onFailure(Failure ...$failures)
     {
+        dd($failures);
         array_push($this->errors, $failures);
+    }
+    public function onError(\Throwable $e)
+    {
+       return $this->errors;
     }
 }
