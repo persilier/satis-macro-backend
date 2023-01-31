@@ -72,7 +72,7 @@ trait CreateClaim
                         $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
                     }
                 },
-                'after_or_equal:today'
+                'before_or_equal:today'
             ],
             'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
             'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
