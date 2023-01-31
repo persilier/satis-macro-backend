@@ -755,7 +755,6 @@
     },
     {
       "type": "path",
-      "url": "modules/bci-reports/",
       "url": "modules/system-usage-report/",
       "options": {
         "symlink": true
@@ -763,8 +762,14 @@
     },
     {
       "type": "path",
-      "url": "modules/webhooks/",
       "url": "modules/benchmarking-report/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/webhooks/",
       "options": {
         "symlink": true
       }
