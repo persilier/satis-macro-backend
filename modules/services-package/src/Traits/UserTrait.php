@@ -30,10 +30,11 @@ trait UserTrait
      * @param $user
      * @return mixed
      */
-    protected function getUserWithRoleName($user){
+    protected function getUserWithRoleName($user)
+    {
 
-         $user['role'] = $user->role();
-         return $user;
+        $user['role'] = $user->role();
+        return $user;
 
     }
 
@@ -42,19 +43,36 @@ trait UserTrait
      * @param bool $myInstitution
      * @return Builder[]|Collection|\Illuminate\Support\Collection
      */
-    protected function getAllUser($myInstitution = false){
+    protected function getAllUser($myInstitution = false, $paginate = null, $search_text = null)
+    {
+
 
         $users = User::with(['identite.staff', 'roles']);
-
         if ($myInstitution) {
             $institution = $this->institution();
-            $users = $users->whereHas('identite', function($query) use ($institution){
-                $query->whereHas('staff', function($q) use ($institution){
+            $users = $users->whereHas('identite', function ($query) use ($institution) {
+                $query->whereHas('staff', function ($q) use ($institution) {
                     $q->where('institution_id', $institution->id);
                 });
             });
         }
-        return $users->get();
+
+        if ($search_text) {
+            $users = $users->whereHas("identite", function ($query) use ($search_text) {
+                $query->where('firstname', 'like', "%$search_text%")
+                    ->orWhere('lastname', 'like', "%$search_text%")
+                    ->orwhereJsonContains('telephone', $search_text)
+                    ->orwhereJsonContains('email', $search_text);
+            })->orWhereHas("roles", function ($q) use ($search_text) {
+                $q->where('name', 'like', "%$search_text%");
+            });
+        }
+
+        if ($paginate) {
+            return $users->paginate($paginate);
+        } else {
+            return $users->get();
+        }
     }
 
     /**
@@ -62,27 +80,28 @@ trait UserTrait
      * @param bool $update
      * @return array
      */
-    protected function rulesCreateUser($institution = true, $update = false){
+    protected function rulesCreateUser($institution = true, $update = false)
+    {
 
-        if($update){
+        if ($update) {
 
             $rules = [
-                'new_password' => ['nullable','confirmed', new IsValidPasswordRules],
+                'new_password' => ['nullable', 'confirmed', new IsValidPasswordRules],
                 'roles' => 'required|array',
             ];
 
-        }else{
+        } else {
 
             $rules = [
-                'password' => ['required','confirmed', new IsValidPasswordRules],
+                'password' => ['required', 'confirmed', new IsValidPasswordRules],
                 'identite_id' => 'required|exists:identites,id',
                 'roles' => 'required|array',
             ];
         }
 
-        if($institution){
+        if ($institution) {
 
-            $rules[ 'institution_id'] = 'required|exists:institutions,id';
+            $rules['institution_id'] = 'required|exists:institutions,id';
 
         }
 
@@ -93,9 +112,10 @@ trait UserTrait
      * @param $request
      * @return mixed
      */
-    protected function verifiedRoleTypeInstitution($request){
+    protected function verifiedRoleTypeInstitution($request)
+    {
 
-        $identite = Identite::with('staff.institution.institutionType')->whereHas('staff', function($query) use ($request){
+        $identite = Identite::with('staff.institution.institutionType')->whereHas('staff', function ($query) use ($request) {
 
             $query->where('institution_id', $request->institution_id);
 
@@ -113,7 +133,8 @@ trait UserTrait
      * @param $identiteRole
      * @return mixed
      */
-    protected function storeUser($request, $identiteRole){
+    protected function storeUser($request, $identiteRole)
+    {
 
         $identite = $identiteRole['identite'];
 
@@ -138,11 +159,12 @@ trait UserTrait
      * @param bool $myInstitution
      * @return mixed
      */
-    protected function getOneUser($user, $myInstitution = false){
+    protected function getOneUser($user, $myInstitution = false)
+    {
 
-        if($myInstitution){
+        if ($myInstitution) {
 
-            if($user->identite->staff->institution->id !== $this->institution()->id){
+            if ($user->identite->staff->institution->id !== $this->institution()->id) {
 
                 throw new CustomException("Ce rôle n'existe pas pour ce type d'institution.");
 
@@ -159,9 +181,10 @@ trait UserTrait
      * @param $institution
      * @return array
      */
-    protected function getAllIdentitesRoles($institution){
+    protected function getAllIdentitesRoles($institution)
+    {
 
-        $identites = Identite::with('staff')->whereHas('staff', function($q) use ($institution){
+        $identites = Identite::with('staff')->whereHas('staff', function ($q) use ($institution) {
 
             $q->where('institution_id', $institution->id);
 
@@ -180,18 +203,19 @@ trait UserTrait
      * @param $user
      * @return mixed
      */
-    protected function myUser($user){
+    protected function myUser($user)
+    {
 
 
-        try{
+        try {
 
-            if($user->identite->staff->institution->id !== $this->institution()->id){
+            if ($user->identite->staff->institution->id !== $this->institution()->id) {
 
                 throw new CustomException("Impossible de modifier le mot de passe de cet utilisateur.");
 
             }
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de récupérer cet utilisateur.");
         }
@@ -199,15 +223,13 @@ trait UserTrait
     }
 
 
-
-
-
     /**
      * @param $request
      * @param $user
      * @return mixed
      */
-    protected function updatePassword($request, $user){
+    protected function updatePassword($request, $user)
+    {
         //dd($user()->token());
         $user->update(['password' => Hash::make($request->new_password)]);
 
@@ -220,16 +242,17 @@ trait UserTrait
      * @param bool $my
      * @return mixed
      */
-    protected function statusUser($user, $my = false){
+    protected function statusUser($user, $my = false)
+    {
 
-        if($my){
+        if ($my) {
 
             $this->myUser($user);
         }
 
         $status = NULL;
 
-        if(is_null($user->disabled_at)){
+        if (is_null($user->disabled_at)) {
 
             $status = Carbon::now();
 
@@ -239,7 +262,7 @@ trait UserTrait
              */
             $configs = $this->getMetadataByName(Metadata::AUTH_PARAMETERS);
 
-            if ($this->inactivityTimeIsPassed($user,$configs )){
+            if ($this->inactivityTimeIsPassed($user, $configs)) {
                 InactivityReactivationHistory::create([
                     'user_id' => $user->id,
                 ]);
@@ -258,18 +281,19 @@ trait UserTrait
      * @param bool $my
      * @return mixed
      */
-    protected function getAllRolesInstitutionUser($user, $my = false){
+    protected function getAllRolesInstitutionUser($user, $my = false)
+    {
 
-        if($my){
+        if ($my) {
 
             $this->myUser($user);
         }
 
-        try{
+        try {
 
             $roles = $this->getAllRolesInstitutionTypes($user->identite->staff->institution);
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de récupérer les rôles de l'institution de cet utilisateur.");
         }
@@ -283,18 +307,19 @@ trait UserTrait
      * @param $identite
      * @return mixed
      */
-    protected function verifiedRole($request, $identite){
+    protected function verifiedRole($request, $identite)
+    {
 
         $roles = collect([]);
-        foreach ($request->roles as $key => $value){
+        foreach ($request->roles as $key => $value) {
 
             $role = Role::where('name', $value)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
-            if(in_array($identite->staff->institution->institutionType->name, $role->institution_types)){
+            if (in_array($identite->staff->institution->institutionType->name, $role->institution_types)) {
 
                 $roles->push($role);
 
-            }else{
+            } else {
 
                 throw new CustomException("Le champ rôle est invalide.");
             }
@@ -309,9 +334,10 @@ trait UserTrait
      * @param $institution
      * @return mixed
      */
-    protected function getAllRolesInstitutionTypes($institution){
+    protected function getAllRolesInstitutionTypes($institution)
+    {
 
-        return Role::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($role) use ($institution){
+        return Role::where('guard_name', 'api')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function ($role) use ($institution) {
 
             return (is_array($role->institution_types) && in_array($institution->institutionType->name, $role->institution_types));
 
@@ -325,11 +351,12 @@ trait UserTrait
      * @param $roles
      * @return mixed
      */
-    protected function remokeAssigneRole($user, $roles){
+    protected function remokeAssigneRole($user, $roles)
+    {
 
         $role_old = $user->load('roles');
 
-        if(!is_null($role_old)){
+        if (!is_null($role_old)) {
 
             DB::table(config('permission.table_names.model_has_roles'))->where(config('permission.column_names.model_morph_key'), $user->id)->delete();
 

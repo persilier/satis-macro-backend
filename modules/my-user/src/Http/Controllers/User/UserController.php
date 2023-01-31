@@ -29,12 +29,15 @@ class UserController extends ApiController
         $this->middleware('permission:list-user-my-institution')->only(['index']);
         $this->middleware('permission:store-user-my-institution')->only(['create','store']);
         $this->middleware('permission:show-user-my-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);
+
     }
 
 
     public function index()
     {
-        $users = $this->getAllUser(true);
+        $pagination = \request()->query('size');
+        $search_text = \request()->query('search_text');
+        $users = $this->getAllUser(true, $pagination,$search_text);
         return response()->json($users,200);
     }
 
