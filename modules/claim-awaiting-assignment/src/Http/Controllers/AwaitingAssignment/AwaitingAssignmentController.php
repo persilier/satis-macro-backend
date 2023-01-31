@@ -43,7 +43,7 @@ class AwaitingAssignmentController extends ApiController
      */
     public function index(Request $request)
     {
-        $paginationSize = \request()->query('size');
+        $paginationSize = \request()->query('size', 10);
         $key = \request()->query('key');
         $type = \request()->query('type');
         $claims = $this->getClaimsQuery()->with($this->getRelations());
