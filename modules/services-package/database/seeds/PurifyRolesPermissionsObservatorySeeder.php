@@ -97,7 +97,7 @@ class PurifyRolesPermissionsObservatorySeeder extends Seeder
                     'list-reporting-claim-any-institution',
                     'transfer-claim-to-unit',
                     'list-claim-incomplete-without-client', 'show-claim-incomplete-without-client', 'update-claim-incomplete-without-client',
-                    'show-dashboard-data-all-institution',
+
                     'history-list-create-claim',
                     'update-active-pilot',
                     'unfounded-claim-awaiting-assignment',
