@@ -12,8 +12,8 @@
   ),
   'allowed_domains' => 
   array (
-    'frontend_url' => 'http://localhost:3000',
-    'frontend_local_url' => NULL,
+    'frontend_url' => '',
+    'frontend_local_url' => 'http://10.1.1.69:3000',
     'email_service_url' => 'http://163.172.106.97:8010',
     'mobile_backoffice_url' => 'http://163.172.106.97:8022',
     'wordpress_plugin_url' => 'http://163.172.106.97:8111',
@@ -29,7 +29,7 @@
     'locale' => 'fr',
     'fallback_locale' => 'en',
     'faker_locale' => 'fr_FR',
-    'key' => 'base64:SfiFPq1wcx/hiBJg2T9rLNKo7aR3wL97oa9uV++Gj34=',
+    'key' => 'base64:S4nB3LAIZzUkh/H5CJRj4ufP5ZBoiRbY65N6CzAFxo0=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -141,7 +141,7 @@
       ),
     ),
     'password_timeout' => 10800,
-    'password_reset_link' => 'http://127.0.0.1:3000/forgot-password',
+    'password_reset_link' => 'http://163.172.106.97:3011/forgot-password',
   ),
   'broadcasting' => 
   array (
@@ -200,7 +200,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/var/vhosts/satis-server-backend/storage/framework/cache/data',
+        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -253,8 +253,8 @@
     ),
     'allowed_origins' => 
     array (
-      0 => NULL,
-      1 => 'http://localhost:3000',
+      0 => 'http://10.1.1.69:3000',
+      1 => '',
       2 => 'http://163.172.106.97:8010',
       3 => 'http://163.172.106.97:8022',
       4 => 'http://163.172.106.97:8111',
@@ -293,7 +293,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'satis_develop',
+        'database' => 'satis_pro',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -303,9 +303,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
-        'username' => 'root',
-        'password' => 'Dev@21&e',
+        'database' => 'satis_pro',
+        'username' => 'work',
+        'password' => 'work',
         'unix_socket' => '',
         'charset' => 'utf8',
         'collation' => 'utf8_general_ci',
@@ -324,9 +324,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
-        'username' => 'root',
-        'password' => 'Dev@21&e',
+        'database' => 'satis_pro',
+        'username' => 'work',
+        'password' => 'work',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -339,9 +339,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
-        'username' => 'root',
-        'password' => 'Dev@21&e',
+        'database' => 'satis_pro',
+        'username' => 'work',
+        'password' => 'work',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -377,14 +377,56 @@
   'dompdf' => 
   array (
     'show_warnings' => false,
-    'orientation' => 'portrait',
+    'public_path' => NULL,
     'convert_entities' => true,
+    'options' => 
+    array (
+      'font_dir' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts',
+      'font_cache' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts',
+      'temp_dir' => '/tmp',
+      'chroot' => '/home/dmd_dev_elie/Documents/satis-server-backend',
+      'allowed_protocols' => 
+      array (
+        'file://' => 
+        array (
+          'rules' => 
+          array (
+          ),
+        ),
+        'http://' => 
+        array (
+          'rules' => 
+          array (
+          ),
+        ),
+        'https://' => 
+        array (
+          'rules' => 
+          array (
+          ),
+        ),
+      ),
+      'log_output_file' => NULL,
+      'enable_font_subsetting' => false,
+      'pdf_backend' => 'CPDF',
+      'default_media_type' => 'screen',
+      'default_paper_size' => 'a4',
+      'default_paper_orientation' => 'portrait',
+      'default_font' => 'serif',
+      'dpi' => 96,
+      'enable_php' => false,
+      'enable_javascript' => true,
+      'enable_remote' => true,
+      'font_height_ratio' => 1.1,
+      'enable_html5_parser' => true,
+    ),
+    'orientation' => 'portrait',
     'defines' => 
     array (
-      'font_dir' => '/var/vhosts/satis-server-backend/storage/fonts/',
-      'font_cache' => '/var/vhosts/satis-server-backend/storage/fonts/',
+      'font_dir' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts/',
+      'font_cache' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts/',
       'temp_dir' => '/tmp',
-      'chroot' => '/var/vhosts/satis-server-backend',
+      'chroot' => '/home/dmd_dev_elie/Documents/satis-server-backend',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -404,7 +446,7 @@
     'grant_type' => 'client_credentials',
     'client_id' => '3',
     'client_secret' => 'X4cRipgGU5Ch2qqpdpMx4DRW1mfVgza0o0gsf2yA',
-    'app_url_incoming_mail' => NULL,
+    'app_url_incoming_mail' => 'http://41.214.72.34:8000',
   ),
   'excel' => 
   array (
@@ -480,7 +522,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => '/var/vhosts/satis-server-backend/storage/app/public/laravel-excel',
+      'local_path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
     ),
@@ -494,12 +536,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/var/vhosts/satis-server-backend/storage/app',
+        'root' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/var/vhosts/satis-server-backend/storage/app/public',
+        'root' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public',
         'url' => 'http://127.0.0.1:8000/storage',
         'visibility' => 'public',
       ),
@@ -515,7 +557,7 @@
     ),
     'links' => 
     array (
-      '/var/vhosts/satis-server-backend/public/storage' => '/var/vhosts/satis-server-backend/storage/app/public',
+      '/home/dmd_dev_elie/Documents/satis-server-backend/public/storage' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -579,16 +621,22 @@
         ),
         'ignore_exceptions' => false,
       ),
+      'database' => 
+      array (
+        'driver' => 'custom',
+        'via' => 'danielme85\\LaravelLogToDB\\LogToDbHandler',
+        'name' => 'Satis DB Logging',
+      ),
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -638,9 +686,22 @@
       ),
       'emergency' => 
       array (
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
       ),
     ),
+  ),
+  'logtodb' => 
+  array (
+    'connection' => '',
+    'collection' => 'logs',
+    'detailed' => true,
+    'model' => false,
+    'queue' => false,
+    'queue_name' => '',
+    'queue_connection' => '',
+    'max_records' => false,
+    'max_hours' => false,
+    'datetime_format' => 'Y-m-d H:i:s:ms',
   ),
   'mail' => 
   array (
@@ -653,8 +714,8 @@
         'host' => 'smtp.mailtrap.io',
         'port' => '2525',
         'encryption' => 'tls',
-        'username' => '812f274dda314f',
-        'password' => 'e2dd6cecff42fc',
+        'username' => '2c8f79415ed413',
+        'password' => '63ffb13b1495b6',
       ),
       'ses' => 
       array (
@@ -677,7 +738,7 @@
     ),
     'from' => 
     array (
-      'address' => 'myriame@dmdconsult.com',
+      'address' => 'ulrich@dmdconsult.com',
       'name' => 'SATIS',
     ),
     'markdown' => 
@@ -685,7 +746,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/var/vhosts/satis-server-backend/resources/views/vendor/mail',
+        0 => '/home/dmd_dev_elie/Documents/satis-server-backend/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -813,6 +874,7 @@
       'region' => 'us-east-1',
     ),
     'app_nature' => 'PRO',
+    'allow_pilot_create_discussion' => '1',
   ),
   'session' => 
   array (
@@ -820,7 +882,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/var/vhosts/satis-server-backend/storage/framework/sessions',
+    'files' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -857,9 +919,9 @@
   array (
     'paths' => 
     array (
-      0 => '/var/vhosts/satis-server-backend/resources/views',
+      0 => '/home/dmd_dev_elie/Documents/satis-server-backend/resources/views',
     ),
-    'compiled' => '/var/vhosts/satis-server-backend/storage/framework/views',
+    'compiled' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/views',
     'expires' => true,
   ),
   'websockets' => 
