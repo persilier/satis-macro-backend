@@ -12,8 +12,8 @@
   ),
   'allowed_domains' => 
   array (
-    'frontend_url' => '',
-    'frontend_local_url' => 'http://10.1.1.69:3000',
+    'frontend_url' => 'http://163.172.106.97:3011',
+    'frontend_local_url' => NULL,
     'email_service_url' => 'http://163.172.106.97:8010',
     'mobile_backoffice_url' => 'http://163.172.106.97:8022',
     'wordpress_plugin_url' => 'http://163.172.106.97:8111',
@@ -200,7 +200,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/cache/data',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -253,8 +253,8 @@
     ),
     'allowed_origins' => 
     array (
-      0 => 'http://10.1.1.69:3000',
-      1 => '',
+      0 => NULL,
+      1 => 'http://163.172.106.97:3011',
       2 => 'http://163.172.106.97:8010',
       3 => 'http://163.172.106.97:8022',
       4 => 'http://163.172.106.97:8111',
@@ -293,7 +293,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'satis_pro',
+        'database' => 'satis-pro',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -303,9 +303,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_pro',
-        'username' => 'work',
-        'password' => 'work',
+        'database' => 'satis-pro',
+        'username' => 'root',
+        'password' => '',
         'unix_socket' => '',
         'charset' => 'utf8',
         'collation' => 'utf8_general_ci',
@@ -324,9 +324,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_pro',
-        'username' => 'work',
-        'password' => 'work',
+        'database' => 'satis-pro',
+        'username' => 'root',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -339,9 +339,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_pro',
-        'username' => 'work',
-        'password' => 'work',
+        'database' => 'satis-pro',
+        'username' => 'root',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -377,56 +377,14 @@
   'dompdf' => 
   array (
     'show_warnings' => false,
-    'public_path' => NULL,
-    'convert_entities' => true,
-    'options' => 
-    array (
-      'font_dir' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts',
-      'font_cache' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts',
-      'temp_dir' => '/tmp',
-      'chroot' => '/home/dmd_dev_elie/Documents/satis-server-backend',
-      'allowed_protocols' => 
-      array (
-        'file://' => 
-        array (
-          'rules' => 
-          array (
-          ),
-        ),
-        'http://' => 
-        array (
-          'rules' => 
-          array (
-          ),
-        ),
-        'https://' => 
-        array (
-          'rules' => 
-          array (
-          ),
-        ),
-      ),
-      'log_output_file' => NULL,
-      'enable_font_subsetting' => false,
-      'pdf_backend' => 'CPDF',
-      'default_media_type' => 'screen',
-      'default_paper_size' => 'a4',
-      'default_paper_orientation' => 'portrait',
-      'default_font' => 'serif',
-      'dpi' => 96,
-      'enable_php' => false,
-      'enable_javascript' => true,
-      'enable_remote' => true,
-      'font_height_ratio' => 1.1,
-      'enable_html5_parser' => true,
-    ),
     'orientation' => 'portrait',
+    'convert_entities' => true,
     'defines' => 
     array (
-      'font_dir' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts/',
-      'font_cache' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/fonts/',
+      'font_dir' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/fonts/',
+      'font_cache' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/fonts/',
       'temp_dir' => '/tmp',
-      'chroot' => '/home/dmd_dev_elie/Documents/satis-server-backend',
+      'chroot' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -522,7 +480,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public/laravel-excel',
+      'local_path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
     ),
@@ -536,12 +494,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app',
+        'root' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public',
+        'root' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public',
         'url' => 'http://127.0.0.1:8000/storage',
         'visibility' => 'public',
       ),
@@ -557,7 +515,7 @@
     ),
     'links' => 
     array (
-      '/home/dmd_dev_elie/Documents/satis-server-backend/public/storage' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/app/public',
+      '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/public/storage' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -630,13 +588,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -686,7 +644,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -714,8 +672,8 @@
         'host' => 'smtp.mailtrap.io',
         'port' => '2525',
         'encryption' => 'tls',
-        'username' => '2c8f79415ed413',
-        'password' => '63ffb13b1495b6',
+        'username' => '3c5250417e2bd0',
+        'password' => '6983393eb4d270',
       ),
       'ses' => 
       array (
@@ -746,7 +704,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/home/dmd_dev_elie/Documents/satis-server-backend/resources/views/vendor/mail',
+        0 => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -882,7 +840,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/sessions',
+    'files' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -919,9 +877,9 @@
   array (
     'paths' => 
     array (
-      0 => '/home/dmd_dev_elie/Documents/satis-server-backend/resources/views',
+      0 => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/resources/views',
     ),
-    'compiled' => '/home/dmd_dev_elie/Documents/satis-server-backend/storage/framework/views',
+    'compiled' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/views',
     'expires' => true,
   ),
   'websockets' => 
