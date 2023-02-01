@@ -2,13 +2,14 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Exceptions\CustomException;
+use Illuminate\Support\Facades\App;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Satis2020\ServicePackage\Models\Claim;
+use Illuminate\Database\Eloquent\Collection;
+use Satis2020\ServicePackage\Consts\Constants;
+use Satis2020\ServicePackage\Exceptions\CustomException;
 
 /**
  * Trait ClaimSatisfactionMeasured
