@@ -85,11 +85,11 @@ class ClaimAwaitingTreatmentController extends ApiController
             }
         }
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id,$statusColumn)
-            ->get()->map(function ($item, $key) {
-            $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-            return $item;
-        });
+        // $claims = $this->getClaimsQuery($institution->id, $staff->unit_id,$statusColumn)
+        //     ->get()->map(function ($item, $key) {
+        //     $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+        //     return $item;
+        // });
 
         return response()->json($claims->paginate($paginationSize), 200);
     }
