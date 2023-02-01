@@ -306,7 +306,9 @@ trait UpdateClaim
             'claim' => $claim,
             'claimCategories' => ClaimCategory::all(),
             'institutions' => Institution::all(),
-            'units' => Unit::where('institution_id', $claim->institution_targeted_id)->get(),
+            'units' => Unit::where('institution_id', $claim->institution_targeted_id)->whereHas('unitType', function($q){
+                $q->where('can_be_target', 1);
+            })->get(),
             'channels' => Channel::all(),
             'claimObjects' => ClaimObject::all(),
             'currencies' => Currency::all(),
