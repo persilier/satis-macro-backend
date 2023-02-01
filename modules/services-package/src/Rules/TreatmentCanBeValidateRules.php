@@ -40,7 +40,7 @@ class TreatmentCanBeValidateRules implements Rule
     public function passes($attribute, $value)
     {
 
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution($this->institution_id,$this->type);
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution(false,false,null,$this->type,null,$this->institution_id);
 
         return $claims->search(function ($item, $key) use ($value) {
             return $item->id == $value;
