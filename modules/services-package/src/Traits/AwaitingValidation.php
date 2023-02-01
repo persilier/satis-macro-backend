@@ -107,7 +107,7 @@ trait AwaitingValidation
             $claimsTreated->where('status', 'treated');
         }
 
-        if ($flow_type == 'affected_history') {
+        if ($flow_type != 'affected_history') {
             $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
                 $query->where('institution_id', $institution_id);
             });
