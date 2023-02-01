@@ -58,7 +58,8 @@ trait SearchClaimReference
             'activeTreatment.satisfactionMeasuredBy.identite',
             'activeTreatment.responsibleStaff.identite',
             'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit'
+            'activeTreatment.responsibleUnit',
+            'activeTreatment.transferredToUnitBy'
         ];
     }
 
