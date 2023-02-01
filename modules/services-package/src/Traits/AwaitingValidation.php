@@ -67,7 +67,8 @@ trait AwaitingValidation
             }
 
             return $claimsTreated->paginate($paginationSize);
-        } else {
+        }
+        else {
             if ($search_text) {
 
                 $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
