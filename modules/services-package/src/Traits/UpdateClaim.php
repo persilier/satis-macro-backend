@@ -87,27 +87,50 @@ trait UpdateClaim
 
         $data = $this->rules($request, $with_client, $with_relationship, $with_unit, $update);
 
-        $rules = Arr::only($data, [
-            'description',
-            'lieu',
-            'claim_object_id',
-            'institution_targeted_id',
-            'request_channel_slug',
-            'response_channel_slug',
-            'event_occured_at',
-            'amount_disputed',
-            'amount_currency_slug',
-            'is_revival',
-            'file.*',
-            'firstname',
-            'lastname',
-            'sexe',
-            'telephone',
-            'raison_sociale',
-            'type_client',
-            'email',
-            'unit_targeted_id',
-        ]);
+        if ($request->type_client == "Physique") {
+            $rules = Arr::only($data, [
+                'description',
+                'lieu',
+                'claim_object_id',
+                'institution_targeted_id',
+                'request_channel_slug',
+                'response_channel_slug',
+                'event_occured_at',
+                'amount_disputed',
+                'amount_currency_slug',
+                'is_revival',
+                'file.*',
+                'firstname',
+                'lastname',
+                'sexe',
+                'telephone',
+                'type_client',
+                'email',
+                'unit_targeted_id',
+            ]);
+        }
+        else {
+           
+            $rules = Arr::only($data, [
+                'description',
+                'lieu',
+                'claim_object_id',
+                'institution_targeted_id',
+                'request_channel_slug',
+                'response_channel_slug',
+                'event_occured_at',
+                'amount_disputed',
+                'amount_currency_slug',
+                'is_revival',
+                'file.*',
+                'telephone',
+                'raison_sociale',
+                'type_client',
+                'email',
+                'unit_targeted_id',
+            ]);
+        }
+
 
         if($this->institution()->institutionType->name === 'observatory'){
 
@@ -398,6 +421,7 @@ trait UpdateClaim
      */
     protected function getClaimUpdateForMyInstitution($institutionId, $claimId, $status = 'full')
     {
+        //dd($institutionId, $claimId, $status);
         try {
             $claim = Claim::where('institution_targeted_id', $institutionId)->where('status', $status)->findOrFail($claimId);
         } catch (\Exception $exception) {
