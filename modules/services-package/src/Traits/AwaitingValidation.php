@@ -95,7 +95,7 @@ trait AwaitingValidation
         });*/
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithParams($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $status = null, $transferred_to_unit_by = null, $search_text = null)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithParams($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $status = null, $transferred_to_unit_by = null, $search_text = null, $flow_type = null)
     {
 
         $institution_id = is_null($institution_id)
@@ -107,10 +107,12 @@ trait AwaitingValidation
             $claimsTreated->where('status', 'treated');
         }
 
+        if ($flow_type == 'affected_history') {
+            $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
+                $query->where('institution_id', $institution_id);
+            });
+        }
 
-        $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
-            $query->where('institution_id', $institution_id);
-        });
         if ($transferred_to_unit_by) {
             $claimsTreated->whereHas('activeTreatment', function ($query) {
                 $query->where('transferred_to_unit_by', '<>', null);
@@ -206,18 +208,18 @@ trait AwaitingValidation
         if ($configs["configuration"]["many_active_pilot"]) {
             if ($staff->id == $institution->active_pilot_id) {
                 if ($type) {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text, "affected_history");
                     return $claimsTreated;
                 } else {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text, "affected_history");
                     return $claimsTreated;
                 }
             } else {
-                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text, "affected_history");
                 return $claimsTreated;
             }
         } else {
-            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text, "affected_history");
             return $claimsTreated;
         }
     }
@@ -317,12 +319,12 @@ trait AwaitingValidation
             'validated_at' => Carbon::now(),
             'validated_by' => $this->staff()->id,
         ];
-        
+
         $backup = $this->backupData($claim, $validationData);
-        if (count($request->mail_attachments)>0) {
+        if (count($request->mail_attachments) > 0) {
             $mail_attachments = File::whereIn('id', $request->mail_attachments)->get();
         }
-        
+
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),
