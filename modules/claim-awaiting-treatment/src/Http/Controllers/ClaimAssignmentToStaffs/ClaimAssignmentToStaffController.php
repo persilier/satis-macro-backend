@@ -63,7 +63,8 @@ class ClaimAssignmentToStaffController extends ApiController
             });
 
         }else{
-            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()->map(function ($item, $key) {
+            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
+                ->map(function ($item, $key) {
                 $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
                 $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
                 $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
