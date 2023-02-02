@@ -105,13 +105,13 @@ trait MonitoringClaim
 
         }
         
-        if($request->has('type_client')){
+       /*  if($request->has('type_client')){
 
             $claims->whereHas('claimer', function ($o) use ($request){
 
                 $o->where('type_client', $request->type_client);
             });
-        }
+        } */
 
 
         if ($treatment) {
