@@ -125,7 +125,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\InitializeChannelsTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\UpdateTimeLimitToClaimTableSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\RevokeClaimNotificationsTableSeeder::class);
-//        $this->call(\Satis2020\ServicePackage\Database\Seeds\RoleDescriptionSeed::class);
+          $this->call(\Satis2020\ServicePackage\Database\Seeds\RoleDescriptionSeed::class);
 //         $this->call(\Satis2020\ServicePackage\Database\Seeds\TruncateNotifJobs::class);
 
         /**************** Installation Seed **************************/
