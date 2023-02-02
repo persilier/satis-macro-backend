@@ -278,7 +278,7 @@ trait UemoaReports{
      * @param bool $with_unit
      * @return \Illuminate\Support\Collection
      */
-    protected function resultatsStateOutTime($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true , $for_excel){
+    protected function resultatsStateOutTime($request, $myInstitution = false, $with_client = true, $with_relationship = false, $with_unit = true){
 
         $datas = collect([]);
 
@@ -290,7 +290,7 @@ trait UemoaReports{
 
         foreach ($claims as $claim){
 
-            $data = $this->tabDatas($claim, $myInstitution, $with_relationship, $for_excel);
+            $data = $this->tabDatas($claim, $myInstitution, $with_relationship);
 
             $datas->push($data);
         }
