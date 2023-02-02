@@ -45,10 +45,8 @@ class DiscussionController extends ApiController
                 if ($type==Claim::CLAIM_UNSATISFIED){
                     return $value->claim->status == Claim::CLAIM_UNSATISFIED;
                 }
-                if ($type==Claim::CLAIM_UNSATISFIED){
-                    return $value->claim->escalation_status != 'archived'&& $value->claim->status == Claim::CLAIM_UNSATISFIED;
-                }else{
-                    return $value->claim->status != 'archived' && $value->claim->escalation_status == null;
+                else{
+                    return $value->claim->escalation_status == null;
                 }
             })
             ->values()
