@@ -92,6 +92,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof', 'configuration-pilot',
                     'configure-pilot-collector-discussion-attribute',
+                    'list-reporting-claim-my-institution',
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -125,7 +126,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-escalation-config','update-escalation-config',
                     'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
                     'list-my-claim-archived', 'list-any-claim-archived', 'show-my-claim-archived',
-                    'list-reporting-claim-my-institution',
                     // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                 ],
                 "supervisor-pro" => [],
