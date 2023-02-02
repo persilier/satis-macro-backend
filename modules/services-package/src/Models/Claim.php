@@ -296,7 +296,7 @@ class Claim extends Model
 
     public function getIsDuplicateAttribute()
     {
-        return $this->getDuplicatesQuery($this->getClaimsQuery($this->attributes['institution_targeted_id']), $this)->exists();
+        return $this->getDuplicatesQuery($this->getClaimsQuery($this->institution_targeted_id), $this)->exists();
     }
 
 }
