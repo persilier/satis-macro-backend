@@ -30,8 +30,9 @@ class TreatmentBoardRequest extends FormRequest
 
         $rules = [
             'name' => ['string',
-                Rule::requiredIf($this->isNotFilled('specific_bord_exists')),
-                Rule::unique('treatment_boards','name')->ignore($this->id)],
+                Rule::requiredIf($this->type==TreatmentBoard::SPECIFIC && strtoupper($this->getMethod())==="POST"),
+                Rule::unique('treatment_boards','name')->ignore($this->id)
+            ],
             'claim_id'=>[Rule::requiredIf($this->type==TreatmentBoard::SPECIFIC && strtoupper($this->getMethod())==="POST"),'exists:claims,id',],
             'type'=>['required',Rule::in([TreatmentBoard::STANDARD,TreatmentBoard::SPECIFIC]),new StandardBoardExists($this)],
             'description'=>['string','nullable'],
