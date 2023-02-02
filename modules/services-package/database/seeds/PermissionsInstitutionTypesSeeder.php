@@ -315,6 +315,7 @@ class PermissionsInstitutionTypesSeeder extends Seeder
             'configuration-pilot','pilot-relance-other','reassignment_to_pilot',
             'list-claim-transferred-my-institution',
             'configure-pilot-collector-discussion-attribute',
+            'system-my-efficiency-report'
         ];
 
         $nature = Config::get('services.app_nature', 'PRO');
