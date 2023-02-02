@@ -375,7 +375,7 @@ trait UemoaReports{
      * @param $with_relationship
      * @return array
      */
-    protected function tabDatas($claim, $myInstitution, $with_relationship, $for_excel){
+    protected function tabDatas($claim, $myInstitution, $with_relationship, $for_excel = false){
 
         $data =  [
             'filiale' => $claim->institutionTargeted->name,
