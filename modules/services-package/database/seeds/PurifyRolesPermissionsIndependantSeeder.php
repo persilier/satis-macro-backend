@@ -124,8 +124,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-closed-my-claims','close-my-claims',
                     'list-escalation-config','update-escalation-config',
                     'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
-                    'list-my-claim-archived', 'list-any-claim-archived', 'show-my-claim-archived'
-
+                    'list-my-claim-archived', 'list-any-claim-archived', 'show-my-claim-archived',
+                    'list-reporting-claim-my-institution',
                     // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                 ],
                 "supervisor-pro" => [],
