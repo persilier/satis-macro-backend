@@ -181,6 +181,25 @@ return [
             'show_proxy_config' => 'Voir La configuration des proxy',
             'update_proxy_config' => 'Mettre à jour les configurations des proxy',
             'delete_proxy_config' => 'Supprimer les configurations des proxy',
+
+            'config_reporting_claim_my_institution' => 'Configuer les ',
+            'list_config_reporting_claim_my_institution' => '',
+            'store_config_reporting_claim_my_institution' => '',
+            'update_config_reporting_claim_my_institution' => '',
+            'list_reporting_titles_configs' => '',
+            'update_reporting_titles_config' => '',
+            'edit_reporting_titles_config' => '',
+            'list_escalation_config' => '',
+            'update_escalation_config' => '',
+            'logout_user_my_institution' => '',
+            'bci_monthly_reports' => '',
+            'bci_annual_reports' => '',
+            'export_notification_proof' => '',
+            'configuration_pilot' => '',
+            'list_webhooks_config' => '',
+            'store_webhooks_config' => '',
+            'update_webhooks_config' => '',
+            'delete_webhooks_config' => '',
         ],
 
     //pilot and collector
@@ -236,6 +255,21 @@ return [
         "list_system_usage_reporting" =>'Voir le rapport d\'utilisation du systeme',
         "list_benchmarking_reporting" =>'Voir le rapport benchmarking',
         "list_global_reporting" =>'Voir le rapport global',
+
+        'export_notification_proof' => '',
+        'pilot_relance_other' => '',
+        'reassignment_to_pilot' => '',
+        'list_claim_transferred_my_institution' => '',
+        'list_regulatory_reporting_claim_my_institution' => '',
+        'system_any_efficiency_report' => '',
+        'list_my_claim_unsatisfied' => '',
+        'list_closed_my_claims' => '',
+        'close_my_claims' => '',
+        'list_treatment_board' => '',
+        'store_treatment_board' => '',
+        'update_treatment_board' => '',
+        'destroy_treatment_board' => '',
+        'system_my_efficiency_report' => '',
     ],
 
     //staff
@@ -256,6 +290,11 @@ return [
         'show_dashboard_data_my_activity' => 'Afficher les donnees du tableau de bord de mon activite',
         'history_list_treat_claim' => 'Historique des reclamations traitees',
         "show_my_staff_monitoring" =>'Voir le suivi des reclamations au niveau des staffs de mon unité',
+
+       
+        'list_staff_revivals' => '',
+        'list_unit_revivals' => '',
+
     ],
 
 

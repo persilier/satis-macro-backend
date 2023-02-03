@@ -180,7 +180,26 @@ return [
         'show_proxy_config' => 'View Proxy Configuration',
         'update_proxy_config' => 'Update proxy configurations',
         'delete_proxy_config' => 'Delete proxy configuration',
-        ],
+
+        'config_reporting_claim_my_institution' => '',
+        'list_config_reporting_claim_my_institution' => '',
+        'store_config_reporting_claim_my_institution' => '',
+        'update_config_reporting_claim_my_institution' => '',
+        'list_reporting_titles_configs' => '',
+        'update_reporting_titles_config' => '',
+        'edit_reporting_titles_config' => '',
+        'list_escalation_config' => '',
+        'update_escalation_config' => '',
+        'logout_user_my_institution' => '',
+        'bci_monthly_reports' => '',
+        'bci_annual_reports' => '',
+        'export_notification_proof' => '',
+        'configuration_pilot' => '',
+        'list_webhooks_config' => '',
+        'store_webhooks_config' => '',
+        'update_webhooks_config' => '',
+        'delete_webhooks_config' => '',
+    ],
 
     //pilot and collector
     "pilot" => [
@@ -232,6 +251,21 @@ return [
         'list_claim_incomplete_without_client' => 'View an incomplete claim registered without a client',
         'show_claim_incomplete_without_client' => 'Show an incomplete claim registered without a client',
         'update_claim_incomplete_without_client' => 'Modify an incomplete claim registered without a client',
+
+        'export_notification_proof' => '',
+        'pilot_relance_other' => '',
+        'reassignment_to_pilot' => '',
+        'list_claim_transferred_my_institution' => '',
+        'list_regulatory_reporting_claim_my_institution' => '',
+        'system_any_efficiency_report' => '',
+        'list_my_claim_unsatisfied' => '',
+        'list_closed_my_claims' => '',
+        'close_my_claims' => '',
+        'list_treatment_board' => '',
+        'store_treatment_board' => '',
+        'update_treatment_board' => '',
+        'destroy_treatment_board' => '',
+        'system_my_efficiency_report' => '',
     ],
 
     //staff
@@ -252,6 +286,10 @@ return [
         'show_dashboard_data_my_activity' => 'Show my activity dashboard data',
         'history_list_treat_claim' => 'History of processed claims',
         "show_my_staff_monitoring" => 'View the monitoring of claims at the staff level of my unit',
+        
+        'list_staff_revivals' => '',
+        'list_unit_revivals' => '',
+ 
     ],
 
 

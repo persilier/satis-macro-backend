@@ -193,6 +193,28 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'show-proxy-config' => __("permissions.admin.show_proxy_config",[],app()->getLocale()),
             'update-proxy-config' => __("permissions.admin.update_proxy_config",[],app()->getLocale()),
             'delete-proxy-config' => __("permissions.admin.delete_proxy_config",[],app()->getLocale()),
+
+            'config-reporting-claim-my-institution' => __("permissions.admin.config_reporting_claim_my_institution", [],app()->getLocale()),
+            'list-config-reporting-claim-my-institution' => __("permissions.admin.list_config_reporting_claim_my_institution",[],app()->getLocale()),
+            'store-config-reporting-claim-my-institution' => __("permissions.admin.store_config_reporting_claim_my_institution",[],app()->getLocale()),
+            'update-config-reporting-claim-my-institution' => __("permissions.admin.update_config_reporting_claim_my_institution",[],app()->getLocale()),
+            'delete-config-reporting-claim-my-institution' => __("permissions.admin.delete_config_reporting_claim_my_institution",[],app()->getLocale()),
+            'list-reporting-titles-configs' => __("permissions.admin.list_reporting_titles_configs",[],app()->getLocale()),
+            'update-reporting-titles-configs' => __("permissions.admin.update_reporting_titles_config",[],app()->getLocale()),
+            'edit-reporting-titles-configs' => __("permissions.admin.edit_reporting_titles_config",[],app()->getLocale()),
+            'list-escalation-config' => __("permissions.admin.list_escalation_config",[],app()->getLocale()),
+            'update-escalation-config' => __("permissions.admin.update_escalation_config",[],app()->getLocale()),
+            'logout-user-my-institution' => __("permissions.admin.logout_user_my_institution",[],app()->getLocale()),
+            'bci-monthly-reports' => __("permissions.admin.bci_monthly_reports",[],app()->getLocale()),
+            'bci-annual-reports' => __("permissions.admin.bci_annual_reports",[],app()->getLocale()),
+            'export-notification-proof' => __("permissions.admin.export_notification_proof",[],app()->getLocale()),
+            'configuration-pilot' => __("permissions.admin.configuration_pilot",[],app()->getLocale()),
+            'list-webhooks-config' => __("permissions.admin.list_webhooks_config",[],app()->getLocale()),
+            'store-webhooks-config' => __("permissions.admin.store_webhooks_config",[],app()->getLocale()),
+            'update-webhooks-config' => __("permissions.admin.update_webhooks_config",[],app()->getLocale()),
+            'delete-webhooks-config' => __("permissions.admin.delete_webhooks_config",[],app()->getLocale()),
+
+
         ];
 
         foreach ($admin as $name => $description){
@@ -254,6 +276,21 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'list-system-usage-reporting' =>__("permissions.pilot.list_system_usage_reporting",[],app()->getLocale()),
         'list-benchmarking-reporting' =>__("permissions.pilot.list_benchmarking_reporting",[],app()->getLocale()),
         'list-global-reporting' =>__("permissions.pilot.list_global_reporting",[],app()->getLocale()),
+
+        'pilot-export-notification-proof' => __("permissions.pilot.export_notification_proof",[],app()->getLocale()),
+        'pilot-relance-other' => __("permissions.pilot.pilot_relance_other",[],app()->getLocale()),
+        'reassignment_to_pilot' => __("permissions.pilot.reassignment_to_pilot",[],app()->getLocale()),
+        'list-claim-transferred-my-institution' => __("permissions.pilot.list_claim_transferred_my_institution",[],app()->getLocale()),
+        'list-regulatory-reporting-claim-my-institution' => __("permissions.pilot.list_regulatory_reporting_claim_my_institution",[],app()->getLocale()),
+        'system-any-efficiency-report' => __("permissions.pilot.system_any_efficiency_report",[],app()->getLocale()),
+        'list-my-claim-unsatisfied' => __("permissions.pilot.list_my_claim_unsatisfied",[],app()->getLocale()),
+        'list-closed-my-claims' => __("permissions.pilot.list_closed_my_claims",[],app()->getLocale()),
+        'close-my-claims' => __("permissions.pilot.close_my_claims",[],app()->getLocale()),
+        'list-treatment-board' => __("permissions.pilot.list_treatment_board",[],app()->getLocale()),
+        'store-treatment-board' => __("permissions.pilot.store_treatment_board",[],app()->getLocale()),
+        'update-treatment-board' => __("permissions.pilot.update_treatment_board",[],app()->getLocale()),
+        'destroy-treatment-board' => __("permissions.pilot.destroy_treatment_board",[],app()->getLocale()),
+        'system-my-efficiency-report' => __("permissions.pilot.system_my_efficiency_report",[],app()->getLocale()),
     ];
 
         foreach ($pilot as $name => $description){
@@ -280,6 +317,9 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
         'show-dashboard-data-my-activity' => __("permissions.staff.show_dashboard_data_my_activity",[],app()->getLocale()),
         'history-list-treat-claim' => __("permissions.staff.history_list_treat_claim",[],app()->getLocale()),
         'show-my-staff-monitoring' =>__("permissions.staff.show_my_staff_monitoring",[],app()->getLocale()),
+        
+        'list-staff-revivals' => __("permissions.staff.list_staff_revivals",[],app()->getLocale()),
+        'list-unit-revivals' => __("permissions.staff.list_unit_revivals",[],app()->getLocale()),
 
     ];
 
