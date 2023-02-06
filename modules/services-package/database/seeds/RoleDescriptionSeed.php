@@ -2,8 +2,9 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Illuminate\Database\Seeder;
 use PgSql\Lob;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class RoleDescriptionSeed extends Seeder
 {
@@ -46,7 +47,7 @@ class RoleDescriptionSeed extends Seeder
 
             if (($role->name == 'collector-filial-pro' && env('APP_NATURE') == 'PRO') || $role->name == 'collector-observatory')
                 $role->update(['description' => "Collecteur"]);
-
+                Log::info('role');
             if ($role->name == 'admin-observatory')
                 $role->update(['description' => "Administrateur"]);
         }
