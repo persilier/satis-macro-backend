@@ -215,7 +215,7 @@ trait ClientTrait
         $clients = ClientInstitution::query()
             ->with([
                 'client:id,identites_id',
-                'client.identite:id,firstname,lastname,email,telephone',
+                'client.identite:id,firstname,lastname,email,telephone,type_client,raison_sociale',
                 'category_client:id,name',
                 'institution:id,name',
                 'accounts',
