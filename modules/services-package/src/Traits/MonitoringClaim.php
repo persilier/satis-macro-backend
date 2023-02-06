@@ -303,6 +303,8 @@ trait MonitoringClaim
             ->whereNotNull('claim_object_id')
             ->get()->filter(function ($item) use ($coef) {
                 if ($item->claimObject!=null && now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+
+                //if (now() >= $this->echeanceNotif($item->created_at, $item->time_limit, $coef))
                     return $item;
 
             })->all();

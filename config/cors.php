@@ -25,6 +25,8 @@ return [
         config("allowed_domains.email_service_url"),
         config("allowed_domains.mobile_backoffice_url"),
         config("allowed_domains.wordpress_plugin_url"),
+        config("allowed_domains.bci_online_url"),
+        config("allowed_domains.bci_net_url"),
     ],
 
     'allowed_origins_patterns' => [],
