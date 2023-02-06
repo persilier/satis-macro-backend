@@ -12,6 +12,8 @@ use Satis2020\ServicePackage\Traits\SecureDelete;
 use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Satis2020\ServicePackage\Traits\DataUserNature;
 
 /**
  * Class Claim
@@ -19,7 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, AwaitingAssignment;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, AwaitingAssignment, DataUserNature;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     /**
      * The "booted" method of the model.
