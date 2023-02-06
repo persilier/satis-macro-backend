@@ -19,7 +19,6 @@ use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Satis2020\ServicePackage\Traits\DataUserNature;
 
 /**
  * Class Claim
@@ -27,11 +26,7 @@ use Satis2020\ServicePackage\Traits\DataUserNature;
  */
 class Claim extends Model
 {
-<<<<<<< HEAD
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot, AwaitingAssignment;
-=======
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, AwaitingAssignment, DataUserNature;
->>>>>>> master-save
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
