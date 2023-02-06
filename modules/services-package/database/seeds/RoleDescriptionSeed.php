@@ -3,6 +3,7 @@
 namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use PgSql\Lob;
 
 class RoleDescriptionSeed extends Seeder
 {
