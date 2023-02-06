@@ -3,21 +3,21 @@
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
 use Illuminate\Http\Request;
+use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Discussion;
-use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Notifications\AddContributorToDiscussion;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
-use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
-use Satis2020\ServicePackage\Rules\StaffCanBeAddToDiscussionRules;
 use Satis2020\ServicePackage\Rules\StaffIsNotDiscussionContributorRules;
+use Satis2020\ServicePackage\Rules\StaffBelongsToDiscussionContributorsRules;
 
 class DiscussionStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification;
+    use \Satis2020\ServicePackage\Traits\Discussion, \Satis2020\ServicePackage\Traits\Notification, \Satis2020\ServicePackage\Traits\Metadata;
 
     public function __construct()
     {
@@ -25,9 +25,9 @@ class DiscussionStaffController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:list-discussion-contributors')->only(['index']);
-        $this->middleware('permission:add-discussion-contributor')->only(['store', 'create']);
-        $this->middleware('permission:remove-discussion-contributor')->only(['destroy']);
+        $this->middleware(['permission:list-discussion-contributors'])->only(['index']);
+        $this->middleware(['permission:add-discussion-contributor'])->only(['store', 'create']);
+        $this->middleware(['permission:remove-discussion-contributor'])->only(['destroy']);
     }
 
     /**
@@ -77,8 +77,10 @@ class DiscussionStaffController extends ApiController
 
         $discussion->load('staff.identite', 'createdBy.unit');
 
+        $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
+
         return response()->json([
-            'staff' => $this->getContributors($discussion),
+            'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
         ], 200);
     }
 
@@ -98,11 +100,15 @@ class DiscussionStaffController extends ApiController
         $request->merge(['discussion' => $discussion->id]);
 
         $rules = [
-            'discussion' => ['required', 'exists:discussions,id',
-                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())],
+            'discussion' => [
+                'required', 'exists:discussions,id',
+                new DiscussionIsRegisteredByStaffRules($discussion, $this->staff())
+            ],
             'staff_id' => 'required|array',
-            'staff_id.*' => ['required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
-                new StaffCanBeAddToDiscussionRules($discussion)],
+            'staff_id.*' => [
+                'required', 'exists:staff,id', new StaffIsNotDiscussionContributorRules($discussion),
+                new StaffCanBeAddToDiscussionRules($discussion)
+            ],
         ];
 
         $this->validate($request, $rules);
@@ -122,7 +128,6 @@ class DiscussionStaffController extends ApiController
      */
     public function show(Discussion $discussion)
     {
-
     }
 
 
@@ -136,7 +141,6 @@ class DiscussionStaffController extends ApiController
      */
     public function update(Request $request, Discussion $discussion)
     {
-
     }
 
     /**

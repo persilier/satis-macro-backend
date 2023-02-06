@@ -57,7 +57,7 @@ trait DataUserNature
 
         $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 
-        if ($this->institution==null) {
+        if ($this->institution == null) {
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -72,7 +72,7 @@ trait DataUserNature
 
         $this->institution = Institution::with('institutionType')->find($staff->institution_id);
 
-        if ($this->institution==null) {
+        if ($this->institution == null) {
             throw new RetrieveDataUserNatureException($message);
         }
 
@@ -295,6 +295,33 @@ trait DataUserNature
         } catch (\Exception $exception) {
         }
 
+    }
+
+    /**
+     * @param $request
+     */
+    protected function checkEmailAllowDomain($request)
+    {
+
+        $config = json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'coef-relance-domaine-prefixe')->firstOrFail()->data);
+        if ($config) {
+            if (sizeof($config) > 0) {
+                $email = $request->email;
+                $element_state = true;
+                foreach ($email as $item){
+                    $end_email = substr($item, strpos($item, "@") + 1);
+                    if (!in_array($end_email, $config)) {
+                        $element_state = false;
+                        break;
+                    }
+                }
+                return $element_state;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
 

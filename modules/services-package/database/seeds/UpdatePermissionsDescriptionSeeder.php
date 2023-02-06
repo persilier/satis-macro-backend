@@ -189,6 +189,7 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'list-system-usage-reporting' =>__("permissions.admin.list_system_usage_reporting",[],app()->getLocale()),
             'list-benchmarking-reporting' =>__("permissions.admin.list_benchmarking_reporting",[],app()->getLocale()),
             'list-global-reporting' =>__("permissions.admin.list_global_reporting",[],app()->getLocale()),
+            'configure-pilot-collector-discussion-attribute' =>__("permissions.admin.configure_pilot_collector_discussion_attribute",[],app()->getLocale()),
         ];
 
         foreach ($admin as $name => $description){

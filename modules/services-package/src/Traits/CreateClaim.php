@@ -62,26 +62,26 @@ trait CreateClaim
                 'required',
                 'date_format:Y-m-d H:i',
                 function ($attribute, $value, $fail) {
-                    try{
+                    try {
                         if (Carbon::parse($value)->gt(Carbon::now())) {
                             $fail($attribute . ' is invalid! The value is greater than now');
                         }
-                    }catch (InvalidFormatException $e){
+                    } catch (InvalidFormatException $e) {
                         $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
                     }
                 }
             ],
-            'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
-            'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
+            'amount_disputed' => ['nullable', 'filled', 'integer', 'min:1', Rule::requiredIf($request->filled('amount_currency_slug'))],
+            'amount_currency_slug' => ['nullable', 'filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
             'attach_files' => 'nullable',
-            'account_number'=>'filled'
+            'account_number' => 'filled'
         ];
 
         if ($with_client) {
-            $data['claimer_id'] = ['nullable','filled', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
+            $data['claimer_id'] = ['nullable', 'filled', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
             $data['firstname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['lastname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['raison_sociale'] = 'nullable';
@@ -127,13 +127,13 @@ trait CreateClaim
         $appNature = substr($this->getAppNature($institution_targeted_id), 0, 2);
 
         $claimsNumber = Claim::withTrashed()
-                ->whereBetween('created_at', [
-                    Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
-                    Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
-                ])
-                ->where('institution_targeted_id', $institution_targeted_id)
-                ->get()
-                ->count() + 1;
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfYear()->format('Y-m-d H:i:s'),
+                Carbon::now()->endOfYear()->format('Y-m-d H:i:s')
+            ])
+            ->where('institution_targeted_id', $institution_targeted_id)
+            ->get()
+            ->count() + 1;
 
         $formatClaimsNumber = str_pad("{$claimsNumber}", 6, "0", STR_PAD_LEFT);
 
@@ -161,11 +161,9 @@ trait CreateClaim
             foreach ($requirements as $requirement) {
                 $rules->put($requirement, 'required');
             }
-
         } catch (\Exception $exception) {
 
             throw new CustomException("Can't retrieve the claimObject requirements");
-
         }
 
         $status = 'full';
@@ -178,11 +176,9 @@ trait CreateClaim
 
             $errors = $validator->errors()->messages();
             $status = 'incomplete';
-
         } else {
             // status = full so the claim is complete
             $request->merge(['completed_by' => $request->created_by, 'completed_at' => Carbon::now()]);
-
         }
 
         return ['status' => $status, 'errors' => $this->incompleteErrors($errors)];
@@ -193,17 +189,16 @@ trait CreateClaim
      * @param $errors
      * @return \Illuminate\Support\Collection
      */
-    protected function incompleteErrors($errors){
+    protected function incompleteErrors($errors)
+    {
 
         $requirements = collect([]);
 
-        if(!empty($errors)){
-             foreach ($errors as $key => $error){
+        if (!empty($errors)) {
+            foreach ($errors as $key => $error) {
 
-                 ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
-
-             }
-
+                ($requirement = Requirement::where('name', $key)->first()) ? $requirements->push($requirement) : '';
+            }
         }
         return $requirements;
     }
@@ -295,30 +290,42 @@ trait CreateClaim
         // send notification to pilot
         //if (!is_null($claim->createdBy)) {
         if (!is_null($institutionTargeted)) {
-
-            if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
-                $severityLevel = "normal";
-                if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')){
-
-                    $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaimHighForcefulness($claim));
-                    $severityLevel = "high";
-                }else{
-
-                    $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
-
-                }
-
-                $process_notify_all_active_pilot = new ProcessNotifyAllActivePilot($claim,$severityLevel, Auth::user()->id);
-                dispatch($process_notify_all_active_pilot);
-
-                // check if the claimObject related to the claim have a time_limit = 1 and send a notification
-                $this->closeTimeLimitNotification($claim);
-
-                // send recurrence notification to the pilot
-                $this->recurrenceNotification($claim);
-
+            $configAnyPilotActif = $this->getConfigurationAnyPilotActif($institutionTargeted);
+            $severityLevel = "normal";
+            if ($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')) {
+                $severityLevel = "high";
             }
+            if ($configAnyPilotActif && $configAnyPilotActif->many_active_pilot) {
+                \Illuminate\Support\Facades\Notification::send(
+                    $this->getAllIdentitePilotActif($institutionTargeted), 
+                    $severityLevel === "high" ? new RegisterAClaimHighForcefulness($claim) : new RegisterAClaim($claim)
+                );
+            } else {
+                if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
+                    $this->getInstitutionPilot($institutionTargeted)->notify($severityLevel === "high" ? new RegisterAClaimHighForcefulness($claim) : new RegisterAClaim($claim));
+                }
+                $this->closeTimeLimitNotification($claim);
+                    // send recurrence notification to the pilot
+                $this->recurrenceNotification($claim);
+            }
+            // if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
+            //     $severityLevel = "normal";
+            //     if($claim->claimObject->severityLevel && ($claim->claimObject->severityLevel->status === 'high')) {
+            //         $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaimHighForcefulness($claim));
+            //         $severityLevel = "high";
+            //     } else {
+            //         $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
+            //     }
 
+            //     $process_notify_all_active_pilot = new ProcessNotifyAllActivePilot($claim,$severityLevel, Auth::user()->id);
+            //     dispatch($process_notify_all_active_pilot);
+
+            //     // check if the claimObject related to the claim have a time_limit = 1 and send a notification
+            //     $this->closeTimeLimitNotification($claim);
+
+            //     // send recurrence notification to the pilot
+            //     $this->recurrenceNotification($claim);
+            // }
         }
         //}
         return $claim;
@@ -375,11 +382,10 @@ trait CreateClaim
      */
     protected function recurrenceNotification($claim)
     {
-        if($this->canSendRecurrenceNotification(is_null($claim->createdBy) ? $claim->institution_targeted_id :
-            $claim->createdBy->institution_id)){
+        if ($this->canSendRecurrenceNotification(is_null($claim->createdBy) ? $claim->institution_targeted_id :
+            $claim->createdBy->institution_id)) {
             $this->getInstitutionPilot(is_null($claim->createdBy) ? $claim->institutionTargeted :
                 $claim->createdBy->institution)->notify(new Recurrence($claim));
         }
     }
-
 }

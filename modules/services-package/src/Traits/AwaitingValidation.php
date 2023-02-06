@@ -65,7 +65,15 @@ trait AwaitingValidation
 
             return $claimsTreated->paginate($paginationSize);
         } else {
+            if ($search_text) {
 
+                $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                    $query->where('firstname', 'like', "%$search_text%")
+                        ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orwhereJsonContains('telephone', $search_text)
+                        ->orwhereJsonContains('email', $search_text);
+                });
+            }
             return $claimsTreated->get();
         }
 
@@ -80,7 +88,7 @@ trait AwaitingValidation
         });*/
     }
 
-    protected function getClaimsAwaitingValidationInMyInstitutionWithParams($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $status = null, $transferred_to_unit_by = null, $search_text = null)
+    protected function getClaimsAwaitingValidationInMyInstitutionWithParams($paginate = false, $paginationSize = 10, $key = null, $type = null, $institution_id = null, $status = null, $transferred_to_unit_by = null, $search_text = null, $flow_type = null)
     {
 
         $institution_id = is_null($institution_id)
@@ -92,10 +100,12 @@ trait AwaitingValidation
             $claimsTreated->where('status', 'treated');
         }
 
+        if ($flow_type == 'affected_history') {
+            $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
+                $query->where('institution_id', $institution_id);
+            });
+        }
 
-        $claimsTreated->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
-            $query->where('institution_id', $institution_id);
-        });
         if ($transferred_to_unit_by) {
             $claimsTreated->whereHas('activeTreatment', function ($query) {
                 $query->where('transferred_to_unit_by', '<>', null);
@@ -118,15 +128,7 @@ trait AwaitingValidation
                         $claimsTreated = $claimsTreated->whereHas("activeTreatment", function ($query) use ($key) {
                             $query->where("transferred_to_unit_by", $key);
                         });
-                        if ($search_text) {
 
-                            $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
-                                $query->where('firstname', 'like', "%$search_text%")
-                                    ->orWhere('lastname', 'like', "%$search_text%")
-                                    ->orwhereJsonContains('telephone', $search_text)
-                                    ->orwhereJsonContains('email', $search_text);
-                            });
-                        }
                         break;
 
                     default:
@@ -139,10 +141,26 @@ trait AwaitingValidation
                         break;
                 }
             }
+            if ($search_text) {
 
+                $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                    $query->where('firstname', 'like', "%$search_text%")
+                        ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orwhereJsonContains('telephone', $search_text)
+                        ->orwhereJsonContains('email', $search_text);
+                });
+            }
             return $claimsTreated->paginate($paginationSize);
         } else {
+            if ($search_text) {
 
+                $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
+                    $query->where('firstname', 'like', "%$search_text%")
+                        ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orwhereJsonContains('telephone', $search_text)
+                        ->orwhereJsonContains('email', $search_text);
+                });
+            }
             return $claimsTreated->get();
         }
 
@@ -183,18 +201,18 @@ trait AwaitingValidation
         if ($configs["configuration"]["many_active_pilot"]) {
             if ($staff->id == $institution->active_pilot_id) {
                 if ($type) {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text, "affected_history");
                     return $claimsTreated;
                 } else {
-                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                    $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text, "affected_history");
                     return $claimsTreated;
                 }
             } else {
-                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text);
+                $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $staff->id, "transferred_to_unit_by", $institution->id, null, true, $search_text, "affected_history");
                 return $claimsTreated;
             }
         } else {
-            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text);
+            $claimsTreated = $this->getClaimsAwaitingValidationInMyInstitutionWithParams($paginate, $paginationSize, $key, $type, $institution->id, null, true, $search_text, "affected_history");
             return $claimsTreated;
         }
     }
@@ -285,12 +303,12 @@ trait AwaitingValidation
             'invalidated_reason' => NULL,
             'validated_at' => Carbon::now()
         ];
-        
+
         $backup = $this->backupData($claim, $validationData);
-        if (count($request->mail_attachments)>0) {
+        if (count($request->mail_attachments) > 0) {
             $mail_attachments = File::whereIn('id', $request->mail_attachments)->get();
         }
-        
+
         $claim->activeTreatment->update([
             'solution_communicated' => $request->solution_communicated,
             'validated_at' => Carbon::now(),

@@ -41,37 +41,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
         $nature = Config::get('services.app_nature', 'PRO');
         if ($nature === 'PRO') {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-            $allow_pilot_create_discussion = Config::get("services.allow_pilot_create_discussion");
-            $add_permission_to_pilot = [
-                'store-discussion','add-discussion-contributor'
-            ];
-
-            $pilot_normal_permissions = [
-                'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
-                'store-claim-against-my-institution',
-                'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
-                'list-my-claim-archived', 'show-my-claim-archived',
-                'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
-                'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
-                'list-monitoring-claim-my-institution',
-                'list-reporting-claim-my-institution',
-                'transfer-claim-to-circuit-unit',
-                'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
-                'show-dashboard-data-my-institution',
-                'history-list-create-claim',
-                'update-active-pilot',
-                'unfounded-claim-awaiting-assignment',
-                'search-claim-my-reference',
-                'attach-files-to-claim',
-                'revive-staff',
-                'pilot-list-notification-proof',
-                'config-reporting-claim-my-institution',
-                'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                'bci-monthly-reports', 'bci-annual-reports',
-                'pilot-export-notification-proof','configuration-pilot','pilot-relance-other','reassignment_to_pilot',
-                'list-claim-transferred-my-institution',
-            ];
-
             $independantRoles = [
                 "admin-pro" => [
                     'list-category-client', 'store-category-client', 'update-category-client', 'destroy-category-client', 'show-category-client',
@@ -111,18 +80,44 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
-                    'list-auth-config','update-auth-config',
+                    'list-auth-config', 'update-auth-config',
                     'activity-log',
                     'list-notification-proof',
                     'config-reporting-claim-my-institution',
                     'config-reporting-claim-my-institution',
                     'list-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'logout-user-my-institution',
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'export-notification-proof','configuration-pilot'
+                    'export-notification-proof', 'configuration-pilot',
+                    'configure-pilot-collector-discussion-attribute',
                 ],
-                "pilot" => $allow_pilot_create_discussion==1 ? array_merge($pilot_normal_permissions,$add_permission_to_pilot) : $pilot_normal_permissions,
+                "pilot" => [
+                    'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
+                    'store-claim-against-my-institution',
+                    'list-claim-awaiting-validation-my-institution', 'show-claim-awaiting-validation-my-institution', 'validate-treatment-my-institution',
+                    'list-my-claim-archived', 'show-my-claim-archived',
+                    'list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim',
+                    'list-my-discussions', 'list-discussion-contributors', 'contribute-discussion',
+                    'list-monitoring-claim-my-institution',
+                    'list-reporting-claim-my-institution',
+                    'transfer-claim-to-circuit-unit',
+                    'list-claim-incomplete-against-my-institution', 'show-claim-incomplete-against-my-institution', 'update-claim-incomplete-against-my-institution',
+                    'show-dashboard-data-my-institution',
+                    'history-list-create-claim',
+                    'update-active-pilot',
+                    'unfounded-claim-awaiting-assignment',
+                    'search-claim-my-reference',
+                    'attach-files-to-claim',
+                    'revive-staff',
+                    'pilot-list-notification-proof',
+                    'config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'bci-monthly-reports', 'bci-annual-reports',
+                    'pilot-export-notification-proof', 'configuration-pilot', 'pilot-relance-other', 'reassignment_to_pilot',
+                    'list-claim-transferred-my-institution',
+                    // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
+                ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
                     'store-claim-against-my-institution',
@@ -133,6 +128,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    // 'contribute-discussion', 'list-my-discussions',
+                    // 'list-discussion-contributors',
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -168,7 +165,6 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     $role->syncPermissions($permissions);
                     $role->update(['is_editable' => 0]);
                 }
-
             }
 
             Permission::doesntHave('roles')->delete();
@@ -177,9 +173,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
 
             $modules = [
                 "Collecte" => "collector-filial-pro",
-	            "Traitement" =>  "staff",
-	            "Pilotage du processus" => "pilot",
-	            "Administration" =>  "admin-pro"
+                "Traitement" =>  "staff",
+                "Pilotage du processus" => "pilot",
+                "Administration" =>  "admin-pro"
             ];
 
             $permissionsAssociatedToModules = collect([]);
@@ -187,7 +183,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
             foreach ($modules as $moduleName => $roleName) {
                 // CreateOrUpdate $module
                 $module = Module::updateOrCreate(
-                    ['name->'.app()->getLocale() => $moduleName],
+                    ['name->' . app()->getLocale() => $moduleName],
                     ["name" => $moduleName, "description" => $moduleName]
                 );
 

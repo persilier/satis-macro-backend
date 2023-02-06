@@ -181,6 +181,13 @@ class InstallMetadataSeeder extends Seeder
             [
                 'name' => 'coef-relance-domaine-prefixe',
                 'data' => json_encode([])
+            ],
+            [
+                'name' => 'allow-pilot-collector-to-discussion',
+                'data' => json_encode([
+                    "allow_pilot" => 0,
+                    "allow_collector" => 0,
+                ])
             ]
         ];
 
