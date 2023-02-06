@@ -55,6 +55,8 @@ trait Search
             'identites.email',
             'identites.ville',
             'identites.sexe',
+            'identites.type_client',
+            'identites.raison_sociale',
             'accounts.id as accountId',
             'accounts.number as accountNumber'
         ])
