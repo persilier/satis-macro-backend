@@ -122,7 +122,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'list-my-claim-unsatisfied',
                     'list-closed-my-claims','close-my-claims',
-                    'list-escalation-config','update-escalation-config',
+                    // 'list-escalation-config','update-escalation-config',
                     'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
                     'list-my-claim-archived', 'list-any-claim-archived', 'show-my-claim-archived',
                     'system-my-efficiency-report'
