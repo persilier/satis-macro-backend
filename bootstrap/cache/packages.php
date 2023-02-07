@@ -7,6 +7,7 @@
     ),
     'aliases' => 
     array (
+      'Pdf' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
       'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
     ),
   ),
@@ -26,6 +27,17 @@
     'providers' => 
     array (
       0 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
+    ),
+  ),
+  'danielme85/laravel-log-to-db' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'danielme85\\LaravelLogToDB\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'LogToDB' => 'danielme85\\LaravelLogToDB\\LogToDB',
     ),
   ),
   'facade/ignition' => 
@@ -169,6 +181,13 @@
       0 => 'Satis2020\\AuthConfig\\Providers\\AuthConfigServiceProvider',
     ),
   ),
+  'satis2020/bci-reports' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\BCIReports\\Providers\\BCIReportsServiceProvider',
+    ),
+  ),
   'satis2020/benchmarking-report' => 
   array (
     'providers' => 
@@ -293,6 +312,14 @@
       0 => 'Satis2020\\Discussion\\Providers\\DiscussionServiceProvider',
     ),
   ),
+  'satis2020/escalation' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\Escalation\\Providers\\EscalationServiceProvider',
+      1 => 'Satis2020\\Escalation\\Providers\\EventServiceProvider',
+    ),
+  ),
   'satis2020/external-dependencies-package' => 
   array (
     'providers' => 
@@ -389,6 +416,13 @@
     'providers' => 
     array (
       0 => 'Satis2020\\MyInstitutionUnit\\Providers\\MyInstitutionUnitServiceProvider',
+    ),
+  ),
+  'satis2020/my-staff-monitoring' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\MyStaffMonitoring\\Providers\\MyStaffMonitoringProvider',
     ),
   ),
   'satis2020/my-user' => 
@@ -686,6 +720,13 @@
       0 => 'Satis2020\\UsefulDataForBackoffice\\Providers\\UsefulDataForBackofficeServiceProvider',
     ),
   ),
+  'satis2020/useful-data-for-claims-classification' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\UsefulDataForClaimsClassification\\Providers\\UsefulDataForClaimsClassificationServiceProvider',
+    ),
+  ),
   'satis2020/useful-data-plugin-wordpress' => 
   array (
     'providers' => 
@@ -698,6 +739,14 @@
     'providers' => 
     array (
       0 => 'Satis2020\\UserPackage\\Providers\\UserPackageServiceProvider',
+    ),
+  ),
+  'satis2020/webhooks' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\Webhooks\\Providers\\WebhooksServiceProvider',
+      1 => 'Satis2020\\Webhooks\\Providers\\EventServiceProvider',
     ),
   ),
   'satis2020/without-link-with-institution-unit' => 

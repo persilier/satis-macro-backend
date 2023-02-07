@@ -29,14 +29,15 @@ class TreatmentBoardRequest extends FormRequest
     {
 
         $rules = [
-            'name' => ['string',
-                Rule::requiredIf($this->type==TreatmentBoard::SPECIFIC && strtoupper($this->getMethod())==="POST"),
-                Rule::unique('treatment_boards','name')->ignore($this->id)
+            'name' => [
+                'string',
+                Rule::requiredIf($this->type == TreatmentBoard::SPECIFIC && strtoupper($this->getMethod()) === "POST"),
+                Rule::unique('treatment_boards', 'name')->ignore($this->id)
             ],
-            'claim_id'=>[Rule::requiredIf($this->type==TreatmentBoard::SPECIFIC && strtoupper($this->getMethod())==="POST"),'exists:claims,id',],
-            'type'=>['required',Rule::in([TreatmentBoard::STANDARD,TreatmentBoard::SPECIFIC]),new StandardBoardExists($this)],
-            'description'=>['string','nullable'],
-            'members' => ['array','required'],
+            'claim_id' => [Rule::requiredIf($this->type == TreatmentBoard::SPECIFIC && strtoupper($this->getMethod()) === "POST"), 'exists:claims,id',],
+            'type' => ['required', Rule::in([TreatmentBoard::STANDARD, TreatmentBoard::SPECIFIC]), new StandardBoardExists($this)],
+            'description' => ['string', 'nullable'],
+            'members' => ['array', 'required_if:type,' . TreatmentBoard::SPECIFIC],
             'members.*' => ['exists:staff,id'],
             'specific_bord_exists' => ['boolean'],
         ];
