@@ -17,7 +17,7 @@ trait Search
     function searchClient($request,$institution)
     {
         $recherche = $request->query('r');
-        $rechercheType = $request->query('type', 'name_or_phone');
+        $rechercheType = $request->query('type', 'name_or_phone','raison_sociale');
 
         $query = Identite::query()
             ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
