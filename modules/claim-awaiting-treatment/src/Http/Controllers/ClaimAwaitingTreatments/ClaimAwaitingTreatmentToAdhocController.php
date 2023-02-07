@@ -58,8 +58,11 @@ class ClaimAwaitingTreatmentToAdhocController extends ApiController
         $paginationSize = \request()->query('size', 10);
         $key = \request()->query('key');
 
-        $claims = Claim::whereHas('treatmentBoard', function ($q) use($staff) {
-                $q->whereHas('members', function ($query) use($staff){
+        $claims = Claim::with($this->getRelationsAwitingTreatment())
+            ->whereNull('deleted_at')
+            ->whereNull('treatment_board_id')
+            ->whereHas('treatmentBoard', function ($q) use ($staff) {
+                $q->whereHas('members', function ($query) use ($staff) {
                     $query->where('staff_id', $staff->id);
                 });
             });
