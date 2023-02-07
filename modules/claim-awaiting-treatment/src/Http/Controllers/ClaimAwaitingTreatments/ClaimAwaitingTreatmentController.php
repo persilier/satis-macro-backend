@@ -62,7 +62,7 @@ class ClaimAwaitingTreatmentController extends ApiController
         $key = \request()->query('key');
         $type = \request()->query('type');
 
-        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id);
+        $claims = $this->getClaimsQuery($institution->id, $staff->unit_id, $statusColumn);
 
         if ($key) {
             switch ($type) {
