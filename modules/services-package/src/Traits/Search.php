@@ -70,7 +70,7 @@ trait Search
 
         foreach ($identities as $identityId => $identityAccounts) {
 
-            $fullName = $identityAccounts[0]->firstname != null or  $identityAccounts[0]->lastname != null ? $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname:$identityAccounts[0]->raison_sociale;
+            $fullName = $identityAccounts[0]->raison_sociale;
 
             if ($identityAccounts[0]->telephone) {
                 $fullName .= ' / ';
