@@ -60,7 +60,6 @@ class ClaimAwaitingTreatmentController extends ApiController
 
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
-        $type = \request()->query('type');
 
         $claims = $this->getClaimsQuery($institution->id, $staff->unit_id, $statusColumn);
 
