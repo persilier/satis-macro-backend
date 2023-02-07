@@ -60,7 +60,7 @@ class ClaimAwaitingTreatmentToAdhocController extends ApiController
 
         $claims = Claim::with($this->getRelationsAwitingTreatment())
             ->whereNull('deleted_at')
-            ->whereNull('treatment_board_id')
+            ->whereNotNull('treatment_board_id')
             ->whereHas('treatmentBoard', function ($q) use ($staff) {
                 $q->whereHas('members', function ($query) use ($staff) {
                     $query->where('staff_id', $staff->id);
