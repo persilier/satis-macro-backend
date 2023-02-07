@@ -39,6 +39,7 @@ trait Search
             $query = $query->where(function ($query) use ($recherche) {
                 $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
                     ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`raison_sociale` LIKE ?', ["%$recherche%"])
                     ->orwhereJsonContains('telephone', $recherche);
             });
         }

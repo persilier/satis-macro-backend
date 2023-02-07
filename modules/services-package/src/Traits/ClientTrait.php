@@ -231,6 +231,7 @@ trait ClientTrait
                     $query2->whereHas("identite", function ($query3) use ($key) {
                         $query3->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$key%"])
                             ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$key%"])
+                            ->orWhereRaw('`identites`.`raison_sociale` LIKE ?', ["%$key%"])
                             ->orwhereJsonContains('telephone', $key)
                             ->orwhereJsonContains('email', $key);
                     });
