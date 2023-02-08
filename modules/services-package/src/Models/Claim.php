@@ -40,6 +40,9 @@ class Claim extends Model
     const CLAIM_UNSATISFIED = "unsatisfied";
 
 
+    const CLAIM_AT_DISCUSSION = "at_discussion";
+
+
     /**
      * The "booted" method of the model.
      *

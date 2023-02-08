@@ -93,6 +93,9 @@ class DiscussionController extends ApiController
         $discussion->staff()->attach($request->created_by);
         if (isEscalationClaim($discussion->claim) && !is_null($discussion->claim->treatment_board_id)) {
             $discussion->staff()->attach($discussion->claim->treatmentBoard->members()->where('id', '!=', $request->created_by)->pluck('id'));
+            $discussion->claim->update([
+                'escalation_status' => Claim::CLAIM_AT_DISCUSSION
+            ]);
         }
         return response()->json($discussion, 201);
     }
