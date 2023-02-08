@@ -100,7 +100,7 @@ class NotificationsTableSeeder extends Seeder
                     [
                         'event' => 'transferred-to-unit-escalation',
                         'description' => "Notification envoyée aux staff après transfert d'une réclamation à une unité ou comité de traitement dans le processus d'escalade",
-                        'text' => "Une reclamation a ete transferee a votre unite. Reference: {claim_reference}. Objet : {claim_object}"
+                        'text' => "Une réclamation a été transferée dans le comité d'ont vous êtes membre. Reference: {claim_reference}. Objet : {claim_object}"
                     ],
                     [
                         'event' => 'treat-a-claim-escalation',

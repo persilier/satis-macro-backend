@@ -11,6 +11,7 @@ use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\ServicePackage\Traits\ClaimTrait;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\Escalation\Requests\TreatmentBoardRequest;
+use Satis2020\ServicePackage\Notifications\TransferredToUnit;
 use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
 
 class TreatmentBoardService
@@ -54,14 +55,25 @@ class TreatmentBoardService
         } else {
             $treatmentBord = $this->getStandardBoard();
         }
-
-
         $claim->update([
             'treatment_board_id' => $treatmentBord->id,
             'escalation_status' => Claim::CLAIM_TRANSFERRED_TO_UNIT
         ]);
 
+        // Notification des membres du comité
+        $identites = $this->getTreatmentBordStaffIdentities($treatmentBord->id);
+        \Illuminate\Support\Facades\Notification::send($identites, new TransferredToUnit($claim, true));
+
         return $treatmentBord;
+    }
+
+    public function getTreatmentBordStaffIdentities($treatmentBoardId)
+    {
+        $identites = $this->getById($treatmentBoardId)->members()->with('identite.user')
+            ->get()
+            ->pluck('identite')
+            ->values();
+        return $identites;
     }
 
     public function getStandardBoard()
