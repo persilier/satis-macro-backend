@@ -3,14 +3,16 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
-
+use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Models\Staff;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\Staff;
-use Satis2020\ServicePackage\Models\Unit;
+use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 trait Discussion
 {
+    use ConfigurationPilotTrait, Notification;
 
     protected function getPilotRoleName($unit_id)
     {
@@ -71,7 +73,8 @@ trait Discussion
     protected function getContributorsWithClaimCreator($discussion)
     {
 
-        $staffs = Staff::with('identite.user')
+
+        $staffs =  Staff::with('identite.user')
             ->get()
             ->filter(function ($value, $key) use ($discussion) {
 
@@ -101,11 +104,47 @@ trait Discussion
                         return $item->id == $value->id;
                     }) === false;
             });
-
         $claim_creator = $discussion->claim->createdBy->load('identite.user');
-        if (!$staffs->contains($claim_creator)) {
+        if (!$staffs->pluck('id')->contains($claim_creator->id)) {
             $staffs->push($claim_creator);
         }
         return $staffs;
+    }
+    public function addContributorsAtEscalade($discussion, $baseContributeors)
+    {
+        if (isEscalationClaim($discussion->claim)) {
+
+            // ajouter les pilotes actove dans le cadre de l'escalde
+            $configuration = $this->nowConfiguration();
+            if ($configuration['configuration']['many_active_pilot'] === "1") {
+                $actif_pilots  = $configuration['all_active_pilots']->pluck('staff');
+                foreach ($actif_pilots as $actif_pilot) {
+                    $actif_pilot->load('identite.user');
+                    if (!$baseContributeors->pluck('id')->contains($actif_pilot->id)) {
+                        $baseContributeors->push($actif_pilot);
+                    }
+                }
+            } else {
+                $actif_pilot = $this->getInstitutionPilot($this->institution()->id)->identite->staff->load('identite.user');
+                if (!$baseContributeors->pluck('id')->contains($actif_pilot->id)) {
+                    $baseContributeors->push($actif_pilot);
+                }
+            }
+        }
+
+        // ajouter le staff responsable du traitement précédent de la réclamation
+        $responsible_staff = $discussion->claim->activeTreatment->responsibleStaff->load('identite.user');
+        if (!$baseContributeors->contains($responsible_staff)) {
+            $baseContributeors->push($responsible_staff);
+        }
+
+        // ajouter le lead de l'unite de traitment 
+        $lead =  $responsible_staff->unit->lead->load('identite.user');
+        if (!$baseContributeors->pluck('id')->contains($lead->id)) {
+            dd('qq');
+            $baseContributeors->push($lead);
+        }
+
+        return $baseContributeors;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\AnyInstitutionUnit\Http\Controllers\Unit;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -22,11 +23,10 @@ class UnitController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-any-unit')->only(['index']);
-        $this->middleware('permission:store-any-unit')->only(['create','store']);
+        $this->middleware('permission:store-any-unit')->only(['create', 'store']);
         $this->middleware('permission:show-any-unit')->only(['show']);
-        $this->middleware('permission:update-any-unit')->only(['edit','update']);
+        $this->middleware('permission:update-any-unit')->only(['edit', 'update']);
         $this->middleware('permission:destroy-any-unit')->only(['destroy']);
-
     }
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class UnitController extends ApiController
      */
     public function index()
     {
-        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'])->get(), 200);
+        return response()->json(Unit::with(['unitType', 'institution', 'parent', 'children', 'lead.identite', 'state.country'])->get(), 200);
     }
 
     /**
@@ -50,7 +50,7 @@ class UnitController extends ApiController
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'units' => Unit::all(),
-            'countries'=>$countryService->getCountries()
+            'countries' => $countryService->getCountries()
         ], 200);
     }
 
@@ -69,14 +69,14 @@ class UnitController extends ApiController
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
-            'parent_id' => 'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
+            'parent_id' => 'sometimes|', Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
             }),
-            'state_id'=>['nullable','numeric',new StateExistRule]
+            'state_id' => ['nullable', 'numeric', new StateExistRule]
         ];
         $this->validate($request, $rules);
 
-        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'parent_id', 'others','state_id']));
+        $unit = Unit::create($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'parent_id', 'others', 'state_id']));
 
         return response()->json($unit, 201);
     }
@@ -99,16 +99,16 @@ class UnitController extends ApiController
      * @param CountryService $countryService
      * @return JsonResponse
      */
-    public function edit(Unit $unit,CountryService $countryService)
+    public function edit(Unit $unit, CountryService $countryService)
     {
         return response()->json([
             'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
-                            ->where('unit_id', $unit->id)->get(),
+                ->where('unit_id', $unit->id)->get(),
             'units' => Unit::where('institution_id', $unit->institution->id)->get(),
-            'countries'=>$countryService->getCountries()
+            'countries' => $countryService->getCountries()
         ], 200);
     }
 
@@ -128,25 +128,25 @@ class UnitController extends ApiController
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
-            'lead_id' => 'sometimes|',Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {
+            'lead_id' => 'sometimes|', Rule::exists('staff', 'id')->where(function ($query) use ($request, $unit) {
                 $query->where('institution_id', $request->institution_id)->where('unit_id', $unit->id);
             }),
-            'parent_id' =>  'sometimes|',Rule::exists('units', 'id')->where(function ($query) use ($request) {
+            'parent_id' =>  'sometimes|', Rule::exists('units', 'id')->where(function ($query) use ($request) {
                 $query->where('institution_id', $request->institution_id);
             }),
-            'state_id'=>['nullable','numeric',new StateExistRule]
+            'state_id' => ['nullable', 'numeric', new StateExistRule]
         ];
 
         $this->validate($request, $rules);
 
         $this->UnitHasAnStaff($request, $unit);
 
-        if(!$request->has('parent_id'))
+        if (!$request->has('parent_id'))
             $unit->parent_id = null;
-        if(!$request->has('lead_id'))
+        if (!$request->has('lead_id'))
             $unit->lead_id = null;
 
-        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others','state_id']));
+        $unit->update($request->only(['name', 'description', 'unit_type_id', 'institution_id', 'lead_id', 'parent_id', 'others', 'state_id']));
 
         return response()->json($unit, 201);
     }
