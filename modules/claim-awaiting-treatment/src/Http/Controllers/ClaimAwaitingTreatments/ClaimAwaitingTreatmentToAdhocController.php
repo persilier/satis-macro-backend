@@ -59,6 +59,7 @@ class ClaimAwaitingTreatmentToAdhocController extends ApiController
         $key = \request()->query('key');
 
         $claims = Claim::with($this->getRelationsAwitingTreatment())
+            ->where('escalation_status', Claim::CLAIM_TRANSFERRED_TO_UNIT)
             ->whereNull('deleted_at')
             ->whereNotNull('treatment_board_id')
             ->whereHas('treatmentBoard', function ($q) use ($staff) {
