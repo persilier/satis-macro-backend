@@ -91,18 +91,21 @@ trait Discussion
 
                     ? (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
                         || $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id)))
-                    ||  $discussion->claim->createdBy && $value->id == $discussion->claim->createdBy->id
                     && $discussion->staff->search(function ($item, $key) use ($value) {
                         return $item->id == $value->id;
                     }) === false
 
                     : (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
                         || ($value->institution_id == $discussion->createdBy->institution_id && $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id))))
-                    || $discussion->claim->createdBy && $value->id == $discussion->claim->createdBy->id
                     && $discussion->staff->search(function ($item, $key) use ($value) {
                         return $item->id == $value->id;
                     }) === false;
             });
+
+        $claim_creator = $discussion->claim->createdBy->load('identite.user');
+        if (!$staffs->contains($claim_creator)) {
+            $staffs->push($claim_creator);
+        }
         return $staffs;
     }
 }
