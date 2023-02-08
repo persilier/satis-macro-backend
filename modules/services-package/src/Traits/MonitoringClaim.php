@@ -104,6 +104,14 @@ trait MonitoringClaim
             $claims->where('institution_targeted_id', $request->institution_id);
 
         }
+        
+         if($request->has('type_client')){
+
+            $claims->whereHas('claimer', function ($o) use ($request){
+
+                $o->where('type_client', $request->type_client);
+            });
+        } 
 
 
         if ($treatment) {

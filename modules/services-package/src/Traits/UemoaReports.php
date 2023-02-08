@@ -209,6 +209,15 @@ trait UemoaReports{
             $claims = $claims->where('status', $request->status);
         }
 
+        if($request->has('type_client')){
+
+            $claims = $claims->whereHas('claimer', function ($o) use ($request){
+
+                $o->where('type_client', $request->type_client);
+
+            });
+        }
+
 
         return $claims;
 
@@ -465,8 +474,16 @@ trait UemoaReports{
 
         $client = null;
 
-        $claim->claimer ? $client = $claim->claimer->firstname.' '.$claim->claimer->lastname : null;
+        if ($claim->claimer) {
 
+            if ($claim->claimer->raison_sociale != null) {
+                $client = $claim->claimer->raison_sociale;
+            } else {
+                $client = $claim->claimer->firstname.' '.$claim->claimer->lastname ;
+            }
+            
+        } 
+        
         return $client;
     }
 

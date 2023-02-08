@@ -32,7 +32,7 @@ class Identite extends Model
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'id_card', 'other_attributes'
+        'firstname', 'lastname', 'raison_sociale',  'type_client',  'sexe', 'telephone', 'email', 'ville', 'id_card', 'other_attributes'
     ];
 
     /**

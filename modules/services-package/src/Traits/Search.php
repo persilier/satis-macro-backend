@@ -17,7 +17,7 @@ trait Search
     function searchClient($request,$institution)
     {
         $recherche = $request->query('r');
-        $rechercheType = $request->query('type', 'name_or_phone');
+        $rechercheType = $request->query('type', 'name_or_phone','raison_sociale');
 
         $query = Identite::query()
             ->leftJoin('clients', 'identites.id', '=', 'clients.identites_id')
@@ -39,6 +39,7 @@ trait Search
             $query = $query->where(function ($query) use ($recherche) {
                 $query->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
                     ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`raison_sociale` LIKE ?', ["%$recherche%"])
                     ->orwhereJsonContains('telephone', $recherche);
             });
         }
@@ -55,6 +56,8 @@ trait Search
             'identites.email',
             'identites.ville',
             'identites.sexe',
+            'identites.type_client',
+            'identites.raison_sociale',
             'accounts.id as accountId',
             'accounts.number as accountNumber'
         ])
@@ -67,7 +70,14 @@ trait Search
 
         foreach ($identities as $identityId => $identityAccounts) {
 
-            $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
+            if ($identityAccounts[0]->raison_sociale != null) {
+                $fullName = $identityAccounts[0]->raison_sociale ;
+
+            } else {
+                $fullName = $identityAccounts[0]->firstname . ' ' . $identityAccounts[0]->lastname;
+            }
+            
+
 
             if ($identityAccounts[0]->telephone) {
                 $fullName .= ' / ';

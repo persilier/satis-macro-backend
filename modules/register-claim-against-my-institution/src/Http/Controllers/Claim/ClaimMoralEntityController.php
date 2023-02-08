@@ -3,30 +3,32 @@
 namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
-use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\Currency;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\CreateClaim;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Models\Identite;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\Telephone;
+use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\ClaimsMoralEntity;
+use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 
 
 /**
- * Class ClaimController
+ * Class ClaimMoralEntityController
  * @package Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim
  */
-class ClaimController extends ApiController
+class ClaimMoralEntityController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone,ClaimsMoralEntity;
 
     /**
      * @var ActivityLogService
@@ -39,32 +41,11 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store']);
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws RetrieveDataUserNatureException
-     */
-    public function create()
-    {
-        $institution = $this->institution();
-
-        return response()->json([
-            'claimCategories' => ClaimCategory::all(),
-            'units' => $institution->units()
-                ->whereHas('unitType', function ($q) {
-                    $q->where('can_be_target', true);
-                })->get(),
-            'channels' => Channel::all(),
-            'currencies' => Currency::all()
-        ], 200);
-    }
-
-
+   
     /**
      * Store a newly created resource in storage.
      *
@@ -77,24 +58,24 @@ class ClaimController extends ApiController
      */
     public function store(Request $request)
     {
-
-        
+        //dd($request->all());
         $request->merge(['created_by' => $this->staff()->id]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
         
         $this->convertEmailInStrToLower($request);
         
-        $this->validate($request, $this->rules($request));
-       
+        $this->validate($request, $this->rulesForMoralEntity($request));
+        
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
-
+        
+        
         // create reference
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
         // create claimer if claimer_id is null
         if ($request->isNotFilled('claimer_id')) {
             // Verify phone number and email unicity
             $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
-
+            
             // register claimer
             $claimer = $this->createIdentity($request);
             $request->merge(['claimer_id' => $claimer->id]);

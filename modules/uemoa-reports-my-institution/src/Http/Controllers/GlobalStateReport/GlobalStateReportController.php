@@ -40,7 +40,7 @@ class GlobalStateReportController extends ApiController
     {
 
         $this->validate($request, $this->rulePeriode());
-
+        
         $claims = $this->resultatsGlobalState($request, true);
 
         return response()->json($claims, 200);

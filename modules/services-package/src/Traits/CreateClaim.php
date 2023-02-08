@@ -87,6 +87,8 @@ trait CreateClaim
             $data['claimer_id'] = ['nullable', 'filled', 'exists:identites,id', new ClientBelongsToInstitutionRules($request->institution_targeted_id)];
             $data['firstname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
             $data['lastname'] = [Rule::requiredIf($request->isNotFilled('claimer_id'))];
+            $data['raison_sociale'] = 'nullable';
+            $data['type_client'] = 'required';
             $data['sexe'] = [Rule::requiredIf($request->isNotFilled('claimer_id')), Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = ["required", 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
@@ -95,6 +97,8 @@ trait CreateClaim
         } else {
             $data['firstname'] = 'required';
             $data['lastname'] = 'required';
+            $data['raison_sociale'] = 'nullable';
+            $data['type_client'] = 'required';
             $data['sexe'] = ['required', Rule::in(['M', 'F', 'A'])];
             $data['telephone'] = ['required', 'array', new TelephoneArray];
             $data['email'] = [Rule::requiredIf($request->response_channel_slug === "email"), 'array', new EmailArray];
