@@ -473,8 +473,16 @@ trait UemoaReports{
 
         $client = null;
 
-        $claim->claimer ? $client = $claim->claimer->firstname.' '.$claim->claimer->lastname : null;
+        if ($claim->claimer) {
 
+            if ($claim->claimer->raison_sociale != null) {
+                $client = $claim->claimer->raison_sociale;
+            } else {
+                $client = $claim->claimer->firstname.' '.$claim->claimer->lastname ;
+            }
+            
+        } 
+        
         return $client;
     }
 
