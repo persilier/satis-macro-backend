@@ -40,7 +40,9 @@ class Claim extends Model
     const CLAIM_UNSATISFIED = "unsatisfied";
 
 
+    const CLAIM_TRANSFERRED_TO_COMITY = "transferred_to_comity";
     const CLAIM_AT_DISCUSSION = "at_discussion";
+    const CLAIM_RESOLVED = "resolved";
 
 
     /**

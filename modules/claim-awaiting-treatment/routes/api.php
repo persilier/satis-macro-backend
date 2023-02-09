@@ -26,6 +26,7 @@ Route::put('/claim-awaiting-treatment/{claim}/assignment', 'ClaimAwaitingTreatme
  * ClaimAwaitingTreatment to Ad'hoc
  */
 Route::get('/claim-awaiting-adhoc-treatment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentToAdhocController@index')->name('claim.awaiting.adhoc.treatment.index');
+Route::put('/claim-assignment-adhoc-staff/{claim}/treatment', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffAdhocController@treatmentClaim')->name('claim.assignment.adhoc.staff.treatment');
 
 
 /*

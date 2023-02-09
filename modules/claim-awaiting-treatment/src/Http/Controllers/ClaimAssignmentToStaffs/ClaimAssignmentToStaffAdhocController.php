@@ -26,7 +26,7 @@ use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilot
  * Class ClaimAssignmentToStaffController
  * @package Satis2020\ClaimAwaitingTreatment\Http\Controllers\ClaimAssignmentToStaffs
  */
-class ClaimAssignmentToStaffController extends ApiController
+class ClaimAssignmentToStaffAdhocController extends ApiController
 {
     use ClaimAwaitingTreatment, ConfigurationPilotTrait;
 
@@ -44,65 +44,6 @@ class ClaimAssignmentToStaffController extends ApiController
         $this->activityLogService = $activityLogService;
     }
 
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws RetrieveDataUserNatureException
-     */
-    public function index(Request $request)
-    {
-        $type = $request->query('type', "normal");
-        $institution = $this->institution();
-        $staff = $this->staff();
-        $claims = [];
-        if ($this->checkIfStaffIsPilot($staff)) {
-
-            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
-                $item->with($this->getRelationsAwitingTreatment());
-            });
-        } else {
-            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
-                ->map(function ($item, $key) {
-                    $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-                    $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
-                    $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
-                    return $item;
-                });
-        }
-
-        $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
-
-        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id, $statusColumn)
-            ->get()->map(function ($item, $key) {
-                $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-                $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
-                $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
-                return $item;
-            });
-        return response()->json($claims, 200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param Claim $claim
-     * @return JsonResponse
-     * @throws CustomException
-     * @throws RetrieveDataUserNatureException
-     */
-    public function show($claim)
-    {
-        $institution = $this->institution();
-        $staff = $this->staff();
-
-
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
-        $claim->isInvalidTreatment = (!is_null($claim->activeTreatment->invalidated_reason) && !is_null($claim->activeTreatment->validated_at)) ? TRUE : FALSE;
-        return response()->json($claim, 200);
-    }
-
-
     /**
      * @param Request $request
      * @param $claim
@@ -117,42 +58,25 @@ class ClaimAssignmentToStaffController extends ApiController
 
         $staff = $this->staff();
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+        $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
+            ->whereHas('activeTreatment', function ($q) {
+                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+            })
+            ->find($claim);
+        //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'amount_returned' => [
-                'nullable',
-                'filled',
-                'integer',
-                Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug)),
-                'min:0'
-            ],
             'solution' => ['required', 'string'],
-            'comments' => ['nullable', 'string'],
-            'preventive_measures' => [
-                'string',
-                Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
-                    && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
-            ],
             'can_communicate'
         ];
 
         $this->validate($request, $rules);
 
         $claim->activeTreatment->update([
-            'amount_returned' => $request->amount_returned,
             'solution' => $request->solution,
-            'comments' => $request->comments,
-            'preventive_measures' => $request->preventive_measures,
-            'solved_at' => Carbon::now(),
-            'unfounded_reason' => NULL
         ]);
 
-        if (isEscalationClaim($claim)) {
-            $claim->update(['escalation_status' => 'treated']);
-        } else {
-            $claim->update(['status' => 'treated']);
-        }
+        $claim->update(['escalation_status' => 'treated']);
 
         $this->activityLogService->store(
             "Traitement d'une réclamation",
@@ -166,6 +90,10 @@ class ClaimAssignmentToStaffController extends ApiController
         $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
         $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         $responsible_pilot  = null;
+
+        if ((int)$request->can_communicate == 1) {
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
+        }
 
         if ($configuration->many_active_pilot  === "0") {
             // one active pivot

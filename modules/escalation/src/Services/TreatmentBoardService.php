@@ -57,7 +57,7 @@ class TreatmentBoardService
         }
         $claim->update([
             'treatment_board_id' => $treatmentBord->id,
-            'escalation_status' => Claim::CLAIM_TRANSFERRED_TO_UNIT
+            'escalation_status' => Claim::CLAIM_TRANSFERRED_TO_COMITY
         ]);
 
         // Notification des membres du comité
