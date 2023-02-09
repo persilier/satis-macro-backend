@@ -22,7 +22,7 @@ class DiscussionController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware(['permission:list-my-discussions'])->only(['index']);
-        //$this->middleware(['permission:store-discussion'])->only(['store']);
+        $this->middleware(['permission:store-discussion'])->only(['store']);
         $this->middleware(['permission:destroy-discussion'])->only(['destroy']);
     }
 
