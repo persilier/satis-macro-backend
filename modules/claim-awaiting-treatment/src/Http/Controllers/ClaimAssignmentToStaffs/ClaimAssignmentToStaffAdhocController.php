@@ -64,15 +64,21 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             })
             ->whereNull('deleted_at')
             ->find($claim);
+
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'solution' => ['required_if:can_communicate,'.'1', 'string'],
+            'solution' => ['required_if:can_communicate,' . '1', 'string'],
             'can_communicate'
         ];
 
         $this->validate($request, $rules);
-
+        if (!$claim) {
+            return [
+                'error' => true,
+                'message' => "Can't retrieve the claim"
+            ];
+        }
         $claim->activeTreatment->update([
             'solution' => $request->solution,
         ]);
