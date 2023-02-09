@@ -76,7 +76,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             'solution' => $request->solution,
         ]);
 
-        $claim->update(['escalation_status' => 'treated']);
+        $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
 
         $this->activityLogService->store(
             "Traitement d'une réclamation",
