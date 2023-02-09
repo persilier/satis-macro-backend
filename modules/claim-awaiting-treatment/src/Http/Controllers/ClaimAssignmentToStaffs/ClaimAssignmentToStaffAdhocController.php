@@ -67,7 +67,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'solution' => ['required_if:can_communicate,1', 'string'],
+            'solution' => ['required_if:can_communicate,'.'1', 'string'],
             'can_communicate'
         ];
 
