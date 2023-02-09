@@ -39,7 +39,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:list-claim-assignment-to-staff')->only(['index']);
-        $this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim', 'unfoundedClaim']);
+        //$this->middleware('permission:show-claim-assignment-to-staff')->only(['show', 'treatmentClaim', 'unfoundedClaim']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -62,6 +62,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             ->whereHas('activeTreatment', function ($q) {
                 $q->where('escalation_responsible_staff_id', $this->staff()->id);
             })
+            ->whereNull('deleted_at')
             ->find($claim);
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 

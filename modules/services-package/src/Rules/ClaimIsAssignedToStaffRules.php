@@ -33,7 +33,7 @@ class ClaimIsAssignedToStaffRules implements Rule
     {
         $claim = Claim::with('activeTreatment')->findOrFail($value);
 
-        return $claim->activeTreatment->responsible_staff_id == $this->staff_id;
+        return ($claim->activeTreatment->responsible_staff_id == $this->staff_id) || ($claim->activeTreatment->escalation_responsible_staff_id == $this->staff_id) ;
     }
 
     /**
