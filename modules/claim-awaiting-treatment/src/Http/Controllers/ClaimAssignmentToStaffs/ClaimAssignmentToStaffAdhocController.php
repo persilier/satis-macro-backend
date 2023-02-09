@@ -134,39 +134,43 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
-    protected function unfoundedClaim(Request $request, $claim)
+    protected function closedClaim(Request $request, $claim)
     {
 
         $institution = $this->institution();
+
         $staff = $this->staff();
 
-        $this->validate($request, $this->rules($staff, 'unfounded'));
+        $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
+            ->whereHas('activeTreatment', function ($q) {
+                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+            })
+            ->whereNull('deleted_at')
+            ->find($claim);
 
-        $claim = $this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+        //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
+        ///$this->validate($request, $rules);
+        if (!$claim) {
+            return [
+                'error' => true,
+                'message' => "Can't retrieve the claim"
+            ];
+        }
         $claim->activeTreatment->update([
-            'unfounded_reason' => $request->unfounded_reason,
-            'declared_unfounded_at' => Carbon::now(),
-            'amount_returned' => NULL,
-            'solution' => NULL,
-            'comments' => NULL,
-            'preventive_measures' => NULL,
+            'solution' => $request->solution,
         ]);
 
-        $claim->update(['status' => 'treated']);
+        $claim->update(['escalation_status' => Claim::CLAIM_CLOSED]);
 
         $this->activityLogService->store(
-            "Une réclamation a été déclarée non fondée",
+            "Clôture d'une réclamation",
             $this->institution()->id,
-            $this->activityLogService::UNFOUNDED_CLAIM,
+            $this->activityLogService::TREATMENT_CLAIM,
             'claim',
             $this->user(),
             $claim
         );
-
-        if (!is_null($this->getInstitutionPilot($institution))) {
-            $this->getInstitutionPilot($institution)->notify(new TreatAClaim($claim));
-        }
 
         return response()->json($claim, 200);
     }
