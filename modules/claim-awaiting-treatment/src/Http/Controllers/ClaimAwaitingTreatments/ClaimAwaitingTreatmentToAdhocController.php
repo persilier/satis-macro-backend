@@ -65,7 +65,7 @@ class ClaimAwaitingTreatmentToAdhocController extends ApiController
             ->whereNotNull('treatment_board_id')
             ->whereHas('treatmentBoard', function ($q) use ($staff) {
                 $q->whereHas('members', function ($query) use ($staff) {
-                    $query->where('staff_id', $staff->id);
+                    $query->where('id', $staff->id);
                 });
             });
 
