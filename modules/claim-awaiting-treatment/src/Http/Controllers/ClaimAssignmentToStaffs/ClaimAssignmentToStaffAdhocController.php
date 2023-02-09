@@ -149,8 +149,11 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             ->find($claim);
 
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
+        $rules = [
+            'motif' => ['required', 'string'],
+        ];
 
-        ///$this->validate($request, $rules);
+        $this->validate($request, $rules);
         if (!$claim) {
             return [
                 'error' => true,
@@ -158,10 +161,15 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             ];
         }
         $claim->activeTreatment->update([
-            'solution' => $request->solution,
+            'closed_reason' => $request->motif,
+            'closed_by' => $this->staff()->id,
+            'closed_at' => now(),
         ]);
 
-        $claim->update(['escalation_status' => Claim::CLAIM_CLOSED]);
+        $claim->update([
+            'escalation_status' => Claim::CLAIM_CLOSED,
+            'closed_at' => now(),
+        ]);
 
         $this->activityLogService->store(
             "Clôture d'une réclamation",
