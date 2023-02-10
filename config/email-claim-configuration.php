@@ -6,4 +6,5 @@ return [
     "client_id" => env('EMAIL_CLAIM_CONFIGURATION_CLIENT_ID'),
     "client_secret" => env('EMAIL_CLAIM_CONFIGURATION_CLIENT_SECRET'),
     "app_url_incoming_mail" => env('APP_URL_INCOMING_MAIL', NULL),
+    "claim_object_prediction" => env('CLAIM_OBJECT_PREDICTION'),
 ];

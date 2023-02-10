@@ -3,7 +3,9 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Trait ClaimsCategoryPrediction
@@ -13,7 +15,10 @@ trait ClaimsCategoryObjectPrediction
 {
     protected function allClaimsCategoryObjectPrediction($description)
     {
-        if ( $categoryData = Http::post(env("CLAIM_OBJECT_PREDICTION"), ['description' => $description])->json()) {
+        $categoryData = Http::post(Config::get("email-claim-configuration.claim_object_prediction"), ['description' => $description])->json();
+        Log::info(["CLAIM_OBJECT_PREDICTION"=>Config::get("email-claim-configuration.claim_object_prediction")]);
+        Log::info(["predictions"=>$categoryData]);
+        if ($categoryData) {
             if ( $category = $categoryData['predictions']['categories'][0]) {
                 if ($objects = $categoryData['predictions']['objects'][$category][0]) {
                     $object = $objects[0];
