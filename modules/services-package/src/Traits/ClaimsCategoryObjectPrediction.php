@@ -13,7 +13,7 @@ trait ClaimsCategoryObjectPrediction
 {
     protected function allClaimsCategoryObjectPrediction($description)
     {
-        if ( $categoryData = Http::post('http://163.172.106.97:5005/predict', ['description' => $description])->json()) {
+        if ( $categoryData = Http::post(env("CLAIM_OBJECT_PREDICTION"), ['description' => $description])->json()) {
             if ( $category = $categoryData['predictions']['categories'][0]) {
                 if ($objects = $categoryData['predictions']['objects'][$category][0]) {
                     $object = $objects[0];
