@@ -246,6 +246,7 @@ use ClaimsCategoryObjectPrediction;
                 ]);
             }
 
+            $claimObjectId = null;
             $claimObject = $this->allClaimsCategoryObjectPrediction($claim['description']);
             if ( $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first() ) {
                 $claimObjectId = $claimObject->id;
