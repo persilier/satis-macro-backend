@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(\Satis2020\Dashboard\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\Discussion\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\ServicePackage\Database\Seeds\AssignClaimToStaffSeeder::class);
-//        $this->call(\Satis2020\Notification\Database\Seeds\NotificationsTableSeeder::class);
+          $this->call(\Satis2020\Notification\Database\Seeds\NotificationsTableSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\MessageApi\Database\Seeds\RolesTableSeeder::class);
 //        $this->call(\Satis2020\Notification\Database\Seeds\RelanceNotificationsTableSeeder::class);

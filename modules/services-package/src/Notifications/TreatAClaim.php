@@ -27,7 +27,7 @@ class TreatAClaim extends Notification implements ShouldQueue
 
         $this->event = $this->getNotification('treat-a-claim');
 
-        $responsibleStaffIdentity = $this->claim->activeTreatment->responsibleStaff->identite;
+        $responsibleStaffIdentity = $this->claim->activeTreatment->responsibleStaff->identite ?? $$this->claim->activeTreatment->responsibleStaffAtEscalation->identite;
         $responsibleStaff = is_null($responsibleStaffIdentity) ? null : "{$responsibleStaffIdentity->firstname} {$responsibleStaffIdentity->lastname}";
 
         $this->event->text = str_replace('{responsible_staff}', $responsibleStaff, $this->event->text);

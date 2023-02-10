@@ -51,6 +51,7 @@ trait ClaimAwaitingTreatment
                 [$unitId]
             )
             ->whereNull('claims.deleted_at')
+            ->whereNull('treatment_board_id')
             ->with($this->getRelationsAwitingTreatment());
         return $claims;
     }

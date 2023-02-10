@@ -14,12 +14,24 @@ use Illuminate\Support\Facades\Route;
 /*
  * ClaimAwaitingTreatment
  */
+
 Route::get('/claim-awaiting-treatment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@index')->name('claim.awaiting.treatment.index');
 Route::get('/claim-awaiting-treatment/{claim}', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@show')->name('claim.awaiting.treatment.show');
 Route::get('/claim-awaiting-treatment/{claim}/edit', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@edit')->name('claim.awaiting.treatment.edit');
 Route::put('/claim-awaiting-treatment/{claim}/rejected', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@rejectedClaim')->name('claim.awaiting.treatment.rejected');
 Route::put('/claim-awaiting-treatment/{claim}/self-assignment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@selfAssignmentClaim')->name('claim.awaiting.treatment.selfAssignment');
 Route::put('/claim-awaiting-treatment/{claim}/assignment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentController@assignmentClaimStaff')->name('claim.awaiting.treatment.assignmentClaimStaff');
+
+/*
+ * ClaimAwaitingTreatment to Ad'hoc
+ */
+Route::get('/claim-awaiting-adhoc-treatment', 'ClaimAwaitingTreatments\ClaimAwaitingTreatmentToAdhocController@index')->name('claim.awaiting.adhoc.treatment.index');
+Route::put('/claim-assignment-adhoc-staff/{claim}/treatment', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffAdhocController@treatmentClaim')->name('claim.assignment.adhoc.staff.treatment');
+
+Route::put('/claim-assignment-adhoc-staff/{claim}/closing', 'ClaimAssignmentToStaffs\ClaimAssignmentToStaffAdhocController@closedClaim')->name('claim.assignment.adhoc.staff.closing');
+
+
+
 
 /*
  * ClaimAssignmentToSaff

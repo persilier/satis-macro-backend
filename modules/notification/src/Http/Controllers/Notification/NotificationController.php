@@ -52,7 +52,9 @@ class NotificationController extends ApiController
             'notifications.communicate-the-solution' => 'required|string',
             'notifications.communicate-the-solution-unfounded' => 'required|string',
             'notifications.add-contributor-to-discussion' => 'required|string',
-            'notifications.post-discussion-message' => 'required|string'
+            'notifications.post-discussion-message' => 'required|string',
+            'notifications.transferred-to-unit-escalation' => 'required|string',
+            'notifications.treat-a-claim-escalation' => 'required|string'
         ];
 
         $this->validate($request, $rules);

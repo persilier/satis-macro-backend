@@ -103,7 +103,7 @@ trait ClaimSatisfactionMeasured
             ->where('institution_targeted_id', $this->institution()->id)
             ->whereHas("activeTreatment", function ($builder) {
                 $builder->where('is_claimer_satisfied', false);
-            });
+            })->whereNull('treatment_board_id');
 
         switch ($type) {
             case 'claimObject':

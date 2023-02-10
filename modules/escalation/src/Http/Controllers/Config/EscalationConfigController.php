@@ -30,7 +30,7 @@ class EscalationConfigController extends ApiController
         $this->escalationConfigService = $escalationConfigService;
         $this->activityLogService = $activityLogService;
         $this->middleware('auth:api');
-        $this->middleware('permission:list-escalation-config')->only(['show']);
+        //$this->middleware('permission:list-escalation-config')->only(['show']);
         $this->middleware('permission:update-escalation-config')->only(['update']);
     }
 
