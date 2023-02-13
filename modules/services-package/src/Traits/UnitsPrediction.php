@@ -3,6 +3,7 @@
 
 namespace Satis2020\ServicePackage\Traits;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Satis2020\ServicePackage\Models\Unit;
 
@@ -15,7 +16,7 @@ trait UnitsPrediction
 
     protected function allUnitsPrediction($description,$object)
     {
-        $unitData = Http::post('http://163.172.106.97:5006/predict', ['description' => $description,'object' => $object])->json();
+        $unitData = Http::post(Config::get("email-claim-configuration.claim_unit_prediction"), ['description' => $description,'object' => $object])->json();
         $unit = $unitData['predictions']['functions'];
         $dataUnit = [];
 
