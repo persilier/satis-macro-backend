@@ -195,6 +195,7 @@ use ClaimsCategoryObjectPrediction;
     {
         $registeredMail = [];
 
+
         foreach ($request->data as $email) {
             $error = false;
             try {
@@ -207,14 +208,15 @@ use ClaimsCategoryObjectPrediction;
 
             }catch (\Exception $e){
                 $error = true;
+                Log::info($e->getMessage());
             }
 
             if (!$error) {
                 array_push($registeredMail, $email['header']["message_id"][0]);
             }
+
         }
 
-        Log::info(["registeredMail"=>$registeredMail]);
 
         return $registeredMail;
     }
@@ -287,6 +289,7 @@ use ClaimsCategoryObjectPrediction;
             return true;
 
         } catch (\Exception $exception) {
+            Log::info($exception->getMessage());
             return false;
         }
     }

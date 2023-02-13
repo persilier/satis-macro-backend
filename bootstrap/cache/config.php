@@ -12,7 +12,7 @@
   ),
   'allowed_domains' => 
   array (
-    'frontend_url' => 'http://localhost:3000',
+    'frontend_url' => 'http://163.172.106.97:3011',
     'frontend_local_url' => NULL,
     'email_service_url' => 'http://163.172.106.97:8010',
     'mobile_backoffice_url' => 'http://163.172.106.97:8022',
@@ -29,7 +29,7 @@
     'locale' => 'fr',
     'fallback_locale' => 'en',
     'faker_locale' => 'fr_FR',
-    'key' => 'base64:SfiFPq1wcx/hiBJg2T9rLNKo7aR3wL97oa9uV++Gj34=',
+    'key' => 'base64:S4nB3LAIZzUkh/H5CJRj4ufP5ZBoiRbY65N6CzAFxo0=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -141,7 +141,7 @@
       ),
     ),
     'password_timeout' => 10800,
-    'password_reset_link' => 'http://127.0.0.1:3000/forgot-password',
+    'password_reset_link' => 'http://163.172.106.97:3011/forgot-password',
   ),
   'broadcasting' => 
   array (
@@ -200,7 +200,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/var/vhosts/satis-server-backend/storage/framework/cache/data',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -254,7 +254,7 @@
     'allowed_origins' => 
     array (
       0 => NULL,
-      1 => 'http://localhost:3000',
+      1 => 'http://163.172.106.97:3011',
       2 => 'http://163.172.106.97:8010',
       3 => 'http://163.172.106.97:8022',
       4 => 'http://163.172.106.97:8111',
@@ -293,7 +293,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'satis_develop',
+        'database' => 'satis-pro',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -303,9 +303,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
+        'database' => 'satis-pro',
         'username' => 'root',
-        'password' => 'Dev@21&e',
+        'password' => '',
         'unix_socket' => '',
         'charset' => 'utf8',
         'collation' => 'utf8_general_ci',
@@ -324,9 +324,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
+        'database' => 'satis-pro',
         'username' => 'root',
-        'password' => 'Dev@21&e',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -339,9 +339,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'satis_develop',
+        'database' => 'satis-pro',
         'username' => 'root',
-        'password' => 'Dev@21&e',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -381,10 +381,10 @@
     'convert_entities' => true,
     'defines' => 
     array (
-      'font_dir' => '/var/vhosts/satis-server-backend/storage/fonts/',
-      'font_cache' => '/var/vhosts/satis-server-backend/storage/fonts/',
+      'font_dir' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/fonts/',
+      'font_cache' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/fonts/',
       'temp_dir' => '/tmp',
-      'chroot' => '/var/vhosts/satis-server-backend',
+      'chroot' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -404,7 +404,8 @@
     'grant_type' => 'client_credentials',
     'client_id' => '3',
     'client_secret' => 'X4cRipgGU5Ch2qqpdpMx4DRW1mfVgza0o0gsf2yA',
-    'app_url_incoming_mail' => NULL,
+    'app_url_incoming_mail' => 'http://41.214.72.34:8000',
+    'claim_object_prediction' => 'http://163.172.106.97:5005/predict',
   ),
   'excel' => 
   array (
@@ -480,7 +481,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => '/var/vhosts/satis-server-backend/storage/app/public/laravel-excel',
+      'local_path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
     ),
@@ -494,12 +495,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/var/vhosts/satis-server-backend/storage/app',
+        'root' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/var/vhosts/satis-server-backend/storage/app/public',
+        'root' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public',
         'url' => 'http://127.0.0.1:8000/storage',
         'visibility' => 'public',
       ),
@@ -515,7 +516,7 @@
     ),
     'links' => 
     array (
-      '/var/vhosts/satis-server-backend/public/storage' => '/var/vhosts/satis-server-backend/storage/app/public',
+      '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/public/storage' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -582,13 +583,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -638,7 +639,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/var/vhosts/satis-server-backend/storage/logs/laravel.log',
+        'path' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -653,8 +654,8 @@
         'host' => 'smtp.mailtrap.io',
         'port' => '2525',
         'encryption' => 'tls',
-        'username' => '812f274dda314f',
-        'password' => 'e2dd6cecff42fc',
+        'username' => '3c5250417e2bd0',
+        'password' => '6983393eb4d270',
       ),
       'ses' => 
       array (
@@ -677,7 +678,7 @@
     ),
     'from' => 
     array (
-      'address' => 'myriame@dmdconsult.com',
+      'address' => 'ulrich@dmdconsult.com',
       'name' => 'SATIS',
     ),
     'markdown' => 
@@ -685,7 +686,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/var/vhosts/satis-server-backend/resources/views/vendor/mail',
+        0 => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -820,7 +821,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/var/vhosts/satis-server-backend/storage/framework/sessions',
+    'files' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -857,9 +858,9 @@
   array (
     'paths' => 
     array (
-      0 => '/var/vhosts/satis-server-backend/resources/views',
+      0 => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/resources/views',
     ),
-    'compiled' => '/var/vhosts/satis-server-backend/storage/framework/views',
+    'compiled' => '/home/dmd-dev-pc/PhpstormProjects/satis-server-backend/storage/framework/views',
     'expires' => true,
   ),
   'websockets' => 
