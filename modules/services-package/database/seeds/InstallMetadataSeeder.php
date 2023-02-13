@@ -158,6 +158,16 @@ class InstallMetadataSeeder extends Seeder
                         'event' => 'register-a-claim-high-force-fulness',
                         'description' => "Notification envoyée au pilote après enregistrement d'une réclamation de gravité élevé.",
                         'text' => "Une nouvelle reclamation a ete enregistree. Reference: {claim_reference}. Gravite : {severity_level}. Etat : {claim_status}. Objet : {claim_object}"
+                    ],
+                    [
+                        'event' => 'transferred-to-unit-escalation',
+                        'description' => "Notification envoyée aux staff après transfert d'une réclamation à une unité ou comité de traitement dans le processus d'escalade",
+                        'text' => "Une réclamation a été transferée dans le comité d'ont vous êtes membre. Reference: {claim_reference}. Objet : {claim_object}"
+                    ],
+                    [
+                        'event' => 'treat-a-claim-escalation',
+                        'description' => "Notification envoyée au pilote après traitement d'une réclamation dans le processus d'escalade",
+                        'text' => "{responsible_staff} vient de traiter une reclamation. Reference: {claim_reference}. Objet : {claim_object}"
                     ]
                 ]),
             ],
@@ -196,6 +206,5 @@ class InstallMetadataSeeder extends Seeder
                 \Satis2020\ServicePackage\Models\Metadata::create($metadata);
             }
         }
-
     }
 }
