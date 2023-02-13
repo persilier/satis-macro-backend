@@ -35,22 +35,23 @@ class DiscussionController extends ApiController
 
     public function index(Request $request)
     {
-        $type = $request->query('type','normal');
-        return response()->json(Staff::with('discussions.claim', 'discussions.staff')
-            ->findOrFail($this->staff()->id)
-            ->discussions
-            ->filter(function ($value, $key) use($type){
-                $value->load(['staff']);
+        $type = $request->query('type', 'normal');
+        return response()->json(
+            Staff::with('discussions.claim', 'discussions.staff')
+                ->findOrFail($this->staff()->id)
+                ->discussions
+                ->filter(function ($value, $key) use ($type) {
+                    $value->load(['staff']);
 
-                if ($type==Claim::CLAIM_UNSATISFIED){
-                    return $value->claim->status == Claim::CLAIM_UNSATISFIED;
-                }
-                else{
-                    return $value->claim->escalation_status == null;
-                }
-            })
-            ->values()
-            , 200);
+                    if ($type == Claim::CLAIM_UNSATISFIED) {
+                        return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                    } else {
+                        return $value->claim->escalation_status == null;
+                    }
+                })
+                ->values(),
+            200
+        );
     }
 
     /**
@@ -90,6 +91,15 @@ class DiscussionController extends ApiController
         $this->validate($request, $rules);
         $discussion = Discussion::create($request->all());
         $discussion->staff()->attach($request->created_by);
+        if (isEscalationClaim($discussion->claim) && !is_null($discussion->claim->treatment_board_id)) {
+            $discussion->staff()->attach($discussion->claim->treatmentBoard->members()->where('id', '!=', $request->created_by)->pluck('id'));
+            $discussion->claim->update([
+                'escalation_status' => Claim::CLAIM_AT_DISCUSSION
+            ]);
+            $discussion->claim->activeTreatment->update([
+                'escalation_responsible_staff_id' => $this->staff()->id
+            ]);
+        }
         return response()->json($discussion, 201);
     }
 

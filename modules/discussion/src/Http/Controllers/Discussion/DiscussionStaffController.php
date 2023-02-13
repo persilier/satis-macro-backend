@@ -30,7 +30,7 @@ class DiscussionStaffController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware(['permission:list-discussion-contributors'])->only(['index']);
-        $this->middleware(['permission:add-discussion-contributor'])->only(['store', 'create']);
+        //$this->middleware(['permission:add-discussion-contributor'])->only(['store', 'create']);
         $this->middleware(['permission:remove-discussion-contributor'])->only(['destroy']);
     }
 
@@ -83,12 +83,13 @@ class DiscussionStaffController extends ApiController
 
         $config = $this->getMetadataByName('allow-pilot-collector-to-discussion');
 
-        if (isEscalationClaim($discussion->claim)){
+        if (isEscalationClaim($discussion->claim)) {
             $response = [
                 'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
-                "escalation_staff"=>$this->getTargetedStaffFromUnit($this->getNormalTreatment($discussion->claim_id)->responsible_unit_id)
+                "escalation_staff" => $config->allow_collector === 1 ? $this->addContributorsAtEscalade($discussion, $this->getContributorsWithClaimCreator($discussion)) : $this->addContributorsAtEscalade($discussion, $this->getContributors($discussion)),
+                "escalation_staff_comite" => $config->allow_collector === 1 ? $this->addContributorsAtEscalade($discussion, collect([])) : $this->addContributorsAtEscalade($discussion, collect([])),
             ];
-        }else{
+        } else {
             $response = [
                 'staff' => (int) $config->allow_collector === 1 ? $this->getContributorsWithClaimCreator($discussion) : $this->getContributors($discussion),
             ];
@@ -123,14 +124,14 @@ class DiscussionStaffController extends ApiController
                 new StaffCanBeAddToDiscussionRules($discussion)
             ],
             'escalation_staff' => 'array',
-            'escalation_staff.*' => [ 'exists:staff,id',  new StaffCanBeAddToEscalationDiscussionRules($discussion)],
+            'escalation_staff.*' => ['exists:staff,id',  new StaffCanBeAddToEscalationDiscussionRules($discussion)],
         ];
 
         $this->validate($request, $rules);
 
-        if ($request->filled('escalation_staff')){
-            $staff = array_merge($request->staff_id,$request->escalation_staff);
-        }else{
+        if ($request->filled('escalation_staff')) {
+            $staff = array_merge($request->staff_id, $request->escalation_staff);
+        } else {
             $staff = $request->staff_id;
         }
 

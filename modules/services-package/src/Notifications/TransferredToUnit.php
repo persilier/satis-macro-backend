@@ -15,17 +15,20 @@ class TransferredToUnit extends Notification implements ShouldQueue
 
     public $claim;
     public $event;
+    public $isEscalation;
 
     /**
      * Create a new notification instance.
      *
      * @param $claim
      */
-    public function __construct($claim)
+    public function __construct($claim, $isEscalation = false)
     {
+        $this->isEscalation = $isEscalation;
+
         $this->claim = $claim;
 
-        $this->event = $this->getNotification('transferred-to-unit');
+        $this->event = $isEscalation == true ? $this->getNotification('transferred-to-unit-escalation') : $this->getNotification('transferred-to-unit');
 
         $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
 
@@ -53,7 +56,7 @@ class TransferredToUnit extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Réclamation transférée à une unité de traitement')
+            ->subject($this->isEscalation == true ? 'Réclamation transférée à un comité de traitement' : 'Réclamation transférée à une unité de traitement')
             ->markdown('ServicePackage::mail.claim.feedback', [
                 'text' => $this->event->text,
                 'name' => "{$notifiable->firstname} {$notifiable->lastname}"

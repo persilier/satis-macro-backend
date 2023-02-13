@@ -52,35 +52,34 @@ class ClaimAssignmentToStaffController extends ApiController
      */
     public function index(Request $request)
     {
-        $type = $request->query('type',"normal");
+        $type = $request->query('type', "normal");
         $institution = $this->institution();
         $staff = $this->staff();
         $claims = [];
-        if ($this->checkIfStaffIsPilot($staff)){
+        if ($this->checkIfStaffIsPilot($staff)) {
 
-            $claims = $this->getClaimsQuery($institution->id,$staff->unit_id)->get()->map(function ($item, $key) {
+            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
                 $item->with($this->getRelationsAwitingTreatment());
             });
-
-        }else{
+        } else {
             $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
                 ->map(function ($item, $key) {
+                    $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+                    $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+                    $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
+                    return $item;
+                });
+        }
+
+        $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
+
+        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id, $statusColumn)
+            ->get()->map(function ($item, $key) {
                 $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
                 $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
                 $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
                 return $item;
             });
-        }
-
-        $statusColumn = $type==Claim::CLAIM_UNSATISFIED?"escalation_status":"status";
-
-        $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id,$statusColumn)
-           ->get()->map(function ($item, $key) {
-            $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-            $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
-            $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
-            return $item;
-        });
         return response()->json($claims, 200);
     }
 
@@ -134,7 +133,8 @@ class ClaimAssignmentToStaffController extends ApiController
                 'string',
                 Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
                     && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
-            ]
+            ],
+            'can_communicate'
         ];
 
         $this->validate($request, $rules);
@@ -148,9 +148,9 @@ class ClaimAssignmentToStaffController extends ApiController
             'unfounded_reason' => NULL
         ]);
 
-        if (isEscalationClaim($claim)){
+        if (isEscalationClaim($claim)) {
             $claim->update(['escalation_status' => 'treated']);
-        }else{
+        } else {
             $claim->update(['status' => 'treated']);
         }
 
@@ -179,13 +179,12 @@ class ClaimAssignmentToStaffController extends ApiController
                     $responsible_pilot =  $pilot->staff;
                 }
             }
-                if ($lead_pilot->identite) {
-                    $lead_pilot->identite->notify(new TreatAClaim($claim));
-                }
-                if ($responsible_pilot) {
-                        $responsible_pilot->identite->notify(new TreatAClaim($claim));
-                }
-            
+            if ($lead_pilot->identite) {
+                $lead_pilot->identite->notify(new TreatAClaim($claim));
+            }
+            if ($responsible_pilot) {
+                $responsible_pilot->identite->notify(new TreatAClaim($claim));
+            }
         }
 
         return response()->json($claim, 200);

@@ -13,8 +13,8 @@ class Treatment extends Model
 {
     use HasTranslations, UuidAsId, SoftDeletes, SecureDelete;
 
-    const NORMAL="normal";
-    const ESCALATION="escalation";
+    const NORMAL = "normal";
+    const ESCALATION = "escalation";
     /**
      * The attributes that are translatable
      *
@@ -37,7 +37,7 @@ class Treatment extends Model
      */
     protected $dates = [
         'transferred_to_targeted_institution_at', 'transferred_to_unit_at', 'assigned_to_staff_at',
-        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at','closed_at'
+        'declared_unfounded_at', 'solved_at', 'validated_at', 'satisfaction_measured_at', 'closed_at', 'escalation_satisfaction_measured_at'
     ];
 
     /**
@@ -78,7 +78,14 @@ class Treatment extends Model
         'closed_by',
         'validated_by',
         'transferred_to_targeted_institution_by',
-        'type'
+        'type',
+
+        'escalation_responsible_unit_id',
+        'escalation_responsible_staff_id',
+        'escalation_solution_communicated',
+        'escalation_satisfaction_measured_at',
+        'is_claimer_satisfied_after_escalation',
+        'escalation_satisfaction_measured_by',
     ];
 
     /**
@@ -157,5 +164,12 @@ class Treatment extends Model
         return $this->belongsTo(Staff::class, 'transferred_to_unit_by');
     }
 
-
+    /**
+     * Get the staff who is responsible for the treatment at escallation
+     * @return BelongsTo
+     */
+    public function responsibleStaffAtEscalation()
+    {
+        return $this->belongsTo(Staff::class, 'escalation_responsible_staff_id');
+    }
 }
