@@ -214,6 +214,8 @@ use ClaimsCategoryObjectPrediction;
             }
         }
 
+        Log::info(["registeredMail"=>$registeredMail]);
+
         return $registeredMail;
     }
 
