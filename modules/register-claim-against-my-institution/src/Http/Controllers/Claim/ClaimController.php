@@ -43,7 +43,7 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create','storeFromFile']);
 
     }
 
@@ -123,9 +123,10 @@ class ClaimController extends ApiController
         $channel = Channel::whereSlug("email")->first();
         $channel2 = Channel::whereSlug("sms")->first();
 
-        $claimObject = $this->allClaimsCategoryObjectPrediction($response["body"]["answer"]);
+        $claimObject = $this->allClaimsCategoryObjectPrediction($response[" quelle est la description de la réclamation?"]["answer"]);
         $claimObjectId = null;
-        if ( $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first() ) {
+        $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first();
+        if ( $claimObject) {
             $claimObjectId = $claimObject->id;
         }
 
@@ -137,7 +138,7 @@ class ClaimController extends ApiController
             "event_occured_at"=>$response["quel est la date de l'évènement?"]["answer"],
             "amount_disputed"=>$response[" quel est le montant réclamé ?"]["answer"],
             "firstname"=>$response["quel est le nom du client ?"]["answer"],
-            "lastname"=>$response[" quel est le prénom du client ?"],
+            "lastname"=>$response[" quel est le prénom du client ?"]["answer"],
             "telephone"=>[$response["quel est le numéro de téléphone du client ?"]["answer"]],
             "email"=>[$response[" quel est l'email du client ?"]["answer"]],
             "sexe"=>"A",
@@ -149,16 +150,20 @@ class ClaimController extends ApiController
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
         $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
         // Verify phone number and email unicity
-        $this->handleIdentityPhoneNumberAndEmailVerificationStore($request);
+        $resultHandle = $this->existIdentityPhoneNumberAndEmailVerificationStore($request);
 
-        // register claimer
-        $claimer = $this->createIdentity($request);
-        $request->merge(['claimer_id' => $claimer->id]);
+        if($resultHandle["exist"]){
+            $request->merge(['claimer_id' => $resultHandle["data"]["entity"]->id]);
+        }else{
+            // register claimer
+            $claimer = $this->createIdentity($request);
+            $request->merge(['claimer_id' => $claimer->id]);
+        }
+
         $statusOrErrors = $this->getStatus($request);
         $request->merge(['status' => $statusOrErrors['status']]);
 
         $claim = $this->createClaim($request);
-
         return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
     }
 

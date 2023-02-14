@@ -29,6 +29,7 @@ trait ClaimsCategoryObjectPrediction
              $dataCategory = array_merge($dataCategory,$allCategories);
          }*/
 
+
         return $object;
     }
 
