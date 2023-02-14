@@ -406,6 +406,8 @@
     'client_secret' => 'X4cRipgGU5Ch2qqpdpMx4DRW1mfVgza0o0gsf2yA',
     'app_url_incoming_mail' => 'http://41.214.72.34:8000',
     'claim_object_prediction' => 'http://163.172.106.97:5005/predict',
+    'claim_unit_prediction' => 'http://163.172.106.97:5006/predict',
+    'scan_file_claim_prediction' => 'http://212.83.146.159:5552/extract',
   ),
   'excel' => 
   array (

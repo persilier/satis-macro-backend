@@ -256,6 +256,7 @@ use ClaimsCategoryObjectPrediction;
                 $claimObjectId = $claimObject->id;
             }
 
+
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
                 'description' => $claim['description'],
