@@ -13,10 +13,11 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimsCategoryPrediction;
+use Satis2020\ServicePackage\Traits\ClaimsCategoryObjectPrediction;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Traits\ScanFileClaimPrediction;
 use Satis2020\ServicePackage\Traits\Telephone;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +30,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ClaimController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryPrediction, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryObjectPrediction, Telephone, ScanFileClaimPrediction;
 
     /**
      * @var ActivityLogService
@@ -42,7 +43,7 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create']);
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create','storeFromFile']);
 
     }
 
@@ -113,9 +114,63 @@ class ClaimController extends ApiController
 
     }
 
-    public function getClaimsCategoryPrediction($description){
+    public function storeFromFile(Request $request)
+    {
+        $this->validate($request, $this->rulesInformationExtraction());
+        $response  = $this->informationExtraction($request->file);
+        $request->merge(['created_by' => $this->staff()->id]);
+        $request->merge(['institution_targeted_id' => $this->institution()->id]);
+        $channel = Channel::whereSlug("email")->first();
+        $channel2 = Channel::whereSlug("sms")->first();
 
-       return $this->allClaimsCategoryPrediction($description);
+        $claimObject = $this->allClaimsCategoryObjectPrediction($response[" quelle est la description de la réclamation?"]["answer"]);
+        $claimObjectId = null;
+        $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first();
+        if ( $claimObject) {
+            $claimObjectId = $claimObject->id;
+        }
+
+        $request->merge([
+            "description"=>$response["body"]["answer"],
+            "request_channel_slug"=>$channel->id,
+            "response_channel_slug"=>$channel2->id,
+            "lieu"=>$response[" quel est la ville du client ?"]["answer"],
+            "event_occured_at"=>$response["quel est la date de l'évènement?"]["answer"],
+            "amount_disputed"=>$response[" quel est le montant réclamé ?"]["answer"],
+            "firstname"=>$response["quel est le nom du client ?"]["answer"],
+            "lastname"=>$response[" quel est le prénom du client ?"]["answer"],
+            "telephone"=>[$response["quel est le numéro de téléphone du client ?"]["answer"]],
+            "email"=>[$response[" quel est l'email du client ?"]["answer"]],
+            "sexe"=>"A",
+            "is_revival"=>false,
+            "claim_object_id"=>$claimObjectId
+        ]);
+
+        $this->convertEmailInStrToLower($request);
+        $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
+        $request->merge(['reference' => $this->createReference($request->institution_targeted_id)]);
+        // Verify phone number and email unicity
+        $resultHandle = $this->existIdentityPhoneNumberAndEmailVerificationStore($request);
+
+        if($resultHandle["exist"]){
+            $request->merge(['claimer_id' => $resultHandle["data"]["entity"]->id]);
+        }else{
+            // register claimer
+            $claimer = $this->createIdentity($request);
+            $request->merge(['claimer_id' => $claimer->id]);
+        }
+
+        $statusOrErrors = $this->getStatus($request);
+        $request->merge(['status' => $statusOrErrors['status']]);
+
+        $claim = $this->createClaim($request);
+        return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
+    }
+
+    public function getClaimsCategoryPrediction($description)
+    {
+
+        return $this->allClaimsCategoryPrediction($description);
 
     }
 
