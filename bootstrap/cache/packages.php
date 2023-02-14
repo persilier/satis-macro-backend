@@ -418,13 +418,6 @@
       0 => 'Satis2020\\MyInstitutionUnit\\Providers\\MyInstitutionUnitServiceProvider',
     ),
   ),
-  'satis2020/my-staff-monitoring' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Satis2020\\MyStaffMonitoring\\Providers\\MyStaffMonitoringProvider',
-    ),
-  ),
   'satis2020/my-user' => 
   array (
     'providers' => 

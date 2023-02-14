@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Institution;
@@ -18,6 +19,7 @@ use Satis2020\ServicePackage\Notifications\RegisterAClaim;
 
 trait ClaimIncomingByEmail
 {
+use ClaimsCategoryObjectPrediction;
 
     protected function rulesIncomingEmail($id)
     {
@@ -193,6 +195,7 @@ trait ClaimIncomingByEmail
     {
         $registeredMail = [];
 
+
         foreach ($request->data as $email) {
             $error = false;
             try {
@@ -233,12 +236,15 @@ trait ClaimIncomingByEmail
             } catch (\Exception $e) {
                 $error = true;
                 Log::debug($e);
+                Log::info($e->getMessage());
             }
 
             if (!$error) {
                 array_push($registeredMail, $email['header']["message_id"][0]);
             }
+
         }
+
 
         return $registeredMail;
     }
@@ -271,10 +277,17 @@ trait ClaimIncomingByEmail
                 ]);
             }
 
+            $claimObjectId = null;
+            $claimObject = $this->allClaimsCategoryObjectPrediction($claim['description']);
+            if ( $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first() ) {
+                $claimObjectId = $claimObject->id;
+            }
+
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
                 'description' => $claim['description'],
                 'plain_text_description' => $claim['plain_text_description'],
+                'claim_object_id' => $claimObjectId,
                 'status' => $status,
                 'claimer_id' => $identity->id,
                 "institution_targeted_id" => $configuration->institution_id,
@@ -321,6 +334,7 @@ trait ClaimIncomingByEmail
         } catch (\Exception $exception) {
             Log::info("-----------------incoming mail-------------------------");
             Log::debug($exception);
+            Log::info($exception->getMessage());
             return false;
         }
     }
