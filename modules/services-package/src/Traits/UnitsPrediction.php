@@ -16,7 +16,7 @@ trait UnitsPrediction
 
     protected function allUnitsPrediction($description,$object)
     {
-        $unitData = Http::post(Config::post("email-claim-configuration.claim_unit_prediction"), ['description' => $description,'object' => $object])->json();
+        $unitData = Http::post(Config::get("email-claim-configuration.claim_unit_prediction"), ['description' => $description,'object' => $object])->json();
         $unit = $unitData['predictions']['functions'];
         $dataUnit = [];
 
