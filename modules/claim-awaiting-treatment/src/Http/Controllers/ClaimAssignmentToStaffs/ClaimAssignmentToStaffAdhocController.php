@@ -100,7 +100,9 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             'comments' => $request->comments,
             'preventive_measures' => $request->preventive_measures,
             'solved_at' => Carbon::now(),
-            'unfounded_reason' => NULL
+            'unfounded_reason' => NULL,
+            'solution_communicated' => $request->solution_communicated
+
         ]);
 
         $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
