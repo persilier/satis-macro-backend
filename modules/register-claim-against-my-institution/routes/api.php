@@ -19,6 +19,7 @@ Route::prefix('my')->group(function () {
      */
     Route::name('my.')->group(function () {
         Route::resource('claims', 'Claim\ClaimController')->only(['create', 'store']);
+        Route::post('claims-file-extraction', 'Claim\ClaimController@storeFromFile');
         Route::resource('identites.claims', 'Identite\IdentiteClaimController', ['only' => ['store']]);
         Route::post('import-claim', 'ImportExport\ImportController@importClaims');
         Route::get('claims-category-prediction/{description}', 'Claim\ClaimController@getClaimsCategoryPrediction');

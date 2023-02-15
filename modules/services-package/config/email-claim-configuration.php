@@ -8,5 +8,6 @@ return [
     "app_url_incoming_mail" => env('APP_URL_INCOMING_MAIL', NULL),
     "claim_object_prediction" => env('CLAIM_OBJECT_PREDICTION'),
     "claim_unit_prediction" => env('CLAIM_UNIT_PREDICTION'),
+    "scan_file_claim_prediction" => env('SCAN_FILE_CLAIM_PREDICTION'),
 
 ];
