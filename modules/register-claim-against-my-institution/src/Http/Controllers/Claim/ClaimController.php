@@ -3,14 +3,17 @@
 namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Exceptions\CustomException;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\ClaimCategory;
+use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
 use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Traits\ClaimsCategoryPrediction;
 use Satis2020\ServicePackage\Traits\CreateClaim;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\IdentityManagement;
@@ -26,7 +29,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ClaimController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryPrediction, Telephone;
 
     /**
      * @var ActivityLogService
@@ -80,6 +83,7 @@ class ClaimController extends ApiController
 
         
         $request->merge(['created_by' => $this->staff()->id]);
+        //$request->merge(['claim_object_id' => $objectId]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
         
         $this->convertEmailInStrToLower($request);
@@ -107,6 +111,12 @@ class ClaimController extends ApiController
         $claim = $this->createClaim($request);
 
         return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
+
+    }
+
+    public function getClaimsCategoryPrediction($description){
+
+       return $this->allClaimsCategoryPrediction($description);
 
     }
 
