@@ -68,9 +68,24 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'solution' => ['required_if:can_communicate,' . '1', 'string'],
-            'can_communicate'
+            'amount_returned' => [
+                'nullable',
+                'filled',
+                'integer',
+                Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug)),
+                'min:0'
+            ],
+            'solution' => ['required', 'string'],
+            'comments' => ['nullable', 'string'],
+            'preventive_measures' => [
+                'string',
+                Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
+                    && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
+            ],
+            'can_communicate' => 'required',
+            'solution_communicated' => ['required_if:can_communicate,' . '1', 'string'],
         ];
+
 
         $this->validate($request, $rules);
         if (!$claim) {
@@ -80,7 +95,12 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             ];
         }
         $claim->activeTreatment->update([
+            'amount_returned' => $request->amount_returned,
             'solution' => $request->solution,
+            'comments' => $request->comments,
+            'preventive_measures' => $request->preventive_measures,
+            'solved_at' => Carbon::now(),
+            'unfounded_reason' => NULL
         ]);
 
         $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
