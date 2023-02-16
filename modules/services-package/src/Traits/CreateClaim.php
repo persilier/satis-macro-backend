@@ -72,10 +72,10 @@ trait CreateClaim
                         $fail($attribute . ' ne correspond pas au format Y-m-d H:i.');
                     }
                 },
-                'before_or_equal:'.now()->format('Y-m-d H:i')
+                'before_or_equal:' . now()->format('Y-m-d H:i')
             ],
-            'amount_disputed' => ['nullable','filled','integer', 'min:1' , Rule::requiredIf($request->filled('amount_currency_slug'))],
-            'amount_currency_slug' => ['nullable','filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
+            'amount_disputed' => ['nullable', 'filled', 'integer', 'min:1', Rule::requiredIf($request->filled('amount_currency_slug'))],
+            'amount_currency_slug' => ['nullable', 'filled', 'exists:currencies,slug', Rule::requiredIf($request->filled('amount_disputed'))],
             'is_revival' => 'required|boolean',
             'created_by' => 'required|exists:staff,id',
             'file.*' => 'max:20000|mimes:doc,pdf,docx,txt,jpeg,bmp,png,xls,xlsx,csv',
@@ -164,8 +164,7 @@ trait CreateClaim
             }
         } catch (\Exception $exception) {
 
-            throw new CustomException(__('errors.retrieve_claim_object',[],app()->getLocale()));
-
+            throw new CustomException(__('errors.retrieve_claim_object', [], app()->getLocale()));
         }
 
         $status = 'full';
@@ -299,7 +298,7 @@ trait CreateClaim
             }
             if ($configAnyPilotActif && $configAnyPilotActif->many_active_pilot) {
                 \Illuminate\Support\Facades\Notification::send(
-                    $this->getAllIdentitePilotActif($institutionTargeted), 
+                    $this->getAllIdentitePilotActif($institutionTargeted),
                     $severityLevel === "high" ? new RegisterAClaimHighForcefulness($claim) : new RegisterAClaim($claim)
                 );
             } else {
@@ -307,7 +306,7 @@ trait CreateClaim
                     $this->getInstitutionPilot($institutionTargeted)->notify($severityLevel === "high" ? new RegisterAClaimHighForcefulness($claim) : new RegisterAClaim($claim));
                 }
                 $this->closeTimeLimitNotification($claim);
-                    // send recurrence notification to the pilot
+                // send recurrence notification to the pilot
                 $this->recurrenceNotification($claim);
             }
             // if (!is_null($this->getInstitutionPilot($institutionTargeted))) {
@@ -319,8 +318,8 @@ trait CreateClaim
             //         $this->getInstitutionPilot($institutionTargeted)->notify(new RegisterAClaim($claim));
             //     }
 
-        //sending webhook event
-        SendEvent::sendEvent(Event::CLAIM_REGISTERED,$claim->toArray(),$claim->institution_targeted_id);
+            //sending webhook event
+            SendEvent::sendEvent(Event::CLAIM_REGISTERED, $claim->toArray(), $claim->institution_targeted_id);
             //     $process_notify_all_active_pilot = new ProcessNotifyAllActivePilot($claim,$severityLevel, Auth::user()->id);
             //     dispatch($process_notify_all_active_pilot);
 
@@ -349,7 +348,7 @@ trait CreateClaim
                 $url = Storage::url("$path");
 
                 // insert the file into database
-                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF || $claim->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF ? File::ATTACH_AT_TREATMENT : null]);
+                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF || ($claim->status == Claim::CLAIM_UNSATISFIED && $claim->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF) ? File::ATTACH_AT_TREATMENT : null]);
             }
         }
     }
