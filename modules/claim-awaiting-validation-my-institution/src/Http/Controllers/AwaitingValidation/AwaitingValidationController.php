@@ -45,10 +45,9 @@ class AwaitingValidationController extends ApiController
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $type = \request()->query('type');
-        $configs = $this->nowConfiguration();
         $search_text = \request()->query('search_text');
 
-        return response()->json($this->getClaimsAwaitingValidationInMyInstitution($configs, $this->staff(), $this->institution(), true, $paginationSize, $key, $type, $search_text), 200);
+        return response()->json($this->getClaimsAwaitingValidationInMyInstitution(true, $paginationSize,  $key, $type, $this->institution(),  $search_text), 200);
     }
 
     /**
@@ -62,8 +61,10 @@ class AwaitingValidationController extends ApiController
     public function show(Request $request, Claim $claim)
     {
         $type = isEscalationClaim($claim) ? "unsatisfied" : "normal";
-        $claims = $this->getClaimsAwaitingValidationInMyInstitution(null, $type);
-
+        $paginationSize = \request()->query('size');
+        $key = \request()->query('key');
+        $search_text = \request()->query('search_text');
+        $claims = $this->getClaimsAwaitingValidationInMyInstitution(true, $paginationSize,  $key, $type, null,  $search_text);
         if ($claims->search(function ($item, $key) use ($claim) {
             return $item->id == $claim->id;
         }) === false) {
