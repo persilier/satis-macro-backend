@@ -330,7 +330,7 @@ class Claim extends Model
     {
         $canAttach = false;
 
-        $staffId = request()->query('staff', null);
+        $staffId = request()->query('staff', $this->staff()->id);
         $staff = (new StaffService())->getStaffById($staffId);
 
         if ($staff != null) {
