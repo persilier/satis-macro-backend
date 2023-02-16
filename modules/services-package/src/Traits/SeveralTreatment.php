@@ -40,9 +40,14 @@ trait SeveralTreatment
             'solution' => $claim->activeTreatment->solution,
             'preventive_measures' => $claim->activeTreatment->preventive_measures,
             'comments' => $claim->activeTreatment->comments,
+
+            'is_claimer_satisfied' => $claim->activeTreatment->is_claimer_satisfied,
+            'satisfaction_measured_by' => $claim->activeTreatment->satisfaction_measured_by,
+            'satisfaction_measured_at' => $claim->activeTreatment->satisfaction_measured_at,
+            'unsatisfied_reason' => $claim->activeTreatment->unsatisfied_reason,
+            'note' => $claim->activeTreatment->note
         ]);
 
         return $treatments->all();
     }
-
 }
