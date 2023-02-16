@@ -349,7 +349,7 @@ trait CreateClaim
                 $url = Storage::url("$path");
 
                 // insert the file into database
-                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF ? File::ATTACH_AT_TREATMENT : null]);
+                $claim->files()->create(['title' => $title, 'url' => $url, 'attach_at' => $claim->status == Claim::CLAIM_ASSIGNED_TO_STAFF || $claim->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF ? File::ATTACH_AT_TREATMENT : null]);
             }
         }
     }
