@@ -198,6 +198,16 @@ class InstallMetadataSeeder extends Seeder
                     "allow_pilot" => 0,
                     "allow_collector" => 0,
                 ])
+            ],
+            [
+                'name' => 'configuration-quota-delai',
+                'data' => json_encode([
+                    "affect_unit" => 0,
+                    "affect_staff" => 0,
+                    "affect_treatment" => 0,
+                    "affect_validation" => 0,
+                    "affect_measure_satisfaction" => 0,
+                ])
             ]
         ];
 
