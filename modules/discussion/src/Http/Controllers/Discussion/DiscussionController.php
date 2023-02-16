@@ -147,7 +147,7 @@ class DiscussionController extends ApiController
 
         $this->validate($request, $rules);
 
-        $discussion->delete();
+        $discussion->secureDelete('messages');
 
         return response()->json($discussion, 200);
     }
