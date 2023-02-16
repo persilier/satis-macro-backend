@@ -70,7 +70,7 @@ trait ClaimSatisfactionMeasured
 
         return $paginate
             ? $this->getClaim($status, $statusColumn)
-            // ->where('institution_targeted_id', $this->institution()->id)
+            ->where('institution_targeted_id', $this->institution()->id)
             ->when($key, function (Builder $query1) use ($key) {
                 $query1->where('reference', 'LIKE', "%$key%")
                     ->orWhereHas("claimer", function ($query2) use ($key) {
