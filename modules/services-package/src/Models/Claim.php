@@ -130,9 +130,9 @@ class Claim extends Model
     {
         $treatments = collect($this->activeTreatment->treatments)->map(function ($item) {
 
-
-            $item['satisfaction_measured_by'] =  Staff::with('identite.user','unit')->find($item);
-            return collect($item)->only([
+            $item = collect($item);
+            $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
+            return $item->only([
                 "is_claimer_satisfied",
                 "satisfaction_measured_by",
                 "satisfaction_measured_at",
