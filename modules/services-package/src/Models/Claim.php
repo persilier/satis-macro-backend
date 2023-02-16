@@ -334,7 +334,7 @@ class Claim extends Model
         $staff = (new StaffService())->getStaffById($staffId);
 
         if ($staff != null) {
-            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF) {
+            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF || ($this->status == Claim::CLAIM_UNSATISFIED && $this->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF)) {
                 $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
             }
 
