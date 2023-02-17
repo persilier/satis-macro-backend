@@ -26,11 +26,14 @@ trait ClaimSatisfactionMeasured
     protected  function getClaim($status = 'validated', $statusColumn = "status")
     {
 
-        return $claims = Claim::with($this->getRelations())->join('treatments', function ($join) {
+        $claims = Claim::with($this->getRelations())->join('treatments', function ($join) {
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
-        })->where("claims.$statusColumn", $status)->select('claims.*')
-            ->orWhere("claims.escalation_status", $status)->select('claims.*');
+        })->where("claims.$statusColumn", $status)->select('claims.*');
+        if ($status == Claim::CLAIM_ARCHIVED) {
+            $claims->orWhere("claims.escalation_status", $status)->select('claims.*');
+        }
+        return $claims;
     }
 
 
