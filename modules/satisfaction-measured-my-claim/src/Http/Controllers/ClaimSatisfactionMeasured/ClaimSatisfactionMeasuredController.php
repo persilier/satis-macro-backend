@@ -85,17 +85,20 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
         $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_VALIDATED, $statusColumn);
-        if (!is_null($claim->is_claimer_satisfied) && is_null($claim->activeTreatment->satisfaction_history)) {
-            $this->backupData($claim);
+        $backUp = null;
+        if (!is_null($claim->activeTreatment->is_claimer_satisfied) && is_null($claim->activeTreatment->satisfaction_history)) {
+            $backUp = $this->backupData($claim);
         }
+        
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,
             'unsatisfied_reason' => $request->unsatisfaction_reason,
             'satisfaction_measured_by' => $this->staff()->id,
             'satisfaction_measured_at' => Carbon::now(),
-            'note' => $request->note
+            'note' => $request->note,
+            'satisfaction_history' => $backUp
         ]);
-
+            // If treatments is null, initialize it at empty array
         if ($request->is_claimer_satisfied) {
             $claim->update([$statusColumn => Claim::CLAIM_ARCHIVED, 'archived_at' => Carbon::now()]);
         } else {
@@ -110,7 +113,10 @@ class ClaimSatisfactionMeasuredController extends ApiController
             $this->user(),
             $claim
         );
-        $this->backupData($claim);
+        $backUp = $this->backupData($claim);
+        $claim->activeTreatment->update([
+            'satisfaction_history' => $backUp
+        ]);
         $claim->refresh();
         //sending webhook event
         SendEvent::sendEvent(Event::SATISFACTION_MEASURED, $claim->toArray(), $claim->institution_targeted_id);

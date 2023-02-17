@@ -29,7 +29,8 @@ trait ClaimSatisfactionMeasured
         return $claims = Claim::with($this->getRelations())->join('treatments', function ($join) {
             $join->on('claims.id', '=', 'treatments.claim_id')
                 ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
-        })->where("claims.$statusColumn", $status)->select('claims.*');
+        })->where("claims.$statusColumn", $status)->select('claims.*')
+            ->orWhere("claims.escalation_status", $status)->select('claims.*');
     }
 
 

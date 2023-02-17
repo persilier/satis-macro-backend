@@ -21,16 +21,15 @@ trait SeveralSatisfactionMesured
      */
     protected function backupData($claim)
     {
-        $satisfactionMesured = $claim->activeTreatment->satisfactionMesured;
 
-        // If treatments is null, initialize it at empty array
-        if (is_null($satisfactionMesured)) {
-            $satisfactionMesured = collect([]);
+        $satisfactionHistory = $claim->activeTreatment->satisfaction_history;
+        if (is_null($satisfactionHistory)) {
+            $satisfactionHistory = collect([]);
         } else {
-            $satisfactionMesured = collect($satisfactionMesured);
+            $satisfactionHistory = collect($satisfactionHistory);
         }
-
-        $satisfactionMesured->push([
+        
+        $satisfactionHistory->push([
             'is_claimer_satisfied' => $claim->activeTreatment->is_claimer_satisfied,
             'satisfaction_measured_by' => $claim->activeTreatment->satisfaction_measured_by,
             'satisfaction_measured_at' => $claim->activeTreatment->satisfaction_measured_at,
@@ -38,6 +37,6 @@ trait SeveralSatisfactionMesured
             'note' => $claim->activeTreatment->note
         ]);
 
-        return $satisfactionMesured->all();
+        return $satisfactionHistory->all();
     }
 }

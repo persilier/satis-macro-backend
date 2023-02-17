@@ -128,7 +128,7 @@ class Claim extends Model
 
     public function getSatisfactionHistoryAttribute()
     {
-        $treatments = collect($this->activeTreatment->treatments)->map(function ($item) {
+        $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
 
             $item = collect($item);
             $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));

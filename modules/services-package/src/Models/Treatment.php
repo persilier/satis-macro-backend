@@ -87,6 +87,7 @@ class Treatment extends Model
         'escalation_satisfaction_measured_at',
         'is_claimer_satisfied_after_escalation',
         'escalation_satisfaction_measured_by',
+        'satisfaction_history',
     ];
 
     /**
