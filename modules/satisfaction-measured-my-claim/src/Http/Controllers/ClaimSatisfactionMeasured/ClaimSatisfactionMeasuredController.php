@@ -85,7 +85,9 @@ class ClaimSatisfactionMeasuredController extends ApiController
 
         $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
         $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_VALIDATED, $statusColumn);
-
+        if (!is_null($claim->is_claimer_satisfied) && is_null($claim->activeTreatment->satisfaction_history)) {
+            $this->backupData($claim);
+        }
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,
             'unsatisfied_reason' => $request->unsatisfaction_reason,
