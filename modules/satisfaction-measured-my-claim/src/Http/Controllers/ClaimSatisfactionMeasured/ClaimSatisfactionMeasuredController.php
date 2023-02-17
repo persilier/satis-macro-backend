@@ -3,16 +3,17 @@
 namespace Satis2020\SatisfactionMeasuredMyClaim\Http\Controllers\ClaimSatisfactionMeasured;
 
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
+use Illuminate\Http\JsonResponse;
 use Satis2020\Webhooks\Consts\Event;
 use Satis2020\Webhooks\Facades\SendEvent;
+use Satis2020\ServicePackage\Models\Claim;
+use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
+use Satis2020\ServicePackage\Traits\SeveralSatisfactionMesured;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 
 /**
  * Class ClaimSatisfactionMeasuredController
@@ -20,7 +21,7 @@ use Satis2020\Webhooks\Facades\SendEvent;
  */
 class ClaimSatisfactionMeasuredController extends ApiController
 {
-    use ClaimSatisfactionMeasured;
+    use ClaimSatisfactionMeasured, SeveralSatisfactionMesured;
 
     private $activityLogService;
 
@@ -107,7 +108,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
             $this->user(),
             $claim
         );
-
+        $this->backupData($claim);
         $claim->refresh();
         //sending webhook event
         SendEvent::sendEvent(Event::SATISFACTION_MEASURED, $claim->toArray(), $claim->institution_targeted_id);

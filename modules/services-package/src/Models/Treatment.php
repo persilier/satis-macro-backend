@@ -27,7 +27,8 @@ class Treatment extends Model
      * @var array
      */
     protected $casts = [
-        'treatments' => 'array'
+        'treatments' => 'array',
+        'satisfaction_history' => 'array',
     ];
 
     /**
