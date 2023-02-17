@@ -92,7 +92,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
         
         $claim->activeTreatment->update([
             'is_claimer_satisfied' => $request->is_claimer_satisfied,
-            'unsatisfied_reason' => $request->unsatisfaction_reason,
+            'unsatisfied_reason' => $request->unsatisfied_reason,
             'satisfaction_measured_by' => $this->staff()->id,
             'satisfaction_measured_at' => Carbon::now(),
             'note' => $request->note,
