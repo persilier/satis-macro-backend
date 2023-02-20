@@ -200,13 +200,13 @@ class InstallMetadataSeeder extends Seeder
                 ])
             ],
             [
-                'name' => 'configuration-quota-delai',
+                'name' => 'configuration-quota-delay',
                 'data' => json_encode([
-                    "affect_unit" => 0,
-                    "affect_staff" => 0,
-                    "affect_treatment" => 0,
-                    "affect_validation" => 0,
-                    "affect_measure_satisfaction" => 0,
+                    "assignment_unit" => 0,
+                    "assignment_staff" => 0,
+                    "assignment_treatment" => 0,
+                    "assignment_validation" => 0,
+                    "assignment_measure_satisfaction" => 0,
                 ])
             ]
         ];

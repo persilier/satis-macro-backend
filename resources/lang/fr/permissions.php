@@ -200,6 +200,10 @@ return [
             'store_webhooks_config' => 'Enregistrer la configuration des webhooks',
             'update_webhooks_config' => 'Mise à jour de la configuration des webhooks',
             'delete_webhooks_config' => 'Supprimer la configuration des webhooks',
+            'show_configuration_quota_delay' => 'Accéder à la configuration du quota des délai de traitement pour chaque objet de réclamation',
+            'update_configuration_quota_delay' => 'Modifier la configuration du quota des délai',
+            
+
         ],
 
     //pilot and collector
