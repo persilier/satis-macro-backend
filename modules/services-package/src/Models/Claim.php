@@ -124,27 +124,27 @@ class Claim extends Model
         'escalation_status'
     ];
 
-    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival', 'canAddAttachment', "oldActiveTreatment", 'dateExpire', 'is_rejected', 'is_duplicate', 'satisfaction_history'];
+    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival', 'canAddAttachment', "oldActiveTreatment", 'dateExpire', 'is_rejected', 'is_duplicate'];
 
-    public function getSatisfactionHistoryAttribute()
-    {
-        if ($this->activeTreatment) {
-            $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
-                $item = collect($item);
-                $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
-                return $item->only([
-                    "is_claimer_satisfied",
-                    "satisfaction_measured_by",
-                    "satisfaction_measured_at",
-                    "unsatisfied_reason",
-                    "note"
-                ]);
-            });
-            return $treatments;
-        } else {
-            return [];
-        }
-    }
+    // public function getSatisfactionHistoryAttribute()
+    // {
+    //     if ($this->activeTreatment) {
+    //         $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
+    //             $item = collect($item);
+    //             $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
+    //             return $item->only([
+    //                 "is_claimer_satisfied",
+    //                 "satisfaction_measured_by",
+    //                 "satisfaction_measured_at",
+    //                 "unsatisfied_reason",
+    //                 "note"
+    //             ]);
+    //         });
+    //         return $treatments;
+    //     } else {
+    //         return [];
+    //     }
+    // }
 
     /**
      * @return mixed

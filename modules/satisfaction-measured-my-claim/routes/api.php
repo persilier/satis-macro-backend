@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |*/
+
 Route::prefix('/my')->name('my.')->group(function () {
 
     /*
@@ -21,4 +22,7 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/claim-unsatisfied', 'ClaimSatisfactionMeasured\UnsatisfiedClaimController@index')->name('claim.unsatisfied.index');
     Route::put('/claim-unsatisfied/close/{claim}', 'ClaimSatisfactionMeasured\ClosedClaimMeasuredController@update')->name('claim.unsatisfied.index');
 
+    Route::get('/staff-claim-for-satisfaction-measured', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@index')->name('staff.claim.satisfaction.measured');
+    Route::get('/staff-claim-for-satisfaction-measured/create', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@create')->name('staff.claim.satisfaction.measured.create');
+    Route::post('/staff-claim-for-satisfaction-measured/affect', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@affectForSatisfactionMeasure')->name('staff.claim.satisfaction.measured.affect');
 });

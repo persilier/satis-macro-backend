@@ -98,7 +98,44 @@ trait ClaimSatisfactionMeasured
                 return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
             })->values();
     }
+ /**
+     * @param string $status
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @param string $statusColumn
+     * @return mixed
+     */
 
+     protected function getAllForSatisfactionMyClaim($status = 'validated', $paginate = false, $paginationSize = 10, $key = null, $statusColumn = 'status', $satisfactionStaffConcerned = false)
+     {
+ 
+         return $paginate
+             ? $this->getClaim($status, $statusColumn)
+             ->where('institution_targeted_id', $this->institution()->id)
+             ->when($satisfactionStaffConcerned === true, function ($queryStaff1) {
+                 $queryStaff1->whereHas('activeTreatment', function ($queryStaff2) {
+                     $queryStaff2->whereNotNull('satisfaction_responsible_staff_id', $this->staff()->id)
+                         ->whereNotNull('transfered_to_satisfaction_responsible_at');
+                 });
+             })
+             ->when($key, function (Builder $query1) use ($key) {
+                 $query1->where('reference', 'LIKE', "%$key%")
+                     ->orWhereHas("claimer", function ($query2) use ($key) {
+                         $query2->where('firstname', 'LIKE', "%$key%")
+                             ->orWhere('lastname', 'LIKE', "%$key%")
+                             ->orwhereJsonContains('telephone', $key)
+                             ->orwhereJsonContains('email', $key);
+                     })->orWhereHas("claimObject", function ($query3) use ($key) {
+                         $query3->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                     })->orWhereHas("unitTargeted", function ($query4) use ($key) {
+                         $query4->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                     });
+             })->paginate($paginationSize)
+             : $this->getClaim($status)->get()->filter(function ($item) {
+                 return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+             })->values();
+     }
 
     /**
      * @param int $paginationSize

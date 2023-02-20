@@ -88,6 +88,11 @@ class Treatment extends Model
         'is_claimer_satisfied_after_escalation',
         'escalation_satisfaction_measured_by',
         'satisfaction_history',
+        'satisfaction_responsible_staff_id',
+        'satisfaction_responsible_unit_id',
+        'transfered_to_satisfaction_responsible_by',
+        'transfered_to_satisfaction_staff_by_unit',
+        'transfered_to_satisfaction_responsible_at',
     ];
 
     /**
