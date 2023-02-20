@@ -128,21 +128,22 @@ class Claim extends Model
 
     public function getSatisfactionHistoryAttribute()
     {
-        $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
-
-            $item = collect($item);
-            $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
-            return $item->only([
-                "is_claimer_satisfied",
-                "satisfaction_measured_by",
-                "satisfaction_measured_at",
-                "unsatisfied_reason",
-                "note"
-            ]);
-        });
-
-
-        return $treatments;
+        if ($this->activeTreatment) {
+            $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
+                $item = collect($item);
+                $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
+                return $item->only([
+                    "is_claimer_satisfied",
+                    "satisfaction_measured_by",
+                    "satisfaction_measured_at",
+                    "unsatisfied_reason",
+                    "note"
+                ]);
+            });
+            return $treatments;
+        } else {
+            return [];
+        }
     }
 
     /**
