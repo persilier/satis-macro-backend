@@ -14,7 +14,7 @@ class BenchmarkingReportController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:list-benchmarking-reporting')->only(['index']);
+       // $this->middleware('permission:list-benchmarking-reporting')->only(['index']);
 
     }
 
