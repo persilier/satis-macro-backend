@@ -33,10 +33,14 @@ class SystemUsageReportService
 
         //nombre de plaignant non satisfait dans la période
         $complainantSatisfiedOutPeriod = $this->getComplainantSatisfiedInPeriod($request,"unsatisfied")->count();
-
+        $translateWord = json_encode( [\app()->getLocale()=>"Autres"] );
         //nombre de plaintes par catégorie de réclamations dans la période
-      //  $claimsByCategoryByPeriod = $this->getAllClaimsByCategoryByPeriod($request)->count();
+        $totalClaimsByCategoryByPeriod = $this->getAllClaimsByCategoryByPeriod($request,$totalReceivedClaims, $translateWord);
+        //nombre de plaintes par objet de réclamations dans la période
+        $totalClaimReceivedByClaimObject = $this->claimsReceivedByClaimObject($request,$translateWord,$totalReceivedClaims);
 
+        //nombre de plaintes par genre dans la période
+        $totalClaimReceivedByClientGender = $this->ClaimsReceivedByClientGender($request,$totalReceivedClaims);
 
         return [
             'title' => $this->getMetadataByName(Constants::SYSTEM_USAGE_REPORTING)->title,
@@ -48,6 +52,9 @@ class SystemUsageReportService
             'totalSatisfactionMeasured'=>$totalSatisfactionMeasured,
             'complainantSatisfiedInPeriod'=>$complainantSatisfiedInPeriod,
             'complainantSatisfiedOutPeriod'=>$complainantSatisfiedOutPeriod,
+            'totalClaimsByCategoryByPeriod'=>$totalClaimsByCategoryByPeriod,
+            'totalClaimReceivedByClaimObject'=>$totalClaimReceivedByClaimObject,
+            'totalClaimReceivedByClientGender'=>$totalClaimReceivedByClientGender,
         ];
     }
 
