@@ -21,11 +21,12 @@ class SystemEfficiencyReportService
             'claimObject.claimCategory','activeTreatment'
         ];
 
-        $totalUntreatedClaims = $this->getUnTreatedClaims($this->getAllClaimsByPeriod($request,$relations))->count();
+        $totalUntreatedClaims = $this->getUnTreatedCustomClaims($this->getAllClaimsByPeriod($request,$relations))->count();
         $totalTreatedClaimsInTime = $this->getTreatedInTimeClaims($request,$relations)->count();
         $totalTreatedClaimsOutOfTime =$this->getTreatedOutOfTimeClaims($request,$relations)->count();
         $totalRevivalClaims =$this->getRevivalClaims($this->getAllClaimsByPeriod($request,$relations))->count();
         $rateOfSatisfaction =$this->getSatisfactionRate($request,$relations);
+        $rateOfNotSatisfaction =$this->getNotSatisfactionRate($request,$relations);
         $averageNumberOfDaysForTreatment = $this->getAverageNumberOfDaysForTreatment($request,$relations);
 
         return [
@@ -36,6 +37,7 @@ class SystemEfficiencyReportService
             'totalTreatedClaimsOutOfTime'=>$totalTreatedClaimsOutOfTime,
             'totalRevivalClaims'=>$totalRevivalClaims,
             'rateOfSatisfaction'=>$rateOfSatisfaction,
+            'rateOfNotSatisfaction'=>$rateOfNotSatisfaction,
             'averageNumberOfDaysForTreatment'=>$averageNumberOfDaysForTreatment
         ];
     }

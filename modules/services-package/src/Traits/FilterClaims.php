@@ -50,24 +50,85 @@ trait FilterClaims
         return $claims;
     }
 
-   protected function getAllClaimsByCategoryByPeriod($request, $relations = [])
+    protected function getAllClaimsByCategoryByPeriod($request, $totalClaimsReceived, $translateWord)
     {
 
-        $claims = Claim::query()->with($relations);
-        if ($request->has('institution_id')) {
-            $claims->where('institution_targeted_id', $request->institution_id);
+        $totalReceivedClaimsByClaimCategory = $this->getClaimsReceivedByClaimCategory($request)->get();
+        $dataReceivedClaimsByClaimCategory = [];
+        foreach ($totalReceivedClaimsByClaimCategory as $claimReceivedByClaimCategory) {
+            $percentage = $totalClaimsReceived != 0 ? number_format(($claimReceivedByClaimCategory->total / $totalClaimsReceived) * 100, 2) : 0;
+
+            if ($claimReceivedByClaimCategory->name == null) {
+                $claimReceivedByClaimCategory->name = $translateWord;
+            }
+
+            array_push(
+                $dataReceivedClaimsByClaimCategory,
+                [
+                    "CategoryClaims" => json_decode($claimReceivedByClaimCategory->name),
+                    "total" => $claimReceivedByClaimCategory->total,
+                    //  "taux"=>$percentage
+                ]
+            );
+
         }
 
-        $claims->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
-            ->leftJoin('claim_categories', 'claim_categories.id', '=', 'claim_objects.claim_category_id')
-            ->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
-            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay())
-            ->select('claims.*', 'claim_categories.validated_at');
-
-        dd($claims->get()[0]);
-
-        return $claims;
+        return $dataReceivedClaimsByClaimCategory;
     }
+
+    public function ClaimsReceivedByClaimObject($request, $translateWord, $totalClaimsReceived)
+    {
+
+        //claim received by object claim
+        $claimReceivedByClaimObject = $this->getClaimsReceivedByClaimObject($request)->get();
+        $dataClaimReceivedByClaimObject = [];
+        foreach ($claimReceivedByClaimObject as $receivedByClaimObject) {
+            $percentage = $totalClaimsReceived != 0 ? number_format(($receivedByClaimObject->total / $totalClaimsReceived) * 100, 2) : 0;
+
+            if ($receivedByClaimObject->name == null) {
+                $receivedByClaimObject->name = $translateWord;
+            }
+
+            array_push(
+                $dataClaimReceivedByClaimObject,
+                [
+                    "ClaimsObject" => json_decode($receivedByClaimObject->name),
+                    "total" => $receivedByClaimObject->total,
+                    // "taux"=>$percentage
+                ]
+            );
+
+        }
+
+        return $dataClaimReceivedByClaimObject;
+    }
+
+    public function ClaimsReceivedByClientGender($request, $totalClaimsReceived)
+    {
+
+        //claim received by gender
+        $claimReceivedByClientGender = $this->getClaimsReceivedByClientGender($request)->get();
+        $dataClaimReceivedByClientGender = [];
+        foreach ($claimReceivedByClientGender as $receivedByClientGender) {
+            $percentage = $totalClaimsReceived != 0 ? number_format(($receivedByClientGender->total / $totalClaimsReceived) * 100, 2) : 0;
+
+            if ($receivedByClientGender->sexe == null) {
+                $receivedByClientGender->sexe = "Autres";
+            }
+
+            array_push(
+                $dataClaimReceivedByClientGender,
+                [
+                    "ClientGender" => $receivedByClientGender->sexe,
+                    "total" => $receivedByClientGender->total,
+                    //"taux"=>$percentage
+                ]
+            );
+
+        }
+        return $dataClaimReceivedByClientGender;
+    }
+
 
     /**
      * @param $claims
@@ -741,6 +802,17 @@ trait FilterClaims
      * @param $claims
      * @return mixed
      */
+    public function getUnTreatedCustomClaims($claims)
+    {
+        return $claims
+            ->whereNotIn('status', [Claim::CLAIM_VALIDATED, Claim::CLAIM_ARCHIVED]);
+    }
+
+
+    /**
+     * @param $claims
+     * @return mixed
+     */
     public function getRevivalClaims($claims)
     {
         return $claims
@@ -780,7 +852,8 @@ trait FilterClaims
         $claims = $this->getTreatedClaims($request, $relations);
 
         $claims->filter(function ($claim) {
-            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            $treatmentDuration = Carbon::parse($claim->created_at)
+                ->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
             return $treatmentDuration <= $claim->time_limit;
         });
 
@@ -798,7 +871,8 @@ trait FilterClaims
         $claims = $this->getTreatedClaims($request, $relations);
 
         $claims->filter(function ($claim) {
-            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            $treatmentDuration = Carbon::parse($claim->created_at)
+                ->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
             return $treatmentDuration > $claim->time_limit;
         });
 
@@ -853,6 +927,25 @@ trait FilterClaims
         return $claims;
     }
 
+    public function getNegativeSatisfactionMeasuredClaims($request, $relations)
+    {
+        $claims = Claim::query()
+            ->with($relations);
+
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        $claims->whereHas('activeTreatment', function (Builder $builder) use ($request) {
+            $builder
+                ->where('satisfaction_measured_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+                ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay())
+                ->where('is_claimer_satisfied', false);
+        })->get();
+
+        return $claims;
+    }
+
     /**
      * @param $request
      * @param $relations
@@ -871,6 +964,19 @@ trait FilterClaims
      * @param $relations
      * @return int|string
      */
+    public function getNotSatisfactionRate($request, $relations)
+    {
+        $measuredClaims = $this->getSatisfactionMeasuredClaims($request, $relations)->count();
+        $positiveMeasuredClaims = $this->getNegativeSatisfactionMeasuredClaims($request, $relations)->count();
+
+        return $measuredClaims > 0 ? number_format(($positiveMeasuredClaims / $measuredClaims) * 100, 2) : 0;
+    }
+
+    /**
+     * @param $request
+     * @param $relations
+     * @return int|string
+     */
     public function getAverageNumberOfDaysForTreatment($request, $relations)
     {
         $treatedClaims = $this->getTreatedClaims($request, $relations);
@@ -878,7 +984,8 @@ trait FilterClaims
         $totalClaimsTreatmentDuration = 0;
 
         foreach ($treatedClaims as $claim) {
-            $treatmentDuration = Carbon::parse($claim->created_at)->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
+            $treatmentDuration = Carbon::parse($claim->created_at)
+                ->diffInDays(Carbon::parse($claim->activeTreatment->validated_at));
             $totalClaimsTreatmentDuration += $treatmentDuration;
         }
 
