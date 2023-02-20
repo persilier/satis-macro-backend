@@ -132,8 +132,8 @@ class ClaimController extends ApiController
 
         $request->merge([
             "description"=>$response["body"]["answer"],
-            "request_channel_slug"=>$channel->id,
-            "response_channel_slug"=>$channel2->id,
+            "request_channel_slug"=>$channel->slug,
+            "response_channel_slug"=>$channel2->slug,
             "lieu"=>$response[" quel est la ville du client ?"]["answer"],
             "event_occured_at"=>$response["quel est la date de l'évènement?"]["answer"],
             "amount_disputed"=>$response[" quel est le montant réclamé ?"]["answer"],
