@@ -15,7 +15,7 @@ class SystemUsageReportController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-      //  $this->middleware('permission:list-system-usage-reporting')->only(['index']);
+        $this->middleware('permission:list-system-usage-reporting')->only(['index']);
 
     }
 
