@@ -35,6 +35,7 @@ class Claim extends Model
     const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
+    const CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION = "transferred_to_staff_for_satisfactiion";
     const CLAIM_ARCHIVED = "archived";
     const CLAIM_CLOSED = "closed";
     const CLAIM_UNSATISFIED = "unsatisfied";

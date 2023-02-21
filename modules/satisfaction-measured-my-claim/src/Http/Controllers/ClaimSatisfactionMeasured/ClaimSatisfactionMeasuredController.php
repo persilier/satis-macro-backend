@@ -84,7 +84,7 @@ class ClaimSatisfactionMeasuredController extends ApiController
         $this->validate($request, $this->rules($request));
 
         $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
-        $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_VALIDATED, $statusColumn);
+        $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION, $statusColumn);
         $backUp = null;
         if (!is_null($claim->activeTreatment->is_claimer_satisfied) && is_null($claim->activeTreatment->satisfaction_history)) {
             $backUp = $this->backupData($claim);

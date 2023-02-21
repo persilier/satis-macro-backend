@@ -32,8 +32,8 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
 
         $this->middleware('auth:api');
 
-        // $this->middleware('permission:staff-list-satisfaction-measured-my-claim')->only(['index']);
-        // $this->middleware('permission:affect-claim-for-satisfaction')->only(['affectForSatisfactionMeasure']);
+        $this->middleware('permission:staff-list-satisfaction-measured-my-claim')->only(['index']);
+        $this->middleware('permission:affect-claim-for-satisfaction,auto-affect-claim-for-satisfaction-collector')->only(['affectForSatisfactionMeasure', 'create']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -43,12 +43,14 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
         $paginationSize = \request()->query('size');
         $key = \request()->query('key');
         $statusColumn = $request->query('type', "normal") == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
-     
-        $claims = $this->getAllForSatisfactionMyClaim(Claim::CLAIM_VALIDATED, true, $paginationSize, $key, $statusColumn);
+
+        $claims = $this->getAllForSatisfactionMyClaim(Claim::CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION, true, $paginationSize, $key, $statusColumn);
         return response()->json($claims, 200);
     }
+
+
     public function create()
-    {   
+    {
         // get all pilot , all collectors and all staff those  are the posibitity to do the satisfaction mesure
         return response(Staff::with('identite.user.roles')->whereHas('identite.user.roles', function ($query) {
             $query->whereIn('name', ['pilot', 'collector-filial-pro', 'satisfaction-mesure']);
@@ -77,6 +79,10 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
 
 
         // Check if auto affecation or not
+        $claim->update([
+            "$statusColumn" => Claim::CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION
+        ]);
+
         $data = [
             'satisfaction_responsible_staff_id' => $staff->id,
             'satisfaction_responsible_unit_id' => $staff->unit_id,
