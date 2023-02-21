@@ -460,6 +460,13 @@
       0 => 'Satis2020\\Position\\Providers\\PositionServiceProvider',
     ),
   ),
+  'satis2020/prediction-ai' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\PredictionAi\\Providers\\PredictionAiServiceProvider',
+    ),
+  ),
   'satis2020/processing-circuit-any-institution' => 
   array (
     'providers' => 
