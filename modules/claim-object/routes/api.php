@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
  * ClaimObjects
  */
 Route::resource('claim-objects', 'ClaimObjects\ClaimObjectController');
+Route::post('claim-objects/quota-delay', 'ClaimObjects\ClaimObjectController@quotaDelayCalculation');
 // Route for import excel data to database.
 Route::post('import-claim-objects', 'ImportExport\ImportController@importClaimObjects');

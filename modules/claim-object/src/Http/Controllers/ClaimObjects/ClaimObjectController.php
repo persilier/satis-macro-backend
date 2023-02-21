@@ -1,14 +1,16 @@
 <?php
 
 namespace Satis2020\ClaimObject\Http\Controllers\ClaimObjects;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
+
 use Illuminate\Http\Request;
-use Satis2020\ServicePackage\Models\ClaimCategory;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Satis2020\ServicePackage\Models\Metadata;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\SeverityLevel;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 /**
@@ -36,7 +38,7 @@ class ClaimObjectController extends ApiController
      */
     public function index()
     {
-        return response()->json(ClaimObject::with('claimCategory','severityLevel')->get(), 200);
+        return response()->json(ClaimObject::with('claimCategory', 'severityLevel')->get(), 200);
     }
 
     /**
@@ -65,9 +67,18 @@ class ClaimObjectController extends ApiController
     {
 
         $this->validate($request, $this->rules());
-        $claimObject = ClaimObject::create($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
+        $claimObject = ClaimObject::create($request->only([
+            'name', 
+            'description', 
+            'claim_category_id', 
+            'severity_levels_id', 
+            'time_limit', 'others',
+            'time_unit','time_staff',
+            'time_treatment',
+            'time_validation',
+            'time_measure_satisfaction'
+        ]));
         return response()->json($claimObject, 201);
-
     }
 
     /**
@@ -78,7 +89,7 @@ class ClaimObjectController extends ApiController
      */
     public function show(ClaimObject $claimObject)
     {
-        return response()->json($claimObject->load('claimCategory','severityLevel'), 200);
+        return response()->json($claimObject->load('claimCategory', 'severityLevel'), 200);
     }
 
     /**
@@ -89,7 +100,7 @@ class ClaimObjectController extends ApiController
     public function edit(ClaimObject $claimObject)
     {
         return response()->json([
-            'claimObject' => $claimObject->load('claimCategory','severityLevel'),
+            'claimObject' => $claimObject->load('claimCategory', 'severityLevel'),
             'claimCategories' => ClaimCategory::all(),
             'severityLevels' => SeverityLevel::all()
         ], 200);
@@ -106,7 +117,7 @@ class ClaimObjectController extends ApiController
     public function update(Request $request, ClaimObject $claimObject)
     {
         $this->validate($request, $this->rules($claimObject));
-        $claimObject->update($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
+        $claimObject->update($request->only(['name', 'description', 'claim_category_id', 'severity_levels_id', 'time_limit', 'others']));
         return response()->json($claimObject, 201);
     }
 
@@ -121,5 +132,48 @@ class ClaimObjectController extends ApiController
     {
         $claimObject->secureDelete('claims');
         return response()->json($claimObject, 201);
+    }
+
+    /**
+     * quota delay Calculation
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     * @throws ValidationException
+     */
+    public function quotaDelayCalculation(Request $request)
+    {
+
+        $rules = [
+            'total_days' => 'required|numeric',
+        ];
+
+        $this->validate($request, $rules);
+
+        $parameters = collect(json_decode(\Satis2020\ServicePackage\Models\Metadata::where('name', 'configuration-quota-delay')->first()->data));
+
+        $data = [];
+
+        foreach ($parameters as $key =>  $value) {
+
+            $total_days = (intval($value) * $request->total_days) / 100;
+
+            if ($total_days < 1) {
+                $hours = $total_days * 24;
+                $time_limit = $hours."h";
+            } else {
+                
+                $whole = floor($total_days);
+                $decimal = fmod($total_days, $whole);
+                $hours = $decimal * 24;
+                $time_limit = $whole."j"." ".$hours."h";
+            }
+
+            array_push($data, [
+                $key => $time_limit,
+            ]);
+        }
+        return response()->json($data, 200);
     }
 }
