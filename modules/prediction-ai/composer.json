@@ -1,0 +1,30 @@
+{
+  "name": "satis2020/prediction-ai",
+  "description": "satis2020/prediction-ai est un module qui fournir les api au ia de prediction",
+  "license": "DMD",
+  "version" : "1.0.0",
+  "authors": [
+    {
+      "name": "Patrick Sodjinninmahu AMOUSSOU",
+      "email": "amoussou@dmdconsult.com"
+    }
+  ],
+  "require": {
+    "satis2020/services-package": "1.0.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Satis2020\\PredictionAi\\": "src/",
+      "Satis2020\\PredictionAi\\Database\\Seeds\\": "database/seeds/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Satis2020\\PredictionAi\\Providers\\PredictionAiServiceProvider"
+      ]
+    }
+  }
+}

@@ -350,24 +350,26 @@ class Claim extends Model
     function getCanAddAttachmentAttribute()
     {
         $canAttach = false;
+        if (Auth::user()){
+            $staffId = request()->query('staff', $this->staff()->id);
+            $staff = (new StaffService())->getStaffById($staffId);
 
-        $staffId = request()->query('staff', $this->staff()->id);
-        $staff = (new StaffService())->getStaffById($staffId);
+            if ($staff != null) {
+                if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF || ($this->status == Claim::CLAIM_UNSATISFIED && $this->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF)) {
+                    $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+                }
 
-        if ($staff != null) {
-            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF || ($this->status == Claim::CLAIM_UNSATISFIED && $this->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF)) {
-                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+                /* if ($this->status==Claim::CLAIM_VALIDATED){
+                    $canAttach = $staff->id == $staff->institution->active_pilot_id;
+                }*/
             }
-
-            /* if ($this->status==Claim::CLAIM_VALIDATED){
-                $canAttach = $staff->id == $staff->institution->active_pilot_id;
-            }*/
-        }
-        if (Auth::user()) {
-            if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
-                $canAttach = true;
+            if (Auth::user()) {
+                if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
+                    $canAttach = true;
+                }
             }
         }
+
 
         return $canAttach;
     }
