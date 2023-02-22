@@ -92,13 +92,13 @@ trait Discussion
 
                 return is_null($discussion->createdBy->unit->institution_id) // en gros, si on est dans un hub
 
-                    ? (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
+                    ? (($value->unit_id == $discussion->claim->activeTreatment->responsible_unit_id && $value->identite->user->hasRole('staff'))
                         || $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id)))
                     && $discussion->staff->search(function ($item, $key) use ($value) {
                         return $item->id == $value->id;
                     }) === false
 
-                    : (($value->unit_id == $discussion->createdBy->unit_id && $value->identite->user->hasRole('staff'))
+                    : (($value->unit_id == $discussion->claim->activeTreatment->responsible_unit_id && $value->identite->user->hasRole('staff'))
                         || ($value->institution_id == $discussion->createdBy->institution_id && $value->identite->user->hasRole($this->getPilotRoleName($discussion->createdBy->unit_id))))
                     && $discussion->staff->search(function ($item, $key) use ($value) {
                         return $item->id == $value->id;
