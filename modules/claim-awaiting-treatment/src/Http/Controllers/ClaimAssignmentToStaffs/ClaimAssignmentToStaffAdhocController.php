@@ -13,12 +13,13 @@ use Illuminate\Validation\Rules\RequiredIf;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Models\Treatment;
-use Satis2020\ServicePackage\Notifications\TreatAClaim;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Traits\SeveralTreatment;
+use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
@@ -28,7 +29,7 @@ use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilot
  */
 class ClaimAssignmentToStaffAdhocController extends ApiController
 {
-    use ClaimAwaitingTreatment, ConfigurationPilotTrait;
+    use ClaimAwaitingTreatment, ConfigurationPilotTrait, SeveralTreatment;
 
     protected $activityLogService;
 
@@ -94,6 +95,14 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
                 'message' => "Can't retrieve the claim"
             ];
         }
+        $validationData = [
+            'invalidated_reason' => NULL,
+            'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
+        ];
+
+        $backup = $this->backupData($claim, $validationData);
+
         $claim->activeTreatment->update([
             'amount_returned' => $request->amount_returned,
             'solution' => $request->solution,

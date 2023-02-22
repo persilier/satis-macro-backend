@@ -141,7 +141,6 @@ trait Discussion
         // ajouter le lead de l'unite de traitment 
         $lead =  $responsible_staff->unit->lead->load('identite.user');
         if (!$baseContributeors->pluck('id')->contains($lead->id)) {
-            dd('qq');
             $baseContributeors->push($lead);
         }
 

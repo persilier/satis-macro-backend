@@ -24,6 +24,6 @@ Route::prefix('/my')->name('my.')->group(function () {
 
     Route::get('/staff-claim-for-satisfaction-measured', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@index')->name('staff.claim.satisfaction.measured');
     Route::get('/staff-claim-for-satisfaction-measured/{claim}', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@show')->name('staff.claim.satisfaction.measured.show');
-    Route::get('/staff-claim-for-satisfaction-measured/create', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@create')->name('staff.claim.satisfaction.measured.create');
+    Route::get('/staff-claim-for-satisfaction/measured/create', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@create')->name('staff.claim.satisfaction.measured.create');
     Route::post('/staff-claim-for-satisfaction-measured/affect', 'ClaimSatisfactionMeasured\StaffClaimSatisfactionMeasuredController@affectForSatisfactionMeasure')->name('staff.claim.satisfaction.measured.affect');
 });
