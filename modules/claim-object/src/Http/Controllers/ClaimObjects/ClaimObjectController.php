@@ -72,8 +72,10 @@ class ClaimObjectController extends ApiController
             'description', 
             'claim_category_id', 
             'severity_levels_id', 
-            'time_limit', 'others',
-            'time_unit','time_staff',
+            'time_limit', 
+            'others',
+            'time_unit',
+            'time_staff',
             'time_treatment',
             'time_validation',
             'time_measure_satisfaction'
@@ -170,9 +172,9 @@ class ClaimObjectController extends ApiController
                 $time_limit = $whole."j"." ".$hours."h";
             }
 
-            array_push($data, [
-                $key => $time_limit,
-            ]);
+
+            $data = [$key => $time_limit];
+           
         }
         return response()->json($data, 200);
     }

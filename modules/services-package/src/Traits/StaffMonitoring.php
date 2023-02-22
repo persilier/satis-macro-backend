@@ -113,6 +113,9 @@ trait StaffMonitoring
         if ($request->staff_id != Constants::ALL_STAFF) {
             $claims = $claims->where('treatments.responsible_staff_id', $request->staff_id);
         }
+        if ($request->status) {
+            $claims = $claims->where('treatments.responsible_staff_id', $request->staff_id);
+        }
 
         if ($key) {
             switch ($key) {
