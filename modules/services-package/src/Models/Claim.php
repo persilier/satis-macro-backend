@@ -121,7 +121,12 @@ class Claim extends Model
         'plain_text_description',
         'closed_at',
         'treatment_board_id',
-        'escalation_status'
+        'escalation_status',
+        'time_unit',
+        'time_staff',
+        'time_treatment',
+        'time_validation',
+        'time_measure_satisfaction'
     ];
 
     protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival','canAddAttachment',"oldActiveTreatment", 'dateExpire','is_rejected','is_duplicate'];
