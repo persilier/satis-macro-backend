@@ -48,6 +48,18 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
         return response()->json($claims, 200);
     }
 
+    /**
+     * @param $claim
+     * @return JsonResponse
+     * @throws \Satis2020\ServicePackage\Exceptions\CustomException
+     */
+    public function show(Claim $claim)
+    {
+        $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
+        $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION, $statusColumn);
+        return response()->json($claim, 200);
+    }
+
 
     public function create()
     {

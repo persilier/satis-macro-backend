@@ -32,7 +32,9 @@ trait ClaimSatisfactionMeasured
         })->where(function ($query)  use ($statusColumn, $status) {
             $query->where("claims.$statusColumn", $status)
                 ->when($status == Claim::CLAIM_ARCHIVED, function ($queryEscalation) use ($status) {
-                    $queryEscalation->orWhere("claims.escalation_status", $status);
+                    $queryEscalation->orWhere("claims.escalation_status", $status)
+                        ->orWhere("claims.escalation_status", Claim::CLAIM_CLOSED)
+                        ->orWhere("claims.escalation_status", Claim::CLAIM_RESOLVED);
                 });
         })->select('claims.*');
         // ->where("claims.$statusColumn", $status)->select('claims.*')
@@ -136,6 +138,40 @@ trait ClaimSatisfactionMeasured
     }
 
     /**
+     * @param string $status
+     * @param bool $paginate
+     * @param int $paginationSize
+     * @param null $key
+     * @param string $statusColumn
+     * @return mixed
+     */
+
+    protected function getArchivedMyClaim($status = 'validated', $paginate = false, $paginationSize = 10, $key = null, $statusColumn = 'status')
+    {
+
+        return $paginate
+            ? $this->getClaim($status, $statusColumn)
+            ->where('institution_targeted_id', $this->institution()->id)
+            ->when($key, function (Builder $query1) use ($key) {
+                $query1->where('reference', 'LIKE', "%$key%")
+                    ->orWhereHas("claimer", function ($query2) use ($key) {
+                        $query2->where('firstname', 'LIKE', "%$key%")
+                            ->orWhere('lastname', 'LIKE', "%$key%")
+                            ->orwhereJsonContains('telephone', $key)
+                            ->orwhereJsonContains('email', $key);
+                    })->orWhereHas("claimObject", function ($query3) use ($key) {
+                        $query3->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                    })->orWhereHas("unitTargeted", function ($query4) use ($key) {
+                        $query4->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                    });
+            })->paginate($paginationSize)
+            : $this->getClaim($status)->get()->filter(function ($item) {
+                return ($this->institution() && $item->activeTreatment->responsibleStaff && $this->institution()->id === $item->activeTreatment->responsibleStaff->institution_id);
+            })->values();
+    }
+
+
+    /**
      * @param int $paginationSize
      * @param null $key
      * @param null $type
@@ -146,6 +182,7 @@ trait ClaimSatisfactionMeasured
     {
         $claims = $this->getClaim(Claim::CLAIM_UNSATISFIED)
             ->where('institution_targeted_id', $this->institution()->id)
+            ->whereNull('escalation_status')
             ->whereHas("activeTreatment", function ($builder) {
                 $builder->where('is_claimer_satisfied', false);
             })->whereNull('treatment_board_id');

@@ -105,7 +105,13 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         ]);
 
-        $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
+        if ((int)$request->can_communicate == 1) {
+            $claim->update(['escalation_status' => Claim::CLAIM_VALIDATED]);
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
+        } else {
+            $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
+        }
+
 
         $this->activityLogService->store(
             "Traitement d'une réclamation",
@@ -120,9 +126,6 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         $responsible_pilot  = null;
 
-        if ((int)$request->can_communicate == 1) {
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
-        }
 
         if ($configuration->many_active_pilot  === "0") {
             // one active pivot
