@@ -172,8 +172,7 @@ class ClaimObjectController extends ApiController
                 $time_limit = $whole."j"." ".$hours."h";
             }
 
-
-            $data = [$key => $time_limit];
+            $data += [ $key => $time_limit ];
            
         }
         return response()->json($data, 200);
