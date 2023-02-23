@@ -110,8 +110,8 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             'preventive_measures' => $request->preventive_measures,
             'solved_at' => Carbon::now(),
             'unfounded_reason' => NULL,
-            'solution_communicated' => $request->solution_communicated
-
+            'solution_communicated' => $request->solution_communicated,
+            'treatments' => $backup
         ]);
 
         if ((int)$request->can_communicate == 1) {
