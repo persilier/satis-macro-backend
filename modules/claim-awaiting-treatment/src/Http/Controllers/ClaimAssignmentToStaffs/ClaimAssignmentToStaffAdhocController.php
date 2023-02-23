@@ -110,7 +110,6 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
             'solved_at' => Carbon::now(),
             'unfounded_reason' => NULL,
             'solution_communicated' => $request->solution_communicated,
-            'treatments' => $backup
         ]);
 
         $backup = $this->backupData($claim, $validationData);
