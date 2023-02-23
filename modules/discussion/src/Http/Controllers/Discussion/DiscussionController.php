@@ -45,9 +45,9 @@ class DiscussionController extends ApiController
                     $value->load(['staff']);
 
                     if ($type == Claim::CLAIM_UNSATISFIED) {
-                        return $value->claim->status == Claim::CLAIM_UNSATISFIED && $value->created_at->copy()->isAfter($value->claim->activeTreatment->satisfaction_measured_at);
+                        return $value->claim->status == Claim::CLAIM_UNSATISFIED && $value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at);
                     } else {
-                        return ($value->claim->escalation_status == null) || (!is_null($value->claim->escalation_status) && !is_null($value->claim->activeTreatment->satisfaction_measured_at) && !$value->created_at->copy()->isAfter($value->claim->activeTreatment->satisfaction_measured_at));    
+                        return ($value->claim->escalation_status == null) || (!is_null($value->claim->escalation_status) && !is_null($value->claim->oldActiveTreatment->satisfaction_measured_at) && !$value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at));
                     }
                 })
                 ->values(),
