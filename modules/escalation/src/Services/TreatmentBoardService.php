@@ -13,11 +13,12 @@ use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\Escalation\Requests\TreatmentBoardRequest;
 use Satis2020\ServicePackage\Notifications\TransferredToUnit;
 use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
+use Satis2020\ServicePackage\Traits\HandleTreatment;
 
 class TreatmentBoardService
 {
 
-    use DataUserNature, ClaimTrait;
+    use DataUserNature, ClaimTrait, HandleTreatment;
 
     /**
      * @var TreatmentBoardRepository
@@ -55,6 +56,7 @@ class TreatmentBoardService
         } else {
             $treatmentBord = $this->getStandardBoard();
         }
+        $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
         $claim->update([
             'treatment_board_id' => $treatmentBord->id,
             'escalation_status' => Claim::CLAIM_TRANSFERRED_TO_COMITY
