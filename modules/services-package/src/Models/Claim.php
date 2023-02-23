@@ -2,23 +2,28 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use DateTime;
+use DatePeriod;
+use DateInterval;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Traits\AwaitingAssignment;
-use Satis2020\Escalation\Models\TreatmentBoard;
-use Satis2020\ServicePackage\Repositories\TreatmentRepository;
-use Satis2020\ServicePackage\Services\StaffService;
-use Satis2020\ServicePackage\Traits\ActivePilot;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Satis2020\ServicePackage\Traits\SecureDelete;
-use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\UuidAsId;
+use Satis2020\ServicePackage\Models\Treatment;
+use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Models\AccountType;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Satis2020\ServicePackage\Traits\AwaitingAssignment;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 
 /**
  * Class Claim
@@ -147,30 +152,55 @@ class Claim extends Model
     ];
 
 
-    public function gettimeTreatmentAttribute()
+    public function gettimeLimitTreatmentAttribute()
     {
-        $diff = null;
         $duration_done = null;
-        $claimInfo = Treatment::where('claim_id',$this->id)->first();
-        if ($claimInfo->assigned_to_staff_at && $claimInfo->solved_at && ($this->status !== 'archived')) {
-            $duration_done = $claimInfo->assigned_to_staff_at->diffInDays($claimInfo->solved_at, false);
-            /* $dateExpireTreatment = $claimInfo->assigned_to_staff_at->copy()->addWeekdays(self::conversion($this->time_treatment));
-            if ($claimInfo->solved_at !== null) {
-                $diff = $claimInfo->solved_at->diffInDays($dateExpireTreatment, false);
-            }else {
-                $diff = now()->diffInDays($dateExpireTreatment, false);
+        $ecart = null;
+        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
 
-            } */
+            $claimInfo = Treatment::where('claim_id',$this->id)->first();
+            if ($claimInfo && $claimInfo->solved_at !== null) {
+               
+                $duration_done = self::daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
+                $ecart = self::conversion($this->time_treatment) -  $duration_done;
+  
+            }
+
         }
 
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
             "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
            
         ];
     }
 
+
+    public function daysWithoutWeekEnd($start,$end)
+    {       
+        
+        $interval = $end->diff($start);
+        
+        // total days
+        $days = $interval->days;
+        
+        // create an iterateable period of date (P1D equates to 1 day)
+        $period = new DatePeriod($start, new DateInterval('P1D'), $end);
+        
+        
+        foreach($period as $dt) {
+            $curr = $dt->format('D');
+        
+            // substract if Saturday or Sunday
+            if ($curr == 'Sat' || $curr == 'Sun') {
+                $days--;
+            }
+        }
+
+       return $days;
+    }
 
     public function conversion($value)
     {
