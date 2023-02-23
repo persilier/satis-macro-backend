@@ -114,6 +114,10 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         $backup = $this->backupData($claim, $validationData);
         $claim->activeTreatment->update([
+            'solution_communicated' => $request->solution_communicated,
+            'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
+            'invalidated_reason' => NULL,
             'treatments' => $backup
         ]);
 
