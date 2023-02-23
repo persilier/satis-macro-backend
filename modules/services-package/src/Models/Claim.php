@@ -129,7 +129,71 @@ class Claim extends Model
         'time_measure_satisfaction'
     ];
 
-    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival','canAddAttachment',"oldActiveTreatment", 'dateExpire','is_rejected','is_duplicate'];
+    protected $appends = [
+        'timeExpire', 
+        'accountType', 
+        'canAddAttachment', 
+        'lastRevival',
+        'canAddAttachment',
+        "oldActiveTreatment", 
+        'dateExpire',
+        'is_rejected',
+        'is_duplicate',
+       //'timeUnit',
+        //'timeStaff',
+        'timeLimitTreatment',
+       // 'timeValidation',
+       // 'timeMeasureSatisfaction' 
+    ];
+
+
+    public function gettimeTreatmentAttribute()
+    {
+        $diff = null;
+        $duration_done = null;
+        $claimInfo = Treatment::where('claim_id',$this->id)->first();
+        if ($claimInfo->assigned_to_staff_at && $claimInfo->solved_at && ($this->status !== 'archived')) {
+            $duration_done = $claimInfo->assigned_to_staff_at->diffInDays($claimInfo->solved_at, false);
+            /* $dateExpireTreatment = $claimInfo->assigned_to_staff_at->copy()->addWeekdays(self::conversion($this->time_treatment));
+            if ($claimInfo->solved_at !== null) {
+                $diff = $claimInfo->solved_at->diffInDays($dateExpireTreatment, false);
+            }else {
+                $diff = now()->diffInDays($dateExpireTreatment, false);
+
+            } */
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_treatment,
+            "duration_done" => $duration_done,
+           
+        ];
+    }
+
+
+    public function conversion($value)
+    {
+       
+        $data = explode(" ", $value);
+        $dataResult = substr($data[0], -1);
+       
+       if( $dataResult == "j"){
+           
+           $days = substr($data[0], 0, -1);
+           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
+           
+           $transformHoursToDay = intval($hours) / 24;
+           $totalDays = intval($days) + $transformHoursToDay;
+           
+       }else{
+               
+          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
+       }
+
+       return $totalDays;
+    }
+
 
     /**
      * @return mixed
