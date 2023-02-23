@@ -28,7 +28,7 @@ trait ClaimSatisfactionMeasured
 
         $claims = Claim::with($this->getRelations())->join('treatments', function ($join) {
             $join->on('claims.id', '=', 'treatments.claim_id')
-                ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL)->orWhere('treatments.escalation_responsible_staff_id', '!=', NULL);
+                ->on('claims.active_treatment_id', '=', 'treatments.id')->where('treatments.responsible_staff_id', '!=', NULL);
         })->where(function ($query)  use ($statusColumn, $status) {
             $query->where("claims.$statusColumn", $status)
                 ->when($status == Claim::CLAIM_ARCHIVED, function ($queryEscalation) use ($status) {

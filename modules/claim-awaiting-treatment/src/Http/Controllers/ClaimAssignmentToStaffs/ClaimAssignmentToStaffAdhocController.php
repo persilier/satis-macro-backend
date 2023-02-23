@@ -61,7 +61,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
             ->whereHas('activeTreatment', function ($q) {
-                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+                $q->where('responsible_staff_id', $this->staff()->id);
             })
             ->whereNull('deleted_at')
             ->find($claim);
@@ -177,7 +177,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
             ->whereHas('activeTreatment', function ($q) {
-                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+                $q->where('responsible_staff_id', $this->staff()->id);
             })
             ->whereNull('deleted_at')
             ->find($claim);
