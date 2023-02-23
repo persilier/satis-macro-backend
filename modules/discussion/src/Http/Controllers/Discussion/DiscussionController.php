@@ -2,6 +2,7 @@
 
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
@@ -44,7 +45,7 @@ class DiscussionController extends ApiController
                     $value->load(['staff']);
 
                     if ($type == Claim::CLAIM_UNSATISFIED) {
-                        return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                        return $value->claim->status == Claim::CLAIM_UNSATISFIED && $value->created_at->copy()->diffInSeconds($value->claim->activeTreatment->satisfaction_measured_at, false);
                     } else {
                         return $value->claim->escalation_status == null;
                     }
