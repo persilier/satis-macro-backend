@@ -99,7 +99,6 @@ class DiscussionController extends ApiController
             ]);
             $discussion->claim->activeTreatment->update([
                 'responsible_staff_id' => $this->staff()->id,
-                'assigned_to_staff_by' => $this->staff()->id, 
                 'assigned_to_staff_at' => Carbon::now()
             ]);
         }
