@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ClaimController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim,ClaimsCategoryPrediction, ClaimsCategoryObjectPrediction, Telephone, ScanFileClaimPrediction;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryObjectPrediction, Telephone, ScanFileClaimPrediction;
 
     /**
      * @var ActivityLogService
@@ -44,8 +44,7 @@ class ClaimController extends ApiController
 
         $this->middleware('auth:api');
 
-        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create','storeFromFile']);
-
+        $this->middleware('permission:store-claim-against-my-institution')->only(['store', 'create', 'storeFromFile']);
     }
 
     /**
@@ -83,15 +82,15 @@ class ClaimController extends ApiController
     public function store(Request $request)
     {
 
-        
+
         $request->merge(['created_by' => $this->staff()->id]);
         //$request->merge(['claim_object_id' => $objectId]);
         $request->merge(['institution_targeted_id' => $this->institution()->id]);
-        
+
         $this->convertEmailInStrToLower($request);
-        
+
         $this->validate($request, $this->rules($request));
-       
+
         $request->merge(['telephone' => $this->removeSpaces($request->telephone)]);
 
         // create reference
@@ -113,7 +112,6 @@ class ClaimController extends ApiController
         $claim = $this->createClaim($request);
 
         return response()->json(['claim' => $claim, 'errors' => $statusOrErrors['errors']], 201);
-
     }
 
     public function storeFromFile(Request $request)
@@ -128,24 +126,24 @@ class ClaimController extends ApiController
         $claimObject = $this->allClaimsCategoryObjectPrediction($response[" quelle est la description de la réclamation?"]["answer"]);
         $claimObjectId = null;
         $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first();
-        if ( $claimObject) {
+        if ($claimObject) {
             $claimObjectId = $claimObject->id;
         }
 
         $request->merge([
-            "description"=>$response["body"]["answer"],
-            "request_channel_slug"=>$channel->slug,
-            "response_channel_slug"=>$channel2->slug,
-            "lieu"=>$response[" quel est la ville du client ?"]["answer"],
-            "event_occured_at"=>$response["quel est la date de l'évènement?"]["answer"],
-            "amount_disputed"=>$response[" quel est le montant réclamé ?"]["answer"],
-            "firstname"=>$response["quel est le nom du client ?"]["answer"],
-            "lastname"=>$response[" quel est le prénom du client ?"]["answer"],
-            "telephone"=>[$response["quel est le numéro de téléphone du client ?"]["answer"]],
-            "email"=>[$response[" quel est l'email du client ?"]["answer"]],
-            "sexe"=>"A",
-            "is_revival"=>false,
-            "claim_object_id"=>$claimObjectId
+            "description" => $response["body"]["answer"],
+            "request_channel_slug" => $channel->slug,
+            "response_channel_slug" => $channel2->slug,
+            "lieu" => $response[" quel est la ville du client ?"]["answer"],
+            "event_occured_at" => $response["quel est la date de l'évènement?"]["answer"],
+            "amount_disputed" => $response[" quel est le montant réclamé ?"]["answer"],
+            "firstname" => $response["quel est le nom du client ?"]["answer"],
+            "lastname" => $response[" quel est le prénom du client ?"]["answer"],
+            "telephone" => [$response["quel est le numéro de téléphone du client ?"]["answer"]],
+            "email" => [$response[" quel est l'email du client ?"]["answer"]],
+            "sexe" => "A",
+            "is_revival" => false,
+            "claim_object_id" => $claimObjectId
         ]);
 
         $this->convertEmailInStrToLower($request);
@@ -154,9 +152,9 @@ class ClaimController extends ApiController
         // Verify phone number and email unicity
         $resultHandle = $this->existIdentityPhoneNumberAndEmailVerificationStore($request);
 
-        if($resultHandle["exist"]){
+        if ($resultHandle["exist"]) {
             $request->merge(['claimer_id' => $resultHandle["data"]["entity"]->id]);
-        }else{
+        } else {
             // register claimer
             $claimer = $this->createIdentity($request);
             $request->merge(['claimer_id' => $claimer->id]);
@@ -173,7 +171,5 @@ class ClaimController extends ApiController
     {
 
         return $this->allClaimsCategoryPrediction($description);
-
     }
-
 }
