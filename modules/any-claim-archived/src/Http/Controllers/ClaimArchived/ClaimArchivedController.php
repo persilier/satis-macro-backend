@@ -1,6 +1,7 @@
 <?php
 
 namespace Satis2020\AnyClaimArchived\Http\Controllers\ClaimArchived;
+
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class ClaimArchivedController extends ApiController
         $recherche = \request()->query('key');
         $institutionId = \request()->query('institution_id');
 
-        $claims = $this->getAllMyClaim('archived',true, $paginationSize,$recherche,$institutionId);
+        $claims = $this->getAllMyClaim('archived', true, $paginationSize, $recherche, $institutionId);
 
         return response()->json($claims, 200);
     }
@@ -54,9 +55,4 @@ class ClaimArchivedController extends ApiController
         $claim = $this->getClaim('archived')->findOrFail($claim);
         return response()->json($claim, 200);
     }
-
-
-
 }
-
-

@@ -9,6 +9,7 @@
   "license": "MIT",
   "require": {
     "php": "^7.2.5",
+    "ext-curl": "*",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "danielme85/laravel-log-to-db": "^3.0",
@@ -28,8 +29,8 @@
     "satis2020/any-institution-unit": "^1.0",
     "satis2020/any-user": "^1.0",
     "satis2020/attach-files-to-claim": "^1.0",
-    "satis2020/bci-reports": "^1.0",
     "satis2020/auth-config": "^1.0",
+    "satis2020/bci-reports": "^1.0",
     "satis2020/benchmarking-report": "^1.0",
     "satis2020/category-client": "^1.0",
     "satis2020/channel": "^1.0",
@@ -43,9 +44,11 @@
     "satis2020/client-from-any-institution": "^1.0",
     "satis2020/client-from-my-institution": "^1.0",
     "satis2020/configuration": "^1.0",
+    "satis2020/countries-package": "dev-main",
     "satis2020/currency": "^1.0",
     "satis2020/dashboard": "^1.0",
     "satis2020/discussion": "^1.0",
+    "satis2020/escalation": "1.0.0",
     "satis2020/faq": "^1.0",
     "satis2020/global-report": "^1.0",
     "satis2020/institution": "^1.0",
@@ -65,6 +68,7 @@
     "satis2020/notification-proof": "^1.0",
     "satis2020/performance-indicator-package": "^1.0",
     "satis2020/position": "^1.0",
+    "satis2020/prediction-ai": "^1.0",
     "satis2020/processing-circuit-any-institution": "^1.0",
     "satis2020/processing-circuit-my-institution": "^1.0",
     "satis2020/processing-circuit-without-institution": "^1.0",
@@ -89,6 +93,8 @@
     "satis2020/staff-from-maybe-no-unit": "^1.0",
     "satis2020/staff-from-my-unit": "^1.0",
     "satis2020/staff-history": "^1.0",
+    "satis2020/system-efficiency-report-my-institution": "^1.0",
+    "satis2020/system-usage-report": "^1.0",
     "satis2020/transfer-claim-to-circuit-unit": "^1.0",
     "satis2020/transfer-claim-to-targeted-institution": "^1.0",
     "satis2020/transfer-claim-to-unit": "^1.0",
@@ -100,17 +106,11 @@
     "satis2020/update-claim-against-my-institution": "^1.0",
     "satis2020/update-claim-without-client": "^1.0",
     "satis2020/useful-data-for-backoffice": "^1.0",
+    "satis2020/useful-data-for-claims-classification": "1.0.0",
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/webhooks": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0",
-    "satis2020/system-usage-report": "^1.0",
-    "satis2020/system-efficiency-report-my-institution": "^1.0",
-    "ext-curl": "*",
-    "satis2020/countries-package": "dev-main",
-    "satis2020/escalation": "1.0.0",
-    "satis2020/useful-data-for-claims-classification": "1.0.0"
-
+    "satis2020/without-link-with-institution-unit": "^1.0"
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -364,6 +364,13 @@
     {
       "type": "path",
       "url": "modules/currency/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/prediction-ai/",
       "options": {
         "symlink": true
       }

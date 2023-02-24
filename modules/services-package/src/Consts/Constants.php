@@ -194,7 +194,7 @@ class Constants
             'activeTreatment.validatedBy.identite',
             'activeTreatment.transferredToTargetInstitutionBy.identite',
             'activeTreatment.transferredToUnitBy.identite',
-            'treatmentBoard'
+            'treatmentBoard.members.identite'
         ];
 
     }

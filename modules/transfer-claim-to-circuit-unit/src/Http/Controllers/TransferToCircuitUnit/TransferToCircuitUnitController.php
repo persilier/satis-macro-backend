@@ -70,8 +70,11 @@ class TransferToCircuitUnitController extends ApiController
         return response()->json($claim, 201);
     }
 
-    public function getUnitsPrediction($description,$object){
-       return response($this->allUnitsPrediction($description,$object));
+    // public function getUnitsPrediction($description,$object){
+    //    return response($this->allUnitsPrediction($description,$object));
+    // }
+    public function getUnitsPrediction(Request $request){
+       return response($this->allUnitsPrediction($request->description,$request->object));
     }
 
 }

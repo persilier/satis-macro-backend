@@ -18,3 +18,4 @@ Route::put('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\Tra
 Route::get('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\TransferToCircuitUnitController@edit')->name('get.claim.circuit.units');
 
 Route::get('/getUnitsPrediction/{description}/{object}','TransferToCircuitUnit\TransferToCircuitUnitController@getUnitsPrediction')->name('get.units.prediction');
+Route::post('/getUnitsPrediction','TransferToCircuitUnit\TransferToCircuitUnitController@getUnitsPrediction')->name('get.units.prediction');

@@ -4,12 +4,14 @@
 namespace Satis2020\Escalation\Services;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Consts\Constants;
 use Satis2020\Escalation\Models\TreatmentBoard;
 use Satis2020\ServicePackage\Traits\ClaimTrait;
 use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\HandleTreatment;
 use Satis2020\Escalation\Requests\TreatmentBoardRequest;
 use Satis2020\ServicePackage\Notifications\TransferredToUnit;
 use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
@@ -17,7 +19,7 @@ use Satis2020\Escalation\Repositories\TreatmentBoardRepository;
 class TreatmentBoardService
 {
 
-    use DataUserNature, ClaimTrait;
+    use DataUserNature, ClaimTrait, HandleTreatment;
 
     /**
      * @var TreatmentBoardRepository
@@ -55,6 +57,15 @@ class TreatmentBoardService
         } else {
             $treatmentBord = $this->getStandardBoard();
         }
+        $activeTreatment = $this->retrieveOrCreateActiveTreatment($claim);
+
+        $activeTreatment->update([
+            'transferred_to_unit_at' => Carbon::now(),
+            'transferred_to_unit_by' => $this->staff()->id,
+            'rejected_reason' => NULL,
+            'rejected_at' => NULL,
+        ]);
+
         $claim->update([
             'treatment_board_id' => $treatmentBord->id,
             'escalation_status' => Claim::CLAIM_TRANSFERRED_TO_COMITY

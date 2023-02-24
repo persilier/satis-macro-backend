@@ -101,7 +101,6 @@ trait DataUserNature
         try {
             $this->staff = $this->user()->load('identite.staff')->identite->staff;
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
             throw new RetrieveDataUserNatureException($message);
         }
 
