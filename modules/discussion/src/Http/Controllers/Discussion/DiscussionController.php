@@ -98,7 +98,9 @@ class DiscussionController extends ApiController
                 'escalation_status' => Claim::CLAIM_AT_DISCUSSION
             ]);
             $discussion->claim->activeTreatment->update([
-                'responsible_staff_id' => $this->staff()->id
+                'responsible_staff_id' => $this->staff()->id,
+                'assigned_to_staff_by' => $this->staff()->id, 
+                'assigned_to_staff_at' => Carbon::now()
             ]);
         }
         return response()->json($discussion, 201);
