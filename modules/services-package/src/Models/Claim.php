@@ -165,7 +165,6 @@ class Claim extends Model
                 $ecart = self::conversion($this->time_treatment) -  $duration_done;
   
             }
-
         }
 
         return [
@@ -188,7 +187,6 @@ class Claim extends Model
         
         // create an iterateable period of date (P1D equates to 1 day)
         $period = new DatePeriod($start, new DateInterval('P1D'), $end);
-        
         
         foreach($period as $dt) {
             $curr = $dt->format('D');
