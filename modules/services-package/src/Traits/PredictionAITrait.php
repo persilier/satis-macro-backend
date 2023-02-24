@@ -24,7 +24,18 @@ trait PredictionAITrait
 
     public function institutionClaim()
     {
-        return Institution::with(["claims.claimObject.claimCategory"])->get();
+        $instutitions = Institution::all();
+        $data = [];
+        foreach ($instutitions as $institution) {
+            $oneline = $institution;
+            $units = Claim::with("claimObject.claimCategory")
+                ->where("institution_targeted_id", $institution->id)
+                ->orderBy("created_at", "desc")
+                ->get();
+            $oneline["claims"] = $units;
+            $data[] = $oneline;
+        }
+        return $data;
     }
 
 
@@ -50,7 +61,7 @@ trait PredictionAITrait
         $data = [];
         foreach ($instutitions as $institution) {
             $oneline = $institution;
-            $units = Claim::with("activeTreatment.responsibleUnit")
+            $units = Claim::with("activeTreatment.responsibleUnit","claimObject.claimCategory")
                 ->where("institution_targeted_id", $institution->id)
                 ->whereIn("status", [Claim::CLAIM_TREATED, Claim::CLAIM_VALIDATED, Claim::CLAIM_ARCHIVED,])
                 ->get();
