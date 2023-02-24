@@ -18,3 +18,4 @@ Route::prefix('/useful-data-claims-classification')->name('claims-classification
     Route::get('/categories/{name}/objects', 'Claims\ClaimCategoryController@index')->name('categories.index');
     Route::get('/objects/{name}', 'Claims\ClaimObjectController@index')->name('claims.object.index');
 });
+

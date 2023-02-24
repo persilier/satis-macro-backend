@@ -2,23 +2,28 @@
 
 namespace Satis2020\ServicePackage\Models;
 
+use DateTime;
+use DatePeriod;
+use DateInterval;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Satis2020\ServicePackage\Traits\AwaitingAssignment;
-use Satis2020\Escalation\Models\TreatmentBoard;
-use Satis2020\ServicePackage\Repositories\TreatmentRepository;
-use Satis2020\ServicePackage\Services\StaffService;
-use Satis2020\ServicePackage\Traits\ActivePilot;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Satis2020\ServicePackage\Traits\SecureDelete;
-use Satis2020\ServicePackage\Traits\UuidAsId;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Satis2020\ServicePackage\Traits\UuidAsId;
+use Satis2020\ServicePackage\Models\Treatment;
+use Satis2020\Escalation\Models\TreatmentBoard;
+use Satis2020\ServicePackage\Models\AccountType;
+use Satis2020\ServicePackage\Traits\ActivePilot;
+use Satis2020\ServicePackage\Traits\SecureDelete;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Satis2020\ServicePackage\Services\StaffService;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Satis2020\ServicePackage\Traits\AwaitingAssignment;
+use Satis2020\ServicePackage\Repositories\TreatmentRepository;
 
 /**
  * Class Claim
@@ -121,10 +126,102 @@ class Claim extends Model
         'plain_text_description',
         'closed_at',
         'treatment_board_id',
-        'escalation_status'
+        'escalation_status',
+        'time_unit',
+        'time_staff',
+        'time_treatment',
+        'time_validation',
+        'time_measure_satisfaction'
     ];
 
-    protected $appends = ['timeExpire', 'accountType', 'canAddAttachment', 'lastRevival','canAddAttachment',"oldActiveTreatment", 'dateExpire','is_rejected','is_duplicate'];
+    protected $appends = [
+        'timeExpire', 
+        'accountType', 
+        'canAddAttachment', 
+        'lastRevival',
+        'canAddAttachment',
+        "oldActiveTreatment", 
+        'dateExpire',
+        'is_rejected',
+        'is_duplicate',
+       //'timeUnit',
+        //'timeStaff',
+        'timeLimitTreatment',
+       // 'timeValidation',
+       // 'timeMeasureSatisfaction' 
+    ];
+
+
+    public function gettimeLimitTreatmentAttribute()
+    {
+        $duration_done = null;
+        $ecart = null;
+        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+
+            $claimInfo = Treatment::where('claim_id',$this->id)->first();
+            if ($claimInfo && $claimInfo->solved_at !== null) {
+               
+                $duration_done = self::daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
+                $ecart = self::conversion($this->time_treatment) -  $duration_done;
+  
+            }
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_treatment,
+            "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
+           
+        ];
+    }
+
+
+    public function daysWithoutWeekEnd($start,$end)
+    {       
+        
+        $interval = $end->diff($start);
+        
+        // total days
+        $days = $interval->days;
+        
+        // create an iterateable period of date (P1D equates to 1 day)
+        $period = new DatePeriod($start, new DateInterval('P1D'), $end);
+        
+        foreach($period as $dt) {
+            $curr = $dt->format('D');
+        
+            // substract if Saturday or Sunday
+            if ($curr == 'Sat' || $curr == 'Sun') {
+                $days--;
+            }
+        }
+
+       return $days;
+    }
+
+    public function conversion($value)
+    {
+       
+        $data = explode(" ", $value);
+        $dataResult = substr($data[0], -1);
+       
+       if( $dataResult == "j"){
+           
+           $days = substr($data[0], 0, -1);
+           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
+           
+           $transformHoursToDay = intval($hours) / 24;
+           $totalDays = intval($days) + $transformHoursToDay;
+           
+       }else{
+               
+          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
+       }
+
+       return $totalDays;
+    }
+
 
     /**
      * @return mixed

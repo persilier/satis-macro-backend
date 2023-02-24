@@ -213,7 +213,10 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'store-webhooks-config' => __("permissions.admin.store_webhooks_config",[],app()->getLocale()),
             'update-webhooks-config' => __("permissions.admin.update_webhooks_config",[],app()->getLocale()),
             'delete-webhooks-config' => __("permissions.admin.delete_webhooks_config",[],app()->getLocale()),
+            'show-configuration-quota-delay' => __("permissions.admin.show_configuration_quota_delay",[],app()->getLocale()),
+            'update-configuration-quota-delay' => __("permissions.admin.update_configuration_quota_delay",[],app()->getLocale()),
 
+            
 
         ];
 

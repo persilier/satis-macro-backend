@@ -199,6 +199,9 @@ return [
         'store_webhooks_config' => '',
         'update_webhooks_config' => '',
         'delete_webhooks_config' => '',
+        'show_configuration_quota_delay' => 'Access to the configuration of the processing time quota for each claim object',
+        'update_configuration_quota_delay' => 'Modify the configuration of the delay quota',
+            
     ],
 
     //pilot and collector

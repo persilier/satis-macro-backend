@@ -22,6 +22,7 @@ Route::prefix('my')->group(function () {
         Route::resource('identites.claims', 'Identite\IdentiteClaimController', ['only' => ['store']]);
         Route::post('import-claim', 'ImportExport\ImportController@importClaims');
         Route::post('claims/moral-entity', 'Claim\ClaimMoralEntityController@store');
+        Route::get('claims-category-prediction/{description}', 'Claim\ClaimController@getClaimsCategoryPrediction');
     });
 
 });

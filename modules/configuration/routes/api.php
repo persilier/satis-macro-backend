@@ -58,3 +58,8 @@ Route::put("/configurations/min-fusion-percent", "MinFusionPercent\MinFusionPerc
 
 Route::get("/configurations/allow-pilot-collector-discussion", "Discussion\AllowPilotCollectorToDiscussionController@show")->name("configurations.allow.pilot.collector.discussion.show");
 Route::put("/configurations/allow-pilot-collector-discussion", "Discussion\AllowPilotCollectorToDiscussionController@update")->name("configurations.allow.pilot.collector.discussion.update");
+
+// configuration of the delay quota of treatment for each object  reclamation
+
+Route::get("/quota-delay/treatment", "QuotaDelay\QuotaDelayController@show")->name("quota.delay.treatment.show");
+Route::put("/quota-delay/treatment", "QuotaDelay\QuotaDelayController@update")->name("quota.delay.treatment.update");

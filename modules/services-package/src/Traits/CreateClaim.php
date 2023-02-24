@@ -236,6 +236,7 @@ trait CreateClaim
             'account_number'
         ];
 
+
         if ($request->has('amount_disputed')) {
             if ($request->amount_disputed >= 1) {
                 $data[] = 'amount_currency_slug';
@@ -261,9 +262,19 @@ trait CreateClaim
             $data[] = 'unit_targeted_id';
         }
 
-        $data[] = 'time_limit';
+        
+        $data = array_merge($data,['time_limit','time_unit','time_staff','time_treatment','time_validation','time_measure_satisfaction']);
+        $time_object = ClaimObject::find($request->claim_object_id);
 
-        $request->merge(['time_limit' => ClaimObject::find($request->claim_object_id)->time_limit]);
+        $request->merge([
+
+            'time_limit' => $time_object->time_limit,
+            'time_unit' => $time_object->time_unit,
+            'time_staff' => $time_object->time_staff,
+            'time_treatment' => $time_object->time_treatment,
+            'time_validation' => $time_object->time_validation,
+            'time_measure_satisfaction' => $time_object->time_measure_satisfaction,
+        ]);
 
         return $data;
     }

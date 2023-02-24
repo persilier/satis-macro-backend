@@ -198,6 +198,16 @@ class InstallMetadataSeeder extends Seeder
                     "allow_pilot" => 0,
                     "allow_collector" => 0,
                 ])
+            ],
+            [
+                'name' => 'configuration-quota-delay',
+                'data' => json_encode([
+                    "assignment_unit" => 0,
+                    "assignment_staff" => 0,
+                    "assignment_treatment" => 0,
+                    "assignment_validation" => 0,
+                    "assignment_measure_satisfaction" => 0,
+                ])
             ]
         ];
 

@@ -11,15 +11,16 @@ use Satis2020\ServicePackage\Rules\UnitCanTreatRules;
 use Satis2020\ServicePackage\Rules\UnitIsParentRules;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Traits\HandleTreatment;
+use Satis2020\ServicePackage\Traits\UnitsPrediction;
 
 class TransferToCircuitUnitController extends ApiController
 {
 
-    use HandleTreatment, AwaitingAssignment;
+    use HandleTreatment, AwaitingAssignment, UnitsPrediction;
 
     public function __construct()
     {
-        parent::__construct();
+       parent::__construct();
 
         $this->middleware('auth:api');
 
@@ -55,7 +56,6 @@ class TransferToCircuitUnitController extends ApiController
      */
     public function update(Request $request, Claim $claim)
     {
-
         $rules = [
             'unit_id' => [
                 'required', 'exists:units,id', new UnitBelongsToInstitutionRules($this->institution()->id),
@@ -68,6 +68,10 @@ class TransferToCircuitUnitController extends ApiController
         $claim = $this->transferToUnit($request, $claim);
 
         return response()->json($claim, 201);
+    }
+
+    public function getUnitsPrediction($description,$object){
+       return response($this->allUnitsPrediction($description,$object));
     }
 
 }

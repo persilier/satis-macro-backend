@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
  */
 Route::put('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\TransferToCircuitUnitController@update')->name('transfer.claim.to.circuit.unit');
 Route::get('/transfer-claim-to-circuit-unit/{claim}', 'TransferToCircuitUnit\TransferToCircuitUnitController@edit')->name('get.claim.circuit.units');
+
+Route::get('/getUnitsPrediction/{description}/{object}','TransferToCircuitUnit\TransferToCircuitUnitController@getUnitsPrediction')->name('get.units.prediction');
