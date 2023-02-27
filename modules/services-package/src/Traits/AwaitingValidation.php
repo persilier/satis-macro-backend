@@ -21,8 +21,8 @@ trait AwaitingValidation
         $institution_id = is_null($institution_id)
             ? $this->institution()->id
             : $institution_id;
-
-        $claimsTreated = Claim::with($this->getRelations())->where('status', 'treated')
+        $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
+        $claimsTreated = Claim::with($this->getRelations())->where("$statusColumn", 'treated')
             ->whereHas('activeTreatment.responsibleStaff', function ($query) use ($institution_id) {
                 $query->where('institution_id', $institution_id);
             });
@@ -67,8 +67,7 @@ trait AwaitingValidation
             }
 
             return $claimsTreated->paginate($paginationSize);
-        }
-        else {
+        } else {
             if ($search_text) {
 
                 $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {

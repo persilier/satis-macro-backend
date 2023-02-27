@@ -40,6 +40,7 @@ class Claim extends Model
     const CLAIM_ASSIGNED_TO_STAFF = "assigned_to_staff";
     const CLAIM_TREATED = "treated";
     const CLAIM_VALIDATED = "validated";
+    const CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION = "transferred_to_staff_for_satisfactiion";
     const CLAIM_ARCHIVED = "archived";
     const CLAIM_CLOSED = "closed";
     const CLAIM_UNSATISFIED = "unsatisfied";
@@ -223,6 +224,26 @@ class Claim extends Model
     }
 
 
+    // public function getSatisfactionHistoryAttribute()
+    // {
+    //     if ($this->activeTreatment) {
+    //         $treatments = collect($this->activeTreatment->satisfaction_history)->map(function ($item) {
+    //             $item = collect($item);
+    //             $item['satisfaction_measured_by'] =  Staff::with('identite.user', 'unit')->find($item->get("satisfaction_measured_by"));
+    //             return $item->only([
+    //                 "is_claimer_satisfied",
+    //                 "satisfaction_measured_by",
+    //                 "satisfaction_measured_at",
+    //                 "unsatisfied_reason",
+    //                 "note"
+    //             ]);
+    //         });
+    //         return $treatments;
+    //     } else {
+    //         return [];
+    //     }
+    // }
+
     /**
      * @return mixed
      */
@@ -365,7 +386,7 @@ class Claim extends Model
         return $this->morphMany(File::class, 'attachmentable');
     }
 
-        /**
+    /**
      * Get all of the claim's files attach at treatment.
      * @return MorphMany
      */
@@ -398,8 +419,8 @@ class Claim extends Model
      */
     public function getOldActiveTreatmentAttribute()
     {
-        if (isEscalationClaim($this)){
-            return  (new TreatmentRepository)->getClaimOldTreatment($this->id);
+        if (isEscalationClaim($this)) {
+            return (new TreatmentRepository)->getClaimOldTreatment($this->id);
         }
 
         return null;
@@ -426,24 +447,26 @@ class Claim extends Model
     function getCanAddAttachmentAttribute()
     {
         $canAttach = false;
+        if (Auth::user()){
+            $staffId = request()->query('staff', $this->staff()->id);
+            $staff = (new StaffService())->getStaffById($staffId);
 
-        $staffId = request()->query('staff', null);
-        $staff = (new StaffService())->getStaffById($staffId);
+            if ($staff != null) {
+                if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF || ($this->status == Claim::CLAIM_UNSATISFIED && $this->escalation_status == Claim::CLAIM_ASSIGNED_TO_STAFF)) {
+                    $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+                }
 
-        if ($staff != null) {
-            if ($this->status == Claim::CLAIM_ASSIGNED_TO_STAFF) {
-                $canAttach = $this->activeTreatment->responsible_staff_id == $staff->id;
+                /* if ($this->status==Claim::CLAIM_VALIDATED){
+                    $canAttach = $staff->id == $staff->institution->active_pilot_id;
+                }*/
             }
-
-            /* if ($this->status==Claim::CLAIM_VALIDATED){
-                $canAttach = $staff->id == $staff->institution->active_pilot_id;
-            }*/
-        }
-        if(Auth::user()){
-            if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
-                $canAttach = true;
+            if (Auth::user()) {
+                if ($this->status == Claim::CLAIM_FULL && $this->allowOnlyActivePilot($this->staff())) {
+                    $canAttach = true;
+                }
             }
         }
+
 
         return $canAttach;
     }
@@ -463,8 +486,10 @@ class Claim extends Model
 
     public function getIsRejectedAttribute()
     {
-        if (!is_null($this->activeTreatment) && !is_null($this->activeTreatment->rejected_at) && !is_null($this->activeTreatment->rejected_reason)
-            && !is_null($this->activeTreatment->responsibleUnit)) {
+        if (
+            !is_null($this->activeTreatment) && !is_null($this->activeTreatment->rejected_at) && !is_null($this->activeTreatment->rejected_reason)
+            && !is_null($this->activeTreatment->responsibleUnit)
+        ) {
             return true;
         }
         return false;
@@ -474,14 +499,14 @@ class Claim extends Model
     {
         return $this->getDuplicatesQuery($this->getClaimsQuery($this->institution_targeted_id), $this)->exists();
     }
-    
+
     /**
      * @return mixed
      */
     public function getPlainTextDescriptionAttribute()
     {
-        return $this->attributes['plain_text_description']==null?
-            $this->attributes['description']:
+        return $this->attributes['plain_text_description'] == null ?
+            $this->attributes['description'] :
             $this->attributes['plain_text_description'];
     }
 
@@ -492,5 +517,4 @@ class Claim extends Model
     {
         return $this->belongsTo(TreatmentBoard::class);
     }
-
 }

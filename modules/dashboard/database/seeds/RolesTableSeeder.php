@@ -39,7 +39,6 @@ class RolesTableSeeder extends Seeder
                 'show-dashboard-data-my-unit',
                 'show-dashboard-data-my-activity'
             ]);
-
         }
 
         if ($nature === 'MACRO') {
@@ -83,7 +82,6 @@ class RolesTableSeeder extends Seeder
                 'show-dashboard-data-my-unit',
                 'show-dashboard-data-my-activity'
             ]);
-
         }
 
         if ($nature === 'HUB') {
@@ -107,7 +105,6 @@ class RolesTableSeeder extends Seeder
             Role::where('name', 'staff')->where('guard_name', 'api')->firstOrFail()->givePermissionTo([
                 'show-dashboard-data-my-activity'
             ]);
-
         }
 
         if ($nature === 'PRO') {
@@ -132,8 +129,6 @@ class RolesTableSeeder extends Seeder
                 'show-dashboard-data-my-unit',
                 'show-dashboard-data-my-activity'
             ]);
-
         }
-
     }
 }

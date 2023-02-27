@@ -13,12 +13,13 @@ use Illuminate\Validation\Rules\RequiredIf;
 use Satis2020\ServicePackage\Models\Metadata;
 use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Models\Treatment;
-use Satis2020\ServicePackage\Notifications\TreatAClaim;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\Notification;
+use Satis2020\ServicePackage\Traits\SeveralTreatment;
+use Satis2020\ServicePackage\Notifications\TreatAClaim;
 use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
 use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
@@ -28,7 +29,7 @@ use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilot
  */
 class ClaimAssignmentToStaffAdhocController extends ApiController
 {
-    use ClaimAwaitingTreatment, ConfigurationPilotTrait;
+    use ClaimAwaitingTreatment, ConfigurationPilotTrait, SeveralTreatment;
 
     protected $activityLogService;
 
@@ -60,7 +61,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
             ->whereHas('activeTreatment', function ($q) {
-                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+                $q->where('responsible_staff_id', $this->staff()->id);
             })
             ->whereNull('deleted_at')
             ->find($claim);
@@ -68,9 +69,24 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         //$this->getOneClaimQueryTreat($institution->id, $staff->unit_id, $staff->id, $claim);
 
         $rules = [
-            'solution' => ['required_if:can_communicate,' . '1', 'string'],
-            'can_communicate'
+            'amount_returned' => [
+                'nullable',
+                'filled',
+                'integer',
+                Rule::requiredIf(!is_null($claim->amount_disputed) && !is_null($claim->amount_currency_slug)),
+                'min:0'
+            ],
+            'solution' => ['required', 'string'],
+            'comments' => ['nullable', 'string'],
+            'preventive_measures' => [
+                'string',
+                Rule::requiredIf(!is_null(Metadata::where('name', 'measure-preventive')->firstOrFail()->data)
+                    && Metadata::where('name', 'measure-preventive')->firstOrFail()->data == 'true')
+            ],
+            'can_communicate' => 'required',
+            'solution_communicated' => ['required_if:can_communicate,' . '1', 'string'],
         ];
+
 
         $this->validate($request, $rules);
         if (!$claim) {
@@ -79,11 +95,39 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
                 'message' => "Can't retrieve the claim"
             ];
         }
+        $validationData = [
+            'invalidated_reason' => NULL,
+            'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
+        ];
+
+
         $claim->activeTreatment->update([
+            'amount_returned' => $request->amount_returned,
             'solution' => $request->solution,
+            'comments' => $request->comments,
+            'preventive_measures' => $request->preventive_measures,
+            'solved_at' => Carbon::now(),
+            'unfounded_reason' => NULL,
+            'solution_communicated' => $request->solution_communicated,
         ]);
 
-        $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
+        $backup = $this->backupData($claim, $validationData);
+        $claim->activeTreatment->update([
+            'solution_communicated' => $request->solution_communicated,
+            'validated_at' => Carbon::now(),
+            'validated_by' => $this->staff()->id,
+            'invalidated_reason' => NULL,
+            'treatments' => $backup
+        ]);
+
+        if ((int)$request->can_communicate == 1) {
+            $claim->update(['escalation_status' => Claim::CLAIM_VALIDATED]);
+            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
+        } else {
+            $claim->update(['escalation_status' => Claim::CLAIM_RESOLVED]);
+        }
+
 
         $this->activityLogService->store(
             "Traitement d'une réclamation",
@@ -98,9 +142,6 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
         $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
         $responsible_pilot  = null;
 
-        if ((int)$request->can_communicate == 1) {
-            $claim->claimer->notify(new \Satis2020\ServicePackage\Notifications\CommunicateTheSolution($claim));
-        }
 
         if ($configuration->many_active_pilot  === "0") {
             // one active pivot
@@ -143,7 +184,7 @@ class ClaimAssignmentToStaffAdhocController extends ApiController
 
         $claim = Claim::where('escalation_status', Claim::CLAIM_AT_DISCUSSION)
             ->whereHas('activeTreatment', function ($q) {
-                $q->where('escalation_responsible_staff_id', $this->staff()->id);
+                $q->where('responsible_staff_id', $this->staff()->id);
             })
             ->whereNull('deleted_at')
             ->find($claim);

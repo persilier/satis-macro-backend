@@ -2,13 +2,15 @@
 
 namespace Satis2020\Discussion\Http\Controllers\Discussion;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Validation\ValidationException;
+use Satis2020\ServicePackage\Models\Discussion;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Rules\ClaimIsAssignedToStaffRules;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
 
@@ -42,11 +44,10 @@ class DiscussionController extends ApiController
                 ->discussions
                 ->filter(function ($value, $key) use ($type) {
                     $value->load(['staff']);
-
                     if ($type == Claim::CLAIM_UNSATISFIED) {
-                        return $value->claim->status == Claim::CLAIM_UNSATISFIED;
+                        return $value->claim->status == Claim::CLAIM_UNSATISFIED && !is_null($value->claim->oldActiveTreatment) && $value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at);
                     } else {
-                        return $value->claim->escalation_status == null;
+                        return ($value->claim->escalation_status == null) || (!is_null($value->claim->escalation_status) && !is_null($value->claim->oldActiveTreatment) && !$value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at));
                     }
                 })
                 ->values(),
@@ -97,7 +98,8 @@ class DiscussionController extends ApiController
                 'escalation_status' => Claim::CLAIM_AT_DISCUSSION
             ]);
             $discussion->claim->activeTreatment->update([
-                'escalation_responsible_staff_id' => $this->staff()->id
+                'responsible_staff_id' => $this->staff()->id,
+                'assigned_to_staff_at' => Carbon::now()
             ]);
         }
         return response()->json($discussion, 201);
@@ -147,7 +149,7 @@ class DiscussionController extends ApiController
 
         $this->validate($request, $rules);
 
-        $discussion->delete();
+        $discussion->secureDelete('messages');
 
         return response()->json($discussion, 200);
     }

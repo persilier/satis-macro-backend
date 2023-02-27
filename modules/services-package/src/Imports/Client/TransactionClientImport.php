@@ -294,7 +294,6 @@ class TransactionClientImport implements OnEachRow, WithHeadingRow, WithChunkRea
      */
     public function onFailure(Failure ...$failures)
     {
-        dd($failures);
         array_push($this->errors, $failures);
     }
     public function onError(\Throwable $e)

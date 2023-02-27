@@ -17,7 +17,7 @@ class RoleDescriptionSeed extends Seeder
     {
         $roles = \Spatie\Permission\Models\Role::all();
 
-        foreach ($roles as $role){
+        foreach ($roles as $role) {
             if ($role->name == 'admin-filial')
                 $role->update(['description' => "Administrateur niveau filiale"]);
 
@@ -47,9 +47,12 @@ class RoleDescriptionSeed extends Seeder
 
             if (($role->name == 'collector-filial-pro' && env('APP_NATURE') == 'PRO') || $role->name == 'collector-observatory')
                 $role->update(['description' => "Collecteur"]);
-                Log::info('role');
+
             if ($role->name == 'admin-observatory')
                 $role->update(['description' => "Administrateur"]);
+
+            if ($role->name == 'satisfaction-mesure' && env('APP_NATURE') == 'PRO')
+                $role->update(['description' => "Role de mesure les observation"]);
         }
     }
 }

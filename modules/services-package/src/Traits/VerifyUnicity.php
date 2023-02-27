@@ -168,6 +168,39 @@ trait VerifyUnicity
 
     }
 
+    protected function existIdentityPhoneNumberAndEmailVerificationStore($request, $idValue = null)
+    {
+
+        if ($request->has('telephone')) {
+            // Identity PhoneNumber Unicity Verification
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
+            if (!$verifyPhone['status']) {
+                $verifyPhone['message'] = 'Nous avons retrouvé quelqu\'un avec le numéro de téléphone : ' . $verifyPhone['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
+                return [
+                    "exist" => true,
+                    "data" => $verifyPhone
+                ];
+            }
+
+        }
+
+        // Identity Email Unicity Verification
+        if ($request->has('email')) {
+            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
+
+            if (!$verifyEmail['status']) {
+                $verifyEmail['message'] = 'Nous avons retrouvé quelqu\'un avec l\'adresse email : ' . $verifyEmail['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
+                return [
+                    "exist" => true,
+                    "data" => $verifyEmail
+                ];
+            }
+        }
+        return [
+            "exist" => false,
+        ];
+    }
+
     /**
      * @param $request
      * @param $identite

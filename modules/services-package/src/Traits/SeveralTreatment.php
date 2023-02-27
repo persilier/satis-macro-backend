@@ -44,5 +44,4 @@ trait SeveralTreatment
 
         return $treatments->all();
     }
-
 }
