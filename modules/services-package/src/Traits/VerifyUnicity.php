@@ -49,13 +49,13 @@ trait VerifyUnicity
      * @param null $idValue
      * @return array
      */
-    protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null)
+    protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null,$typeColumn,$typeValue)
     {
         foreach ($values as $value) {
 
             $value = strtolower($value);
 
-            $query = DB::table($table)->whereJsonContains("$column", "$value");
+            $query = DB::table($table)->whereJsonContains("$column", "$value")->Where("$typeColumn","$typeValue");
 
             if ($idColumn && $idValue) {
                 $query = $query->whereNotIn("$idColumn", [$idValue]);
@@ -148,7 +148,7 @@ trait VerifyUnicity
 
         if ($request->has('telephone')) {
             // Identity PhoneNumber Unicity Verification
-            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue);
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue,'type_client',$request->type_client);
             if (!$verifyPhone['status']) {
                 $verifyPhone['message'] = 'Nous avons retrouvé quelqu\'un avec le numéro de téléphone : ' . $verifyPhone['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
                 throw new CustomException($verifyPhone, 409);
@@ -158,7 +158,7 @@ trait VerifyUnicity
 
         // Identity Email Unicity Verification
         if ($request->has('email')) {
-            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue);
+            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue,'type_client',$request->type_client);
 
             if (!$verifyEmail['status']) {
                 $verifyEmail['message'] = 'Nous avons retrouvé quelqu\'un avec l\'adresse email : ' . $verifyEmail['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
