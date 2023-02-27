@@ -4,22 +4,23 @@ namespace Satis2020\RegisterClaimAgainstMyInstitution\Http\Controllers\Claim;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException;
-use Satis2020\ServicePackage\Exceptions\CustomException;
-use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Channel;
-use Satis2020\ServicePackage\Models\ClaimCategory;
-use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Currency;
-use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
-use Satis2020\ServicePackage\Traits\ClaimsCategoryPrediction;
-use Satis2020\ServicePackage\Traits\CreateClaim;
-use Satis2020\ServicePackage\Traits\DataUserNature;
-use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Illuminate\Validation\ValidationException;
 use Satis2020\ServicePackage\Traits\Telephone;
+use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Traits\CreateClaim;
+use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Satis2020\ServicePackage\Traits\DataUserNature;
+use Satis2020\ServicePackage\Traits\IdentityManagement;
+use Satis2020\ServicePackage\Exceptions\CustomException;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Traits\ClaimsCategoryPrediction;
+use Satis2020\ServicePackage\Traits\ClaimsCategoryObjectPrediction;
+use Satis2020\ServicePackage\Services\ActivityLog\ActivityLogService;
+use Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException;
 
 
 /**
@@ -29,7 +30,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ClaimController extends ApiController
 {
 
-    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryPrediction, Telephone;
+    use IdentityManagement, DataUserNature, VerifyUnicity, CreateClaim, ClaimsCategoryObjectPrediction, Telephone;
 
     /**
      * @var ActivityLogService
