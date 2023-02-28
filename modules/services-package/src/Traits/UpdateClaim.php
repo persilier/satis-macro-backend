@@ -48,7 +48,7 @@ trait UpdateClaim
         // Client PhoneNumber Unicity Verification
         if($request->has('telephone')){
 
-            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $claim->claimer_id);
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $claim->claimer_id,'type_client',$request->type_client);
 
             if (!$verifyPhone['status']) {
 
@@ -60,7 +60,7 @@ trait UpdateClaim
         // Client Email Unicity Verification
         if ($request->has('email')) {
 
-            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id);
+            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $claim->claimer_id,'type_client',$request->type_client);
 
             if (!$verifyEmail['status']) {
 
