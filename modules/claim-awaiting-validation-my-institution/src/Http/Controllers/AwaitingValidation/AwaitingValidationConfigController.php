@@ -27,8 +27,8 @@ class AwaitingValidationConfigController extends ApiController
 
         $this->middleware('auth:api');
 
-       // $this->middleware('permission:list-claim-awaiting-validation-my-institution')->only(['index']);
-       // $this->middleware('permission:list-claim-transferred-my-institution')->only(['getClaimTransferred']);
+        $this->middleware('permission:list-claim-awaiting-validation-my-institution')->only(['index']);
+        $this->middleware('permission:list-claim-transferred-my-institution')->only(['getClaimTransferred']);
 
         $this->activityLogService = $activityLogService;
     }
