@@ -25,12 +25,12 @@ class ClaimObjectController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        /* $this->middleware('permission:list-claim-object')->only(['index']);
+        $this->middleware('permission:list-claim-object')->only(['index']);
         $this->middleware('permission:store-claim-object')->only(['store']);
         $this->middleware('permission:update-claim-object')->only(['update']);
         $this->middleware('permission:show-claim-object')->only(['show']);
         $this->middleware('permission:destroy-claim-object')->only(['destroy']);
- */    }
+     }
 
 
     /**

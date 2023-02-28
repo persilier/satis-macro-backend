@@ -162,8 +162,8 @@ class Claim extends Model
             $claimInfo = Treatment::where('claim_id',$this->id)->first();
             if ($claimInfo && $claimInfo->solved_at !== null) {
                
-                $duration_done = self::daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = self::conversion($this->time_treatment) -  $duration_done;
+                $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
+                $ecart = $this->conversion($this->time_treatment) -  $duration_done;
   
             }
         }
