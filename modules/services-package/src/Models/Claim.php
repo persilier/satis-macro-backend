@@ -160,15 +160,12 @@ class Claim extends Model
         if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
 
             $claimInfo = Treatment::where('claim_id',$this->id)->first();
-            $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-            $ecart = $this->conversion($this->time_treatment) -  $duration_done;
-
-           /*  if ($claimInfo && $claimInfo->solved_at !== null) {
+            if ($claimInfo && $claimInfo->solved_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = $this->conversion($this->time_treatment) -  $duration_done;
+                $duration_done = "okay";
+                $ecart = "okay";
   
-            } */
+            }
         }
 
         return [
