@@ -93,7 +93,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'export-notification-proof', 'configuration-pilot',
                     'configure-pilot-collector-discussion-attribute',
                     'show-configuration-quota-delay',
-                    'update-configuration-quota-delay'
+                    'update-configuration-quota-delay',
+                    'activity-log'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
