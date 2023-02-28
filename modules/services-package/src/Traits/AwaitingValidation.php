@@ -27,6 +27,7 @@ trait AwaitingValidation
                 $query->where('institution_id', $institution_id);
             });
 
+
         if ($paginate) {
 
             if ($key) {
