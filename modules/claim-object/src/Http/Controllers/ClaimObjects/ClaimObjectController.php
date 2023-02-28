@@ -30,7 +30,7 @@ class ClaimObjectController extends ApiController
         $this->middleware('permission:update-claim-object')->only(['update']);
         $this->middleware('permission:show-claim-object')->only(['show']);
         $this->middleware('permission:destroy-claim-object')->only(['destroy']);
-    }
+     }
 
 
     /**
@@ -74,11 +74,7 @@ class ClaimObjectController extends ApiController
             'severity_levels_id', 
             'time_limit', 
             'others',
-            'time_unit',
-            'time_staff',
-            'time_treatment',
-            'time_validation',
-            'time_measure_satisfaction'
+           
         ]));
         return response()->json($claimObject, 201);
     }
@@ -119,7 +115,19 @@ class ClaimObjectController extends ApiController
     public function update(Request $request, ClaimObject $claimObject)
     {
         $this->validate($request, $this->rules($claimObject));
-        $claimObject->update($request->only(['name', 'description', 'claim_category_id', 'severity_levels_id', 'time_limit', 'others']));
+        $claimObject->update($request->only([
+            'name', 
+            'description', 
+            'claim_category_id', 
+            'severity_levels_id', 
+            'time_limit', 
+            'others',
+            'time_unit',
+            'time_staff',
+            'time_treatment',
+            'time_validation',
+            'time_measure_satisfaction'
+        ]));
         return response()->json($claimObject, 201);
     }
 

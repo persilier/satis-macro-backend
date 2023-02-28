@@ -42,7 +42,17 @@ class ClaimObject extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'time_limit', 'severity_levels_id', 'claim_category_id', 'others'
+        'name', 
+        'description',
+         'time_limit', 
+         'severity_levels_id', 
+         'claim_category_id', 
+         'others',
+         'time_unit',
+        'time_staff',
+        'time_treatment',
+        'time_validation',
+        'time_measure_satisfaction'
     ];
 
     /**
