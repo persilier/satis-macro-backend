@@ -96,23 +96,6 @@ trait ClaimTrait
 
        return $totalDays;
     }
-    
-    protected function formatTime($total_days)
-    {
-       
-        if ($total_days < 1) {
-            $hours = $total_days * 24;
-            $time_limit = $hours."h";
-        } else {
-            
-            $whole = floor($total_days);
-            $decimal = fmod($total_days, $whole);
-            $hours = $decimal * 24;
-            $time_limit = $whole."j"." ".$hours."h";
-        }
-
-        return $time_limit;
-    }
 
 
     /**
