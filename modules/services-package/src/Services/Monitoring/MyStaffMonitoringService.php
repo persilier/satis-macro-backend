@@ -27,6 +27,8 @@ class MyStaffMonitoringService
         $claimTreated = $this->getClaimTreated($request,$unitId)->count();
         $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
         $getAverageTimeOfTreatment = $this->getAverageTimeOfTreatment($request,$unitId);
+
+        
         
         $staffClaims = $this->getAllStaffClaim($request, $unitId, $paginationSize, $type, $key);
         return [

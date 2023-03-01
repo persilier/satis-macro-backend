@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Models\Claim;
  */
 trait StaffMonitoring
 {
-
+    use ClaimTrait;
     /**
      * @param $request
      * @param $unitId
@@ -124,7 +124,7 @@ trait StaffMonitoring
        
        $averageTime = $totalTime / $i;
 
-       return $averageTime;
+       return $this->conversion($averageTime);
     }
 
 
