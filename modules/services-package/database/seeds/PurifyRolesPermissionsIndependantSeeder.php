@@ -165,7 +165,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
                 ],
                 'internal-controller'=> [
-                    "internal-control-claim", 'internal-control-index','internal-control-claim-detail'
+                    "internal-control-claim", 'internal-control-index'
+                    ,'internal-control-claim-detail','internal-control-claim-object-index',
                 ],
                 'conformer'=> [
                 ],
