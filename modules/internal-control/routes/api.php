@@ -21,3 +21,4 @@ Route::get('configuration-internal-control', 'InternalControl\InternalControlCon
 Route::post('configuration-internal-control', 'InternalControl\InternalControlController@store');
 Route::post('claims-internal-control', 'InternalControl\InternalControlController@indexClaimsInternalControl');
 Route::get('claim-objects-internal-control', 'InternalControl\InternalControlController@indexClaimObject');
+Route::get('claim-detail-internal-control/{id}', 'InternalControl\InternalControlController@show');

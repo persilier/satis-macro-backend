@@ -19,8 +19,11 @@ class InternalControlController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:internal-control-index')->only(["index"]);
+        $this->middleware('permission:internal-control-claim-object-index')->only(["indexClaimObject"]);
         $this->middleware('permission:internal-control-store')->only(["store"]);
+
         $this->middleware('permission:internal-control-claim')->only(["indexClaimsInternalControl"]);
+        $this->middleware('permission:internal-control-claim-detail')->only(["show"]);
     }
 
     public function index()
@@ -45,8 +48,14 @@ class InternalControlController extends ApiController
     }
 
     public function indexClaimsInternalControl(Request $request){
-        return $this->claim($request);
+        return response()->json($this->claim($request), 201);
     }
+
+    public function show($id){
+
+        return response()->json($this->getClaimsInfoWithClaimObjectForInternalControl($id), 201);;
+    }
+
 
 
 

@@ -1156,7 +1156,8 @@ trait FilterClaims
 
         $claims = $claims
             ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
-            ->whereIn('claim_object_id', $claim_object_ids);
+            ->whereIn('claim_object_id', $claim_object_ids)
+        ->select("claims.*");
         return $claims;
 
     }
@@ -1205,6 +1206,12 @@ trait FilterClaims
     protected function getClaimsReceivedListCustomWithClaimObjectForInternalControl($request, $claim_object_ids)
     {
         return $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids);
+    }
+
+
+    protected function getClaimsInfoWithClaimObjectForInternalControl($id)
+    {
+        return Claim::find($id)->load("claimObject.claimCategory");
     }
 
 
