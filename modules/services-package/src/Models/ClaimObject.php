@@ -52,7 +52,8 @@ class ClaimObject extends Model
         'time_staff',
         'time_treatment',
         'time_validation',
-        'time_measure_satisfaction'
+        'time_measure_satisfaction',
+        'internal_control'
     ];
 
     /**
