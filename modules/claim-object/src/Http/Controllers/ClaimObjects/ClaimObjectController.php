@@ -127,7 +127,8 @@ class ClaimObjectController extends ApiController
             'time_staff',
             'time_treatment',
             'time_validation',
-            'time_measure_satisfaction'
+            'time_measure_satisfaction',
+            'internal_control'
         ]));
         return response()->json($claimObject, 201);
     }
