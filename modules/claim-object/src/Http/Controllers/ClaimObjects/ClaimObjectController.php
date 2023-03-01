@@ -12,6 +12,7 @@ use Satis2020\ServicePackage\Models\ClaimCategory;
 use Satis2020\ServicePackage\Models\SeverityLevel;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Satis2020\ServicePackage\Traits\ClaimTrait;
 
 /**
  * Class ClaimObjectController
@@ -19,7 +20,7 @@ use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
  */
 class ClaimObjectController extends ApiController
 {
-    use \Satis2020\ServicePackage\Traits\ClaimObject;
+    use \Satis2020\ServicePackage\Traits\ClaimObject,ClaimTrait;
 
     public function __construct()
     {
@@ -169,16 +170,7 @@ class ClaimObjectController extends ApiController
 
             $total_days = (intval($value) * $request->total_days) / 100;
 
-            if ($total_days < 1) {
-                $hours = $total_days * 24;
-                $time_limit = $hours."h";
-            } else {
-                
-                $whole = floor($total_days);
-                $decimal = fmod($total_days, $whole);
-                $hours = $decimal * 24;
-                $time_limit = $whole."j"." ".$hours."h";
-            }
+            $time_limit =  $this->formatTime($total_days);
 
             $data += [ $key => $time_limit ];
            

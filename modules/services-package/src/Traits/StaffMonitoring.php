@@ -124,7 +124,7 @@ trait StaffMonitoring
        
        $averageTime = $totalTime / $i;
 
-       return $this->conversion($averageTime);
+       return $averageTime;
     }
 
 
