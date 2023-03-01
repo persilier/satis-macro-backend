@@ -74,6 +74,7 @@ class ClaimObjectController extends ApiController
             'severity_levels_id', 
             'time_limit', 
             'others',
+            'internal_control'
            
         ]));
         return response()->json($claimObject, 201);
