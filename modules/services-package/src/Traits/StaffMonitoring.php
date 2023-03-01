@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Models\Claim;
  */
 trait StaffMonitoring
 {
-    use ClaimTrait;
+
     /**
      * @param $request
      * @param $unitId
@@ -106,6 +106,7 @@ trait StaffMonitoring
         $claims = $claims->where('treatments.is_claimer_satisfied', true);
         return $claims;
     }
+    
     /**
      * @param $request
      * @param $unitId

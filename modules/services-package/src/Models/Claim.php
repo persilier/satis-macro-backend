@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Satis2020\ServicePackage\Traits\AwaitingAssignment;
 use Satis2020\ServicePackage\Repositories\TreatmentRepository;
-use Satis2020\ServicePackage\Traits\ClaimTrait;
 
 /**
  * Class Claim
@@ -32,7 +31,7 @@ use Satis2020\ServicePackage\Traits\ClaimTrait;
  */
 class Claim extends Model
 {
-    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot, AwaitingAssignment,ClaimTrait;
+    use HasTranslations, UuidAsId, SoftDeletes, SecureDelete, DataUserNature, ActivePilot, AwaitingAssignment;
     const PERSONAL_ACCOUNT = 'A TITRE PERSONNEL';
     const CLAIM_INCOMPLETE = "incomplete";
     const CLAIM_FULL = "full";
@@ -202,7 +201,27 @@ class Claim extends Model
        return $days;
     }
 
-   
+    public function conversion($value)
+    {
+       
+        $data = explode(" ", $value);
+        $dataResult = substr($data[0], -1);
+       
+       if( $dataResult == "j"){
+           
+           $days = substr($data[0], 0, -1);
+           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
+           
+           $transformHoursToDay = intval($hours) / 24;
+           $totalDays = intval($days) + $transformHoursToDay;
+           
+       }else{
+               
+          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
+       }
+
+       return $totalDays;
+    }
 
 
     // public function getSatisfactionHistoryAttribute()

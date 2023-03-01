@@ -75,28 +75,6 @@ trait ClaimTrait
         return Constants::getClaimRelations();
     }
 
-    protected function conversion($value)
-    {
-       
-        $data = explode(" ", $value);
-        $dataResult = substr($data[0], -1);
-       
-       if( $dataResult == "j"){
-           
-           $days = substr($data[0], 0, -1);
-           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
-           
-           $transformHoursToDay = intval($hours) / 24;
-           $totalDays = intval($days) + $transformHoursToDay;
-           
-       }else{
-               
-          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
-       }
-
-       return $totalDays;
-    }
-
 
     /**
      * @param $institutionId
