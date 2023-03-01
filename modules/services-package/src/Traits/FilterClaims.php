@@ -1143,4 +1143,70 @@ trait FilterClaims
     }
 
 
+    protected function getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
+    {
+
+        $claims = Claim::query();
+
+        if ($request->has('institution_id')) {
+
+            $claims->where('institution_targeted_id', $request->institution_id);
+
+        }
+
+        $claims = $claims
+            ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+            ->whereIn('claim_object_id', $claim_object_ids);
+        return $claims;
+
+    }
+
+    protected function getClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids)
+    {
+        $claims = $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereIn('status', [Claim::CLAIM_TREATED, Claim::CLAIM_VALIDATED, Claim::CLAIM_ARCHIVED,]);
+        return $claims;
+    }
+
+    protected function getClaimsNotTreatedWithClaimObjectForInternalControl($request, $claim_object_ids)
+    {
+        $claims = $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotIn('status', [Claim::CLAIM_TREATED, Claim::CLAIM_VALIDATED, Claim::CLAIM_ARCHIVED,]);
+        return $claims;
+    }
+
+    protected function getAverageTimeClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids)
+    {
+        $claims = $this->getClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids)
+            ->select("claims.*", "treatments.satisfaction_measured_at as treatment_satisfaction_measured_at")
+            ->get();
+        $time = 0;
+        foreach ($claims as $claim) {
+            $datetime1 = new \DateTime($claim->treatment_satisfaction_measured_at);
+            $datetime2 = new \DateTime($claim->created_at);
+            $interval = $datetime1->diff($datetime2);
+            $time += ($interval->format('%a'));
+        }
+
+        return count($claims) > 0 ? $time / count($claims) : 0;
+    }
+
+    protected function getSatisfactionClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids, $status)
+    {
+        $claims = $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
+            ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.satisfaction_measured_at')
+            ->where("is_claimer_satisfied", $status);
+        return $claims;
+    }
+
+    protected function getClaimsReceivedListCustomWithClaimObjectForInternalControl($request, $claim_object_ids)
+    {
+        return $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids);
+    }
+
+
+
 }
