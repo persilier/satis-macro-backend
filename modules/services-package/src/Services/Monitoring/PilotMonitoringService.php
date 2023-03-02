@@ -14,7 +14,7 @@ use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 class PilotMonitoringService
 {
 
-    use Metadata,StaffMonitoring,ClaimSatisfactionMeasured,DataUserNature,PilotMonitoringTrait;
+    use Metadata,ClaimSatisfactionMeasured,DataUserNature,PilotMonitoringTrait;
 
     public function MyPilotMonitoring($request)
     {
@@ -26,6 +26,7 @@ class PilotMonitoringService
          $totalClaimAssigned = $this->getClaimAssigned($request)->count();
          $totalClaimValidated = $this->getClaimValidated($request)->count();
          $totalClaimSatisfied = $this->getClaimSatisfied($request)->count();
+         $totalClaimRejected = $this->getClaimRejected($request)->count();
        
          $allClaim = $this->getPilotClaimAssignedTo($request, $paginationSize, $type, $key);
 
@@ -34,6 +35,7 @@ class PilotMonitoringService
             'totalClaimAssigned' => $totalClaimAssigned,
             'totalClaimValidated' => $totalClaimValidated,
             'totalClaimSatisfied' => $totalClaimSatisfied,
+            'totalClaimRejected'  =>  $totalClaimRejected,
             'allClaimAssignedTo' => $allClaim
         ];
    

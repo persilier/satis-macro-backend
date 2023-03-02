@@ -61,6 +61,21 @@ trait PilotMonitoringTrait
         return $claims;
     }
 
+    protected function getClaimRejected($request)
+    {
+        $claims = Claim::query();
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.rejected_at');
+        if ($request->pilot_id != Constants::ALL_PILOT) {
+            $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
+        }
+       
+        return $claims;
+    }
+
 
 
   
