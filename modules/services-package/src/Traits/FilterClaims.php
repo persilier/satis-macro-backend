@@ -1160,6 +1160,11 @@ trait FilterClaims
             ->whereIn('claim_object_id', $claim_object_ids)
         ->select("claims.*","claim_objects.name as claim_objects_name",
             "identites.firstname", "identites.lastname","identites.raison_sociale");
+
+        if ($request->status){
+            $claims = $claims->where("status",$request->status);
+        }
+
         return $claims;
 
     }
