@@ -1146,30 +1146,7 @@ trait FilterClaims
     protected function getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
     {
 
-        $claims = Claim::with([
-            'claimObject.claimCategory',
-            'claimer',
-            'relationship',
-            'accountTargeted',
-            'institutionTargeted',
-            'unitTargeted',
-            'requestChannel',
-            'responseChannel',
-            'amountCurrency',
-            'createdBy.identite',
-            'completedBy.identite',
-            'files',
-            'activeTreatment.satisfactionMeasuredBy.identite',
-            'activeTreatment.responsibleStaff.identite',
-            'activeTreatment.assignedToStaffBy.identite',
-            'activeTreatment.responsibleUnit.parent',
-            'revivals',
-            'activeTreatment',
-            'activeTreatment.validatedBy.identite',
-            'activeTreatment.transferredToTargetInstitutionBy.identite',
-            'activeTreatment.transferredToUnitBy.identite',
-            'treatmentBoard.members.identite'
-        ]);
+        $claims = Claim::with($this->relation());
 
         if ($request->has('institution_id')) {
 
@@ -1237,9 +1214,35 @@ trait FilterClaims
 
     protected function getClaimsInfoWithClaimObjectForInternalControl($id)
     {
-        return Claim::find($id)->load("claimObject.claimCategory");
+        return Claim::find($id)->load($this->relation());
     }
 
 
+    public function relation(){
+        return [
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.responsibleUnit.parent',
+            'revivals',
+            'activeTreatment',
+            'activeTreatment.validatedBy.identite',
+            'activeTreatment.transferredToTargetInstitutionBy.identite',
+            'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard.members.identite'
+        ];
+    }
 
 }
