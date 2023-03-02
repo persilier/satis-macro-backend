@@ -157,7 +157,7 @@ class Claim extends Model
     {
         $duration_done = null;
         $ecart = null;
-        if ($this->time_unit && $this->created_at) {
+        if ($this->time_limit && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
@@ -205,7 +205,7 @@ class Claim extends Model
     {
         $duration_done = null;
         $ecart = null;
-        if ($this->time_validation && $this->created_at) {
+        if ($this->time_limit && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->validated_at !== null) {
@@ -229,7 +229,7 @@ class Claim extends Model
     {
         $duration_done = null;
         $ecart = null;
-        if ($this->time_measure_satisfaction && $this->created_at) {
+        if ($this->time_limit && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
