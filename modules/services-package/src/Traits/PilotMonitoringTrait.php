@@ -88,7 +88,7 @@ trait PilotMonitoringTrait
        $totalTime = 0;
        foreach ($claimAssigned as $value){
           $i++;
-          $totalTime +=  $value->timeUnit['duration_done'];
+          $totalTime +=  $value->timeLimitUnit['duration_done'];
        }
        
        $averageTime = $totalTime / $i;
@@ -108,7 +108,7 @@ trait PilotMonitoringTrait
        $totalTime = 0;
        foreach ($claimValidated as $value){
           $i++;
-          $totalTime +=  $value->timeValidation['duration_done'];
+          $totalTime +=  $value->timeLimitValidation['duration_done'];
        }
        
        $averageTime = $totalTime / $i;
@@ -128,7 +128,7 @@ trait PilotMonitoringTrait
        $totalTime = 0;
        foreach ($claimSatisfied as $value){
           $i++;
-          $totalTime +=  $value->timeMeasureSatisfaction['duration_done'];
+          $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
        }
        
        $averageTime = $totalTime / $i;
