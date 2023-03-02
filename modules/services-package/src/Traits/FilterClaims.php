@@ -1146,7 +1146,30 @@ trait FilterClaims
     protected function getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
     {
 
-        $claims = Claim::query();
+        $claims = Claim::with([
+            'claimObject.claimCategory',
+            'claimer',
+            'relationship',
+            'accountTargeted',
+            'institutionTargeted',
+            'unitTargeted',
+            'requestChannel',
+            'responseChannel',
+            'amountCurrency',
+            'createdBy.identite',
+            'completedBy.identite',
+            'files',
+            'activeTreatment.satisfactionMeasuredBy.identite',
+            'activeTreatment.responsibleStaff.identite',
+            'activeTreatment.assignedToStaffBy.identite',
+            'activeTreatment.responsibleUnit.parent',
+            'revivals',
+            'activeTreatment',
+            'activeTreatment.validatedBy.identite',
+            'activeTreatment.transferredToTargetInstitutionBy.identite',
+            'activeTreatment.transferredToUnitBy.identite',
+            'treatmentBoard.members.identite'
+        ]);
 
         if ($request->has('institution_id')) {
 
@@ -1155,11 +1178,7 @@ trait FilterClaims
         }
 
         $claims = $claims
-            ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
-            ->leftJoin('identites', 'identites.id', '=', 'claims.claimer_id')
-            ->whereIn('claim_object_id', $claim_object_ids)
-        ->select("claims.*","claim_objects.name as claim_objects_name",
-            "identites.firstname", "identites.lastname","identites.raison_sociale");
+            ->whereIn('claim_object_id', $claim_object_ids);
 
         if ($request->status){
             $claims = $claims->where("status",$request->status);
