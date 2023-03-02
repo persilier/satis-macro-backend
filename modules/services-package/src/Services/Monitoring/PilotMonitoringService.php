@@ -23,13 +23,18 @@ class PilotMonitoringService
         $key = \request()->query('key');
 
         
-       // $claimSatisfied = $this->getClaimSatisfied($request,$unitId)->count();
+         $totalClaimAssigned = $this->getClaimAssigned($request)->count();
+         $totalClaimValidated = $this->getClaimValidated($request)->count();
+         $totalClaimSatisfied = $this->getClaimSatisfied($request)->count();
        
-         $allClaimAssignedTo = $this->getPilotClaimAssignedTo($request, $paginationSize, $type, $key);
+         $allClaim = $this->getPilotClaimAssignedTo($request, $paginationSize, $type, $key);
 
         
         return [
-            'allClaimAssignedTo' => $allClaimAssignedTo
+            'totalClaimAssigned' => $totalClaimAssigned,
+            'totalClaimValidated' => $totalClaimValidated,
+            'totalClaimSatisfied' => $totalClaimSatisfied,
+            'allClaimAssignedTo' => $allClaim
         ];
    
     }

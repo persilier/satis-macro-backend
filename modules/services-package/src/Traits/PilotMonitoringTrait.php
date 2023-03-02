@@ -16,6 +16,53 @@ use Satis2020\ServicePackage\Models\Claim;
 trait PilotMonitoringTrait
 {
 
+    protected function getClaimAssigned($request)
+    {
+        $claims = Claim::query();
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+               ->whereNotNull('transferred_to_unit_by');
+        if ($request->pilot_id != Constants::ALL_PILOT) {
+            $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
+        }
+       
+        return $claims;
+    }
+
+    protected function getClaimValidated($request)
+    {
+        $claims = Claim::query();
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+               ->whereNotNull('treatments.validated_at');
+        if ($request->pilot_id != Constants::ALL_PILOT) {
+            $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
+        }
+       
+        return $claims;
+    }
+
+    protected function getClaimSatisfied($request)
+    {
+        $claims = Claim::query();
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->whereNotNull('treatments.satisfaction_measured_at');
+        if ($request->pilot_id != Constants::ALL_PILOT) {
+            $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
+        }
+       
+        return $claims;
+    }
+
+
+
   
     /**
      * @param $request
@@ -28,7 +75,7 @@ trait PilotMonitoringTrait
     protected function getPilotClaimAssignedTo($request,$paginationSize = 10, $type = null, $key = null)
     {
 
-        $claims = Claim::query();
+        $claims = Claim::query()->with($this->getRelations());
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
