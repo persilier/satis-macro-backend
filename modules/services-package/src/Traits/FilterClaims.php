@@ -1156,8 +1156,10 @@ trait FilterClaims
 
         $claims = $claims
             ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+            ->leftJoin('identites', 'identites.id', '=', 'claims.claimer_id')
             ->whereIn('claim_object_id', $claim_object_ids)
-        ->select("claims.*");
+        ->select("claims.*","claim_objects.name as claim_objects_name",
+            "identites.firstname", "identites.lastname","identites.raison_sociale");
         return $claims;
 
     }

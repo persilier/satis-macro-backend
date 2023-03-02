@@ -52,7 +52,6 @@
     "satis2020/faq": "^1.0",
     "satis2020/global-report": "^1.0",
     "satis2020/institution": "^1.0",
-    "satis2020/internal-control": "^1.0",
     "satis2020/message-api": "^1.0",
     "satis2020/metadata-package": "^1.0",
     "satis2020/mobile-api": "^1.0",
@@ -827,8 +826,7 @@
       "options": {
         "symlink": true
       }
-    }
-  ,
+    },
     {
       "type": "path",
       "url": "modules/internal-control/",
