@@ -76,6 +76,66 @@ trait PilotMonitoringTrait
         return $claims;
     }
 
+     /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getAverageTimeOfAssignation($request)
+    {
+       $claimAssigned = $this->getClaimAssigned($request)->get();
+
+       $i = 0;
+       $totalTime = 0;
+       foreach ($claimAssigned as $value){
+          $i++;
+          $totalTime +=  $value->timeUnit['duration_done'];
+       }
+       
+       $averageTime = $totalTime / $i;
+
+       return $averageTime;
+    }
+
+     /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getAverageTimeOfValidation($request)
+    {
+       $claimValidated = $this->getClaimValidated($request)->get();
+
+       $i = 0;
+       $totalTime = 0;
+       foreach ($claimValidated as $value){
+          $i++;
+          $totalTime +=  $value->timeValidation['duration_done'];
+       }
+       
+       $averageTime = $totalTime / $i;
+
+       return $averageTime;
+    }
+
+     /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getAverageTimeOfSatisfaction($request)
+    {
+       $claimSatisfied = $this->getClaimSatisfied($request)->get();
+
+       $i = 0;
+       $totalTime = 0;
+       foreach ($claimSatisfied as $value){
+          $i++;
+          $totalTime +=  $value->timeMeasureSatisfaction['duration_done'];
+       }
+       
+       $averageTime = $totalTime / $i;
+
+       return $averageTime;
+    }
+
 
 
   

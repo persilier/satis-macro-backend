@@ -145,13 +145,37 @@ class Claim extends Model
         'dateExpire',
         'is_rejected',
         'is_duplicate',
-       //'timeUnit',
+        'timeUnit',
         //'timeStaff',
         'timeLimitTreatment',
-       // 'timeValidation',
-       // 'timeMeasureSatisfaction' 
+        'timeValidation',
+        'timeMeasureSatisfaction' 
     ];
 
+
+    public function gettimeUnitAttribute()
+    {
+        $duration_done = null;
+        $ecart = null;
+        if ($this->time_unit && $this->created_at) {
+
+            $claimInfo = $this->activeTreatment;
+            if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
+               
+                $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->assigned_to_staff_at);
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+  
+            }
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_unit,
+            "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
+           
+        ];
+    }
 
     public function gettimeLimitTreatmentAttribute()
     {
@@ -171,6 +195,54 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
+            "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
+           
+        ];
+    }
+
+    public function gettimeValidationAttribute()
+    {
+        $duration_done = null;
+        $ecart = null;
+        if ($this->time_validation && $this->created_at) {
+
+            $claimInfo = $this->activeTreatment;
+            if ($claimInfo && $claimInfo->validated_at !== null) {
+               
+                $duration_done = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
+                $ecart = $this->conversion($this->time_validation) -  $duration_done;
+  
+            }
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_validation,
+            "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
+           
+        ];
+    }
+
+    public function gettimeMeasureSatisfactionAttribute()
+    {
+        $duration_done = null;
+        $ecart = null;
+        if ($this->time_measure_satisfaction && $this->created_at) {
+
+            $claimInfo = $this->activeTreatment;
+            if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
+               
+                $duration_done = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
+                $ecart = $this->conversion($this->time_measure_satisfaction) -  $duration_done;
+  
+            }
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_measure_satisfaction,
             "duration_done" => $duration_done,
             "ecart" =>  $ecart,
            

@@ -27,6 +27,10 @@ class PilotMonitoringService
          $totalClaimValidated = $this->getClaimValidated($request)->count();
          $totalClaimSatisfied = $this->getClaimSatisfied($request)->count();
          $totalClaimRejected = $this->getClaimRejected($request)->count();
+        $getAverageTimeOfAssignation = $this->getAverageTimeOfAssignation($request);
+        $getAverageTimeOfValidation = $this->getAverageTimeOfValidation($request);
+        $getAverageTimeOfSatisfaction = $this->getAverageTimeOfSatisfaction($request);
+
        
          $allClaim = $this->getPilotClaimAssignedTo($request, $paginationSize, $type, $key);
 
@@ -36,6 +40,9 @@ class PilotMonitoringService
             'totalClaimValidated' => $totalClaimValidated,
             'totalClaimSatisfied' => $totalClaimSatisfied,
             'totalClaimRejected'  =>  $totalClaimRejected,
+            'getAverageTimeOfAssignation'  =>  $getAverageTimeOfAssignation,
+            'getAverageTimeOfValidation'  =>  $getAverageTimeOfValidation,
+            'getAverageTimeOfSatisfaction'  =>  $getAverageTimeOfSatisfaction,
             'allClaimAssignedTo' => $allClaim
         ];
    
