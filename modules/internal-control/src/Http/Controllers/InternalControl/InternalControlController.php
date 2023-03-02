@@ -22,7 +22,7 @@ class InternalControlController extends ApiController
         $this->middleware('permission:internal-control-claim-object-index')->only(["indexClaimObject"]);
         $this->middleware('permission:internal-control-store')->only(["store"]);
 
-      //  $this->middleware('permission:internal-control-claim')->only(["indexClaimsInternalControl"]);
+        $this->middleware('permission:internal-control-claim')->only(["indexClaimsInternalControl"]);
         $this->middleware('permission:internal-control-claim-detail')->only(["show"]);
     }
 
