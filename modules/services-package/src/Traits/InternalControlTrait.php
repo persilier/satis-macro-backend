@@ -10,7 +10,7 @@ use Satis2020\ServicePackage\Models\ConfigurationActivePilot;
 
 trait InternalControlTrait
 {
-    use DataUserNature, FilterClaims;
+    use DataUserNature, FilterClaims, ClaimSatisfactionMeasured;
 
     protected function storeConfiguration($state)
     {
@@ -45,7 +45,6 @@ trait InternalControlTrait
         $claimSatisfactionMeasured = $this->getSatisfactionClaimsTreatedWithClaimObjectForInternalControl($request,$claim_object_ids,true)->count();
         $claimNotSatisfactionMeasured = $this->getSatisfactionClaimsTreatedWithClaimObjectForInternalControl($request,$claim_object_ids,false)->count();
         $claimReceivedList = $this->getClaimsReceivedListCustomWithClaimObjectForInternalControl($request,$claim_object_ids)->paginate($paginate);
-
         $response["claimReceived"] = $claimReceived;
         $response["claimTreated"] = $claimTreated;
         $response["claimNotTreated"] = $claimNotTreated;
