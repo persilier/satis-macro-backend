@@ -82,16 +82,24 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfAssignation($request)
     {
-       $claimAssigned = $this->getClaimAssigned($request)->get();
+       $claimAssigned = sizeof($this->getClaimAssigned($request)->get()) != 0 ? $this->getClaimAssigned($request):0;
 
+    
        $i = 0;
        $totalTime = 0;
-       foreach ($claimAssigned as $value){
-          $i++;
-          $totalTime +=  $value->timeLimitUnit['duration_done'];
+       if ($claimAssigned == 0) {
+        $averageTime = 0;
+       } else {
+        
+        foreach ($claimAssigned as $value){
+        
+           $i++;
+           $totalTime +=  $value->timeLimitUnit['duration_done'];
+        }
+        
+        $averageTime = $totalTime / $i;
        }
        
-       $averageTime = $totalTime / $i;
 
        return $averageTime;
     }
@@ -102,16 +110,23 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfValidation($request)
     {
-       $claimValidated = $this->getClaimValidated($request)->get();
+       $claimValidated = sizeof($this->getClaimValidated($request)->get()) != 0 ? $this->getClaimValidated($request):0;
 
        $i = 0;
        $totalTime = 0;
-       foreach ($claimValidated as $value){
-          $i++;
-          $totalTime +=  $value->timeLimitValidation['duration_done'];
+
+       if ($claimValidated == 0) {
+        $averageTime = 0;
+       } else {
+
+        foreach ($claimValidated as $value){
+           $i++;
+           $totalTime +=  $value->timeLimitValidation['duration_done'];
+        }
+        
+        $averageTime = $totalTime / $i;
        }
        
-       $averageTime = $totalTime / $i;
 
        return $averageTime;
     }
@@ -122,16 +137,23 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfSatisfaction($request)
     {
-       $claimSatisfied = $this->getClaimSatisfied($request)->get();
+       $claimSatisfied = sizeof($this->getClaimSatisfied($request)->get()) != 0 ? $this->getClaimSatisfied($request):0;
+
 
        $i = 0;
        $totalTime = 0;
-       foreach ($claimSatisfied as $value){
-          $i++;
-          $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
+       if ($claimSatisfied == 0) {
+        $averageTime = 0;
+       } else {
+       
+        foreach ($claimSatisfied as $value){
+           $i++;
+           $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
+        }
+        
+        $averageTime = $totalTime / $i;
        }
        
-       $averageTime = $totalTime / $i;
 
        return $averageTime;
     }
