@@ -17,7 +17,40 @@ trait PilotUnitTrait
 {
 
 
+    protected function getClaimAssigned($request)
+    {
+        $claims = Claim::query()->with($this->getRelations())
+        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+       ->whereNotNull('treatments.transferred_to_unit_at');
 
+        if ($request->has('institution_id')) {
+        $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if ($request->unit_id != Constants::ALL_UNIT) {
+        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        }
+       
+        return $claims;
+    }
+
+    protected function getClaimTreated($request)
+    {
+        $claims = Claim::query()->with($this->getRelations())
+        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+       ->whereNotNull('treatments.transferred_to_unit_at')
+       ->whereNotNull('treatments.solved_at');
+
+        if ($request->has('institution_id')) {
+        $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if ($request->unit_id != Constants::ALL_UNIT) {
+        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        }
+       
+        return $claims;
+    }
 
   
     /**

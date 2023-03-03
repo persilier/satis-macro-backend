@@ -24,26 +24,24 @@ class PilotUnitService
         $key = \request()->query('key');
 
         
-       /*  $totalClaimAssigned = $this->getClaimAssigned($request)->count();
-        $totalClaimValidated = $this->getClaimValidated($request)->count();
-        $totalClaimSatisfied = $this->getClaimSatisfied($request)->count();
-        $totalClaimRejected = $this->getClaimRejected($request)->count();
-        $getAverageTimeOfAssignation = $this->getAverageTimeOfAssignation($request);
+        $totalClaimAssigned = $this->getClaimAssigned($request)->count();
+        $totalClaimTreated= $this->getClaimTreated($request)->count();
+       
+       /* $getAverageTimeOfAssignation = $this->getAverageTimeOfAssignation($request);
         $getAverageTimeOfValidation = $this->getAverageTimeOfValidation($request);
-        $getAverageTimeOfSatisfaction = $this->getAverageTimeOfSatisfaction($request);
- */
+        $getAverageTimeOfSatisfaction = $this->getAverageTimeOfSatisfaction($request);*/
+ 
        
          $allClaim = $this->getPilotClaimAssignedToUnit($request, $paginationSize, $type, $key);
 
         
         return [
-           /*  'totalClaimAssigned' => $totalClaimAssigned,
-            'totalClaimValidated' => $totalClaimValidated,
-            'totalClaimSatisfied' => $totalClaimSatisfied,
-            'totalClaimRejected'  =>  $totalClaimRejected,
-            'getAverageTimeOfAssignation'  =>  $getAverageTimeOfAssignation,
+            'totalClaimAssigned' => $totalClaimAssigned,
+            'totalClaimTreated' => $totalClaimTreated,
+           
+           /*  'getAverageTimeOfAssignation'  =>  $getAverageTimeOfAssignation,
             'getAverageTimeOfValidation'  =>  $getAverageTimeOfValidation,
-            'getAverageTimeOfSatisfaction'  =>  $getAverageTimeOfSatisfaction, */
+            'getAverageTimeOfSatisfaction'  =>  $getAverageTimeOfSatisfaction, */ 
             'allClaimAssignedTo' => $allClaim
         ];
    
