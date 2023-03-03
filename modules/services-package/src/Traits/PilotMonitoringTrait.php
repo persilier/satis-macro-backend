@@ -82,15 +82,15 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfAssignation($request)
     {
-       $claimAssigned = sizeof($this->getClaimAssigned($request)->get()) != 0 ? $this->getClaimAssigned($request)->get():0;
+       $claimAssigned = $this->getClaimAssigned($request);
 
     
        $i = 0;
        $totalTime = 0;
-       if ($claimAssigned == 0) {
+       if ($claimAssigned->count() == 0) {
         $averageTime = 0;
        } else {
-        
+        $claimAssigned = $claimAssigned->get();
         foreach ($claimAssigned as $value){
         
            $i++;
@@ -110,15 +110,15 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfValidation($request)
     {
-       $claimValidated = sizeof($this->getClaimValidated($request)->get()) != 0 ? $this->getClaimValidated($request)->get():0;
+       $claimValidated = $this->getClaimValidated($request);
 
        $i = 0;
        $totalTime = 0;
 
-       if ($claimValidated == 0) {
+       if ($claimValidated->count() == 0) {
         $averageTime = 0;
        } else {
-
+        $claimValidated = $claimValidated->get();
         foreach ($claimValidated as $value){
            $i++;
            $totalTime +=  $value->timeLimitValidation['duration_done'];
@@ -137,15 +137,16 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfSatisfaction($request)
     {
-       $claimSatisfied = sizeof($this->getClaimSatisfied($request)->get()) != 0 ? $this->getClaimSatisfied($request)->get():0;
+       $claimSatisfied =  $this->getClaimSatisfied($request);
 
 
        $i = 0;
        $totalTime = 0;
-       if ($claimSatisfied == 0) {
+       if ($claimSatisfied->count() == 0) {
         $averageTime = 0;
        } else {
-       
+
+        $claimSatisfied =$claimSatisfied->get();
         foreach ($claimSatisfied as $value){
            $i++;
            $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
