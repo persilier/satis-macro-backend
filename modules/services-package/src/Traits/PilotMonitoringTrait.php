@@ -82,7 +82,7 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfAssignation($request)
     {
-       $claimAssigned = sizeof($this->getClaimAssigned($request)->get()) != 0 ? $this->getClaimAssigned($request):0;
+       $claimAssigned = sizeof($this->getClaimAssigned($request)->get()) != 0 ? $this->getClaimAssigned($request)->get():0;
 
     
        $i = 0;
@@ -110,7 +110,7 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfValidation($request)
     {
-       $claimValidated = sizeof($this->getClaimValidated($request)->get()) != 0 ? $this->getClaimValidated($request):0;
+       $claimValidated = sizeof($this->getClaimValidated($request)->get()) != 0 ? $this->getClaimValidated($request)->get():0;
 
        $i = 0;
        $totalTime = 0;
@@ -137,7 +137,7 @@ trait PilotMonitoringTrait
      */
     protected function getAverageTimeOfSatisfaction($request)
     {
-       $claimSatisfied = sizeof($this->getClaimSatisfied($request)->get()) != 0 ? $this->getClaimSatisfied($request):0;
+       $claimSatisfied = sizeof($this->getClaimSatisfied($request)->get()) != 0 ? $this->getClaimSatisfied($request)->get():0;
 
 
        $i = 0;
