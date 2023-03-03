@@ -11,12 +11,13 @@ use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Services\Monitoring\PilotUnitService;
 use Satis2020\ServicePackage\Services\Monitoring\PilotMonitoringService;
 use Satis2020\ServicePackage\Requests\Monitoring\MyStaffMonitoringRequest;
 use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
 
 
-class PilotMonitoringController extends ApiController
+class PilotUnitController extends ApiController
 {
     use ClaimAwaitingTreatment, UnitTrait, ActivePilot, DataUserNature;
     public function __construct()
@@ -28,15 +29,12 @@ class PilotMonitoringController extends ApiController
 
     }
 
-    public function index(Request $request,PilotMonitoringService $service)
+    public function index(Request $request,PilotUnitService $service)
     {
 
-        if (!$this->staff()->is_active_pilot) {
-            abort(Response::HTTP_FORBIDDEN, "User is not allowed");
-        }
-
+        
         $rules = [
-            'pilot_id' => 'required',
+            'unit_id' => 'required',
         ];
 
         $this->validate($request, $rules);
@@ -45,24 +43,17 @@ class PilotMonitoringController extends ApiController
             "institution_id"=>$this->institution()->id
         ]);
         
-        $pilotMonitoring = $service->MyPilotMonitoring($request);
-        return response()->json($pilotMonitoring, 200);
+        $pilotUnitMonitoring = $service->PilotUnitMonitoring($request);
+        return response()->json($pilotUnitMonitoring, 200);
 
+        
     }
 
     public function show()
     {
 
-        if (!$this->staff()->is_active_pilot) {
-            abort(Response::HTTP_FORBIDDEN, "User is not allowed");
-        }
-
-        $pilote = User::with('identite.staff','roles')->whereHas('roles',function ($q){
-            $q->where('name','pilot');
-        })->get();
-
         return response()->json([
-            'pilote' => $pilote
+            'unit' => Unit::all()
         ], 200);
     }
 }

@@ -30,6 +30,7 @@ class Constants
     const REGULATORY_STATE_REPORTING = 'regulatory-state-reporting';
     const ALL_STAFF = "allStaff";
     const ALL_PILOT = "allPilot";
+    const ALL_UNIT = "allUnit";
 
 
 

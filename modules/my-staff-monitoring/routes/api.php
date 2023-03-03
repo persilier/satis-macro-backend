@@ -19,5 +19,7 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/unit-staff', 'MyStaffMonitoringController@show')->name('unit-staff.show');
     Route::post('/monitoring-pilote', 'PilotMonitoringController@index')->name('monitoring-by.pilote-index');
     Route::get('/monitoring-pilote', 'PilotMonitoringController@show')->name('monitoring-by.pilote-show');
+    Route::post('/pilot-unit', 'PilotUnitController@index')->name('unit.pilote-index');
+    Route::get('/pilot-unit', 'PilotUnitController@show')->name('unit.pilote-show');
 });
 
