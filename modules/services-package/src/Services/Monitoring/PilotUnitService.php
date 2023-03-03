@@ -26,6 +26,7 @@ class PilotUnitService
         
         $totalClaimAssigned = $this->getClaimAssigned($request)->count();
         $totalClaimTreated= $this->getClaimTreated($request)->count();
+        $totalClaimNotTreated= $this->getClaimNotTreated($request)->count();
        
        /* $getAverageTimeOfAssignation = $this->getAverageTimeOfAssignation($request);
         $getAverageTimeOfValidation = $this->getAverageTimeOfValidation($request);
@@ -38,6 +39,7 @@ class PilotUnitService
         return [
             'totalClaimAssigned' => $totalClaimAssigned,
             'totalClaimTreated' => $totalClaimTreated,
+            'totalClaimNotTreated' => $totalClaimNotTreated,
            
            /*  'getAverageTimeOfAssignation'  =>  $getAverageTimeOfAssignation,
             'getAverageTimeOfValidation'  =>  $getAverageTimeOfValidation,
