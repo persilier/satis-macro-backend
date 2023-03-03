@@ -17,7 +17,7 @@ trait PilotUnitTrait
 {
 
 
-    protected function getClaimAssigned($request)
+    protected function getClaimAssignedToUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
@@ -34,7 +34,7 @@ trait PilotUnitTrait
         return $claims;
     }
 
-    protected function getClaimTreated($request)
+    protected function getClaimTreatedByUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
@@ -51,7 +51,7 @@ trait PilotUnitTrait
        
         return $claims;
     }
-    protected function getClaimNotTreated($request)
+    protected function getClaimNotTreatedByUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
@@ -68,7 +68,51 @@ trait PilotUnitTrait
        
         return $claims;
     }
+    protected function getClaimSatisfiedByUnit($request)
+    {
+        $claims = Claim::query()->with($this->getRelations())
+        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+       ->where('treatments.is_claimer_satisfied',true);
+      
 
+        if ($request->has('institution_id')) {
+        $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if ($request->unit_id != Constants::ALL_UNIT) {
+        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        }
+       
+        return $claims;
+    }
+
+
+       /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getAverageTimeOfAssignation($request)
+    {
+       $claimAssigned = $this->getClaimAssignedToUnit($request);
+    
+       $i = 0;
+       $totalTime = 0;
+       if ($claimAssigned->count() == 0) {
+        $averageTime = 0;
+       } else {
+        $claimAssigned = $claimAssigned->get();
+        foreach ($claimAssigned as $value){
+        
+           $i++;
+           $totalTime +=  $value->timeLimitUnit['duration_done'];
+        }
+        
+        $averageTime = $totalTime / $i;
+       }
+       
+
+       return $averageTime;
+    }
   
     /**
      * @param $request
