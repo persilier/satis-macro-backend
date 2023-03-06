@@ -21,5 +21,7 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/monitoring-pilote', 'PilotMonitoringController@show')->name('monitoring-by.pilote-show');
     Route::post('/pilot-unit', 'PilotUnitController@index')->name('unit.pilote-index');
     Route::get('/pilot-unit', 'PilotUnitController@show')->name('unit.pilote-show');
+    Route::get('/collector-pilot', 'CollecteurMonitoringController@show')->name('collector.pilot-show');
+    Route::post('/collector-pilot', 'CollecteurMonitoringController@index')->name('collector.pilot-index');
 });
 

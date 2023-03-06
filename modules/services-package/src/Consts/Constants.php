@@ -31,6 +31,7 @@ class Constants
     const ALL_STAFF = "allStaff";
     const ALL_PILOT = "allPilot";
     const ALL_UNIT = "allUnit";
+    const ALL_COLLECTOR = "allCollector";
 
 
 
