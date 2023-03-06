@@ -217,9 +217,8 @@ class UpdatePermissionsDescriptionSeeder extends Seeder
             'delete-webhooks-config' => __("permissions.admin.delete_webhooks_config",[],app()->getLocale()),
             'show-configuration-quota-delay' => __("permissions.admin.show_configuration_quota_delay",[],app()->getLocale()),
             'update-configuration-quota-delay' => __("permissions.admin.update_configuration_quota_delay",[],app()->getLocale()),
-
-            
-
+            'update-satisfaction-data-config' => __("permissions.admin.update_satisfaction_data_config", [], app()->getLocale()),
+            'access-satisfaction-data-config' => __("permissions.admin.access_satisfaction_data_config", [], app()->getLocale()),
         ];
 
         foreach ($admin as $name => $description) {

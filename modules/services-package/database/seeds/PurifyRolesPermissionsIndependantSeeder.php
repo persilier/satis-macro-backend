@@ -94,7 +94,9 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'configure-pilot-collector-discussion-attribute',
                     'show-configuration-quota-delay',
                     'update-configuration-quota-delay',
-                    'activity-log'
+                    'activity-log',
+                    'update-satisfaction-data-config',
+                    'access-satisfaction-data-config'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -131,6 +133,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                     'affect-claim-for-satisfaction', 'auto-affect-claim-for-satisfaction-collector',
                     'staff-list-satisfaction-measured-my-claim',
+                    'access-satisfaction-data-config'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -146,6 +149,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'staff-list-satisfaction-measured-my-claim',
                     // 'contribute-discussion', 'list-my-discussions',
                     // 'list-discussion-contributors',
+                    
+                    'access-satisfaction-data-config'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -158,6 +163,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
+                    'access-satisfaction-data-config'
 
                 ],
                 'satisfaction-mesure' => [

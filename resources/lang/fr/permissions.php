@@ -202,8 +202,8 @@ return [
         'delete_webhooks_config' => 'Supprimer la configuration des webhooks',
         'show_configuration_quota_delay' => 'Accéder à la configuration du quota des délai de traitement pour chaque objet de réclamation',
         'update_configuration_quota_delay' => 'Modifier la configuration du quota des délai',
-
-
+        'update_satisfaction_data_config' => 'Configuration des données de satisfaction ',
+        'access_satisfaction_data_config' => 'Voir les données de satisfaction'
     ],
 
     //pilot and collector
