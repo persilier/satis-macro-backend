@@ -87,6 +87,23 @@ trait CollectorTrait
        
         return $claims;
     }
+    protected function totalClaimSaved($request)
+    {
+        
+        $claims = Claim::query()->with($this->getRelations())
+        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        ->whereNotNull('claims.created_at');
+
+        if ($request->has('institution_id')) {
+        $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if ($request->collector_id != Constants::ALL_COLLECTOR) {
+        $claims->where('claims.created_by', $request->collector_id);
+        }
+       
+        return $claims;
+    }
 
 
        /**

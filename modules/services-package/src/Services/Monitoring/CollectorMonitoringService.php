@@ -26,6 +26,7 @@ class CollectorMonitoringService
          $claimSatisfied = $this->getClaimSatisfiedByCollector($request)->count();
          $claimUnSatisfied = $this->getClaimUnSatisfiedByCollector($request)->count();
          $claimWithMeasureOfSAtisfaction= $this->claimWithMeasureOfSAtisfaction($request)->count();
+         $totalClaimSaved = $this->totalClaimSaved($request)->count();
         // $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
         // $claimTreated = $this->getClaimTreated($request,$unitId)->count();
         // $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
@@ -39,6 +40,7 @@ class CollectorMonitoringService
             "claimSatisfied"=>  $claimSatisfied,
             "claimUnSatisfied"=>  $claimUnSatisfied,
             "claimWithMeasureOfSAtisfaction"=>  $claimWithMeasureOfSAtisfaction,
+            "totalClaimSaved"=>  $totalClaimSaved,
             "claimSaved"=> $claimSaved,
         ];
     }
