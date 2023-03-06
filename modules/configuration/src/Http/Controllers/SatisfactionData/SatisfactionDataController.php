@@ -40,7 +40,7 @@ class SatisfactionDataController extends ApiController
     {
         $rules = [
             'actived' => 'required|integer',
-            'api_key' => 'required',
+            'api_key' => 'required_if:actived,1',
         ];
         $this->validate($request, $rules);
 
