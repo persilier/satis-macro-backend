@@ -23,7 +23,9 @@ class CollectorMonitoringService
         $key = \request()->query('key');
 
         
-        // $claimSatisfied = $this->getClaimSatisfied($request,$unitId)->count();
+         $claimSatisfied = $this->getClaimSatisfiedByCollector($request)->count();
+         $claimUnSatisfied = $this->getClaimUnSatisfiedByCollector($request)->count();
+         $claimWithMeasureOfSAtisfaction= $this->claimWithMeasureOfSAtisfaction($request)->count();
         // $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
         // $claimTreated = $this->getClaimTreated($request,$unitId)->count();
         // $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
@@ -34,6 +36,9 @@ class CollectorMonitoringService
         $claimSaved = $this->getCollectorClaimSaved($request, $paginationSize, $type, $key);
         return [
             
+            "claimSatisfied"=>  $claimSatisfied,
+            "claimUnSatisfied"=>  $claimUnSatisfied,
+            "claimWithMeasureOfSAtisfaction"=>  $claimWithMeasureOfSAtisfaction,
             "claimSaved"=> $claimSaved,
         ];
     }

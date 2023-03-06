@@ -34,53 +34,55 @@ trait CollectorTrait
         return $claims;
     }
 
-    protected function getClaimTreatedByUnit($request)
+   
+    protected function getClaimSatisfiedByCollector($request)
     {
+        
+
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-       ->whereNotNull('treatments.transferred_to_unit_at')
-       ->whereNotNull('treatments.solved_at');
+        ->where('treatments.is_claimer_satisfied',true);
 
         if ($request->has('institution_id')) {
         $claims->where('institution_targeted_id', $request->institution_id);
         }
 
-        if ($request->unit_id != Constants::ALL_UNIT) {
-        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        if ($request->collector_id != Constants::ALL_COLLECTOR) {
+        $claims->where('treatments.satisfaction_measured_by', $request->collector_id);
         }
        
         return $claims;
     }
-    protected function getClaimNotTreatedByUnit($request)
+    protected function getClaimUnSatisfiedByCollector($request)
     {
+        
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-       ->whereNotNull('treatments.transferred_to_unit_at')
-       ->whereNull('treatments.solved_at');
+        ->where('treatments.is_claimer_satisfied',false);
 
         if ($request->has('institution_id')) {
         $claims->where('institution_targeted_id', $request->institution_id);
         }
 
-        if ($request->unit_id != Constants::ALL_UNIT) {
-        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        if ($request->collector_id != Constants::ALL_COLLECTOR) {
+        $claims->where('treatments.satisfaction_measured_by', $request->collector_id);
         }
        
         return $claims;
     }
-    protected function getClaimSatisfiedByUnit($request)
+    protected function claimWithMeasureOfSAtisfaction($request)
     {
+        
         $claims = Claim::query()->with($this->getRelations())
         ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-       ->where('treatments.is_claimer_satisfied',true);
-      
+        ->whereNotNull('treatments.satisfaction_measured_at');
 
         if ($request->has('institution_id')) {
         $claims->where('institution_targeted_id', $request->institution_id);
         }
 
-        if ($request->unit_id != Constants::ALL_UNIT) {
-        $claims->where('treatments.responsible_unit_id', $request->unit_id);
+        if ($request->collector_id != Constants::ALL_COLLECTOR) {
+        $claims->where('treatments.satisfaction_measured_by', $request->collector_id);
         }
        
         return $claims;
