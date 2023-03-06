@@ -104,6 +104,23 @@ trait CollectorTrait
        
         return $claims;
     }
+    protected function claimReceivedForMeasure($request)
+    {
+        
+        $claims = Claim::query()->with($this->getRelations())
+        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        ->whereNotNull('treatments.validated_at');
+
+        if ($request->has('institution_id')) {
+        $claims->where('institution_targeted_id', $request->institution_id);
+        }
+
+        if ($request->collector_id != Constants::ALL_COLLECTOR) {
+        $claims->where('treatments.validated_by', $request->collector_id);
+        }
+       
+        return $claims;
+    }
 
 
        /**
