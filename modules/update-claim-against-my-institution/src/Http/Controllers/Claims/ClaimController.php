@@ -25,7 +25,7 @@ class ClaimController extends ApiController
         $this->middleware('auth:api');
         $this->middleware('permission:list-claim-incomplete-against-my-institution')->only(['index']);
         $this->middleware('permission:show-claim-incomplete-against-my-institution')->only(['show']);
-      //  $this->middleware('permission:update-claim-incomplete-against-my-institution')->only(['update']);
+        $this->middleware('permission:update-claim-incomplete-against-my-institution')->only(['update']);
     }
 
     /**
