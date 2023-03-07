@@ -96,7 +96,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-configuration-quota-delay',
                     'activity-log',
                     'update-satisfaction-data-config',
-                    'access-satisfaction-data-config', 'list-auth-config','update-auth-config'
+                    'access-satisfaction-data-config', 'list-auth-config','update-auth-config',
+                    'internal-control-index','internal-control-claim-object-index','internal-control-store'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -168,7 +169,15 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                 ],
                 'satisfaction-mesure' => [
                     'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
-                ]
+                ],
+                'internal-controller'=> [
+                    "internal-control-claim", 'internal-control-index'
+                    ,'internal-control-claim-detail','internal-control-claim-object-index',
+                ],
+                'conformer'=> [
+                ],
+                'staff-service-quality'=> [
+                ],
             ];
 
             foreach ($independantRoles as $roleName => $permissions) {
@@ -204,7 +213,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                 "Collecte" => "collector-filial-pro",
                 "Traitement" =>  "staff",
                 "Pilotage du processus" => "pilot",
-                "Administration" =>  "admin-pro"
+                "Administration" =>  "admin-pro",
+                "Contrôle interne" =>  "internal-controller",
             ];
 
             $permissionsAssociatedToModules = collect([]);
