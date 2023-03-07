@@ -96,7 +96,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'update-configuration-quota-delay',
                     'activity-log',
                     'update-satisfaction-data-config',
-                    'access-satisfaction-data-config'
+                    'access-satisfaction-data-config', 'list-auth-config','update-auth-config'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
