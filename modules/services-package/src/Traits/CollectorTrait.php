@@ -16,24 +16,6 @@ use Satis2020\ServicePackage\Models\Claim;
 trait CollectorTrait
 {
 
-
-    protected function getClaimAssignedToUnit($request)
-    {
-        $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-       ->whereNotNull('treatments.transferred_to_unit_at');
-
-        if ($request->has('institution_id')) {
-        $claims->where('institution_targeted_id', $request->institution_id);
-        }
-
-        if ($request->unit_id != Constants::ALL_UNIT) {
-        $claims->where('treatments.responsible_unit_id', $request->unit_id);
-        }
-       
-        return $claims;
-    }
-
    
     protected function getClaimSatisfiedByCollector($request)
     {
@@ -123,24 +105,21 @@ trait CollectorTrait
     }
 
 
-       /**
-     * @param $request
-     * @return Builder
-     */
-    protected function getAverageTimeOfAssignation($request)
+    protected function getAverageTimeOfSatisfaction($request)
     {
-       $claimAssigned = $this->getClaimAssignedToUnit($request);
-    
+       $claimSatisfied =  $this->claimWithMeasureOfSAtisfaction($request);
+
+
        $i = 0;
        $totalTime = 0;
-       if ($claimAssigned->count() == 0) {
+       if ($claimSatisfied->count() == 0) {
         $averageTime = 0;
        } else {
-        $claimAssigned = $claimAssigned->get();
-        foreach ($claimAssigned as $value){
-        
+
+        $claimSatisfied =$claimSatisfied->get();
+        foreach ($claimSatisfied as $value){
            $i++;
-           $totalTime +=  $value->timeLimitUnit['duration_done'];
+           $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
         }
         
         $averageTime = $totalTime / $i;

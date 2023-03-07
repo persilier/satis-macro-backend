@@ -28,16 +28,13 @@ class CollectorMonitoringService
          $claimWithMeasureOfSAtisfaction= $this->claimWithMeasureOfSAtisfaction($request)->count();
          $totalClaimSaved = $this->totalClaimSaved($request)->count();
          $claimReceivedForMeasure = $this->claimReceivedForMeasure($request)->count();
-        // $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
-        // $claimTreated = $this->getClaimTreated($request,$unitId)->count();
-        // $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
-        // $getAverageTimeOfTreatment = $this->getAverageTimeOfTreatment($request,$unitId);
-
+         $getAverageTimeOfSatisfaction = $this->getAverageTimeOfSatisfaction($request);
         
         
         $claimSaved = $this->getCollectorClaimSaved($request, $paginationSize, $type, $key);
         return [
             
+            "getAverageTimeOfSatisfaction"=>  $getAverageTimeOfSatisfaction,
             "claimReceivedForMeasure"=>  $claimReceivedForMeasure,
             "claimSatisfied"=>  $claimSatisfied,
             "claimUnSatisfied"=>  $claimUnSatisfied,
