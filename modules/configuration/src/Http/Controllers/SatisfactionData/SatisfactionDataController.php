@@ -18,7 +18,7 @@ class SatisfactionDataController extends ApiController
     {
         $this->activityLogService = $activityLogService;
         $this->middleware('auth');
-        $this->middleware('permission:update-satisfaction-data-config')->only(['show', 'update']);
+        $this->middleware('permission:update-satisfaction-data-config')->only(['update']);
     }
 
     /**
