@@ -90,6 +90,48 @@ trait StaffMonitoring
     /**
      * @param $request
      * @param $unitId
+     * @return Builder
+     */
+    protected function getClaimSatisfied($request, $unitId)
+    {
+        $claims = Claim::query();
+        if ($request->has('institution_id')) {
+            $claims->where('institution_targeted_id', $request->institution_id);
+        }
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->where('responsible_unit_id', $unitId);
+        if ($request->staff_id != Constants::ALL_STAFF) {
+            $claims->where('treatments.responsible_staff_id', $request->staff_id);
+        }
+        $claims = $claims->where('treatments.is_claimer_satisfied', true);
+        return $claims;
+    }
+    
+    /**
+     * @param $request
+     * @param $unitId
+     * @return Builder
+     */
+    protected function getAverageTimeOfTreatment($request, $unitId)
+    {
+       $claimTreated = $this->getClaimTreated($request, $unitId)->get();
+
+       $i = 0;
+       $totalTime = 0;
+       foreach ($claimTreated as $value){
+          $i++;
+          $totalTime +=  $value->timeLimitTreatment['duration_done'];
+       }
+       
+       $averageTime = $totalTime / $i;
+
+       return $averageTime;
+    }
+
+
+    /**
+     * @param $request
+     * @param $unitId
      * @param int $paginationSize
      * @param null $type
      * @param null $key

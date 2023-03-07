@@ -22,16 +22,22 @@ class MyStaffMonitoringService
         $key = \request()->query('key');
 
         
+        $claimSatisfied = $this->getClaimSatisfied($request,$unitId)->count();
         $claimAssigned = $this->getClaimAssigned($request,$unitId)->count();
         $claimTreated = $this->getClaimTreated($request,$unitId)->count();
         $claimNoTreated = $this->getClaimNoTreated($request,$unitId)->count();
+        $getAverageTimeOfTreatment = $this->getAverageTimeOfTreatment($request,$unitId);
+
+        
         
         $staffClaims = $this->getAllStaffClaim($request, $unitId, $paginationSize, $type, $key);
         return [
-            "claimAssignedToStaff"=>$claimAssigned,
-            "claimTreatedByStaff"=>$claimTreated,
-            "claimNoTreatedByStaff"=>$claimNoTreated,
-            "allStaffClaim"=>$staffClaims,
+            "getAverageTimeOfTreatment"=> $getAverageTimeOfTreatment,
+            "claimSatisfied"=> $claimSatisfied,
+            "claimAssignedToStaff"=> $claimAssigned,
+            "claimTreatedByStaff"=> $claimTreated,
+            "claimNoTreatedByStaff"=> $claimNoTreated,
+            "allStaffClaim"=> $staffClaims,
         ];
     }
 }
