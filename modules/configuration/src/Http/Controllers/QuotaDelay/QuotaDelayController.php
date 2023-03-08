@@ -67,7 +67,8 @@ class QuotaDelayController extends ApiController
 
         $new_parameters = $request->only(['assignment_unit', 'assignment_staff', 'assignment_treatment', 'assignment_validation', 'assignment_measure_satisfaction']);
         
-        $metadata = Metadata::where('name', 'configuration-quota-delay')->first()->update(['data'=> json_encode($new_parameters)]);
+        $metadata = Metadata::where('name', 'configuration-quota-delay')->first();
+        $metadata->update(['data'=> json_encode($new_parameters)]);
 
         $this->activityLogService->store('configuration des quota et répartition des délai de traitement pour chaque objet de réclamation',
             $this->institution()->id,
