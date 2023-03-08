@@ -30,7 +30,7 @@ trait ClaimObject
         if ($claimObject) {
             $data = [
 
-                'name' => ['required', new ClaimObjectUnicityRules('claim_objects','name', $request,  'id', "{$claimObject->id}")],
+                'name' => ['required', new ClaimObjectUnicityRules('claim_objects', 'name', $request,  'id', "{$claimObject->id}")],
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
                 'severity_levels_id' => 'required|exists:severity_levels,id',
@@ -114,6 +114,7 @@ trait ClaimObject
 
         $object = \Satis2020\ServicePackage\Models\ClaimObject::query()
             ->where('name->' . $lang, $row['object'])
+            ->where('claim_category_id', $category)
             ->first();
 
         if ($object) {
