@@ -33,7 +33,8 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
         $this->middleware('auth:api');
 
         $this->middleware('permission:staff-list-satisfaction-measured-my-claim')->only(['index']);
-        $this->middleware('permission:affect-claim-for-satisfaction,auto-affect-claim-for-satisfaction-collector')->only(['affectForSatisfactionMeasure', 'create']);
+        $this->middleware(['permission:affect-claim-for-satisfaction'])->only(['affectForSatisfactionMeasure']);
+        $this->middleware(['permission:auto-affect-claim-for-satisfaction-collector'])->only(['autoAffectForSatisfactionMeasure']);
 
         $this->activityLogService = $activityLogService;
     }
@@ -67,6 +68,58 @@ class StaffClaimSatisfactionMeasuredController extends ApiController
         return response(Staff::with('identite.user.roles')->whereHas('identite.user.roles', function ($query) {
             $query->whereIn('name', ['pilot', 'collector-filial-pro', 'satisfaction-mesure']);
         })->get(), 200);
+    }
+    public function autoAffectForSatisfactionMeasure(Request $request)
+    {
+
+        // rules
+        $rules = [
+            'claim' => ['required', 'exists:claims,id'],
+            'staff' => ['required', 'exists:staff,id'],
+        ];
+
+        // valide
+        $request->validate($rules);
+
+        // Get claim and staff
+
+        $claim = Claim::find($request->claim);
+        $statusColumn = isEscalationClaim($claim) ? "escalation_status" : "status";
+        $claim = $this->getOneMyClaim($claim->id, Claim::CLAIM_VALIDATED, $statusColumn);
+
+        $staff = Staff::with('unit')->find($request->staff);
+
+
+        // Check if auto affecation or not
+        $claim->update([
+            "$statusColumn" => Claim::CLAIM_TRANSFERRED_TO_STAFF_FOR_SATISFACTION
+        ]);
+
+        $data = [
+            'satisfaction_responsible_staff_id' => $staff->id,
+            'satisfaction_responsible_unit_id' => $staff->unit_id,
+            'transfered_to_satisfaction_staff_by' => $this->staff()->id,
+            'transfered_to_satisfaction_staff_by_unit' => $this->staff()->unit_id,
+            'transfered_to_satisfaction_responsible_at' => now()
+        ];
+
+        // Affect
+        $claim->activeTreatment->update($data);
+
+        //Log
+        $this->activityLogService->store(
+            "Une réclamation a été s'est auto affecté à un staff pour mesure de satisfaction",
+            $this->institution()->id,
+            $this->activityLogService::AUTO_ASSIGNMENT_CLAIM,
+            'claim',
+            $this->user(),
+            $claim
+        );
+
+        // Notifications
+
+        // return response
+        return response()->json($claim, 200);
     }
 
     public function affectForSatisfactionMeasure(Request $request)
