@@ -64,7 +64,7 @@ class ClaimObjectController extends ApiController
     public function store(Request $request)
     {
 
-        $this->validate($request, $this->rules());
+        $this->validate($request, $this->rules($request));
         $claimObject = ClaimObject::create($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
         return response()->json($claimObject, 201);
 
@@ -105,7 +105,7 @@ class ClaimObjectController extends ApiController
      */
     public function update(Request $request, ClaimObject $claimObject)
     {
-        $this->validate($request, $this->rules($claimObject));
+        $this->validate($request, $this->rules($request, $claimObject));
         $claimObject->update($request->only(['name', 'description','claim_category_id','severity_levels_id','time_limit' ,'others']));
         return response()->json($claimObject, 201);
     }

@@ -4,10 +4,12 @@
 namespace Satis2020\ServicePackage\Traits;
 
 use Illuminate\Support\Facades\DB;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\SeverityLevel;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Models\UnitType;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Models\SeverityLevel;
+use Satis2020\ServicePackage\Rules\ClaimObjectUnicityRules;
 use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
 
 
@@ -21,27 +23,25 @@ trait ClaimObject
      * @param bool $claimObject
      * @return array
      */
-    protected function rules($claimObject = false)
+    protected function rules($request = null, $claimObject = false)
     {
 
 
         if ($claimObject) {
-
             $data = [
 
-                'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name', 'id', "{$claimObject->id}")],
+                'name' => ['required', new ClaimObjectUnicityRules('claim_objects','name', $request,  'id', "{$claimObject->id}")],
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
                 'severity_levels_id' => 'required|exists:severity_levels,id',
                 'time_limit' => 'required|integer|min:0',
                 'others' => 'array',
             ];
-
         } else {
 
             $data = [
 
-                'name' => ['required', new TranslatableFieldUnicityRules('claim_objects', 'name')],
+                'name' => ['required', new ClaimObjectUnicityRules('claim_objects', 'name', $request)],
                 'description' => 'nullable',
                 'claim_category_id' => 'required|exists:claim_categories,id',
                 'severity_levels_id' => 'required|exists:severity_levels,id',
@@ -149,7 +149,6 @@ trait ClaimObject
                             $units[$unit->id] = ['institution_id' => $institutionId];
                         }
                     }
-
                 } else {
 
                     $unit = Unit::query()
@@ -196,5 +195,4 @@ trait ClaimObject
 
         return $object;
     }
-
 }
