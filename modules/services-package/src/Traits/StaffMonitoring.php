@@ -114,16 +114,23 @@ trait StaffMonitoring
      */
     protected function getAverageTimeOfTreatment($request, $unitId)
     {
-       $claimTreated = $this->getClaimTreated($request, $unitId)->get();
+       $claimTreated = $this->getClaimTreated($request, $unitId);
 
        $i = 0;
        $totalTime = 0;
-       foreach ($claimTreated as $value){
-          $i++;
-          $totalTime +=  $value->timeLimitTreatment['duration_done'];
+       if ($claimTreated->count() == 0) {
+        $averageTime = 0;
+       } else {
+        $claimTreated = $claimTreated->get();
+        foreach ($claimTreated as $value){
+        
+           $i++;
+           $totalTime +=  $value->timeLimitUnit['duration_done'];
+        }
+        
+        $averageTime = $totalTime / $i;
        }
-       
-       $averageTime = $totalTime / $i;
+
 
        return $averageTime;
     }

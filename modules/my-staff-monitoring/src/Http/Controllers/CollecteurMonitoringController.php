@@ -25,8 +25,8 @@ class CollecteurMonitoringController extends ApiController
     {
         parent::__construct();
 
-        // $this->middleware('auth:api');
-        // $this->middleware('permission:show-my-staff-monitoring')->only(['index','show']);
+         $this->middleware('auth:api');
+         $this->middleware('permission:show-my-collector-monitoring')->only(['index','show']);
 
     }
 

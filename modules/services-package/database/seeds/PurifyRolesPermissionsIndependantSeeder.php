@@ -130,6 +130,7 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                     'affect-claim-for-satisfaction', 'auto-affect-claim-for-satisfaction-collector',
                     'staff-list-satisfaction-measured-my-claim',
+                    'show-my-pilot-monitoring','show-my-pilotUnit-monitoring','show-my-collector-monitoring'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
