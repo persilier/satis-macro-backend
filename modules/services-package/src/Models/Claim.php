@@ -195,7 +195,7 @@ class Claim extends Model
 
         return [
             "global_delay" => $this->time_limit,
-            "Quota_delay_assigned" => $this->time_unit,
+            "Quota_delay_assigned" => $this->time_staff,
             "duration_done" => $duration_done,
             "ecart" =>  $ecart,
            
