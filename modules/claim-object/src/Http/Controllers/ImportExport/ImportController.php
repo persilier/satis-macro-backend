@@ -55,8 +55,7 @@ class ImportController extends ApiController
 
         $imports->import($file);
 
-
-            $datas['errors'] =  $imports->getErrors();
+        $datas['errors'] =  $imports->getErrors();
 
         $this->activityLogService->store("Importation d'une liste de catégories et d'objets de réclamation",
             $this->institution()->id,
