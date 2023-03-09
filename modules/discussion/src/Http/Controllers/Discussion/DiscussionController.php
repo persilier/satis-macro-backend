@@ -69,11 +69,18 @@ class DiscussionController extends ApiController
         $statusColumn = $type == "unsatisfied" ? "escalation_status" : "status";
         // check staff role 
         if ($this->staff()->is_active_pilot) {
-            $claims->whereHas('activeTreatment', function ($q) {
-                $q->where('transferred_to_unit_by', $this->staff()->id);
+            $claims->where("{$statusColumn}", "!=", CLaim::CLAIM_ARCHIVED)->whereHas('activeTreatment', function ($qp) {
+                $qp->where('transferred_to_unit_by', $this->staff()->id);
+            })->when($statusColumn == "status", function ($qn) use ($statusColumn) {
+                $qn->where("{$statusColumn}", "!=", CLaim::CLAIM_UNSATISFIED);
             });
         }
-        $claims->where("{$statusColumn}", "!=", CLaim::CLAIM_ARCHIVED);
+        if ($this->staff()->identite->user->hasRole('staff')) {
+            $claims->where("{$statusColumn}", CLaim::CLAIM_ASSIGNED_TO_STAFF)->whereHas('activeTreatment', function ($qs) {
+                $qs->where('responsible_staff_id', $this->staff()->id);
+            });
+        }
+
         // check process type
         // send claim
         return  response()->json($claims->get(), 201);
