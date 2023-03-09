@@ -133,14 +133,14 @@ trait Discussion
         }
 
         // ajouter le staff responsable du traitement précédent de la réclamation
-        $responsible_staff = $discussion->claim->activeTreatment->responsibleStaff->load('identite.user');
-        if (!$baseContributeors->contains($responsible_staff)) {
+        $responsible_staff = $discussion->claim->activeTreatment->responsibleStaff ? $discussion->claim->activeTreatment->responsibleStaff->load('identite.user') : null;
+        if (!is_null($responsible_staff) && !$baseContributeors->contains($responsible_staff)) {
             $baseContributeors->push($responsible_staff);
         }
 
         // ajouter le lead de l'unite de traitment 
-        $lead =  $responsible_staff->unit->lead->load('identite.user');
-        if (!$baseContributeors->pluck('id')->contains($lead->id)) {
+        $lead =  $responsible_staff->unit->lead ? $responsible_staff->unit->lead->load('identite.user') : null;
+        if (!is_null($lead) && !$baseContributeors->pluck('id')->contains($lead->id)) {
             $baseContributeors->push($lead);
         }
 
