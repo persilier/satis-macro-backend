@@ -146,7 +146,7 @@ class Claim extends Model
         'is_rejected',
         'is_duplicate',
         'timeLimitUnit',
-        //'timeStaff',
+        'timeLimitStaff',
         'timeLimitTreatment',
         'timeLimitValidation',
         'timeLimitMeasureSatisfaction' 
@@ -161,10 +161,34 @@ class Claim extends Model
         if ($this->time_unit  && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
+            if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
+               
+                $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+  
+            }
+        }
+
+        return [
+            "global_delay" => $this->time_limit,
+            "Quota_delay_assigned" => $this->time_unit,
+            "duration_done" => $duration_done,
+            "ecart" =>  $ecart,
+           
+        ];
+    }
+    public function timeLimitStaff()
+    {
+        $duration_done = null;
+        $ecart = null;
+
+        if ($this->time_unit  && $this->created_at) {
+
+            $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->assigned_to_staff_at);
-                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $duration_done = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
+                $ecart = $this->conversion($this->time_staff) -  $duration_done;
   
             }
         }
