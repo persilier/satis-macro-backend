@@ -66,7 +66,7 @@ class DiscussionController extends ApiController
         $configs = $this->nowConfiguration();
         $search_text = \request()->query('search_text');
         $claims = Claim::query();
-        $statusColumn = $type == "unsatisfied" ? "escalation_status" : "status";
+        $statusColumn = $type == "escalation" ? "escalation_status" : "status";
         // check staff role 
         if ($this->staff()->is_active_pilot) {
             $claims->where("{$statusColumn}", "!=", CLaim::CLAIM_ARCHIVED)->whereHas('activeTreatment', function ($qp) {
