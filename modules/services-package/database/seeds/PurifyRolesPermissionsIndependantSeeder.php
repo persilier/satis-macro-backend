@@ -93,7 +93,11 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'export-notification-proof', 'configuration-pilot',
                     'configure-pilot-collector-discussion-attribute',
                     'show-configuration-quota-delay',
-                    'update-configuration-quota-delay'
+                    'update-configuration-quota-delay',
+                    'activity-log',
+                    'update-satisfaction-data-config',
+                    'access-satisfaction-data-config', 'list-auth-config','update-auth-config',
+                    'internal-control-index','internal-control-claim-object-index','internal-control-store'
                 ],
                 "pilot" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -130,7 +134,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     // 'store-discussion', 'add-discussion-contributor', 'remove-discussion-contributor', 'destroy-discussion',
                     'affect-claim-for-satisfaction', 'auto-affect-claim-for-satisfaction-collector',
                     'staff-list-satisfaction-measured-my-claim',
-                    'show-my-pilot-monitoring','show-my-pilotUnit-monitoring','show-my-collector-monitoring'
+                    'show-my-pilot-monitoring','show-my-pilotUnit-monitoring','show-my-collector-monitoring',
+                    'access-satisfaction-data-config'
                 ],
                 "supervisor-pro" => [],
                 "collector-filial-pro" => [
@@ -146,6 +151,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'staff-list-satisfaction-measured-my-claim',
                     // 'contribute-discussion', 'list-my-discussions',
                     // 'list-discussion-contributors',
+                    
+                    'access-satisfaction-data-config'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -158,11 +165,20 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
+                    'access-satisfaction-data-config'
 
                 ],
                 'satisfaction-mesure' => [
                     'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
-                ]
+                ],
+                'internal-controller'=> [
+                    "internal-control-claim", 'internal-control-index'
+                    ,'internal-control-claim-detail','internal-control-claim-object-index',
+                ],
+                'conformer'=> [
+                ],
+                'staff-service-quality'=> [
+                ],
             ];
 
             foreach ($independantRoles as $roleName => $permissions) {
@@ -198,7 +214,8 @@ class PurifyRolesPermissionsIndependantSeeder extends Seeder
                 "Collecte" => "collector-filial-pro",
                 "Traitement" =>  "staff",
                 "Pilotage du processus" => "pilot",
-                "Administration" =>  "admin-pro"
+                "Administration" =>  "admin-pro",
+                "Contrôle interne" =>  "internal-controller",
             ];
 
             $permissionsAssociatedToModules = collect([]);

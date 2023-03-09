@@ -208,6 +208,13 @@ class InstallMetadataSeeder extends Seeder
                     "assignment_validation" => 0,
                     "assignment_measure_satisfaction" => 0,
                 ])
+            ],
+            [
+                'name' => 'satisfaction-data-config',
+                'data' => json_encode([
+                    "actived" => "0",
+                    "api_key" => ""
+                ]),
             ]
         ];
 

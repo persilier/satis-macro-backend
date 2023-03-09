@@ -63,3 +63,7 @@ Route::put("/configurations/allow-pilot-collector-discussion", "Discussion\Allow
 
 Route::get("/quota-delay/treatment", "QuotaDelay\QuotaDelayController@show")->name("quota.delay.treatment.show");
 Route::put("/quota-delay/treatment", "QuotaDelay\QuotaDelayController@update")->name("quota.delay.treatment.update");
+
+// Configurations pour les l'integration des donnes de la mesure de satisfaction
+Route::get("/configurations/satisfaction-data-config", "SatisfactionData\SatisfactionDataController@show")->name("satisfaction.data.config.show");
+Route::put("/configurations/satisfaction-data-config", "SatisfactionData\SatisfactionDataController@update")->name("satisfaction.data.config.update");
