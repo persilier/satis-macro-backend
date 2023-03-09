@@ -177,7 +177,7 @@ class Claim extends Model
            
         ];
     }
-    public function timeLimitStaff()
+    public function gettimeLimitStaffAttribute()
     {
         $duration_done = null;
         $ecart = null;
