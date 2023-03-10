@@ -164,7 +164,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
-                $ecart = $this->conversion($this->time_unit) -  $duration_done['days'];
+                $ecart = $this->conversion($this->time_unit) -  intval($duration_done['days']);
   
             }
         }
@@ -172,7 +172,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_unit,
-            "duration_done" => $duration_done,
+            "duration_done" => intval($duration_done['days']),
             "ecart" =>  $ecart,
            
         ];
@@ -188,7 +188,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
-                $ecart = $this->conversion($this->time_staff) -  $duration_done['days'];
+                $ecart = $this->conversion($this->time_staff) -  intval($duration_done['days']);
   
             }
         }
@@ -196,7 +196,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_staff,
-            "duration_done" => $duration_done,
+            "duration_done" => intval($duration_done['days']),
             "ecart" =>  $ecart,
            
         ];
@@ -212,7 +212,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->solved_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = $this->conversion($this->time_treatment) -  $duration_done['days'];
+                $ecart = $this->conversion($this->time_treatment) -  intval($duration_done['days']);
   
             }
         }
@@ -220,7 +220,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
-            "duration_done" => $duration_done,
+            "duration_done" => intval($duration_done['days']),
             "ecart" =>  $ecart,
            
         ];
@@ -260,7 +260,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
-                $ecart = $this->conversion($this->time_measure_satisfaction) -  $duration_done['days'];
+                $ecart = $this->conversion($this->time_measure_satisfaction) -  intval($duration_done['days']);
   
             }
         }
@@ -268,7 +268,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_measure_satisfaction,
-            "duration_done" => $duration_done,
+            "duration_done" => intval($duration_done['days']),
             "ecart" =>  $ecart,
            
         ];
