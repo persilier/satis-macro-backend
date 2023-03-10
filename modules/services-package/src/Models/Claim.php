@@ -212,7 +212,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->solved_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = $this->conversion($this->time_treatment) -  $duration_done['days'];
+              //  $ecart = $this->conversion($this->time_treatment) -  $duration_done['days'];
   
             }
         }
