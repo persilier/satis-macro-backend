@@ -105,7 +105,12 @@ trait Discussion
                     }) === false;
             });
         $claim_creator = $discussion->claim->createdBy->load('identite.user');
-        if (!$staffs->pluck('id')->contains($claim_creator->id)) {
+        if (
+            !$staffs->pluck('id')->contains($claim_creator->id) &&
+            ($discussion->staff->search(function ($item, $key) use ($claim_creator) {
+                return $item->id == $claim_creator->id;
+            }) === false)
+        ) {
             $staffs->push($claim_creator);
         }
         return $staffs;
@@ -120,13 +125,23 @@ trait Discussion
                 $actif_pilots  = $configuration['all_active_pilots']->pluck('staff');
                 foreach ($actif_pilots as $actif_pilot) {
                     $actif_pilot->load('identite.user');
-                    if (!$baseContributeors->pluck('id')->contains($actif_pilot->id)) {
+                    if (
+                        !$baseContributeors->pluck('id')->contains($actif_pilot->id) &&
+                        ($discussion->staff->search(function ($item, $key) use ($actif_pilot) {
+                            return $item->id == $actif_pilot->id;
+                        }) === false)
+                    ) {
                         $baseContributeors->push($actif_pilot);
                     }
                 }
             } else {
                 $actif_pilot = $this->getInstitutionPilot($this->institution()->id)->identite->staff->load('identite.user');
-                if (!$baseContributeors->pluck('id')->contains($actif_pilot->id)) {
+                if (
+                    !$baseContributeors->pluck('id')->contains($actif_pilot->id) &&
+                    ($discussion->staff->search(function ($item, $key) use ($actif_pilot) {
+                        return $item->id == $actif_pilot->id;
+                    }) === false)
+                ) {
                     $baseContributeors->push($actif_pilot);
                 }
             }
@@ -134,13 +149,25 @@ trait Discussion
 
         // ajouter le staff responsable du traitement précédent de la réclamation
         $responsible_staff = $discussion->claim->activeTreatment->responsibleStaff ? $discussion->claim->activeTreatment->responsibleStaff->load('identite.user') : null;
-        if (!is_null($responsible_staff) && !$baseContributeors->contains($responsible_staff)) {
+        if (
+            !is_null($responsible_staff) &&
+            !$baseContributeors->contains($responsible_staff) &&
+            ($discussion->staff->search(function ($item, $key) use ($responsible_staff) {
+                return $item->id == $responsible_staff->id;
+            }) === false)
+        ) {
             $baseContributeors->push($responsible_staff);
         }
 
         // ajouter le lead de l'unite de traitment 
         $lead =  $responsible_staff->unit->lead ? $responsible_staff->unit->lead->load('identite.user') : null;
-        if (!is_null($lead) && !$baseContributeors->pluck('id')->contains($lead->id)) {
+        if (
+            !is_null($lead) &&
+            !$baseContributeors->pluck('id')->contains($lead->id) &&
+            ($discussion->staff->search(function ($item, $key) use ($lead) {
+                return $item->id == $lead->id;
+            }) === false)
+        ) {
             $baseContributeors->push($lead);
         }
 
