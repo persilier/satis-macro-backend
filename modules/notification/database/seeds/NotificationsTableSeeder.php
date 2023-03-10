@@ -85,7 +85,7 @@ class NotificationsTableSeeder extends Seeder
                     [
                         'event' => 'communicate-the-solution-unfounded',
                         'description' => "Notification envoyée au réclamant après validation du non fondé de sa réclamation",
-                        'text' => "Votre reclamation a ete declaree non fondee. Reference: {claim_reference}. Objet : {claim_object}"
+                        'text' => "{solution_communicated}. Reference: {claim_reference}. Objet : {claim_object}"
                     ],
                     [
                         'event' => 'add-contributor-to-discussion',
