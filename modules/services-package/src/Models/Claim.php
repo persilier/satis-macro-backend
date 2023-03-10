@@ -164,7 +164,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
-                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $ecart = $this->conversion($this->time_unit) -  $duration_done['days'];
   
             }
         }
@@ -188,7 +188,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
-                $ecart = $this->conversion($this->time_staff) -  $duration_done;
+                $ecart = $this->conversion($this->time_staff) -  $duration_done['days'];
   
             }
         }
@@ -212,7 +212,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->solved_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = $this->conversion($this->time_treatment) -  $duration_done;
+                $ecart = $this->conversion($this->time_treatment) -  $duration_done['days'];
   
             }
         }
@@ -236,7 +236,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->validated_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
-                $ecart = $this->conversion($this->time_validation) -  $duration_done;
+                $ecart = $this->conversion($this->time_validation) -  $duration_done['days'];
   
             }
         }
@@ -260,7 +260,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
                
                 $duration_done = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
-                $ecart = $this->conversion($this->time_measure_satisfaction) -  $duration_done;
+                $ecart = $this->conversion($this->time_measure_satisfaction) -  $duration_done['days'];
   
             }
         }
@@ -277,25 +277,33 @@ class Claim extends Model
 
     public function daysWithoutWeekEnd($start,$end)
     {       
-        
-        $interval = $end->diff($start);
-        
-        // total days
-        $days = $interval->days;
-        
-        // create an iterateable period of date (P1D equates to 1 day)
-        $period = new DatePeriod($start, new DateInterval('P1D'), $end);
-        
-        foreach($period as $dt) {
-            $curr = $dt->format('D');
-        
-            // substract if Saturday or Sunday
-            if ($curr == 'Sat' || $curr == 'Sun') {
-                $days--;
-            }
-        }
+    
+        // calculate total days in interval
+        $interval = $start->diff($end);
+        $total_days = $interval->days;
 
-       return $days;
+        // extract weekend days
+        $current_date = clone $start;
+        $weekend_days = [];
+        while ($current_date <= $end) {
+            $day_of_week = (int) $current_date->format('N');
+            if ($day_of_week >= 6) { // Saturday (6) or Sunday (7)
+                $weekend_days[] = $current_date->format('Y-m-d');
+            }
+            $current_date->modify('+1 day');
+        }
+        $total_weekend_days = count($weekend_days);
+
+        // calculate interval without weekend days
+        $interval_days = $total_days - $total_weekend_days;
+        $interval_hours = $interval->h;
+        $interval_minutes = $interval->i;
+
+        return [
+            'days' => $interval_days ,
+            'hours' => $interval_hours,
+            'minutes' => $interval_minutes   
+        ];
     }
 
     public function conversion($value)
