@@ -163,8 +163,8 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
-                $duration_done = intval($duration_done['days']);
+                $time = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
+                $duration_done = intval($time['days']);
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
   
             }
@@ -173,7 +173,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_unit,
-            "duration_done" => $duration_done == null ? $duration_done:$duration_done['days']." j ".$duration_done['heures']." h ".$duration_done['minutes']." min",
+            "duration_done" => $duration_done == null ? $duration_done:$time['days']." j ".$time['heures']." h ".$time['minutes']." min",
             "ecart" =>  $ecart,
            
         ];
@@ -188,8 +188,8 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
-                $duration_done = intval($duration_done['days']);
+                $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
+                $duration_done = intval($time['days']);
                 $ecart = $this->conversion($this->time_staff) -  $duration_done;
   
             }
@@ -198,7 +198,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_staff,
-            "duration_done" => $duration_done == null ? $duration_done:$duration_done['days']." j ".$duration_done['heures']." h ".$duration_done['minutes']." min",
+            "duration_done" => $duration_done == null ? $duration_done:$time['days']." j ".$time['heures']." h ".$time['minutes']." min",
             "ecart" =>  $ecart,
            
         ];
@@ -213,8 +213,8 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->solved_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $duration_done = intval($duration_done['days']);
+                $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
+                $duration_done = intval($time['days']);
                 $ecart = $this->conversion($this->time_treatment) -  $duration_done;
   
             }
@@ -223,7 +223,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
-            "duration_done" => $duration_done == null ? $duration_done:$duration_done['days']." j ".$duration_done['heures']." h ".$duration_done['minutes']." min",
+            "duration_done" => $duration_done == null ? $duration_done:$time['days']." j ".$time['heures']." h ".$time['minutes']." min",
             "ecart" =>  $ecart,
            
         ];
@@ -238,8 +238,8 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->validated_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
-                $duration_done = intval($duration_done['days']);
+                $time = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
+                $duration_done = intval($time['days']);
                 $ecart = $this->conversion($this->time_validation) -  $duration_done;
   
             }
@@ -248,7 +248,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_validation,
-            "duration_done" => $duration_done == null ? $duration_done:$duration_done['days']." j ".$duration_done['heures']." h ".$duration_done['minutes']." min",
+            "duration_done" => $duration_done == null ? $duration_done:$time['days']." j ".$time['heures']." h ".$time['minutes']." min",
             "ecart" =>  $ecart,
            
         ];
@@ -263,8 +263,8 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
-                $duration_done = intval($duration_done['days']);
+                $time = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
+                $duration_done = intval($time['days']);
                 $ecart = $this->conversion($this->time_measure_satisfaction) - $duration_done;
   
             }
@@ -273,7 +273,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_measure_satisfaction,
-            "duration_done" => $duration_done == null ? $duration_done:$duration_done['days']." j ".$duration_done['heures']." h ".$duration_done['minutes']." min",
+            "duration_done" => $duration_done == null ? $duration_done:$time['days']." j ".$time['heures']." h ".$time['minutes']." min",
             "ecart" =>  $ecart,
            
         ];
