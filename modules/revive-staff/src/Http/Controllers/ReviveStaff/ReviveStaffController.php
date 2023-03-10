@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ReviveStaffController extends ApiController
 {
 
-    use \Satis2020\ServicePackage\Traits\Notification,UnitTrait;
+    use \Satis2020\ServicePackage\Traits\Notification, UnitTrait;
 
     /**
      * @var StaffService
@@ -37,19 +37,17 @@ class ReviveStaffController extends ApiController
 
         $this->staffService = $staffService;
         $this->revivalService = $revivalService;
-
     }
 
     public function index(Request $request)
     {
-        if (!$this->staffIsUnitLead($this->staff()))
-        {
+        if (!$this->staffIsUnitLead($this->staff())) {
             abort(Response::HTTP_UNAUTHORIZED);
         }
 
         $size = $request->get("size");
 
-        return $this->revivalService->getUnitRevivals($this->staff()->unit_id,$size);
+        return $this->revivalService->getUnitRevivals($this->staff()->unit_id, $size);
     }
 
 
@@ -62,8 +60,7 @@ class ReviveStaffController extends ApiController
      */
     public function store(Request $request, Claim $claim)
     {
-        if (!$this->checkIfStaffIsPilot($this->staff()) && !$this->staffIsUnitLead($this->staff()))
-        {
+        if (!$this->checkIfStaffIsPilot($this->staff()) && !$this->staffIsUnitLead($this->staff()) && !($this->staff()->identite->user->hasRole('collector-filial-pro') && $claim->status == Claim::CLAIM_FULL)) {
             abort(Response::HTTP_UNAUTHORIZED);
         }
 
@@ -74,10 +71,9 @@ class ReviveStaffController extends ApiController
         $this->validate($request, $rules);
 
         $staffs = $this->staffService->getStaffsByIdentity(collect($this->getStaffToReviveIdentities($claim))->pluck("id")->toArray());
-        $this->revivalService->storeRevival($staffs,$request->text,$claim);
+        $this->revivalService->storeRevival($staffs, $request->text, $claim);
         Notification::send($this->getStaffToReviveIdentities($claim), new ReviveStaff($claim, $request->text));
 
         return response()->json($claim, Response::HTTP_OK);
     }
-
 }
