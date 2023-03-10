@@ -172,8 +172,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_unit,
-           // "duration_done" => $duration_done['days'] == 0 ? $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ' :$duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
-            "duration_done" => $duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
+            "duration_done" => $duration_done['minutes']. ' min, ',
             "ecart" =>  $ecart,
            
         ];
@@ -197,7 +196,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_staff,
-            "duration_done" => $duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
+            "duration_done" => $duration_done['minutes']. ' min, ',
             "ecart" =>  $ecart,
            
         ];
@@ -221,7 +220,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
-            "duration_done" => $duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
+            "duration_done" => $duration_done['minutes']. ' min, ',
             "ecart" =>  $ecart,
            
         ];
@@ -245,7 +244,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_validation,
-            "duration_done" => $duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
+            "duration_done" => $duration_done['minutes']. ' min, ',
             "ecart" =>  $ecart,
            
         ];
@@ -270,7 +269,7 @@ class Claim extends Model
         return [
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_measure_satisfaction,
-            "duration_done" => $duration_done['days']. ' j, ' . $duration_done['hours']. ' h, ' .$duration_done['minutes']. ' min, ',
+            "duration_done" => $duration_done['minutes']. ' min, ',
             "ecart" =>  $ecart,
            
         ];
