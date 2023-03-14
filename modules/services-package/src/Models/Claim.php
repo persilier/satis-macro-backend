@@ -310,7 +310,7 @@ class Claim extends Model
         $weekend_days = [];
         while ($current_date <= $end) {
             $day_of_week = (int) $current_date->format('N');
-            if ($day_of_week >= 6) { // Saturday (6) or Sunday (7)
+            if ($day_of_week >= 6) { // Saturday (6) or Sunday (7) 
                 $weekend_days[] = $current_date->format('Y-m-d');
             }
             $current_date->modify('+1 day');
