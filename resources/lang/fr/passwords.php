@@ -27,5 +27,5 @@ return [
     'email_password_reset_success_subject' => 'Votre mot de passe a été changé',
     'email_password_reset_success_line1' => 'Votre mot de passe a été modifié pour votre compte.',
     'email_password_reset_success_line2' => 'Si vous avez changé le mot de passe, aucune autre action n\'est requise.',
-    'email_password_reset_success_line3' => 'Si vous n\'avez pas changé de mot de passe, protégez votre compte.',
+    'email_password_reset_success_line3' => 'Protégez votre compte, si vous n\'êtes pas l\'auteur de cette réclamation',
 ];
