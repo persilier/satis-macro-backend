@@ -163,7 +163,6 @@ class Claim extends Model
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
-               
                 $time = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
