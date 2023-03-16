@@ -22,10 +22,7 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', function ($join) {
-            $join->on('claims.id', '=', 'treatments.claim_id')
-              ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('transferred_to_unit_by');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
@@ -40,10 +37,7 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', function ($join) {
-            $join->on('claims.id', '=', 'treatments.claim_id')
-              ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('treatments.validated_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
@@ -58,10 +52,7 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', function ($join) {
-            $join->on('claims.id', '=', 'treatments.claim_id')
-              ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('treatments.satisfaction_measured_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
@@ -76,10 +67,7 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', function ($join) {
-            $join->on('claims.id', '=', 'treatments.claim_id')
-              ->on('claims.active_treatment_id', '=', 'treatments.id');
-        })
+        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
             ->whereNotNull('treatments.rejected_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
