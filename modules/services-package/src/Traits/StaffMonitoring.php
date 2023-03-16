@@ -28,7 +28,10 @@ trait StaffMonitoring
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->where('responsible_unit_id', $unitId);
         if ($request->staff_id != Constants::ALL_STAFF) {
             $claims->where('treatments.responsible_staff_id', $request->staff_id);
@@ -50,7 +53,10 @@ trait StaffMonitoring
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->where('responsible_unit_id', $unitId);
         if ($request->staff_id != Constants::ALL_STAFF) {
             $claims->where('treatments.responsible_staff_id', $request->staff_id);
@@ -74,7 +80,10 @@ trait StaffMonitoring
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->where('responsible_unit_id', $unitId);
         if ($request->staff_id != Constants::ALL_STAFF) {
             $claims->where('treatments.responsible_staff_id', $request->staff_id);
@@ -98,7 +107,10 @@ trait StaffMonitoring
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->where('responsible_unit_id', $unitId);
         if ($request->staff_id != Constants::ALL_STAFF) {
             $claims->where('treatments.responsible_staff_id', $request->staff_id);

@@ -22,7 +22,10 @@ trait CollectorTrait
         
 
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+                     ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
         ->where('treatments.is_claimer_satisfied',true);
 
         if ($request->has('institution_id')) {
@@ -39,7 +42,10 @@ trait CollectorTrait
     {
         
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+             ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
         ->where('treatments.is_claimer_satisfied',false);
 
         if ($request->has('institution_id')) {
@@ -56,7 +62,10 @@ trait CollectorTrait
     {
         
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+                ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
         ->whereNotNull('treatments.satisfaction_measured_at');
 
         if ($request->has('institution_id')) {
@@ -73,7 +82,10 @@ trait CollectorTrait
     {
         
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+            ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
         ->whereNotNull('claims.created_at');
 
         if ($request->has('institution_id')) {
@@ -90,7 +102,10 @@ trait CollectorTrait
     {
         
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+          ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
         ->whereNotNull('treatments.validated_at');
 
         if ($request->has('institution_id')) {
@@ -141,7 +156,10 @@ trait CollectorTrait
     {
 
         $claims = Claim::query()->with($this->getRelations())
-                        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+                    ->select('claims.*')->join('treatments', function ($join) {
+                        $join->on('claims.id', '=', 'treatments.claim_id')
+                        ->on('claims.active_treatment_id', '=', 'treatments.id');
+                    })
                         ->whereNotNull('treatments.satisfaction_measured_by');
 
         if ($request->has('institution_id')) {

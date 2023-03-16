@@ -190,6 +190,8 @@ class Claim extends Model
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
+
+                dd($this->created_at,$claimInfo->assigned_to_staff_at);
                
                 $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
                 $duration_done = intval($time['days']);
