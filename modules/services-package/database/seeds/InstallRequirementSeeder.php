@@ -71,7 +71,7 @@ class InstallRequirementSeeder extends Seeder
             [
                 'id' => (string)Str::uuid(),
                 'name' => 'file',
-                'description' => "Les pieces jointes a la réclamation effectuée"
+                'description' => "Les pieces jointes à la réclamation effectuée"
             ]
         ];
 
