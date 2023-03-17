@@ -376,7 +376,7 @@ class Claim extends Model
             $hours = $total_days * 24;
             $hours_whole = floor($hours);
             $minutes = round(($hours - $hours_whole) * 60);
-            $daysHoursMinutes = $hours_whole . "h" . " " . str_pad($minutes, 2, '0', STR_PAD_LEFT) . "min";
+            $daysHoursMinutes = $hours_whole . "h" . " " .$minutes. "min";
         } else {
 
             
