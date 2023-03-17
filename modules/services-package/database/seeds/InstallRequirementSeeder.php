@@ -67,6 +67,11 @@ class InstallRequirementSeeder extends Seeder
                 'id' => (string)Str::uuid(),
                 'name' => 'amount_currency_slug',
                 'description' => "La devise du montant réclamé"
+            ],
+            [
+                'id' => (string)Str::uuid(),
+                'name' => 'file',
+                'description' => "Les pieces jointes a la réclamation effectuée"
             ]
         ];
 
