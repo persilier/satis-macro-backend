@@ -22,12 +22,15 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-               ->whereNotNull('transferred_to_unit_by');
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
+            ->whereNotNull('transferred_to_unit_by');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
         }
-       
+
         return $claims;
     }
 
@@ -37,12 +40,15 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-               ->whereNotNull('treatments.validated_at');
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
+            ->whereNotNull('treatments.validated_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
         }
-       
+
         return $claims;
     }
 
@@ -52,12 +58,15 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->whereNotNull('treatments.satisfaction_measured_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
         }
-       
+
         return $claims;
     }
 
@@ -67,101 +76,104 @@ trait PilotMonitoringTrait
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        $claims->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
             ->whereNotNull('treatments.rejected_at');
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
         }
-       
+
         return $claims;
     }
 
-     /**
+    /**
      * @param $request
      * @return Builder
      */
     protected function getAverageTimeOfAssignation($request)
     {
-       $claimAssigned = $this->getClaimAssigned($request);
+        $claimAssigned = $this->getClaimAssigned($request);
 
-    
-       $i = 0;
-       $totalTime = 0;
-       if ($claimAssigned->count() == 0) {
-        $averageTime = 0;
-       } else {
-        $claimAssigned = $claimAssigned->get();
-        foreach ($claimAssigned as $value){
-        
-           $i++;
-           $totalTime +=  $value->timeLimitUnit['duration_done'];
+
+        $i = 0;
+        $totalTime = 0;
+        if ($claimAssigned->count() == 0) {
+            $averageTime = 0;
+        } else {
+            $claimAssigned = $claimAssigned->get();
+            foreach ($claimAssigned as $value) {
+
+                $i++;
+                $totalTime +=  $value->timeLimitUnit['duration_done'];
+            }
+
+            $averageTime = $totalTime / $i;
         }
-        
-        $averageTime = $totalTime / $i;
-       }
-       
 
-       return $averageTime;
+
+        return $averageTime;
     }
 
-     /**
+    /**
      * @param $request
      * @return Builder
      */
     protected function getAverageTimeOfValidation($request)
     {
-       $claimValidated = $this->getClaimValidated($request);
+        $claimValidated = $this->getClaimValidated($request);
 
-       $i = 0;
-       $totalTime = 0;
+        $i = 0;
+        $totalTime = 0;
 
-       if ($claimValidated->count() == 0) {
-        $averageTime = 0;
-       } else {
-        $claimValidated = $claimValidated->get();
-        foreach ($claimValidated as $value){
-           $i++;
-           $totalTime +=  $value->timeLimitValidation['duration_done'];
+        if ($claimValidated->count() == 0) {
+            $averageTime = 0;
+        } else {
+            $claimValidated = $claimValidated->get();
+            foreach ($claimValidated as $value) {
+                $i++;
+                $totalTime +=  $value->timeLimitValidation['duration_done'];
+            }
+
+            $averageTime = $totalTime / $i;
         }
-        
-        $averageTime = $totalTime / $i;
-       }
-       
 
-       return $averageTime;
+
+        return $averageTime;
     }
 
-     /**
+    /**
      * @param $request
      * @return Builder
      */
     protected function getAverageTimeOfSatisfaction($request)
     {
-       $claimSatisfied =  $this->getClaimSatisfied($request);
+        $claimSatisfied =  $this->getClaimSatisfied($request);
 
 
-       $i = 0;
-       $totalTime = 0;
-       if ($claimSatisfied->count() == 0) {
-        $averageTime = 0;
-       } else {
+        $i = 0;
+        $totalTime = 0;
+        if ($claimSatisfied->count() == 0) {
+            $averageTime = 0;
+        } else {
 
-        $claimSatisfied =$claimSatisfied->get();
-        foreach ($claimSatisfied as $value){
-           $i++;
-           $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
+            $claimSatisfied = $claimSatisfied->get();
+            foreach ($claimSatisfied as $value) {
+                $i++;
+                $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
+            }
+
+            $averageTime = $totalTime / $i;
         }
-        
-        $averageTime = $totalTime / $i;
-       }
-       
 
-       return $averageTime;
+
+        return $averageTime;
     }
 
 
 
-  
+
     /**
      * @param $request
      * @param int $paginationSize
@@ -170,35 +182,39 @@ trait PilotMonitoringTrait
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
 
-    protected function getPilotClaimAssignedTo($request,$paginationSize = 10, $type = null, $key = null)
+    protected function getPilotClaimAssignedTo($request, $paginationSize = 10, $type = null, $key = null)
     {
 
         $claims = Claim::query()->with($this->getRelations());
         if ($request->has('institution_id')) {
             $claims->where('institution_targeted_id', $request->institution_id);
         }
+
+        $claims->select('claims.*')->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+              ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
+            ->whereNotNull('transferred_to_unit_by');
         
-        $claims->join('treatments', 'treatments.claim_id', '=', 'claims.id')
-               ->whereNotNull('transferred_to_unit_by');
-            
+
         if ($request->pilot_id != Constants::ALL_PILOT) {
             $claims->where('treatments.transferred_to_unit_by', $request->pilot_id);
         }
 
         if ($request->status) {
 
-           if ($request->status == "assigned") {
-            
-             $claims = $claims;
-           }
-           if ($request->status == "validated") {
-            
-             $claims = $claims->whereNotNull('treatments.validated_at');
-           }
-           if ($request->status == "surveyed") {
-            
-             $claims = $claims->whereNotNull('treatments.satisfaction_measured_at');
-           }
+            if ($request->status == "assigned") {
+
+                $claims = $claims;
+            }
+            if ($request->status == "validated") {
+
+                $claims = $claims->whereNotNull('treatments.validated_at');
+            }
+            if ($request->status == "surveyed") {
+
+                $claims = $claims->whereNotNull('treatments.satisfaction_measured_at');
+            }
         }
 
         if ($key) {
