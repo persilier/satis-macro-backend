@@ -4,6 +4,7 @@ namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Satis2020\ServicePackage\Models\Requirement;
 
@@ -78,9 +79,8 @@ class InstallRequirementSeeder extends Seeder
         $appNature = Config::get('services.app_nature', 'PRO');
 
         foreach ($requirements as $requirement) {
-            if (($requirement['name'] == 'relationship_id' && $appNature == 'HUB') || $requirement['name'] != 'relationship_id')
+            if ((($requirement['name'] == 'relationship_id' && $appNature == 'HUB') || $requirement['name'] != 'relationship_id') && !Requirement::where('name', $requirement['name'])->exists())
                 Requirement::create($requirement);
         }
-
     }
 }
