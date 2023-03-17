@@ -136,12 +136,12 @@ class Claim extends Model
     ];
 
     protected $appends = [
-        'timeExpire', 
-        'accountType', 
-        'canAddAttachment', 
+        'timeExpire',
+        'accountType',
+        'canAddAttachment',
         'lastRevival',
         'canAddAttachment',
-        "oldActiveTreatment", 
+        "oldActiveTreatment",
         'dateExpire',
         'is_rejected',
         'is_duplicate',
@@ -149,7 +149,7 @@ class Claim extends Model
         'timeLimitStaff',
         'timeLimitTreatment',
         'timeLimitValidation',
-        'timeLimitMeasureSatisfaction' 
+        'timeLimitMeasureSatisfaction'
     ];
 
 
@@ -158,16 +158,19 @@ class Claim extends Model
         $duration_done = null;
         $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
+
 
         if ($this->time_unit  && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
-                $time = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
+                $time = $this->daysWithoutWeekEnd($this->created_at, $claimInfo->transferred_to_unit_at);
                 $duration_done = intval($time['days']);
-                $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -177,7 +180,9 @@ class Claim extends Model
             "duration_done" => $duration_done,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
     public function gettimeLimitStaffAttribute()
@@ -185,19 +190,18 @@ class Claim extends Model
         $duration_done = null;
         $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
 
         if ($this->time_unit  && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
 
-               // dd($this->created_at,$claimInfo->assigned_to_staff_at);
-               
-                $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
+                $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at, $claimInfo->assigned_to_staff_at);
                 $duration_done = intval($time['days']);
-                $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
             }
         }
 
@@ -207,7 +211,9 @@ class Claim extends Model
             "duration_done" => $duration_done,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
@@ -216,17 +222,19 @@ class Claim extends Model
         $duration_done = null;
         $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
 
-        if ($this->time_treatment && $this->created_at ) {
+        if ($this->time_treatment && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->solved_at !== null) {
-               
-                $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at, $claimInfo->solved_at);
                 $duration_done = intval($time['days']);
-                $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                //dd($this->id, $duration_done_days_hours);
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+               
             }
         }
 
@@ -236,7 +244,8 @@ class Claim extends Model
             "duration_done" => $duration_done,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
         ];
     }
 
@@ -245,17 +254,19 @@ class Claim extends Model
         $duration_done = null;
         $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
 
         if ($this->time_validation && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->validated_at !== null) {
-               
-                $time = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->solved_at, $claimInfo->validated_at);
                 $duration_done = intval($time['days']);
-                $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -265,7 +276,9 @@ class Claim extends Model
             "duration_done" => $duration_done,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
@@ -274,17 +287,19 @@ class Claim extends Model
         $duration_done = null;
         $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
 
         if ($this->time_measure_satisfaction && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
-               
-                $time = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->validated_at, $claimInfo->satisfaction_measured_at);
                 $duration_done = intval($time['days']);
-                $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -294,14 +309,16 @@ class Claim extends Model
             "duration_done" => $duration_done,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
 
-    public function daysWithoutWeekEnd($start,$end)
-    {       
-    
+    public function daysWithoutWeekEnd($start, $end)
+    {
+
         // calculate total days in interval
         $interval = $start->diff($end);
         $total_days = $interval->days;
@@ -324,32 +341,53 @@ class Claim extends Model
         $interval_minutes = $interval->i;
 
         return [
-            'days' => $interval_days ,
+            'days' => $interval_days,
             'hours' => $interval_hours,
-            'minutes' => $interval_minutes   
+            'minutes' => $interval_minutes
         ];
     }
 
     public function conversion($value)
     {
-       
+
         $data = explode(" ", $value);
         $dataResult = substr($data[0], -1);
-       
-       if( $dataResult == "j"){
-           
-           $days = substr($data[0], 0, -1);
-           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
-           
-           $transformHoursToDay = intval($hours) / 24;
-           $totalDays = intval($days) + $transformHoursToDay;
-           
-       }else{
-               
-          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
-       }
 
-       return $totalDays;
+        if ($dataResult == "j") {
+
+            $days = substr($data[0], 0, -1);
+            $hours = array_key_exists(1, $data) == true ? substr($data[1], 0, -1) : 0;
+
+            $transformHoursToDay = intval($hours) / 24;
+            $totalDays = intval($days) + $transformHoursToDay;
+        } else {
+
+            $totalDays = intval(substr($data[0], 0, -1)) / 24;
+        }
+
+        return $totalDays;
+    }
+
+    public function conversionToDysHoursMinutes($total_days)
+    {
+
+        if ($total_days < 1) {
+
+            $hours = $total_days * 24;
+            $hours_whole = floor($hours);
+            $minutes = round(($hours - $hours_whole) * 60);
+            $daysHoursMinutes = $hours_whole . "h" . " " . str_pad($minutes, 2, '0', STR_PAD_LEFT) . "min";
+        } else {
+
+            
+            $days_whole = floor($total_days);
+            $hours_decimal = ($total_days - $days_whole) * 24;
+            $hours_whole = floor($hours_decimal);
+            $minutes = round(($hours_decimal - $hours_whole) * 60); 
+            $daysHoursMinutes = $days_whole . " j " . $hours_whole . " h " . $minutes . " min";
+        }
+
+        return $daysHoursMinutes;
     }
 
 
@@ -576,7 +614,7 @@ class Claim extends Model
     function getCanAddAttachmentAttribute()
     {
         $canAttach = false;
-        if (Auth::user()){
+        if (Auth::user()) {
             $staffId = request()->query('staff', $this->staff()->id);
             $staff = (new StaffService())->getStaffById($staffId);
 
