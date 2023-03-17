@@ -20,7 +20,10 @@ trait PilotUnitTrait
     protected function getClaimAssignedToUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+         ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
        ->whereNotNull('treatments.transferred_to_unit_at');
 
         if ($request->has('institution_id')) {
@@ -37,7 +40,10 @@ trait PilotUnitTrait
     protected function getClaimTreatedByUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+         ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
        ->whereNotNull('treatments.transferred_to_unit_at')
        ->whereNotNull('treatments.solved_at');
 
@@ -54,7 +60,10 @@ trait PilotUnitTrait
     protected function getClaimNotTreatedByUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
        ->whereNotNull('treatments.transferred_to_unit_at')
        ->whereNull('treatments.solved_at');
 
@@ -71,7 +80,10 @@ trait PilotUnitTrait
     protected function getClaimSatisfiedByUnit($request)
     {
         $claims = Claim::query()->with($this->getRelations())
-        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
        ->where('treatments.is_claimer_satisfied',true);
       
 
@@ -127,7 +139,10 @@ trait PilotUnitTrait
      
 
         $claims = Claim::query()->with($this->getRelations())
-                        ->join('treatments', 'treatments.claim_id', '=', 'claims.id')
+        ->join('treatments', function ($join) {
+            $join->on('claims.id', '=', 'treatments.claim_id')
+            ->on('claims.active_treatment_id', '=', 'treatments.id');
+        })
                        ->whereNotNull('treatments.transferred_to_unit_at');
 
         if ($request->has('institution_id')) {

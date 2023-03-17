@@ -136,12 +136,12 @@ class Claim extends Model
     ];
 
     protected $appends = [
-        'timeExpire', 
-        'accountType', 
-        'canAddAttachment', 
+        'timeExpire',
+        'accountType',
+        'canAddAttachment',
         'lastRevival',
         'canAddAttachment',
-        "oldActiveTreatment", 
+        "oldActiveTreatment",
         'dateExpire',
         'is_rejected',
         'is_duplicate',
@@ -149,23 +149,28 @@ class Claim extends Model
         'timeLimitStaff',
         'timeLimitTreatment',
         'timeLimitValidation',
-        'timeLimitMeasureSatisfaction' 
+        'timeLimitMeasureSatisfaction'
     ];
 
 
     public function gettimeLimitUnitAttribute()
     {
         $duration_done = null;
+        $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
+
 
         if ($this->time_unit  && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
-               
-                $duration_done = $this->daysWithoutWeekEnd($this->created_at,$claimInfo->transferred_to_unit_at);
+                $time = $this->daysWithoutWeekEnd($this->created_at, $claimInfo->transferred_to_unit_at);
+                $duration_done = intval($time['days']);
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -173,23 +178,30 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_unit,
             "duration_done" => $duration_done,
+            "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
     public function gettimeLimitStaffAttribute()
     {
         $duration_done = null;
+        $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
 
         if ($this->time_unit  && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
-               
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at,$claimInfo->assigned_to_staff_at);
-                $ecart = $this->conversion($this->time_staff) -  $duration_done;
-  
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at, $claimInfo->assigned_to_staff_at);
+                $duration_done = intval($time['days']);
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
             }
         }
 
@@ -197,23 +209,32 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_staff,
             "duration_done" => $duration_done,
+            "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
     public function gettimeLimitTreatmentAttribute()
     {
         $duration_done = null;
+        $duration_done_days_hours = null;
         $ecart = null;
-        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+        $ecart_days_hours = null;
+
+        if ($this->time_treatment && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->solved_at !== null) {
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at, $claimInfo->solved_at);
+                $duration_done = intval($time['days']);
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
                
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at,$claimInfo->solved_at);
-                $ecart = $this->conversion($this->time_treatment) -  $duration_done;
-  
             }
         }
 
@@ -221,23 +242,31 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
             "duration_done" => $duration_done,
+            "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
         ];
     }
 
     public function gettimeLimitValidationAttribute()
     {
         $duration_done = null;
+        $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
+
         if ($this->time_validation && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->validated_at !== null) {
-               
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->solved_at,$claimInfo->validated_at);
-                $ecart = $this->conversion($this->time_validation) -  $duration_done;
-  
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->solved_at, $claimInfo->validated_at);
+                $duration_done = intval($time['days']);
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -245,23 +274,32 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_validation,
             "duration_done" => $duration_done,
+            "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
     public function gettimeLimitMeasureSatisfactionAttribute()
     {
         $duration_done = null;
+        $duration_done_days_hours = null;
         $ecart = null;
+        $ecart_days_hours = null;
+
         if ($this->time_measure_satisfaction && $this->created_at) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
-               
-                $duration_done = $this->daysWithoutWeekEnd($claimInfo->validated_at,$claimInfo->satisfaction_measured_at);
-                $ecart = $this->conversion($this->time_measure_satisfaction) -  $duration_done;
-  
+
+                $time = $this->daysWithoutWeekEnd($claimInfo->validated_at, $claimInfo->satisfaction_measured_at);
+                $duration_done = intval($time['days']);
+                $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
+                $ecart = $this->conversion($this->time_unit) -  $duration_done;
+                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+
             }
         }
 
@@ -269,55 +307,87 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_measure_satisfaction,
             "duration_done" => $duration_done,
+            "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
-           
+            "ecart_days_hours" =>  $ecart_days_hours,
+
+
         ];
     }
 
 
-    public function daysWithoutWeekEnd($start,$end)
-    {       
-        
-        $interval = $end->diff($start);
-        
-        // total days
-        $days = $interval->days;
-        
-        // create an iterateable period of date (P1D equates to 1 day)
-        $period = new DatePeriod($start, new DateInterval('P1D'), $end);
-        
-        foreach($period as $dt) {
-            $curr = $dt->format('D');
-        
-            // substract if Saturday or Sunday
-            if ($curr == 'Sat' || $curr == 'Sun') {
-                $days--;
-            }
-        }
+    public function daysWithoutWeekEnd($start, $end)
+    {
 
-       return $days;
+        // calculate total days in interval
+        $interval = $start->diff($end);
+        $total_days = $interval->days;
+
+        // extract weekend days
+        $current_date = clone $start;
+        $weekend_days = [];
+        while ($current_date <= $end) {
+            $day_of_week = (int) $current_date->format('N');
+            if ($day_of_week >= 6) { // Saturday (6) or Sunday (7) 
+                $weekend_days[] = $current_date->format('Y-m-d');
+            }
+            $current_date->modify('+1 day');
+        }
+        $total_weekend_days = count($weekend_days);
+
+        // calculate interval without weekend days
+        $interval_days = $total_days - $total_weekend_days;
+        $interval_hours = $interval->h;
+        $interval_minutes = $interval->i;
+
+        return [
+            'days' => $interval_days,
+            'hours' => $interval_hours,
+            'minutes' => $interval_minutes
+        ];
     }
 
     public function conversion($value)
     {
-       
+
         $data = explode(" ", $value);
         $dataResult = substr($data[0], -1);
-       
-       if( $dataResult == "j"){
-           
-           $days = substr($data[0], 0, -1);
-           $hours= array_key_exists(1,$data) == true ? substr($data[1], 0, -1) : 0;
-           
-           $transformHoursToDay = intval($hours) / 24;
-           $totalDays = intval($days) + $transformHoursToDay;
-           
-       }else{
-               
-          $totalDays = intval(substr($data[0], 0, -1)) / 24 ;  
-       }
 
-       return $totalDays;
+        if ($dataResult == "j") {
+
+            $days = substr($data[0], 0, -1);
+            $hours = array_key_exists(1, $data) == true ? substr($data[1], 0, -1) : 0;
+
+            $transformHoursToDay = intval($hours) / 24;
+            $totalDays = intval($days) + $transformHoursToDay;
+        } else {
+
+            $totalDays = intval(substr($data[0], 0, -1)) / 24;
+        }
+
+        return $totalDays;
+    }
+
+    public function conversionToDysHoursMinutes($total_days)
+    {
+
+        if ($total_days < 1) {
+
+            $hours = $total_days * 24;
+            $hours_whole = floor($hours);
+            $minutes = round(($hours - $hours_whole) * 60);
+            $daysHoursMinutes = $hours_whole . "h" . " " .$minutes. "min";
+        } else {
+
+            
+            $days_whole = floor($total_days);
+            $hours_decimal = ($total_days - $days_whole) * 24;
+            $hours_whole = floor($hours_decimal);
+            $minutes = round(($hours_decimal - $hours_whole) * 60); 
+            $daysHoursMinutes = $days_whole . " j " . $hours_whole . " h " . $minutes . " min";
+        }
+
+        return $daysHoursMinutes;
     }
 
 
@@ -544,7 +614,7 @@ class Claim extends Model
     function getCanAddAttachmentAttribute()
     {
         $canAttach = false;
-        if (Auth::user()){
+        if (Auth::user()) {
             $staffId = request()->query('staff', $this->staff()->id);
             $staff = (new StaffService())->getStaffById($staffId);
 
