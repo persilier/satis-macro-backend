@@ -217,7 +217,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
 
-        if ($this->time_limit && $this->created_at && ($this->status !== 'archived')) {
+        if ($this->time_limit && $this->created_at ) {
 
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->solved_at !== null) {
