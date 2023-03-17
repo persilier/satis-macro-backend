@@ -226,7 +226,7 @@ class Claim extends Model
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days']." j ".$time['hours']." h ".$time['minutes']." min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-  
+                //dd($this->id, $duration_done_days_hours);
             }
         }
 
