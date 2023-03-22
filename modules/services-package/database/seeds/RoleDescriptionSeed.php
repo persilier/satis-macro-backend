@@ -51,8 +51,11 @@ class RoleDescriptionSeed extends Seeder
             if ($role->name == 'admin-observatory')
                 $role->update(['description' => "Administrateur"]);
 
-            if ($role->name == 'satisfaction-mesure' && env('APP_NATURE') == 'PRO')
+            if ($role->name == 'satisfaction-mesure' && (env('APP_NATURE') == 'PRO' || env('APP_NATURE') == 'MACRO'))
                 $role->update(['description' => "Role de mesure les observation"]);
+
+            if ($role->name == 'internal-controller' && (env('APP_NATURE') == 'PRO' || env('APP_NATURE') == 'MACRO'))
+                $role->update(['description' => "Contrôle interne"]);
         }
     }
 }
