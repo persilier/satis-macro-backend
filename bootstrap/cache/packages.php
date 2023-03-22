@@ -348,13 +348,6 @@
       0 => 'Satis2020\\Institution\\Providers\\InstitutionServiceProvider',
     ),
   ),
-  'satis2020/internal-control' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Satis2020\\InternalControl\\Providers\\InternalControlServiceProvider',
-    ),
-  ),
   'satis2020/message-api' => 
   array (
     'providers' => 
