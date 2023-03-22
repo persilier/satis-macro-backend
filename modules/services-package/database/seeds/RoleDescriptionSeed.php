@@ -18,7 +18,6 @@ class RoleDescriptionSeed extends Seeder
         $roles = \Spatie\Permission\Models\Role::all();
         foreach ($roles as $role) {
             if ($role->name == 'admin-filial') {
-                error_log($role->name);
                 $role->update(['description' => "Administrateur niveau filiale"]);
             }
 
@@ -26,7 +25,6 @@ class RoleDescriptionSeed extends Seeder
                 $role->update(['description' => "Pilote niveau filiale"]);
             }
             if ($role->name == 'collector-filial-pro' && config('app_nature.nature') == 'MACRO') {
-                error_log($role->name);
                 $role->update(['description' => "Collecteur niveau filiale"]);
             }
 
@@ -63,7 +61,7 @@ class RoleDescriptionSeed extends Seeder
             }
 
             if ($role->name == 'satisfaction-mesure' && (config('app_nature.nature') == 'PRO' || config('app_nature.nature') == 'MACRO')) {
-                $role->update(['description' => "Role de mesure les observation"]);
+                $role->update(['description' => "Role de mesure des satisfactions"]);
             }
 
             if ($role->name == 'internal-controller' && (config('app_nature.nature') == 'PRO' || config('app_nature.nature') == 'MACRO')) {
