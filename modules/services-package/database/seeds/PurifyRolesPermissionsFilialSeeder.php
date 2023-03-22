@@ -3,10 +3,11 @@
 namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Config;
+use Spatie\Permission\Models\Permission;
+use Satis2020\ServicePackage\Models\Module;
 
 class PurifyRolesPermissionsFilialSeeder extends Seeder
 {
@@ -150,6 +151,36 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
             }
 
             Permission::doesntHave('roles')->delete();
+
+            $modules = [
+                "Collecte filiale" => "collector-filial-pro",
+                "Traitement filiale" =>  "staff",
+                "Pilotage du processus filiale" => "pilot-filial",
+                "Administration filiale" =>  "admin-filial",
+                "Contrôle interne filiale" =>  "supervisor-filial",
+            ];
+
+            $permissionsAssociatedToModules = collect([]);
+
+            foreach ($modules as $moduleName => $roleName) {
+                // CreateOrUpdate $module
+                $module = Module::updateOrCreate(
+                    ['name->' . app()->getLocale() => $moduleName],
+                    ["name" => $moduleName, "description" => $moduleName]
+                );
+
+                $modulePermissions = $filialRoles[$roleName];
+
+                foreach ($modulePermissions as $permissionName) {
+                    // verify if permission already have module
+                    if ($permissionsAssociatedToModules->search($permissionName) === false) {
+                        // Associate permission to module
+                        Permission::where('guard_name', 'api')->where('name', $permissionName)->update(['module_id' => $module->id]);
+                        // Add permission to permissionsAssociatedToModules
+                        $permissionsAssociatedToModules->push($permissionName);
+                    }
+                }
+            }
 
         }
     }

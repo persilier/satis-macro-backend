@@ -3,10 +3,11 @@
 namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Config;
+use Spatie\Permission\Models\Permission;
+use Satis2020\ServicePackage\Models\Module;
 
 class PurifyRolesPermissionsHoldingSeeder extends Seeder
 {
@@ -164,6 +165,38 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
             }
 
             Permission::doesntHave('roles')->delete();
+
+            Permission::where('guard_name', 'api')->update(['module_id' => null]);
+
+            $modules = [
+                "Collecte holding" => "collector-holding",
+                "Traitement holding" =>  "staff",
+                "Pilotage du processus holding" => "pilot-holding",
+                "Administration holding" =>  "admin-holding",
+                "Contrôle interne holding" =>  "supervisor-holding",
+            ];
+
+            $permissionsAssociatedToModules = collect([]);
+
+            foreach ($modules as $moduleName => $roleName) {
+                // CreateOrUpdate $module
+                $module = Module::updateOrCreate(
+                    ['name->' . app()->getLocale() => $moduleName],
+                    ["name" => $moduleName, "description" => $moduleName]
+                );
+
+                $modulePermissions = $holdingRoles[$roleName];
+
+                foreach ($modulePermissions as $permissionName) {
+                    // verify if permission already have module
+                    if ($permissionsAssociatedToModules->search($permissionName) === false) {
+                        // Associate permission to module
+                        Permission::where('guard_name', 'api')->where('name', $permissionName)->update(['module_id' => $module->id]);
+                        // Add permission to permissionsAssociatedToModules
+                        $permissionsAssociatedToModules->push($permissionName);
+                    }
+                }
+            }
         }
     }
 }
