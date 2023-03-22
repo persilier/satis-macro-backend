@@ -23,7 +23,7 @@ class RoleDescriptionSeed extends Seeder
 
             if ($role->name == 'pilot-filial')
                 $role->update(['description' => "Pilote niveau filiale"]);
-
+            error_log(env('APP_NATURE'));
             if ($role->name == 'collector-filial-pro' && env('APP_NATURE') == 'MACRO')
                 error_log($role->name);
                 $role->update(['description' => "Collecteur niveau filiale"]);
