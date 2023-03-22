@@ -64,6 +64,10 @@ class UnitController extends ApiController
     public function store(Request $request)
     {
 
+        if ($request->isNotFilled('parent_id')) {
+            $request->request->remove('parent_id');
+        }
+
         $rules = [
             'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
             'description' => 'nullable',
