@@ -20,6 +20,7 @@ class RoleDescriptionSeed extends Seeder
         error_log(env('APP_NATURE'));
         foreach ($roles as $role) {
             if ($role->name == 'admin-filial') {
+                error_log($role->name);
                 $role->update(['description' => "Administrateur niveau filiale"]);
             }
 
