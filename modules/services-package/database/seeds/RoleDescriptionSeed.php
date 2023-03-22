@@ -16,8 +16,6 @@ class RoleDescriptionSeed extends Seeder
     public function run()
     {
         $roles = \Spatie\Permission\Models\Role::all();
-
-        error_log(env('APP_NATURE'));
         foreach ($roles as $role) {
             if ($role->name == 'admin-filial') {
                 error_log($role->name);
@@ -27,7 +25,7 @@ class RoleDescriptionSeed extends Seeder
             if ($role->name == 'pilot-filial') {
                 $role->update(['description' => "Pilote niveau filiale"]);
             }
-            if ($role->name == 'collector-filial-pro' && env('APP_NATURE') == 'MACRO') {
+            if ($role->name == 'collector-filial-pro' && config('app_nature.nature') == 'MACRO') {
                 error_log($role->name);
                 $role->update(['description' => "Collecteur niveau filiale"]);
             }
@@ -56,7 +54,7 @@ class RoleDescriptionSeed extends Seeder
                 $role->update(['description' => "Pilote"]);
             }
 
-            if (($role->name == 'collector-filial-pro' && env('APP_NATURE') == 'PRO') || $role->name == 'collector-observatory') {
+            if (($role->name == 'collector-filial-pro' && config('app_nature.nature') == 'PRO') || $role->name == 'collector-observatory') {
                 $role->update(['description' => "Collecteur"]);
             }
 
@@ -64,11 +62,11 @@ class RoleDescriptionSeed extends Seeder
                 $role->update(['description' => "Administrateur"]);
             }
 
-            if ($role->name == 'satisfaction-mesure' && (env('APP_NATURE') == 'PRO' || env('APP_NATURE') == 'MACRO')) {
+            if ($role->name == 'satisfaction-mesure' && (config('app_nature.nature') == 'PRO' || config('app_nature.nature') == 'MACRO')) {
                 $role->update(['description' => "Role de mesure les observation"]);
             }
 
-            if ($role->name == 'internal-controller' && (env('APP_NATURE') == 'PRO' || env('APP_NATURE') == 'MACRO')) {
+            if ($role->name == 'internal-controller' && (config('app_nature.nature') == 'PRO' || config('app_nature.nature') == 'MACRO')) {
                 $role->update(['description' => "Contrôle interne"]);
             }
         }
