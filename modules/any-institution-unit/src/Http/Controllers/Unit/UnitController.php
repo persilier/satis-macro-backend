@@ -109,7 +109,7 @@ class UnitController extends ApiController
     public function edit(Unit $unit, CountryService $countryService)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite','state'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
