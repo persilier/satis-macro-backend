@@ -54,8 +54,6 @@ class UnitController extends ApiController
             'parents' => $this->getAllUnit(),
             'countries' => $countryService->getCountriesWithStates()
         ], 200);
-
-
     }
 
     /**
@@ -71,9 +69,8 @@ class UnitController extends ApiController
         if ($request->isNotFilled('parent_id')) {
             $request->request->remove('parent_id');
         }
-
         $rules = [
-            'name' => ['required', new TranslatableFieldUnicityByInstitutionRules('units', 'name',$request->institution_id)],
+            'name' => ['required', new TranslatableFieldUnicityByInstitutionRules('units', 'name', null, null, $request->institution_id)],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
@@ -110,7 +107,7 @@ class UnitController extends ApiController
     public function edit(Unit $unit, CountryService $countryService)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite', 'state.country'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'parents' => $this->getAllUnit(),
