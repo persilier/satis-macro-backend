@@ -109,7 +109,7 @@ class UnitController extends ApiController
     public function edit(Unit $unit, CountryService $countryService)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite','state'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'parents' => $this->getAllUnit(),
