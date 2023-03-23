@@ -49,13 +49,16 @@ trait VerifyUnicity
      * @param null $idValue
      * @return array
      */
-    protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null,$typeColumn,$typeValue)
+    protected function handleInArrayUnicityVerification($values, $table, $column, $idColumn = null, $idValue = null, $typeColumn = null, $typeValue = null)
     {
         foreach ($values as $value) {
 
             $value = strtolower($value);
 
-            $query = DB::table($table)->whereJsonContains("$column", "$value")->Where("$typeColumn","$typeValue");
+            $query = DB::table($table)->whereJsonContains("$column", "$value")->when($typeColumn !== null && $typeValue !== null, function ($q) use ($typeColumn, $typeValue) {
+                $q->where("$typeColumn", "$typeValue");
+            });
+
 
             if ($idColumn && $idValue) {
                 $query = $query->whereNotIn("$idColumn", [$idValue]);
@@ -148,24 +151,22 @@ trait VerifyUnicity
 
         if ($request->has('telephone')) {
             // Identity PhoneNumber Unicity Verification
-            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue,'type_client',$request->type_client);
+            $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', 'id', $idValue, 'type_client', $request->type_client);
             if (!$verifyPhone['status']) {
                 $verifyPhone['message'] = 'Nous avons retrouvé quelqu\'un avec le numéro de téléphone : ' . $verifyPhone['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
                 throw new CustomException($verifyPhone, 409);
             }
-
         }
 
         // Identity Email Unicity Verification
         if ($request->has('email')) {
-            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue,'type_client',$request->type_client);
+            $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', 'id', $idValue, 'type_client', $request->type_client);
 
             if (!$verifyEmail['status']) {
                 $verifyEmail['message'] = 'Nous avons retrouvé quelqu\'un avec l\'adresse email : ' . $verifyEmail['conflictValue'] . ' que vous avez fournis! Svp, vérifiez s\'il s\'agit de la même personne que vous voulez enregistrer en tant que  réclamant';
                 throw new CustomException($verifyEmail, 409);
             }
         }
-
     }
 
     protected function existIdentityPhoneNumberAndEmailVerificationStore($request, $idValue = null)
@@ -181,7 +182,6 @@ trait VerifyUnicity
                     "data" => $verifyPhone
                 ];
             }
-
         }
 
         // Identity Email Unicity Verification
@@ -282,9 +282,7 @@ trait VerifyUnicity
                 $query->whereHas('client_institutions', function ($q) use ($idInstitution) {
 
                     $q->where('institution_id', $idInstitution);
-
                 });
-
             })->where('identites_id', '=', $verify['entity']->id)->first();
 
             if (!is_null($client)) {
@@ -331,7 +329,5 @@ trait VerifyUnicity
                 'client_institution.client.identite'
             ),
         ];
-
     }
-
 }

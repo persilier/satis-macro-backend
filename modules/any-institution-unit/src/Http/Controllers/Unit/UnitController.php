@@ -115,7 +115,7 @@ class UnitController extends ApiController
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
                 ->where('unit_id', $unit->id)->get(),
             'units' => Unit::where('institution_id', $unit->institution->id)->get(),
-            'countries' => $countryService->getCountries()
+            'countries' => $countryService->getCountriesWithStates()
         ], 200);
     }
 

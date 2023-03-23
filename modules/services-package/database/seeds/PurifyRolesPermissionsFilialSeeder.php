@@ -121,7 +121,18 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals','list-unit-revivals',
                     'revive-staff'
-                ]
+                ],
+                'satisfaction-mesure' => [
+                    'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
+                ],
+                'internal-controller'=> [
+                    "internal-control-claim", 'internal-control-index'
+                    ,'internal-control-claim-detail','internal-control-claim-object-index',
+                ],
+                'conformer'=> [
+                ],
+                'staff-service-quality'=> [
+                ],
             ];
 
             foreach ($filialRoles as $roleName => $permissions) {
