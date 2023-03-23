@@ -112,6 +112,7 @@ class UnitController extends ApiController
             'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite','state'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
+            'parents' => $this->getAllUnit(),
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
                 ->where('unit_id', $unit->id)->get(),
             'units' => Unit::where('institution_id', $unit->institution->id)->get(),
