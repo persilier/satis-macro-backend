@@ -50,7 +50,7 @@ class UnitController extends ApiController
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
-            'parents' => $this->getAllUnitByInstitution($this->institution()->id),
+            'parents' => $this->getAllUnit(),
             'countries' => $countryService->getCountriesWithStates()
         ], 200);
 
