@@ -26,6 +26,19 @@ trait UnitTrait
 
     /**
      * @param $institution
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    protected  function getAllUnit(){
+
+        $unit = Unit::with([
+            'unitType', 'institution', 'parent', 'children', 'lead.identite','state.country'
+        ])->get();
+
+        return $unit;
+    }
+
+    /**
+     * @param $institution
      * @param $id
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
      */
