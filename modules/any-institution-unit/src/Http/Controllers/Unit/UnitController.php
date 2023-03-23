@@ -2,18 +2,19 @@
 
 namespace Satis2020\AnyInstitutionUnit\Http\Controllers\Unit;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\UnitType;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Http\JsonResponse;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Rules\StateExistRule;
-use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
-use Satis2020\ServicePackage\Services\CountryService;
+use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Traits\UnitTrait;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Rules\StateExistRule;
+use Satis2020\ServicePackage\Services\CountryService;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityByInstitutionRules;
 
 class UnitController extends ApiController
 {
@@ -72,7 +73,7 @@ class UnitController extends ApiController
         }
 
         $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
+            'name' => ['required', new TranslatableFieldUnicityByInstitutionRules('units', 'name',$request->institution_id)],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
