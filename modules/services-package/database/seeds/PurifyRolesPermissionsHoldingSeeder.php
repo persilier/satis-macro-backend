@@ -89,6 +89,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'show-configuration-quota-delay',
                     'update-configuration-quota-delay',
+                    'update-escalation-config'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
