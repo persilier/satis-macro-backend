@@ -117,7 +117,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
+                    'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
+                    'list-escalation-config',
+                    'internal-control-index','internal-control-store'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
