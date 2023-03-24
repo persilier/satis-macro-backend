@@ -66,7 +66,7 @@ class ClaimObjectController extends ApiController
     public function store(Request $request)
     {
 
-        $this->validate($request, $this->rules($$request));
+        $this->validate($request, $this->rules($request));
         $claimObject = ClaimObject::create($request->only([
             'name', 
             'description', 
