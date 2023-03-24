@@ -89,7 +89,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'show-configuration-quota-delay',
                     'update-configuration-quota-delay',
-                    'update-escalation-config'
+                    'update-escalation-config',
+                    'update-satisfaction-data-config',
+                    'access-satisfaction-data-config',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -114,6 +116,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
+                    'access-satisfaction-data-config',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -125,6 +128,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'access-satisfaction-data-config',
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
@@ -136,6 +140,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
+                    'access-satisfaction-data-config'
                 ]
             ];
 
