@@ -92,6 +92,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-escalation-config',
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
+                    'list-escalation-config',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
