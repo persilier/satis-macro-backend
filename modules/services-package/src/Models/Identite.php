@@ -41,7 +41,7 @@ class Identite extends Model
     ];
 
 
-    public function fullNameAttribute()
+    public function getfullNameAttribute()
     {
         $fullName = $this->raison_sociale !== null ? $this->raison_sociale : $this->firstname . " " . $this->lastname;
         return $fullName;
