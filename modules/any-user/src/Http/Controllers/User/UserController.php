@@ -45,10 +45,7 @@ class UserController extends ApiController
      */
     public function index()
     {
-
-        $pagination = \request()->query('size');
-        $search_text = \request()->query('search_text');
-        $users = $this->getAllUser(true, $pagination, $search_text);
+        $users = $this->getAllUser(false, request('size', 10));
         return response()->json($users, 200);
     }
 
