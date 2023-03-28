@@ -35,6 +35,18 @@ class Identite extends Model
         'firstname', 'lastname', 'raison_sociale',  'type_client',  'sexe', 'telephone', 'email', 'ville', 'id_card', 'other_attributes'
     ];
 
+    protected $appends = [
+
+        'fullName'
+    ];
+
+
+    public function getfullNameAttribute()
+    {
+        $fullName = $this->raison_sociale != null ? $this->raison_sociale : $this->firstname . " " . $this->lastname;
+        return $fullName;
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -81,5 +93,4 @@ class Identite extends Model
         // Return name and email address...
         return $this->email[0];
     }
-
 }

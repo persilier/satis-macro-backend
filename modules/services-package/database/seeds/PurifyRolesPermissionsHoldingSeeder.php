@@ -93,6 +93,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
+                    'internal-control-index', 'internal-control-store',
+                    'config-reporting-claim-any-institution'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -120,7 +122,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
-                    'internal-control-index','internal-control-store'
+                    'internal-control-index', 'internal-control-store'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -166,7 +168,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
 
                         Permission::query()->updateOrCreate(
                             ['name' => $permissionName],
-                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding']: $institutionTypes]
+                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding'] : $institutionTypes]
                         );
                     }
 

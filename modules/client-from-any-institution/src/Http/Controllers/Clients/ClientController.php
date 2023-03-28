@@ -37,8 +37,8 @@ class ClientController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-      /*  $this->middleware('permission:list-client-from-any-institution')->only(['index']);
-        $this->middleware('permission:store-client-from-any-institution')->only(['create', 'store']);
+        /* $this->middleware('permission:list-client-from-any-institution')->only(['index']);
+         $this->middleware('permission:store-client-from-any-institution')->only(['create', 'store']);
         $this->middleware('permission:show-client-from-any-institution')->only(['show']);
         $this->middleware('permission:update-client-from-any-institution')->only(['edit', 'update']);
         $this->middleware('permission:destroy-client-from-any-institution')->only(['destroy']);*/
@@ -54,24 +54,26 @@ class ClientController extends ApiController
     {
         $paginationSize = \request()->query('size');
         $recherche = \request()->query('key');
-        return response()->json(ClientInstitution::with(
-            'client.identite',
-            'category_client',
-            'institution',
-            'accounts.accountType'
-        )->when($recherche !=null,function(Builder $query) use ($recherche ) {
-            $query
-                ->leftJoin('clients', 'client_institution.client_id', '=', 'clients.id')
-                ->leftJoin('identites', 'clients.identites_id', '=', 'identites.id')
-                ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
-                ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
-                ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
-                ->orWhereRaw('`accounts`.`number` = ?', [$recherche])
-                ->orwhereJsonContains('telephone', $recherche)
-                ->orwhereJsonContains('email', $recherche);
-        })
-            ->paginate($paginationSize),
-            200);
+        return response()->json(
+            ClientInstitution::with(
+                'client.identite',
+                'category_client',
+                'institution',
+                'accounts.accountType'
+            )->when($recherche != null, function (Builder $query) use ($recherche) {
+                $query
+                    ->leftJoin('clients', 'client_institution.client_id', '=', 'clients.id')
+                    ->leftJoin('identites', 'clients.identites_id', '=', 'identites.id')
+                    ->leftJoin('accounts', 'accounts.client_institution_id', '=', 'client_institution.id')
+                    ->whereRaw('(`identites`.`firstname` LIKE ?)', ["%$recherche%"])
+                    ->orWhereRaw('`identites`.`lastname` LIKE ?', ["%$recherche%"])
+                    ->orWhereRaw('`accounts`.`number` = ?', [$recherche])
+                    ->orwhereJsonContains('telephone', $recherche)
+                    ->orwhereJsonContains('email', $recherche);
+            })
+                ->paginate($paginationSize),
+            200
+        );
     }
 
     /**
@@ -184,13 +186,12 @@ class ClientController extends ApiController
             'institution_id' => 'required|exists:institutions,id'
         ]);
 
-        if(!$client = $this->getOneClient($request, $clientId)){
+        if (!$client = $this->getOneClient($request, $clientId)) {
 
             throw new CustomException("Impossible de retrouver ce client dans votre institution.");
         }
 
         return response()->json($client, 200);
-
     }
 
 
@@ -250,7 +251,8 @@ class ClientController extends ApiController
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $this->activityLogService->store('Mise à jour des informations du compte d\'un client',
+        $this->activityLogService->store(
+            'Mise à jour des informations du compte d\'un client',
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'account',
@@ -281,7 +283,7 @@ class ClientController extends ApiController
 
         $account->secureDelete('claims');
 
-       /* $this->activityLogService->store('Suppression du numéro de compte d\'un client',
+        /* $this->activityLogService->store('Suppression du numéro de compte d\'un client',
             $this->institution()->id,
             $this->activityLogService::DELETED,
             'account',
@@ -291,6 +293,4 @@ class ClientController extends ApiController
 
         return response()->json($account, 201);
     }
-
 }
-
