@@ -18,12 +18,14 @@ class ConfigurationPilotController extends ApiController
     {
         parent::__construct();
         $this->middleware('auth:api');
-        $this->middleware('permission:configuration-pilot')->only(['store']);
+        // $this->middleware('permission:configuration-pilot')->only(['store']);
+        $this->middleware('permission:update-active-pilot')->only(['store']);
 
         $this->activityLogService = $activityLogService;
     }
 
-    public function index(){
+    public function index()
+    {
         return response()->json($this->nowConfiguration(), 200);
     }
 
@@ -35,16 +37,15 @@ class ConfigurationPilotController extends ApiController
 
         $this->validate($request, $this->ruleConfiguration($request->many_pilot));
 
-        if ($request->many_pilot && !in_array($request->lead_pilot_id,$request->pilots)){
+        if ($request->many_pilot && !in_array($request->lead_pilot_id, $request->pilots)) {
             return response()->json("Veuillez sélectionner le lead parmi les pilotes actifs", 500);
         }
 
         $config = $this->storeConfiguration($request->many_pilot);
-        if ($config){
+        if ($config) {
             $this->storeActivePilotAndLead($request);
         }
 
         return response()->json($config->load("institution"), 201);
     }
-
 }
