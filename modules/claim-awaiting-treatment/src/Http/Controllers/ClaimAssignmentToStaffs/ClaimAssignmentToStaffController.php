@@ -58,9 +58,12 @@ class ClaimAssignmentToStaffController extends ApiController
         $claims = [];
         if ($this->checkIfStaffIsPilot($staff)) {
 
-            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
+            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)
+            ->get()
+            ->map(function ($item, $key) {
                 $item->with($this->getRelationsAwitingTreatment());
-            });
+            })
+            ->paginate();
         } else {
             $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
                 ->map(function ($item, $key) {
@@ -68,7 +71,8 @@ class ClaimAssignmentToStaffController extends ApiController
                     $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
                     $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
                     return $item;
-                });
+                })
+                ->paginate();
         }
 
         $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
@@ -79,7 +83,8 @@ class ClaimAssignmentToStaffController extends ApiController
                 $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
                 $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
                 return $item;
-            });
+            })
+            ->paginate();
         return response()->json($claims, 200);
     }
 
