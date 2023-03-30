@@ -66,7 +66,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
                     'show-proxy-config','update-proxy-config','delete-proxy-config',
                     'list-escalation-config','update-escalation-config',
-                    'logout-user-my-institution',
+                    'logout-user-my-institution','access-satisfaction-data-config'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -97,7 +97,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-my-claim-unsatisfied',
                     'list-closed-my-claims','close-my-claims',
                     'list-escalation-config','update-escalation-config',
-                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+                    'list-treatment-board','store-treatment-board','update-treatment-board',
+                    'destroy-treatment-board',
+                    'list-claim-transferred-my-institution','access-satisfaction-data-config'
 
                 ],
                 "supervisor-filial" => [],
@@ -109,7 +111,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'history-list-create-claim',
                     'search-claim-my-reference',
                     'attach-files-to-claim',
-                    'revive-staff',
+                    'revive-staff','access-satisfaction-data-config'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -120,14 +122,14 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
                     'list-staff-revivals','list-unit-revivals',
-                    'revive-staff'
+                    'revive-staff','access-satisfaction-data-config'
                 ],
                 'satisfaction-mesure' => [
-                    'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
+                    'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim','access-satisfaction-data-config'
                 ],
                 'internal-controller'=> [
                     "internal-control-claim", 'internal-control-index'
-                    ,'internal-control-claim-detail','internal-control-claim-object-index',
+                    ,'internal-control-claim-detail','internal-control-claim-object-index','access-satisfaction-data-config'
                 ],
                 'conformer'=> [
                 ],

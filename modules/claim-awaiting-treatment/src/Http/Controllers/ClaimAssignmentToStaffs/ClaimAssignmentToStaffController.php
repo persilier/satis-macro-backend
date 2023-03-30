@@ -58,37 +58,28 @@ class ClaimAssignmentToStaffController extends ApiController
         $claims = [];
         if ($this->checkIfStaffIsPilot($staff)) {
 
-            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)
-                ->with($this->getRelationsAwitingTreatment())
-                ->paginate();
-
-            $claims->getCollection()->map(function ($item, $key) {
+            $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)->get()->map(function ($item, $key) {
                 $item->with($this->getRelationsAwitingTreatment());
-                return $item;
             });
         } else {
-            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)
-                ->with($this->getRelationsAwitingTreatment())
-                ->paginate();
-            $claims->getCollection()->map(function ($item, $key) {
-                $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-                $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
-                $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
-                return $item;
-            });
+            $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
+                ->map(function ($item, $key) {
+                    $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+                    $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+                    $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
+                    return $item;
+                });
         }
 
         $statusColumn = $type == Claim::CLAIM_UNSATISFIED ? "escalation_status" : "status";
 
         $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id, $statusColumn)
-            ->with($this->getRelationsAwitingTreatment())
-            ->paginate();
-        $claims->getCollection()->map(function ($item, $key) {
-            $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
-            $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
-            $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
-            return $item;
-        });
+            ->get()->map(function ($item, $key) {
+                $item = Claim::with($this->getRelationsAwitingTreatment())->find($item->id);
+                $item->activeTreatment->load(['responsibleUnit', 'assignedToStaffBy.identite', 'responsibleStaff.identite']);
+                $item->isInvalidTreatment = (!is_null($item->activeTreatment->invalidated_reason) && !is_null($item->activeTreatment->validated_at)) ? TRUE : FALSE;
+                return $item;
+            });
         return response()->json($claims, 200);
     }
 
