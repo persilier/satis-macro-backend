@@ -62,6 +62,7 @@ class AwaitingAssignmentController extends ApiController
                     $claims = $claims->whereHas("claimer", function ($query) use ($key) {
                         $query->where('firstname', 'like', "%$key%")
                             ->orWhere('lastname', 'like', "%$key%")
+                            ->orWhere('raison_sociale', 'like', "%$key%")
                             ->orwhereJsonContains('telephone', $key)
                             ->orwhereJsonContains('email', $key);
                     });
