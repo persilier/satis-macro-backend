@@ -59,11 +59,12 @@ class ClaimAssignmentToStaffController extends ApiController
         if ($this->checkIfStaffIsPilot($staff)) {
 
             $claims = $this->getClaimsQuery($institution->id, $staff->unit_id)
-            ->get()
-            ->map(function ($item, $key) {
-                $item->with($this->getRelationsAwitingTreatment());
-            })
-            ->paginate();
+                ->get()
+                ->map(function ($item, $key) {
+                    $item->with($this->getRelationsAwitingTreatment());
+                    return $item;
+                })
+                ->paginate();
         } else {
             $claims = $this->getClaimsTreat($institution->id, $staff->unit_id, $staff->id)->get()
                 ->map(function ($item, $key) {
