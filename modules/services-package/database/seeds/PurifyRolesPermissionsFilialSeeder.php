@@ -67,7 +67,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-proxy-config', 'update-proxy-config', 'delete-proxy-config',
                     'list-escalation-config', 'update-escalation-config',
                     'logout-user-my-institution', 'access-satisfaction-data-config',
-                    'configure-pilot-collector-discussion-attribute', 'list-auth-config', 'update-auth-config'
+                    'configure-pilot-collector-discussion-attribute',
+                    'list-auth-config', 'update-auth-config', 'update-relance-parameters'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
