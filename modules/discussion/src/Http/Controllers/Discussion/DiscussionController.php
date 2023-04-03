@@ -13,10 +13,11 @@ use Satis2020\ServicePackage\Models\Discussion;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Rules\ClaimIsAssignedToStaffRules;
 use Satis2020\ServicePackage\Rules\DiscussionIsRegisteredByStaffRules;
+use Satis2020\ActivePilot\Http\Controllers\ConfigurationPilot\ConfigurationPilotTrait;
 
 class DiscussionController extends ApiController
 {
-
+    use  ConfigurationPilotTrait;
     public function __construct()
     {
         parent::__construct();
@@ -45,16 +46,45 @@ class DiscussionController extends ApiController
                 ->filter(function ($value, $key) use ($type) {
                     $value->load(['staff']);
                     if ($type == Claim::CLAIM_UNSATISFIED) {
-                        return $value->claim->status == Claim::CLAIM_UNSATISFIED && !is_null($value->claim->oldActiveTreatment) && $value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at);
+                        return $value->claim->status == Claim::CLAIM_UNSATISFIED
+                            && !is_null($value->claim->oldActiveTreatment)
+                            && $value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at);
                     } else {
-                        return ($value->claim->escalation_status == null) || (!is_null($value->claim->escalation_status) && !is_null($value->claim->oldActiveTreatment) && !$value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at));
+                        return ($value->claim->escalation_status == null) ||
+                            (!is_null($value->claim->escalation_status)
+                                && !is_null($value->claim->oldActiveTreatment)
+                                && !$value->created_at->copy()->isAfter($value->claim->oldActiveTreatment->satisfaction_measured_at));
                     }
                 })
                 ->values(),
             200
         );
     }
+    public function create()
+    {
+        $type = \request()->query('type');
+        $configs = $this->nowConfiguration();
+        $search_text = \request()->query('search_text');
+        $claims = Claim::query();
+        $statusColumn = $type == "escalation" ? "escalation_status" : "status";
+        // check staff role 
+        if ($this->staff()->is_active_pilot) {
+            $claims->where("{$statusColumn}", "!=", CLaim::CLAIM_ARCHIVED)->whereHas('activeTreatment', function ($qp) {
+                $qp->where('transferred_to_unit_by', $this->staff()->id);
+            })->when($statusColumn == "status", function ($qn) use ($statusColumn) {
+                $qn->where("{$statusColumn}", "!=", CLaim::CLAIM_UNSATISFIED);
+            });
+        }
+        if ($this->staff()->identite->user->hasRole('staff')) {
+            $claims->where("{$statusColumn}", CLaim::CLAIM_ASSIGNED_TO_STAFF)->whereHas('activeTreatment', function ($qs) {
+                $qs->where('responsible_staff_id', $this->staff()->id);
+            });
+        }
 
+        // check process type
+        // send claim
+        return  response()->json($claims->get(), 201);
+    }
     /**
      * Store a newly created resource in storage.
      *

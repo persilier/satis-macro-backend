@@ -1,16 +1,15 @@
 <?php
 
-namespace Satis2020\Notification\Database\Seeds;
+namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Satis2020\ServicePackage\Models\Channel;
 use Satis2020\ServicePackage\Models\Metadata;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
-class NotificationsTableSeeder extends Seeder
+class InstallMetadataSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,12 +19,11 @@ class NotificationsTableSeeder extends Seeder
     public function run()
     {
 
-        Metadata::updateOrCreate(
+        $appNature = Config::get('services.app_nature', 'PRO');
+
+        $metadataList = [
             [
                 'name' => 'notifications',
-            ],
-            [
-                'id' => (string)Str::uuid(),
                 'data' => json_encode([
                     [
                         'event' => 'acknowledgment-of-receipt',
@@ -98,6 +96,36 @@ class NotificationsTableSeeder extends Seeder
                         'text' => "{posted_by} a écrit dans {discussion_name}. Reference: {claim_reference}. Objet : {claim_object}"
                     ],
                     [
+                        'event' => 'recurrence-alert',
+                        'description' => "Notification envoyée au pilote lorsque le nombre de réclamations acceptable sur une période donnée est dépassée",
+                        'text' => "Le nombre maximum de réclamations tolérable est dépassé"
+                    ],
+                    [
+                        'event' => 'reminder-before-deadline',
+                        'description' => "Notification envoyée aux personnes concernées avant expiration du délai de résolution de la réclamation",
+                        'text' => "Le délai de traitement de la réclamation : Reference: {claim_reference}. Objet : {claim_object} expire dans {time_before}"
+                    ],
+                    [
+                        'event' => 'reminder-after-deadline',
+                        'description' => "Notification envoyée aux personnes concernées après expiration du délai de résolution de la réclamation",
+                        'text' => "Le délai de traitement de la réclamation : Reference: {claim_reference}. Objet : {claim_object} a expiré depuis {time_after}"
+                    ],
+                    [
+                        'event' => 'revoke-claim-claimer-notification',
+                        'description' => "Notification envoyée au réclamant après la révocation de sa réclamation",
+                        'text' => "Nous vous informons que votre réclamation : Reference: {claim_reference}. Objet : {claim_object} a été révoquée avec succès. Si vous n'êtes pas à l'origine de cette action, veuillez nous contacter"
+                    ],
+                    [
+                        'event' => 'revoke-claim-staff-notification',
+                        'description' => "Notification envoyée aux staff concerné après la révocation d'une réclamation",
+                        'text' => "Nous vous informons que la réclamation : Reference: {claim_reference}. Objet : {claim_object} vient d'être révoquée."
+                    ],
+                    [
+                        'event' => 'register-a-claim-high-force-fulness',
+                        'description' => "Notification envoyée au pilote après enregistrement d'une réclamation de gravité élevé.",
+                        'text' => "Une nouvelle reclamation a ete enregistree. Reference: {claim_reference}. Gravite : {severity_level}. Etat : {claim_status}. Objet : {claim_object}"
+                    ],
+                    [
                         'event' => 'transferred-to-unit-escalation',
                         'description' => "Notification envoyée aux staff après transfert d'une réclamation à une unité ou comité de traitement dans le processus d'escalade",
                         'text' => "Une réclamation a été transferée dans le comité d'ont vous êtes membre. Reference: {claim_reference}. Objet : {claim_object}"
@@ -107,8 +135,15 @@ class NotificationsTableSeeder extends Seeder
                         'description' => "Notification envoyée au pilote après traitement d'une réclamation dans le processus d'escalade",
                         'text' => "{responsible_staff} vient de traiter une reclamation. Reference: {claim_reference}. Objet : {claim_object}"
                     ]
-                ])
-            ]
-        );
+                ]),
+            ],
+        ];
+
+        foreach ($metadataList as $metadata) {
+            if (Metadata::whereName($metadata['name'])->first()) {
+                \Satis2020\ServicePackage\Models\Metadata::whereName($metadata['name'])->forceDelete();
+                \Satis2020\ServicePackage\Models\Metadata::create($metadata);
+            }
+        }
     }
 }
