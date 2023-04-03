@@ -254,6 +254,23 @@ trait ClaimAwaitingTreatment
             })
             ->values();
     }
+    protected function getTargetedStaffFromUnitForReassignment($unitId, $responsibleStaffId)
+    {
+        return Staff::with('identite.user')
+            ->where('unit_id', $unitId)
+            ->where('id', '!=', $responsibleStaffId)
+            ->get()
+            ->filter(function ($value, $key) use ($responsibleStaffId) {
+                if (is_null($value->identite)) {
+                    return false;
+                }
+                if (is_null($value->identite->user)) {
+                    return false;
+                }
+                return $value->identite->user->hasRole('staff');
+            })
+            ->values();
+    }
     protected function canRejectClaim($claim)
     {
         $claim->load(['activeTreatment']);
