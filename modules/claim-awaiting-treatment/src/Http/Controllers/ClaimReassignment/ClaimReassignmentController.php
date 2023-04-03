@@ -42,9 +42,10 @@ class ClaimReassignmentController extends ApiController
      * @return JsonResponse
      * @throws CustomException
      */
-    protected function index(Request $request){
+    protected function index(Request $request)
+    {
 
-        $type = $request->query('type','normal');
+        $type = $request->query('type', 'normal');
         $this->checkLeadReassignment();
 
         return response()->json($this->queryClaimReassignment($type)->get(), 200);
@@ -57,8 +58,9 @@ class ClaimReassignmentController extends ApiController
      * @return JsonResponse
      * @throws CustomException
      */
-    protected function show(Request $request,$claim){
-        $type = $request->query('type','normal');
+    protected function show(Request $request, $claim)
+    {
+        $type = $request->query('type', 'normal');
 
         $this->checkLeadReassignment();
         return response()->json($this->queryClaimReassignment($type)->find($claim), 200);
@@ -72,15 +74,16 @@ class ClaimReassignmentController extends ApiController
      * @throws CustomException
      * @throws RetrieveDataUserNatureException
      */
-    protected function edit(Request $request,$claim){
+    protected function edit(Request $request, $claim)
+    {
 
-        $type = $request->query('type','normal');
+        $type = $request->query('type', 'normal');
 
         $staff = $this->staff();
         $this->checkLeadReassignment();
         $claimToReassign = $this->queryClaimReassignment($type)->find($claim);
-        $staffs = $claimToReassign->activeTreatment->responsible_staff_id!=null?
-            $this->getTargetedStaffFromUnit($staff->unit_id,true,$claimToReassign->activeTreatment->responsible_staff_id):$this->getTargetedStaffFromUnit($staff->unit_id);
+        $staffs = $claimToReassign->activeTreatment->responsible_staff_id != null ?
+            $this->getTargetedStaffFromUnitForReassignment($staff->unit_id, $claimToReassign->activeTreatment->responsible_staff_id) : $this->getTargetedStaffFromUnit($staff->unit_id);
         return response()->json([
             'claim' => $claimToReassign,
             'staffs' => $staffs,
@@ -96,9 +99,10 @@ class ClaimReassignmentController extends ApiController
      * @throws RetrieveDataUserNatureException
      * @throws ValidationException
      */
-    protected function update(Request $request, $claim){
+    protected function update(Request $request, $claim)
+    {
 
-        $type = $request->query('type','normal');
+        $type = $request->query('type', 'normal');
 
         $this->checkLeadReassignment();
         $claim = $this->queryClaimReassignment($type)->find($claim);
@@ -107,7 +111,8 @@ class ClaimReassignmentController extends ApiController
             'responsible_staff_id' => $request->staff_id,
         ]);
 
-        $this->activityLogService->store("Une réclamation a été réaffecté à un autre staff",
+        $this->activityLogService->store(
+            "Une réclamation a été réaffecté à un autre staff",
             $this->institution()->id,
             $this->activityLogService::REASSIGNMENT_CLAIM,
             'claim',
@@ -117,6 +122,4 @@ class ClaimReassignmentController extends ApiController
 
         return response()->json($claim, 201);
     }
-
-
 }

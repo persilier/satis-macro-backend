@@ -2,9 +2,11 @@
 
 namespace Satis2020\ServicePackage\Database\Seeds;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 use Satis2020\ServicePackage\Models\Requirement;
 
 class InstallRequirementSeeder extends Seeder
@@ -67,15 +69,26 @@ class InstallRequirementSeeder extends Seeder
                 'id' => (string)Str::uuid(),
                 'name' => 'amount_currency_slug',
                 'description' => "La devise du montant réclamé"
+            ],
+            [
+                'id' => (string)Str::uuid(),
+                'name' => 'file',
+                'description' => "Piece jointe"
             ]
         ];
 
         $appNature = Config::get('services.app_nature', 'PRO');
 
         foreach ($requirements as $requirement) {
-            if (($requirement['name'] == 'relationship_id' && $appNature == 'HUB') || $requirement['name'] != 'relationship_id')
+            if ((($requirement['name'] == 'relationship_id' && $appNature == 'HUB') || $requirement['name'] != 'relationship_id') && !Requirement::where('name', $requirement['name'])->exists())
                 Requirement::create($requirement);
+            else if (Requirement::where('name', $requirement['name'])->exists()) {
+                Requirement::where('name', $requirement['name'])->update([
+                    'description' => [
+                        App::getLocale() => $requirement['description']
+                    ],
+                ]);
+            }
         }
-
     }
 }
