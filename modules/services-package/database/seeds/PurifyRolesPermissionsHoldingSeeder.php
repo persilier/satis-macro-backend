@@ -3,10 +3,11 @@
 namespace Satis2020\ServicePackage\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Config;
+use Spatie\Permission\Models\Permission;
+use Satis2020\ServicePackage\Models\Module;
 
 class PurifyRolesPermissionsHoldingSeeder extends Seeder
 {
@@ -26,8 +27,6 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
         if (!in_array($institutionType, $institution_types)) {
             array_push($institution_types, $institutionType);
         }
-
-        return json_encode($institution_types);
     }
 
     /**
@@ -81,13 +80,19 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-faq', 'store-faq', 'update-faq', 'delete-faq',
                     'search-claim-any-reference',
                     'list-any-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'export-notification-proof',
                     'configure-pilot-collector-discussion-attribute',
-                    'show-proxy-config','update-proxy-config','delete-proxy-config',
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'show-proxy-config', 'update-proxy-config', 'delete-proxy-config',
+                    'list-config-reporting-claim-my-institution', 'store-config-reporting-claim-my-institution', 'update-config-reporting-claim-my-institution', 'delete-config-reporting-claim-my-institution',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+                    'show-configuration-quota-delay',
+                    'update-configuration-quota-delay',
+                    'update-escalation-config',
+                    'update-satisfaction-data-config',
+                    'access-satisfaction-data-config',
+                    'list-escalation-config',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -109,9 +114,13 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-any-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
+                    'update-satisfaction-data-config',
+                    'access-satisfaction-data-config',
+                    'list-escalation-config',
+                    'internal-control-index','internal-control-store'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -123,6 +132,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
+                    'access-satisfaction-data-config',
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
@@ -132,8 +142,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
-                    'list-staff-revivals','list-unit-revivals',
+                    'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
+                    'access-satisfaction-data-config'
                 ]
             ];
 
@@ -152,18 +163,51 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 } else {
                     // sync permissions
                     foreach ($permissions as $permissionName) {
-                            Permission::query()->updateOrCreate(
-                                ['name' => $permissionName],
-                                ['name' => $permissionName, 'guard_name' => 'api','institution_types' => $institutionTypes]);
+
+                        Permission::query()->updateOrCreate(
+                            ['name' => $permissionName],
+                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding']: $institutionTypes]
+                        );
                     }
 
                     $role->syncPermissions($permissions);
                     $role->update(['is_editable' => 0]);
                 }
-
             }
 
             Permission::doesntHave('roles')->delete();
+
+            Permission::where('guard_name', 'api')->update(['module_id' => null]);
+
+            $modules = [
+                "Collecte holding" => "collector-holding",
+                "Traitement holding" =>  "staff",
+                "Pilotage du processus holding" => "pilot-holding",
+                "Administration holding" =>  "admin-holding",
+                "Contrôle interne holding" =>  "supervisor-holding",
+            ];
+
+            $permissionsAssociatedToModules = collect([]);
+
+            foreach ($modules as $moduleName => $roleName) {
+                // CreateOrUpdate $module
+                $module = Module::updateOrCreate(
+                    ['name->' . app()->getLocale() => $moduleName],
+                    ["name" => $moduleName, "description" => $moduleName]
+                );
+
+                $modulePermissions = $holdingRoles[$roleName];
+
+                foreach ($modulePermissions as $permissionName) {
+                    // verify if permission already have module
+                    if ($permissionsAssociatedToModules->search($permissionName) === false) {
+                        // Associate permission to module
+                        Permission::where('guard_name', 'api')->where('name', $permissionName)->update(['module_id' => $module->id]);
+                        // Add permission to permissionsAssociatedToModules
+                        $permissionsAssociatedToModules->push($permissionName);
+                    }
+                }
+            }
         }
     }
 }

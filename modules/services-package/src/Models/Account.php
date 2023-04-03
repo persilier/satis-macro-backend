@@ -42,7 +42,7 @@ class Account extends Model
      */
     protected $casts = [];
 
-    protected $hidden = ['account_number'];
+    protected $hidden = [];
 
     protected $appends = ['account_number'];
 

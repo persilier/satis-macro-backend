@@ -2,18 +2,19 @@
 
 namespace Satis2020\AnyInstitutionUnit\Http\Controllers\Unit;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
-use Satis2020\ServicePackage\Models\UnitType;
-use Satis2020\ServicePackage\Models\Institution;
-use Satis2020\ServicePackage\Models\Staff;
+use Illuminate\Http\JsonResponse;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Rules\StateExistRule;
-use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
-use Satis2020\ServicePackage\Services\CountryService;
+use Satis2020\ServicePackage\Models\Staff;
+use Satis2020\ServicePackage\Models\UnitType;
 use Satis2020\ServicePackage\Traits\UnitTrait;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Rules\StateExistRule;
+use Satis2020\ServicePackage\Services\CountryService;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityRules;
+use Satis2020\ServicePackage\Rules\TranslatableFieldUnicityByInstitutionRules;
 
 class UnitController extends ApiController
 {
@@ -50,11 +51,9 @@ class UnitController extends ApiController
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
             'units' => $this->getAllUnitByInstitution($this->institution()->id),
-            'parents' => $this->getAllUnitByInstitution($this->institution()->id),
+            'parents' => $this->getAllUnit(),
             'countries' => $countryService->getCountriesWithStates()
         ], 200);
-
-
     }
 
     /**
@@ -70,9 +69,8 @@ class UnitController extends ApiController
         if ($request->isNotFilled('parent_id')) {
             $request->request->remove('parent_id');
         }
-
         $rules = [
-            'name' => ['required', new TranslatableFieldUnicityRules('units', 'name')],
+            'name' => ['required', new TranslatableFieldUnicityByInstitutionRules('units', 'name', null, null, $request->institution_id)],
             'description' => 'nullable',
             'unit_type_id' => 'required|exists:unit_types,id',
             'institution_id' => 'required|exists:institutions,id',
@@ -109,13 +107,14 @@ class UnitController extends ApiController
     public function edit(Unit $unit, CountryService $countryService)
     {
         return response()->json([
-            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite'),
+            'unit' => $unit->load('unitType', 'institution', 'parent', 'children', 'lead.identite', 'state.country'),
             'unitTypes' => UnitType::all(),
             'institutions' => Institution::all(),
+            'parents' => $this->getAllUnit(),
             'leads' => Staff::with('identite')->where('institution_id', $unit->institution->id)
                 ->where('unit_id', $unit->id)->get(),
             'units' => Unit::where('institution_id', $unit->institution->id)->get(),
-            'countries' => $countryService->getCountries()
+            'countries' => $countryService->getCountriesWithStates()
         ], 200);
     }
 

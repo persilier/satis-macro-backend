@@ -24,18 +24,18 @@ trait RoleTrait
      * @param $request
      * @return Model|Role
      */
-    protected function createRole($request){
+    protected function createRole($request)
+    {
 
         $role = Role::create([
             'name' => $request->name,
             'description' => $request->description,
             'guard_name' => 'api',
             'is_editable' => 1,
-            'institution_types' => json_encode ($request->institutionTypes)
+            'institution_types' => json_encode($request->institutionTypes)
         ]);
 
         return $role->syncPermissions($request->permissions);
-
     }
 
 
@@ -44,7 +44,8 @@ trait RoleTrait
      * @param $role
      * @return mixed
      */
-    protected function updateRole($request, $role){
+    protected function updateRole($request, $role)
+    {
 
         $role->update([
             'name' => $request->name,
@@ -61,7 +62,8 @@ trait RoleTrait
      * @param $role
      * @return array
      */
-    protected function editRole($request, $role){
+    protected function editRole($request, $role)
+    {
 
         $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
@@ -80,7 +82,6 @@ trait RoleTrait
             "institutionType" => $types,
             "institutionTypes" => $dataCreate['institutionTypes']
         ];
-
     }
 
 
@@ -88,7 +89,8 @@ trait RoleTrait
      * @param $request
      * @return array
      */
-    protected function getAllDatecreateRole($request){
+    protected function getAllDatecreateRole($request)
+    {
 
         $permissions = [];
 
@@ -96,18 +98,18 @@ trait RoleTrait
 
         $institutionTypesNames = InstitutionType::all()->pluck('name');
 
-        foreach ($institutionTypes as $institutionType){
+        foreach ($institutionTypes as $institutionType) {
 
             $request->merge(['institutionTypes' => [$institutionType->name]]);
-            $permissions[$institutionType->name] = $this->getAllPermissions($request);
-
+            $permissions[$institutionType->name] = $this->getAllPermissions($request)->filter(function ($value,  $key) {
+                return count($value->permissions) !== 0;
+            })->values();
         }
 
-        if(count($institutionTypes) > 1){
+        if (count($institutionTypes) > 1) {
 
             $request->merge(['institutionTypes' => $institutionTypesNames]);
             $permissions['all'] = $this->getAllPermissions($request);
-            
         }
 
         return [
@@ -120,28 +122,25 @@ trait RoleTrait
      * @param $request
      * @return mixed
      */
-    protected function getAllPermissions($request){
+    protected function getAllPermissions($request)
+    {
 
-        return Module::all()->map(function ($item) use ($request){
+        return Module::all()->map(function ($item) use ($request) {
 
-            $item['permissions'] = Permission::where('guard_name', 'api')->where('module_id', $item->id)->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function($permission) use ($request){
+            $item['permissions'] = Permission::where('guard_name', 'api')->where('module_id', $item->id)->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->get()->filter(function ($permission) use ($request) {
 
-                if(count($request->institutionTypes) == 1){
+                if (count($request->institutionTypes) == 1) {
 
                     return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types));
-
-                }else{
+                } else {
 
                     return (is_array($permission->institution_types) && in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $permission->institution_types)
                         && in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $permission->institution_types));
                 }
-
             })->flatten()->all();
 
             return $item;
-
         });
-
     }
 
 
@@ -150,10 +149,10 @@ trait RoleTrait
      * @param $role
      * @return Builder[]|Collection
      */
-    protected function getModulesPermissionsForRole($role){
+    protected function getModulesPermissionsForRole($role)
+    {
 
         return $role->load('permissions');
-
     }
 
 
@@ -161,7 +160,8 @@ trait RoleTrait
      * @param $role
      * @return array
      */
-    protected function getRole($role){
+    protected function getRole($role)
+    {
 
         $role = Role::whereName($role)->where('guard_name', 'api')->withCasts(['institution_types' => 'array'])->firstOrFail();
 
@@ -176,15 +176,16 @@ trait RoleTrait
      * @param null $role
      * @return array
      */
-    protected function rule($role = NULL){
+    protected function rule($role = NULL)
+    {
 
         return  [
             'name' => ['required', Rule::unique(config('permission.table_names.roles'))->where(function ($q) use ($role) {
-                return $q->where('name','!=', $role);
+                return $q->where('name', '!=', $role);
             })],
             'permissions' => 'required|array',
             'institutionTypes' => 'required|array',
-            'description'=>'required|string'
+            'description' => 'required|string'
         ];
     }
 
@@ -192,31 +193,28 @@ trait RoleTrait
     /**
      * @param $request
      */
-    protected function verifiedStore($request){
+    protected function verifiedStore($request)
+    {
 
         $nbreType = count($request->institutionTypes);
 
-        foreach ($request->permissions as $permission){
+        foreach ($request->permissions as $permission) {
 
             $institutionType = Permission::where('guard_name', 'api')->whereNotNull('module_id')->whereNotNull('institution_types')->withCasts(['institution_types' => 'array'])->where('name', $permission)->firstOrFail()->institution_types;
 
-            if($nbreType == 2){
+            if ($nbreType == 2) {
 
-                if(!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType) || !in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $institutionType)){
+                if (!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType) || !in_array(InstitutionType::whereName($request->institutionTypes[1])->firstOrFail()->name, $institutionType)) {
 
-                    throw new CustomException(__('errors.cant_give_permission',['permission'=>$permission],app()->getLocale()));
+                    throw new CustomException(__('errors.cant_give_permission', ['permission' => $permission], app()->getLocale()));
                 }
+            } else {
 
-            }else{
+                if (!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType)) {
 
-                if(!in_array(InstitutionType::whereName($request->institutionTypes[0])->firstOrFail()->name, $institutionType)){
-
-                    throw new CustomException(__('errors.cant_give_permission',['permission'=>$permission],app()->getLocale()));
-
+                    throw new CustomException(__('errors.cant_give_permission', ['permission' => $permission], app()->getLocale()));
                 }
-
             }
-
         }
     }
 
@@ -224,24 +222,21 @@ trait RoleTrait
     /**
      * @param $role
      */
-    protected function checkIsEditableRole($role){
+    protected function checkIsEditableRole($role)
+    {
 
-        if($role->is_editable == 0){
+        if ($role->is_editable == 0) {
 
-            throw new CustomException(__('errors.cant_delete_role',[],app()->getLocale()));
-
+            throw new CustomException(__('errors.cant_delete_role', [], app()->getLocale()));
         }
-
     }
 
-    protected function checkIsUsedRole($role){
+    protected function checkIsUsedRole($role)
+    {
 
         $item = Role::withCount('users')->findOrFail($role->id);
-        if ($item->users_count!=0) {
+        if ($item->users_count != 0) {
             throw new CustomException("Impossible de supprimer ce role car il est déjà attribué.");
         }
-
     }
-
-
 }

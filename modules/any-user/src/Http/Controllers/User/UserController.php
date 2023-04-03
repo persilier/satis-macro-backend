@@ -1,4 +1,5 @@
 <?php
+
 namespace Satis2020\AnyUser\Http\Controllers\User;
 
 use Exception;
@@ -16,6 +17,7 @@ use Satis2020\ServicePackage\Traits\IdentiteVerifiedTrait;
 use Satis2020\ServicePackage\Traits\Metadata;
 use Satis2020\ServicePackage\Traits\UserTrait;
 use Satis2020\ServicePackage\Traits\VerifyUnicity;
+
 /**
  * Class UserController
  * @package Satis2020\UserPackage\Http\Controllers\User
@@ -31,7 +33,7 @@ class UserController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-user-any-institution')->only(['index']);
-        $this->middleware('permission:store-user-any-institution')->only(['create','store']);
+        $this->middleware('permission:store-user-any-institution')->only(['create', 'store']);
         $this->middleware('permission:show-user-any-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);
 
         $this->activityLogService = $activityLogService;
@@ -43,8 +45,8 @@ class UserController extends ApiController
      */
     public function index()
     {
-        $users = $this->getAllUser();
-        return response()->json($users,200);
+        $users = $this->getAllUser(false, request('size', 10));
+        return response()->json($users, 200);
     }
 
 
@@ -55,17 +57,17 @@ class UserController extends ApiController
      */
     public function show(User $user)
     {
-        return response()->json($this->getOneUser($user),200);
+        return response()->json($this->getOneUser($user), 200);
     }
 
 
     /**
      * @return JsonResponse
      */
-    public function create(){
+    public function create()
+    {
 
-        return response()->json(Institution::all(),200);
-
+        return response()->json(Institution::all(), 200);
     }
 
 
@@ -83,7 +85,8 @@ class UserController extends ApiController
 
         $user = $this->storeUser($request, $identiteRole);
 
-        $this->activityLogService->store("Enregistrement d'un compte utilisateur avec son profil.",
+        $this->activityLogService->store(
+            "Enregistrement d'un compte utilisateur avec son profil.",
             $this->institution()->id,
             $this->activityLogService::CREATED,
             'user',
@@ -91,7 +94,7 @@ class UserController extends ApiController
             $user
         );
 
-        return response()->json($user,201);
+        return response()->json($user, 201);
     }
 
 
@@ -100,7 +103,8 @@ class UserController extends ApiController
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\CustomException
      */
-    protected function getUserUpdate(User $user){
+    protected function getUserUpdate(User $user)
+    {
 
         return response()->json([
             'user' => $this->getOneUser($user),
@@ -115,7 +119,8 @@ class UserController extends ApiController
      * @return JsonResponse
      * @throws ValidationException|\Satis2020\ServicePackage\Exceptions\CustomException
      */
-    protected function userUpdate(Request $request, User $user){
+    protected function userUpdate(Request $request, User $user)
+    {
 
         $this->validate($request, $this->rulesCreateUser(false, true));
 
@@ -123,12 +128,13 @@ class UserController extends ApiController
 
         $user = $this->remokeAssigneRole($user, $roles);
 
-        if($request->filled('new_password')){
+        if ($request->filled('new_password')) {
 
             $user = $this->updatePassword($request, $user);
         }
 
-        $this->activityLogService->store("Modification des informations d'un utilisateur.",
+        $this->activityLogService->store(
+            "Modification des informations d'un utilisateur.",
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'user',
@@ -137,7 +143,6 @@ class UserController extends ApiController
         );
 
         return response()->json($user, 201);
-
     }
 
 
@@ -146,7 +151,8 @@ class UserController extends ApiController
      * @return JsonResponse
      * @throws \Satis2020\ServicePackage\Exceptions\RetrieveDataUserNatureException
      */
-    protected function enabledDesabled(User $user){
+    protected function enabledDesabled(User $user)
+    {
 
         $user = $this->statusUser($user);
 
@@ -156,7 +162,8 @@ class UserController extends ApiController
             $descriptionLog = 'Réactivation du compte d\'un utilisateur';
         }
 
-        $this->activityLogService->store($descriptionLog,
+        $this->activityLogService->store(
+            $descriptionLog,
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'user',
@@ -165,5 +172,4 @@ class UserController extends ApiController
         );
         return response()->json($user, 201);
     }
-
 }
