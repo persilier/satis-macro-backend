@@ -120,7 +120,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
-                    'internal-control-index','internal-control-store'
+                    'internal-control-index','internal-control-store',
+                    'auto-affect-claim-for-satisfaction-collector'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [

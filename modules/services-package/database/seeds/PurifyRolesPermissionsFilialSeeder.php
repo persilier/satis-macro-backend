@@ -98,7 +98,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-closed-my-claims','close-my-claims',
                     'list-escalation-config','update-escalation-config',
                     'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
-
+                    'auto-affect-claim-for-satisfaction-collector'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
