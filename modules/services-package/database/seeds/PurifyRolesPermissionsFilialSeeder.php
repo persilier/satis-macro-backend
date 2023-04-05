@@ -101,7 +101,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-escalation-config', 'update-escalation-config',
                     'list-treatment-board', 'store-treatment-board', 'update-treatment-board',
                     'destroy-treatment-board',
-                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config'
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
 
                 ],
                 "supervisor-filial" => [],
@@ -113,7 +113,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'history-list-create-claim',
                     'search-claim-my-reference',
                     'attach-files-to-claim',
-                    'revive-staff', 'access-satisfaction-data-config'
+                    'revive-staff', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
