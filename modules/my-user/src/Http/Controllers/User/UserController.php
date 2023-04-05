@@ -1,4 +1,5 @@
 <?php
+
 namespace Satis2020\MyUser\Http\Controllers\User;
 
 use Exception;
@@ -27,9 +28,8 @@ class UserController extends ApiController
         parent::__construct();
         $this->middleware('auth:api');
         $this->middleware('permission:list-user-my-institution')->only(['index']);
-        $this->middleware('permission:store-user-my-institution')->only(['create','store']);
+        $this->middleware('permission:store-user-my-institution')->only(['create', 'store']);
         $this->middleware('permission:show-user-my-institution')->only(['show', 'getUserUpdate', 'enabledDesabled', 'userUpdate']);
-
     }
 
 
@@ -37,8 +37,8 @@ class UserController extends ApiController
     {
         $pagination = \request()->query('size');
         $search_text = \request()->query('search_text');
-        $users = $this->getAllUser(true, $pagination,$search_text);
-        return response()->json($users,200);
+        $users = $this->getAllUser(true, request('size', 10), $search_text);
+        return response()->json($users, 200);
     }
 
 
@@ -48,17 +48,17 @@ class UserController extends ApiController
      */
     public function show(User $user)
     {
-        return response()->json($this->getOneUser($user, true),200);
+        return response()->json($this->getOneUser($user, true), 200);
     }
 
 
     /**
      * @return JsonResponse
      */
-    public function create(){
+    public function create()
+    {
 
-        return response()->json($this->getAllIdentitesRoles($this->institution()),200);
-
+        return response()->json($this->getAllIdentitesRoles($this->institution()), 200);
     }
 
 
@@ -81,7 +81,7 @@ class UserController extends ApiController
 
         $user = $this->storeUser($request, $identiteRole);
 
-        return response()->json($user,201);
+        return response()->json($user, 201);
     }
 
 
@@ -89,7 +89,8 @@ class UserController extends ApiController
      * @param User $user
      * @return JsonResponse
      */
-    protected function getUserUpdate(User $user){
+    protected function getUserUpdate(User $user)
+    {
 
         return response()->json([
             'user' => $this->getOneUser($user, true),
@@ -104,22 +105,22 @@ class UserController extends ApiController
      * @return JsonResponse
      * @throws ValidationException
      */
-    protected function userUpdate(Request $request, User $user){
+    protected function userUpdate(Request $request, User $user)
+    {
 
         $this->validate($request, $this->rulesCreateUser(false, true));
 
-        if($request->filled('roles')){
+        if ($request->filled('roles')) {
             $roles = $this->verifiedRole($request, $user->identite);
             $user = $this->remokeAssigneRole($user, $roles);
         }
 
-        if($request->filled('new_password')){
+        if ($request->filled('new_password')) {
 
             $user = $this->updatePassword($request, $user);
         }
 
         return response()->json($user, 201);
-
     }
 
 
@@ -129,13 +130,14 @@ class UserController extends ApiController
      * @return JsonResponse
      * @throws ValidationException
      */
-    protected function changePassword(Request $request, User $user){
+    protected function changePassword(Request $request, User $user)
+    {
 
         $this->myUser($user);
 
         $this->validate($request, $this->rulesChangePassword());
 
-        return response()->json($this->updatePassword($request, $user),201);
+        return response()->json($this->updatePassword($request, $user), 201);
     }
 
 
@@ -143,10 +145,9 @@ class UserController extends ApiController
      * @param User $user
      * @return JsonResponse
      */
-    protected function enabledDesabled(User $user){
+    protected function enabledDesabled(User $user)
+    {
 
         return response()->json($this->statusUser($user), 201);
     }
-
-
 }

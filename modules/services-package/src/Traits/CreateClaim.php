@@ -261,8 +261,8 @@ trait CreateClaim
             $data[] = 'unit_targeted_id';
         }
 
-        
-        $data = array_merge($data,['time_limit','time_unit','time_staff','time_treatment','time_validation','time_measure_satisfaction']);
+
+        $data = array_merge($data, ['time_limit', 'time_unit', 'time_staff', 'time_treatment', 'time_validation', 'time_measure_satisfaction']);
         $time_object = ClaimObject::find($request->claim_object_id);
 
         $request->merge([
@@ -297,6 +297,7 @@ trait CreateClaim
         if (!is_null($claim->claimer)) {
             $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
         }
+
 
         if (is_null($claim->createdBy)) {
             $institutionTargeted = $claim->institutionTargeted;

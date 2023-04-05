@@ -93,6 +93,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
+                    'internal-control-index', 'internal-control-store',
+                    'config-reporting-claim-any-institution', 'activity-log', 'access-satisfaction-data-config'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -120,8 +122,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
-                    'internal-control-index','internal-control-store',
-                    'auto-affect-claim-for-satisfaction-collector'
+                    
+                    
+                    'internal-control-index', 'internal-control-store','auto-affect-claim-for-satisfaction-collector',
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config', 'staff-list-satisfaction-measured-my-claim'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -133,7 +137,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'access-satisfaction-data-config',
+                    'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
@@ -145,7 +149,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
-                    'access-satisfaction-data-config'
+                    'access-satisfaction-data-config', 'access-satisfaction-data-config'
                 ]
             ];
 
@@ -167,7 +171,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
 
                         Permission::query()->updateOrCreate(
                             ['name' => $permissionName],
-                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding']: $institutionTypes]
+                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding'] : $institutionTypes]
                         );
                     }
 

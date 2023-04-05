@@ -54,18 +54,18 @@ class RecurrenceAlertController extends ApiController
         $this->validate($request, $rules);
 
         $new_parameters = $request->only(['recurrence_period', 'max']);
-        
-        $metadata = Metadata::where('name', 'recurrence-alert-settings')->first()->update(['data'=> json_encode
-        ($new_parameters)]);
 
-        $this->activityLogService->store('Configuration du nombre minimum toléré pour la récurrence',
+        $metadata = Metadata::where('name', 'recurrence-alert-settings')->first();
+        $metadata->update(['data' => json_encode($new_parameters)]);
+        $this->activityLogService->store(
+            'Configuration du nombre minimum toléré pour la récurrence',
             $this->institution()->id,
             'metadata',
             $this->activityLogService::UPDATED,
-            $this->user(), $metadata
+            $this->user(),
+            $metadata
         );
 
         return response()->json($new_parameters, 200);
     }
-
 }

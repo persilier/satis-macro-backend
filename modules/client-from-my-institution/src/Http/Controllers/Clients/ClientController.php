@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends ApiController
 {
-    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete,Search;
+    use IdentiteVerifiedTrait, VerifyUnicity, ClientTrait, SecureDelete, Search;
 
     protected $activityLogService;
 
@@ -53,12 +53,11 @@ class ClientController extends ApiController
         $recherche = \request()->query('key');
 
 
-        if ($paginationSize==null)
+        if ($paginationSize == null)
             $paginationSize = Constants::PAGINATION_SIZE;
 
-        $clients = $this->getAllClientByInstitution($institution->id, true, $paginationSize,$recherche);
+        $clients = $this->getAllClientByInstitution($institution->id, true, $paginationSize, $recherche);
         return response()->json($clients, 200);
-
     }
 
 
@@ -98,7 +97,6 @@ class ClientController extends ApiController
         if (!$verifyAccount['status']) {
 
             throw new CustomException($verifyAccount, 409);
-
         }
 
         // Client PhoneNumber Unicity Verification
@@ -107,7 +105,6 @@ class ClientController extends ApiController
         if (!$verifyPhone['status']) {
 
             throw new CustomException($verifyPhone, 409);
-
         }
 
         // Client Email Unicity Verification
@@ -168,11 +165,10 @@ class ClientController extends ApiController
         $request->merge(['institution_id' => $this->institution()->id]);
         if (!$client = $this->getOneClient($request, $clientId)) {
 
-            throw new CustomException(__('errors.client_not_found',[],app()->getLocale()));
+            throw new CustomException(__('errors.client_not_found', [], app()->getLocale()));
         }
 
         return response()->json($client, 200);
-
     }
 
 
@@ -201,7 +197,7 @@ class ClientController extends ApiController
 
         // verify if the account is not null and belong to the institution of the user connected
         if (is_null($account) || $account->client_institution->institution_id != $institution->id) {
-            return $this->errorResponse(__('errors.account_do_not_exist',[],app()->getLocale()), Response::HTTP_NOT_FOUND);
+            return $this->errorResponse(__('errors.account_do_not_exist', [], app()->getLocale()), Response::HTTP_NOT_FOUND);
         }
 
         $client = $account->client_institution->client;
@@ -218,9 +214,8 @@ class ClientController extends ApiController
 
         if (!$verifyPhone['status']) {
 
-            $verifyPhone['message'] = __('errors.phone_conflict',['phone'=>$verifyPhone['verify']['conflictValue']],app()->getLocale());
+            $verifyPhone['message'] = __('errors.phone_conflict', ['phone' => $verifyPhone['verify']['conflictValue']], app()->getLocale());
             throw new CustomException($verifyPhone, 409);
-
         }
 
         // Client Email Unicity Verification
@@ -228,16 +223,16 @@ class ClientController extends ApiController
 
         if (!$verifyEmail['status']) {
 
-            $verifyEmail['message'] = __('errors.email_conflict',['email'=>$verifyEmail['verify']['conflictValue']],app()->getLocale());
+            $verifyEmail['message'] = __('errors.email_conflict', ['email' => $verifyEmail['verify']['conflictValue']], app()->getLocale());
             throw new CustomException($verifyEmail, 409);
-
         }
 
         $account->update($request->only(['number', 'account_type_id']));
 
         $client->identite->update($request->only(['firstname', 'lastname', 'sexe', 'telephone', 'email', 'ville', 'other_attributes']));
 
-        $this->activityLogService->store(__('messages.client_updated',[],app()->getLocale()),
+        $this->activityLogService->store(
+            __('messages.client_updated', [], app()->getLocale()),
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'account',
@@ -271,7 +266,8 @@ class ClientController extends ApiController
 
         $account->secureDelete('claims');
 
-        $this->activityLogService->store('Suppression du compte d\'un client',
+        $this->activityLogService->store(
+            'Suppression du compte d\'un client',
             $this->institution()->id,
             $this->activityLogService::UPDATED,
             'account',
@@ -281,6 +277,4 @@ class ClientController extends ApiController
 
         return response()->json($account, 201);
     }
-
 }
-

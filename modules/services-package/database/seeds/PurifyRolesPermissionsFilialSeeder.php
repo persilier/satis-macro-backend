@@ -56,17 +56,19 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'search-claim-my-reference',
                     "my-email-claim-configuration",
                     'list-notification-proof',
-                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+                    'list-webhooks-config', 'store-webhooks-config', 'update-webhooks-config', 'delete-webhooks-config',
                     'config-reporting-claim-my-institution',
                     'list-notification-proof',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
-                    
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
+
                     'bci-monthly-reports', 'bci-annual-reports',
-                    'export-notification-proof','update-mail-parameters',
-                    'list-config-reporting-claim-my-institution','store-config-reporting-claim-my-institution','update-config-reporting-claim-my-institution','delete-config-reporting-claim-my-institution',
-                    'show-proxy-config','update-proxy-config','delete-proxy-config',
-                    'list-escalation-config','update-escalation-config',
-                    'logout-user-my-institution',
+                    'export-notification-proof', 'update-mail-parameters',
+                    'list-config-reporting-claim-my-institution', 'store-config-reporting-claim-my-institution', 'update-config-reporting-claim-my-institution', 'delete-config-reporting-claim-my-institution',
+                    'show-proxy-config', 'update-proxy-config', 'delete-proxy-config',
+                    'list-escalation-config', 'update-escalation-config',
+                    'logout-user-my-institution', 'access-satisfaction-data-config',
+                    'configure-pilot-collector-discussion-attribute',
+                    'list-auth-config', 'update-auth-config', 'update-relance-parameters'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -87,18 +89,23 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'attach-files-to-claim',
                     'revive-staff',
                     'pilot-list-notification-proof',
-                    'list-webhooks-config','store-webhooks-config','update-webhooks-config','delete-webhooks-config',
+                    'list-webhooks-config', 'store-webhooks-config', 'update-webhooks-config', 'delete-webhooks-config',
                     'list-regulatory-reporting-claim-my-institution',
                     'list-system-usage-reporting', 'list-benchmarking-reporting', 'list-global-reporting',
                     'system-any-efficiency-report',
-                    'list-reporting-titles-configs','update-reporting-titles-configs','edit-reporting-titles-configs',
+                    'list-reporting-titles-configs', 'update-reporting-titles-configs', 'edit-reporting-titles-configs',
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
                     'list-my-claim-unsatisfied',
-                    'list-closed-my-claims','close-my-claims',
-                    'list-escalation-config','update-escalation-config',
-                    'list-treatment-board','store-treatment-board','update-treatment-board','destroy-treatment-board',
+                    
+                    
+                    'list-closed-my-claims', 'close-my-claims',
+                    'list-escalation-config', 'update-escalation-config',
+                    'list-treatment-board', 'store-treatment-board', 'update-treatment-board',
+                    'destroy-treatment-board',
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim',
                     'auto-affect-claim-for-satisfaction-collector'
+
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
@@ -109,7 +116,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'history-list-create-claim',
                     'search-claim-my-reference',
                     'attach-files-to-claim',
-                    'revive-staff',
+                    'revive-staff', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
                 ],
                 "staff" => [
                     'list-claim-awaiting-treatment', 'show-claim-awaiting-treatment', 'rejected-claim-awaiting-treatment', 'self-assignment-claim-awaiting-treatment', 'assignment-claim-awaiting-treatment', 'list-claim-assignment-to-staff', 'show-claim-assignment-to-staff',
@@ -119,20 +126,17 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'search-claim-my-reference',
                     'attach-files-to-claim',
                     'show-my-staff-monitoring',
-                    'list-staff-revivals','list-unit-revivals',
-                    'revive-staff'
+                    'list-staff-revivals', 'list-unit-revivals',
+                    'revive-staff', 'access-satisfaction-data-config'
                 ],
                 'satisfaction-mesure' => [
-                    'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim'
+                    'staff-list-satisfaction-measured-my-claim', 'update-satisfaction-measured-my-claim', 'access-satisfaction-data-config'
                 ],
-                'internal-controller'=> [
-                    "internal-control-claim", 'internal-control-index'
-                    ,'internal-control-claim-detail','internal-control-claim-object-index',
+                'internal-controller' => [
+                    "internal-control-claim", 'internal-control-index', 'internal-control-claim-detail', 'internal-control-claim-object-index', 'access-satisfaction-data-config'
                 ],
-                'conformer'=> [
-                ],
-                'staff-service-quality'=> [
-                ],
+                'conformer' => [],
+                'staff-service-quality' => [],
             ];
 
             foreach ($filialRoles as $roleName => $permissions) {
@@ -158,7 +162,6 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     $role->syncPermissions($permissions);
                     $role->update(['is_editable' => 0]);
                 }
-
             }
 
             Permission::doesntHave('roles')->delete();
@@ -192,7 +195,6 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     }
                 }
             }
-
         }
     }
 }
