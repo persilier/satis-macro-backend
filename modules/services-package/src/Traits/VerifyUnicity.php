@@ -271,9 +271,10 @@ trait VerifyUnicity
      * @param null $idValue
      * @return array
      */
-    protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null)
+    protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null, $typeColumn = null, $typeValue = null)
     {
-        $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue);
+
+        $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue, $typeColumn, $typeValue);
 
         if (!$verify['status']) {
 

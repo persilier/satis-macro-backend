@@ -85,6 +85,7 @@ class ClientController extends ApiController
      */
     public function store(Request $request)
     {
+
         $this->convertEmailInStrToLower($request);
 
         $this->validate($request, $this->rulesClient());
@@ -100,15 +101,14 @@ class ClientController extends ApiController
         }
 
         // Client PhoneNumber Unicity Verification
-        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id);
-
+        $verifyPhone = $this->handleClientIdentityVerification($request->telephone, 'identites', 'telephone', 'telephone', $institution->id, null, null, 'type_client', $request->type_client);
         if (!$verifyPhone['status']) {
 
             throw new CustomException($verifyPhone, 409);
         }
 
         // Client Email Unicity Verification
-        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id);
+        $verifyEmail = $this->handleClientIdentityVerification($request->email, 'identites', 'email', 'email', $institution->id, null, null, 'type_client', $request->type_client);
 
         if (!$verifyEmail['status']) {
 
