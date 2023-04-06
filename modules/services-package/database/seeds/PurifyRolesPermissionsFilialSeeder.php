@@ -67,6 +67,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-proxy-config', 'update-proxy-config', 'delete-proxy-config',
                     'list-escalation-config', 'update-escalation-config',
                     'logout-user-my-institution', 'access-satisfaction-data-config',
+                    'update-satisfaction-data-config',
                     'configure-pilot-collector-discussion-attribute',
                     'list-auth-config', 'update-auth-config', 'update-relance-parameters'
                 ],
