@@ -249,7 +249,7 @@ trait MonitoringClaim
 
             if ($configuration->many_active_pilot  === "1") {
 
-                $data['activePilots'] = ActivePilot::all();
+                $data['activePilots'] = ActivePilot::with('staff.identite')->get();
             }
         }
 
