@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Permission;
 use Satis2020\ServicePackage\Models\Module;
@@ -27,6 +28,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
         if (!in_array($institutionType, $institution_types)) {
             array_push($institution_types, $institutionType);
         }
+        return $institution_types;
     }
 
     /**
@@ -156,7 +158,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
             foreach ($holdingRoles as $roleName => $permissions) {
 
                 $institutionTypes = $this->addInstitutionTypeToRole($roleName, 'holding');
-
+               
                 $role = Role::updateOrCreate(
                     ['name' => $roleName, 'guard_name' => 'api'],
                     ['institution_types' => $institutionTypes]
