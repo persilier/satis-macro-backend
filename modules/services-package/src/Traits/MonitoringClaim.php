@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Satis2020\ServicePackage\Models\Unit;
@@ -15,6 +16,7 @@ use Satis2020\ServicePackage\Models\Staff;
 use Illuminate\Database\Eloquent\Collection;
 use Satis2020\ServicePackage\Models\Identite;
 use Satis2020\ServicePackage\Models\Metadata;
+use Satis2020\ServicePackage\Models\ActivePilot;
 use Satis2020\ServicePackage\Models\ClaimObject;
 use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Models\ClaimCategory;
@@ -46,7 +48,6 @@ trait MonitoringClaim
                 $item['time_expire'] = $this->timeExpire($item->created_at, $item->time_limit, $item->status);
                 return $item;
             });
-
         } catch (\Exception $exception) {
 
             throw new CustomException("Impossible de récupérer des réclamations.");
@@ -87,9 +88,9 @@ trait MonitoringClaim
         $configuration  = $this->nowConfiguration()['configuration'];
         $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
         $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
-        if($configuration->many_active_pilot  === "1" && $this->staff()->id != $lead_pilot->id){
-            if(!in_array($status, [Claim::CLAIM_INCOMPLETE,Claim::CLAIM_ARCHIVED, Claim::CLAIM_FULL, Claim::CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION, Claim::CLAIM_VALIDATED ])){
-                $claims = Claim::with($this->getRelations())->whereHas('activeTreatment', function($query){
+        if ($configuration->many_active_pilot  === "1" && $this->staff()->id != $lead_pilot->id) {
+            if (!in_array($status, [Claim::CLAIM_INCOMPLETE, Claim::CLAIM_ARCHIVED, Claim::CLAIM_FULL, Claim::CLAIM_TRANSFERRED_TO_TARGET_INSTITUTION, Claim::CLAIM_VALIDATED])) {
+                $claims = Claim::with($this->getRelations())->whereHas('activeTreatment', function ($query) {
                     $query->where('transferred_to_unit_by', $this->staff()->id);
                 });
             } else {
@@ -102,16 +103,15 @@ trait MonitoringClaim
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
-        
-         if($request->has('type_client')){
 
-            $claims->whereHas('claimer', function ($o) use ($request){
+        if ($request->has('type_client')) {
+
+            $claims->whereHas('claimer', function ($o) use ($request) {
 
                 $o->where('type_client', $request->type_client);
             });
-        } 
+        }
 
 
         if ($treatment) {
@@ -127,7 +127,6 @@ trait MonitoringClaim
         if ($status === 'transferred_to_targeted_institution') {
 
             $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
-
         } else {
 
             $claims->where('status', $status);
@@ -216,10 +215,10 @@ trait MonitoringClaim
      */
     protected function metaData($incompletes, $toAssignedToUnit, $toAssignedToUStaff, $awaitingTreatment, $toValidate, $toMeasureSatisfaction, $institutionId = false)
     {
-
-        $configuration  = $this->nowConfiguration()['configuration'];
-        $lead_pilot  = $this->nowConfiguration()['lead_pilot'];
-        $all_active_pilots  = $this->nowConfiguration()['all_active_pilots'];
+        $conf_data   =  $this->nowConfiguration();
+        $configuration  = $conf_data['configuration'];
+        $lead_pilot  = $conf_data['lead_pilot'];
+        $all_active_pilots  = $conf_data['all_active_pilots'];
         $data = [
             'incompletes' => $incompletes,
             'toAssignementToUnit' => $toAssignedToUnit,
@@ -236,18 +235,24 @@ trait MonitoringClaim
             $data['units'] = Unit::where('institution_id', $institutionId)->get();
             $data['staffs'] = Staff::with('identite')->where('institution_id', $institutionId)->get();
             $data['collectors'] = $this->getAllCollectors($institutionId);
+            Log::info();
+            if ($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id) {
 
+                $data['activePilots'] = $all_active_pilots;
+            }
         } else {
 
             $data['institutions'] = Institution::all();
             $data['units'] = Unit::all();
             $data['staffs'] = Staff::with('identite')->get();
             $data['collectors'] = $this->getAllCollectors();
-        }
-        if($configuration->many_active_pilot  === "1" && $this->staff()->id == $lead_pilot->id){
 
-            $data['activePilots'] = $all_active_pilots;
+            if ($configuration->many_active_pilot  === "1") {
+
+                $data['activePilots'] = ActivePilot::all();
+            }
         }
+
 
         return $data;
     }
@@ -277,13 +282,11 @@ trait MonitoringClaim
         if ($staff->unit->lead) {
 
             $lead = $staff->unit->lead->id;
-
         }
 
         return Identite::whereHas('staff', function ($query) use ($staff, $lead) {
 
             $query->where('id', $staff->id)->orWhere('id', $lead);
-
         })->get();
     }
 
@@ -310,13 +313,11 @@ trait MonitoringClaim
             ->orWhere('status', '!=', 'unfounded')
             ->whereNotNull('claim_object_id')
             ->get()->filter(function ($item) use ($coef) {
-                if ($item->claimObject!=null && now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
+                if ($item->claimObject != null && now() >= $this->echeanceNotif($item->created_at, $item->claimObject->time_limit, $coef))
 
-                //if (now() >= $this->echeanceNotif($item->created_at, $item->time_limit, $coef))
+                    //if (now() >= $this->echeanceNotif($item->created_at, $item->time_limit, $coef))
                     return $item;
-
             })->all();
-
     }
 
 
@@ -359,7 +360,6 @@ trait MonitoringClaim
             if ($claim->status === 'assigned_to_staff') {
 
                 $identite = $this->getIdentitesResponsibleStaff($claim->activeTreatment->responsibleStaff);
-
             }
 
             if ($claim->status === 'treated' || $claim->status === 'validated') {
@@ -374,11 +374,8 @@ trait MonitoringClaim
 
                 $interval = $this->timeExpireRelance($claim->created_at, $claim->time_limit);
                 $this->sendNotificationRelance($interval, $identite, $claim);
-
             }
-
         };
-
     }
 
 
@@ -401,7 +398,6 @@ trait MonitoringClaim
 
 
         $this->notificationRelance($identite, $notif);
-
     }
 
     /**
@@ -414,13 +410,10 @@ trait MonitoringClaim
         if ($identite instanceof Collection) {
 
             \Illuminate\Support\Facades\Notification::send($identite, $notif);
-
         } else {
 
             $identite->notify($notif);
-
         }
-
     }
 
 
@@ -521,6 +514,4 @@ trait MonitoringClaim
             's' => $seconde
         ];
     }
-
-
 }
