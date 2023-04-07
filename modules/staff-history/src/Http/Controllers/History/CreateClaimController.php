@@ -31,7 +31,7 @@ class CreateClaimController extends ApiController
     public function index()
     {
         $staff_id = \request()->query('staff_id');
-        if ($staff_id==null){
+        if ($staff_id == null) {
             $staff_id = $this->staff()->id;
         }
 
@@ -43,8 +43,7 @@ class CreateClaimController extends ApiController
 
     public function create()
     {
-        return response()->json($this->getRegisteredClaims(), 200);
+        $institution_id = request('institution_id', null);
+        return response()->json($this->getRegisteredClaims($institution_id), 200);
     }
-
-
 }
