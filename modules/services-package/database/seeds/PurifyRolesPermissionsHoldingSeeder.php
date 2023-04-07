@@ -123,7 +123,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'access-satisfaction-data-config',
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
-                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config', 'staff-list-satisfaction-measured-my-claim'
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
+                    'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -135,7 +136,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
+                    'access-satisfaction-data-config', 'staff-list-satisfaction-measured-my-claim'
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
