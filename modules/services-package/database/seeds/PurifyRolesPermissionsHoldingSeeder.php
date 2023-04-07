@@ -5,6 +5,7 @@ namespace Satis2020\ServicePackage\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Permission;
 use Satis2020\ServicePackage\Models\Module;
@@ -27,6 +28,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
         if (!in_array($institutionType, $institution_types)) {
             array_push($institution_types, $institutionType);
         }
+        return $institution_types;
     }
 
     /**
@@ -94,7 +96,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'access-satisfaction-data-config',
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
-                    'config-reporting-claim-any-institution', 'activity-log', 'access-satisfaction-data-config'
+                    'config-reporting-claim-any-institution', 'activity-log',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -124,7 +126,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
-                    'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied'
+                    'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
+                    'auto-affect-claim-for-satisfaction-collector',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -148,7 +151,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
-                    'access-satisfaction-data-config', 'access-satisfaction-data-config'
+                    'access-satisfaction-data-config',
                 ]
             ];
 

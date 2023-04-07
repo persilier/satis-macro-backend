@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
  *
  * discussions
  */
-Route::apiResource('discussions', 'Discussion\DiscussionController')->only(['index', 'store', 'destroy']);
+Route::apiResource('discussions', 'Discussion\DiscussionController')->only(['index', 'store','create', 'destroy']);
 
 Route::apiResource('discussions.staff', 'Discussion\DiscussionStaffController')->only(['index', 'store', 'destroy', 'create']);
 

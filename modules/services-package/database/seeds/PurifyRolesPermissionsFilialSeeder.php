@@ -67,6 +67,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'show-proxy-config', 'update-proxy-config', 'delete-proxy-config',
                     'list-escalation-config', 'update-escalation-config',
                     'logout-user-my-institution', 'access-satisfaction-data-config',
+                    'update-satisfaction-data-config',
                     'configure-pilot-collector-discussion-attribute',
                     'list-auth-config', 'update-auth-config', 'update-relance-parameters'
                 ],
@@ -97,11 +98,14 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'bci-monthly-reports', 'bci-annual-reports',
                     'pilot-export-notification-proof',
                     'list-my-claim-unsatisfied',
+                    
+                    
                     'list-closed-my-claims', 'close-my-claims',
                     'list-escalation-config', 'update-escalation-config',
                     'list-treatment-board', 'store-treatment-board', 'update-treatment-board',
                     'destroy-treatment-board',
-                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim',
+                    'auto-affect-claim-for-satisfaction-collector'
 
                 ],
                 "supervisor-filial" => [],
