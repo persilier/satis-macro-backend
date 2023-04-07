@@ -187,10 +187,17 @@ trait StaffManagement
 
     public function getRegisteredClaims($institutionId = null)
     {
-        return Staff::with("registeredClaims", "identite")
-            ->get()->filter(function ($value) {
-                return sizeof($value->registeredClaims) > 0;
-            })->values();
+        if (!is_null($institutionId)) {
+            return Staff::with("registeredClaims", "identite")->where('institution_id', $institutionId)
+                ->get()->filter(function ($value) {
+                    return sizeof($value->registeredClaims) > 0;
+                })->values();
+        } else {
+            return Staff::with("registeredClaims", "identite")
+                ->get()->filter(function ($value) {
+                    return sizeof($value->registeredClaims) > 0;
+                })->values();
+        }
     }
     public function checkIfStaffHasUserAccount($staff)
     {
