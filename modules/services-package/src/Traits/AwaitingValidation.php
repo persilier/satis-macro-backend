@@ -51,6 +51,7 @@ trait AwaitingValidation
                         $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($key) {
                             $query->where('firstname', 'like', "%$key%")
                                 ->orWhere('lastname', 'like', "%$key%")
+                                ->orWhere('raison_sociale', 'like', "%$key%")
                                 ->orwhereJsonContains('telephone', $key)
                                 ->orwhereJsonContains('email', $key);
                         });
@@ -62,6 +63,7 @@ trait AwaitingValidation
                 $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
                     $query->where('firstname', 'like', "%$search_text%")
                         ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orWhere('raison_sociale', 'like', "%$search_text%")
                         ->orWhereHas('claimer', function ($q) use ($search_text) {
                             $q->where('raison_sociale', 'like', "%$search_text%");
                         })
@@ -77,6 +79,7 @@ trait AwaitingValidation
                 $claimsTreated = $claimsTreated->whereHas("claimer", function ($query) use ($search_text) {
                     $query->where('firstname', 'like', "%$search_text%")
                         ->orWhere('lastname', 'like', "%$search_text%")
+                        ->orWhere('raison_sociale', 'like', "%$search_text%")
                         ->orwhereJsonContains('telephone', $search_text)
                         ->orwhereJsonContains('email', $search_text);
                 });
