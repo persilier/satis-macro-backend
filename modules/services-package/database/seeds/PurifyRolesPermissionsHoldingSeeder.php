@@ -124,10 +124,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'update-satisfaction-data-config',
                     'access-satisfaction-data-config',
                     'list-escalation-config',
-                    
-                    
-                    'internal-control-index', 'internal-control-store','auto-affect-claim-for-satisfaction-collector',
-                    'list-claim-transferred-my-institution', 'staff-list-satisfaction-measured-my-claim'
+                    'internal-control-index', 'internal-control-store',
+                    'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
+                    'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
+                    'auto-affect-claim-for-satisfaction-collector',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -139,7 +139,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'search-claim-any-reference',
                     'attach-files-to-claim',
                     'revive-staff',
-                    'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim'
+                    'access-satisfaction-data-config', 'staff-list-satisfaction-measured-my-claim'
                 ],
                 "staff" => [
                     'show-dashboard-data-my-unit', 'show-dashboard-data-my-activity',
@@ -151,14 +151,14 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'show-my-staff-monitoring',
                     'list-staff-revivals', 'list-unit-revivals',
                     'revive-staff',
-                    'access-satisfaction-data-config', 
+                    'access-satisfaction-data-config',
                 ]
             ];
 
             foreach ($holdingRoles as $roleName => $permissions) {
 
                 $institutionTypes = $this->addInstitutionTypeToRole($roleName, 'holding');
-               
+
                 $role = Role::updateOrCreate(
                     ['name' => $roleName, 'guard_name' => 'api'],
                     ['institution_types' => $institutionTypes]
