@@ -2,13 +2,14 @@
 
 namespace Satis2020\MyStaffMonitoring\Http\Controllers;
 
-use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Models\Unit;
-use Satis2020\ServicePackage\Requests\Monitoring\MyStaffMonitoringRequest;
-use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
-use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Traits\UnitTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
+use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Requests\Monitoring\MyStaffMonitoringRequest;
+use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
 
 
 class MyStaffMonitoringController extends ApiController
@@ -45,6 +46,17 @@ class MyStaffMonitoringController extends ApiController
         }
         return response()->json([
             'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)
+        ], 200);
+    }
+
+    public function create(){
+
+        $institution = Institution::With('institutionType')->whereHas('institutionType', function($q){
+            $q->where('name', '=', 'filiale');
+        })->get();
+        
+        return response()->json([
+            'institution' => $institution
         ], 200);
     }
 

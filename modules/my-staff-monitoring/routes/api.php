@@ -23,5 +23,6 @@ Route::prefix('/my')->name('my.')->group(function () {
     Route::get('/pilot-unit', 'PilotUnitController@show')->name('unit.pilote-show');
     Route::get('/collector-pilot', 'CollecteurMonitoringController@show')->name('collector.pilot-show');
     Route::post('/collector-pilot', 'CollecteurMonitoringController@index')->name('collector.pilot-index');
+    Route::get('/institutions-whithout-holding', 'MyStaffMonitoringController@create')->name('institutions.holding.create');
 });
 
