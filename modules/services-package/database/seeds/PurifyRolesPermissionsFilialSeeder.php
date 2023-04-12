@@ -105,8 +105,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-treatment-board', 'store-treatment-board', 'update-treatment-board',
                     'destroy-treatment-board',
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim',
-                    'auto-affect-claim-for-satisfaction-collector'
-
+                    'auto-affect-claim-for-satisfaction-collector',
+                    'show-my-pilot-monitoring',
+                    'show-my-pilotUnit-monitoring'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
