@@ -69,7 +69,7 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'logout-user-my-institution', 'access-satisfaction-data-config',
                     'update-satisfaction-data-config',
                     'configure-pilot-collector-discussion-attribute',
-                    'list-auth-config', 'update-auth-config', 'update-relance-parameters'
+                    'list-auth-config', 'update-auth-config', 'update-relance-parameters', 'list-account-type','update-category-client','internal-control-store','config-reporting-claim-any-institution','activity-log'
                 ],
                 "pilot-filial" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -105,8 +105,9 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'list-treatment-board', 'store-treatment-board', 'update-treatment-board',
                     'destroy-treatment-board',
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config','staff-list-satisfaction-measured-my-claim',
-                    'auto-affect-claim-for-satisfaction-collector'
-
+                    'auto-affect-claim-for-satisfaction-collector',
+                    'show-my-pilot-monitoring',
+                    'show-my-pilotUnit-monitoring'
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
