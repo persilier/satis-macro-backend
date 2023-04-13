@@ -11,6 +11,7 @@ use Satis2020\ServicePackage\Traits\ActivePilot;
 use Satis2020\ServicePackage\Traits\DataUserNature;
 use Satis2020\ServicePackage\Traits\ClaimAwaitingTreatment;
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
+use Satis2020\ServicePackage\Models\Institution;
 use Satis2020\ServicePackage\Services\Monitoring\PilotMonitoringService;
 use Satis2020\ServicePackage\Requests\Monitoring\MyStaffMonitoringRequest;
 use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
@@ -50,16 +51,30 @@ class PilotMonitoringController extends ApiController
 
     }
 
-    public function show()
+    public function show($institution)
     {
 
         if (!$this->staff()->is_active_pilot) {
             abort(Response::HTTP_FORBIDDEN, "User is not allowed");
         }
 
-        $pilote = User::with('identite.staff','roles')->whereHas('roles',function ($q){
-            $q->where('name','pilot');
-        })->get();
+        if ($institution == null) {
+            
+            $pilote = User::with('identite.staff','roles')->whereHas('roles',function ($q){
+                $q->where('name','pilot');
+            })->get();
+        }else {
+            
+            $pilote = User::with('identite.staff','roles')
+                        ->whereHas('roles',function ($q){
+                            $q->where('name','pilot');
+                        })
+                        ->whereHas('identite.staff',function ($q) use($institution){
+                            $q->where('institution_id',$institution);
+                        })
+                        ->get();
+        }
+
 
         return response()->json([
             'pilote' => $pilote
