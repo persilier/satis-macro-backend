@@ -96,7 +96,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'access-satisfaction-data-config',
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
-                    'config-reporting-claim-any-institution', 'activity-log',
+                    'config-reporting-claim-any-institution', 'activity-log','list-account-type','update-category-client'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
