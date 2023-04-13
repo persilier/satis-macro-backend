@@ -12,7 +12,7 @@ use Satis2020\ServicePackage\Models\Claim;
 use Satis2020\ServicePackage\Traits\ClaimSatisfactionMeasured;
 
 
-/**
+/** 
  * Class ClaimArchivedController
  * @package Satis2020\AnyClaimArchived\Http\Controllers\ClaimArchived
  */
@@ -40,7 +40,7 @@ class ClaimArchivedController extends ApiController
         $recherche = \request()->query('key');
         $institutionId = \request()->query('institution_id');
 
-        $claims = $this->getAllMyClaim('archived', true, $paginationSize, $recherche, $institutionId);
+        $claims = $this->getArchivedMyClaim('archived', true, $paginationSize, $recherche, 'status', $institutionId);
 
         return response()->json($claims, 200);
     }

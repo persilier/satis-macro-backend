@@ -148,7 +148,7 @@ trait ClaimSatisfactionMeasured
      * @return mixed
      */
 
-    protected function getArchivedMyClaim($status = 'validated', $paginate = false, $paginationSize = 10, $key = null, $statusColumn = 'status')
+    protected function getArchivedMyClaim($status = 'validated', $paginate = false, $paginationSize = 10, $key = null, $statusColumn = 'status', $institutionId =null)
     {
 
         return $paginate
