@@ -84,6 +84,7 @@ class StateMore30DaysController extends ApiController
         $data = view('ServicePackage::uemoa.report-reclamation', [
             'claims' => $claims,
             'myInstitution' => true,
+            'description' => null,
             'libellePeriode' => $libellePeriode,
             'title' => 'Reclamation en retard de +30j',
             'relationShip' => true,
