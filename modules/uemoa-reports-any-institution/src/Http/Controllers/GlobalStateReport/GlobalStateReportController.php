@@ -82,6 +82,7 @@ class GlobalStateReportController extends ApiController
 
         $data = view('ServicePackage::uemoa.report-reclamation', [
             'claims' => $claims,
+            'description'=>'',
             'myInstitution' => false,
             'libellePeriode' => $libellePeriode,
             'title' => 'Rapport global des réclamations',
