@@ -51,9 +51,11 @@ class MyStaffMonitoringController extends ApiController
 
     public function create(){
 
+
         $institution = Institution::With('institutionType')->whereHas('institutionType', function($q){
             $q->where('name', '=', 'filiale');
         })->get();
+
         
         return response()->json([
             'institution' => $institution
