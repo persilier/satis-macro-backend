@@ -25,7 +25,7 @@ class PilotMonitoringController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-     //   $this->middleware('permission:show-my-pilot-monitoring')->only(['index', 'show']);
+        $this->middleware('permission:show-my-pilot-monitoring')->only(['index', 'show']);
     }
 
     public function index(Request $request, PilotMonitoringService $service)
@@ -53,31 +53,28 @@ class PilotMonitoringController extends ApiController
     {
 
 
-       /*  if (!$this->staff()->is_active_pilot) {
+        if (!$this->staff()->is_active_pilot) {
             abort(Response::HTTP_FORBIDDEN, "User is not allowed");
-        } */
+        }
 
         $institution = $request->institution;
 
 
         if ($institution == null) {
-
+            
             $pilote = User::with('identite.staff', 'roles')->whereHas('roles', function ($q) {
                 $q->where('name', 'pilot');
             })->get();
         } else {
-
+            
             $pilote = User::with('identite.staff', 'roles')
                 ->whereHas('roles', function ($q) {
-                    $q->where('name', 'pilot-holding');
+                    $q->where('name', 'pilot-filial');
                 })
-                 ->whereHas('identite.staff', function ($q) use ($institution) {
+                ->whereHas('identite.staff', function ($q) use ($institution) {
                     $q->where('institution_id', $institution);
-                }) 
+                })
                 ->get();
-
-           
-
         }
 
 
