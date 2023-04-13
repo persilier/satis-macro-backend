@@ -85,6 +85,7 @@ class StateAnalytiqueController extends ApiController
         $data = view('ServicePackage::uemoa.report-analytique', [
             'claims' => $claims,
             'myInstitution' => false,
+            'description' => null,
             'libellePeriode' => $libellePeriode,
             'title' => 'Rapport Analytique',
             'logo' => $this->logo($this->institution()),

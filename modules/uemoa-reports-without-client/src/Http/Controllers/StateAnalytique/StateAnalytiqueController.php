@@ -80,6 +80,7 @@ class StateAnalytiqueController extends ApiController
             'claims' => $claims,
             'myInstitution' => false,
             'libellePeriode' => $libellePeriode,
+            'description' => null,
             'title' => 'Rapport Analytique',
             'logo' => $this->logo($this->institution()),
             'colorTableHeader' => $this->colorTableHeader(),

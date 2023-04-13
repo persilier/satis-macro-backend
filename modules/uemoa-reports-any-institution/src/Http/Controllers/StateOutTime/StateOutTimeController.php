@@ -82,6 +82,7 @@ class StateOutTimeController extends ApiController
         $data = view('ServicePackage::uemoa.report-reclamation', [
             'claims' => $claims,
             'myInstitution' => false,
+            'description' => null,
             'libellePeriode' => $libellePeriode,
             'title' => 'Réclamations en retard',
             'relationShip' => false,
