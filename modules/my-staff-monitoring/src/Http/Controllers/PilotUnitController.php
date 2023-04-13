@@ -49,11 +49,22 @@ class PilotUnitController extends ApiController
         
     }
 
-    public function show()
+    public function show(Request $request)
     {
 
+        $institution = $request->institution;
+
+        if ($institution == null) {
+
+
+            $unit = Unit::all();
+        } else {
+
+            $unit = Unit::Where('institution_id',$institution)->get();
+        }
+
         return response()->json([
-            'unit' => Unit::all()
+            'unit' => $unit
         ], 200);
     }
 }

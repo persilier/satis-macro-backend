@@ -25,7 +25,7 @@ class PilotMonitoringController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        //  $this->middleware('permission:show-my-pilot-monitoring')->only(['index', 'show']);
+        $this->middleware('permission:show-my-pilot-monitoring')->only(['index', 'show']);
     }
 
     public function index(Request $request, PilotMonitoringService $service)
