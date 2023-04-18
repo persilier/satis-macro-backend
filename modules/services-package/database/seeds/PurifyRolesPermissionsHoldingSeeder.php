@@ -96,7 +96,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'access-satisfaction-data-config',
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
-                    'config-reporting-claim-any-institution', 'activity-log','list-account-type','update-category-client', 'list-benchmarking-reporting-any'
+                    'config-reporting-claim-any-institution', 'activity-log', 'list-account-type', 'update-category-client',
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -127,10 +127,9 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'internal-control-index', 'internal-control-store',
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
                     'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
-                    'auto-affect-claim-for-satisfaction-collector','show-my-pilot-monitoring',
+                    'auto-affect-claim-for-satisfaction-collector', 'show-my-pilot-monitoring',
                     'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting',
-                    'list-benchmarking-reporting-any',
-                    'list-system-usage-reporting-any', 'ystem-my-efficiency-report'
+                    'system-any-efficiency-report',
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
@@ -173,7 +172,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 } else {
                     // sync permissions
                     foreach ($permissions as $permissionName) {
-
+                        Log::info($permissionName);
                         Permission::query()->updateOrCreate(
                             ['name' => $permissionName],
                             ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding'] : $institutionTypes]

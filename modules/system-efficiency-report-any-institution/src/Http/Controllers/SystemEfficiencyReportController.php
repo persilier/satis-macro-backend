@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\SystemEfficiencyReportMyInstitution\Http\Controllers;
+namespace Satis2020\SystemEfficiencyReportAnyInstitution\Http\Controllers;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\Reporting\SystemEfficiencyReportRequest;
@@ -15,7 +15,7 @@ class SystemEfficiencyReportController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:system-any-efficiency-report')->only(['index']);
+        $this->middleware('permission:system-my-efficiency-report')->only(['index']);
     }
 
     public function index(SystemEfficiencyReportRequest $request, SystemEfficiencyReportService $service)

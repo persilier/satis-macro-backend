@@ -111,7 +111,9 @@
     "satis2020/useful-data-plugin-wordpress": "^1.0",
     "satis2020/users-package": "^1.0",
     "satis2020/webhooks": "^1.0",
-    "satis2020/without-link-with-institution-unit": "^1.0"
+    "satis2020/without-link-with-institution-unit": "^1.0",
+    "satis2020/system-efficiency-report-any-institution": "^1.0"
+    
   },
   "require-dev": {
     "facade/ignition": "^2.0",
@@ -831,6 +833,13 @@
     {
       "type": "path",
       "url": "modules/internal-control/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/system-efficiency-report-any-institution/",
       "options": {
         "symlink": true
       }
