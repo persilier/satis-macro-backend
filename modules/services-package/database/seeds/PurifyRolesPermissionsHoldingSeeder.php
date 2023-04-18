@@ -130,7 +130,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'auto-affect-claim-for-satisfaction-collector','show-my-pilot-monitoring',
                     'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting',
                     'list-benchmarking-reporting-any',
-                    'list-system-usage-reporting-any'
+                    'list-system-usage-reporting-any', 'ystem-my-efficiency-report'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
