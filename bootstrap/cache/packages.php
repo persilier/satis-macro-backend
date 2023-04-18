@@ -643,6 +643,13 @@
       0 => 'Satis2020\\StaffHistory\\Providers\\StaffHistoryServiceProvider',
     ),
   ),
+  'satis2020/system-efficiency-report-any-institution' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\SystemEfficiencyReportAnyInstitution\\Providers\\SystemEfficiencyReportAnyInstitutionProvider',
+    ),
+  ),
   'satis2020/system-efficiency-report-my-institution' => 
   array (
     'providers' => 
