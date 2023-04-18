@@ -21,11 +21,10 @@ class SystemEfficiencyReportController extends ApiController
     public function index(SystemEfficiencyReportRequest $request, SystemEfficiencyReportService $service)
     {
         $request->merge([
-            "institution_id"=>$this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
 
         $systemEfficiencyReport = $service->getReportData($request);
         return response()->json($systemEfficiencyReport, 200);
-
     }
 }
