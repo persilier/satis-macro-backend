@@ -96,7 +96,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'access-satisfaction-data-config',
                     'list-escalation-config',
                     'internal-control-index', 'internal-control-store',
-                    'config-reporting-claim-any-institution', 'activity-log','list-account-type','update-category-client'
+                    'config-reporting-claim-any-institution', 'activity-log','list-account-type','update-category-client', 'list-benchmarking-reporting-any'
                 ],
                 "pilot-holding" => [
                     'list-claim-awaiting-assignment', 'show-claim-awaiting-assignment', 'merge-claim-awaiting-assignment',
@@ -128,7 +128,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
                     'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
                     'auto-affect-claim-for-satisfaction-collector','show-my-pilot-monitoring',
-                    'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting'
+                    'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting',
+                    'list-benchmarking-reporting-any'
                 ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
