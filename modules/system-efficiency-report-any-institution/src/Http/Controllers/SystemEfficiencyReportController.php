@@ -15,7 +15,7 @@ class SystemEfficiencyReportController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:system-my-efficiency-report')->only(['index']);
+        $this->middleware('permission:system-any-efficiency-report')->only(['index']);
     }
 
     public function index(SystemEfficiencyReportRequest $request, SystemEfficiencyReportService $service)
