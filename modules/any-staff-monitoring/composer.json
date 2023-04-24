@@ -1,0 +1,26 @@
+{
+    "name": "satis2020/any-staff-monitoring",
+    "description": "ce package permettra au lead d'une unité de suivre le travail de chaque staff de l'unité concernée",
+    "license": "DMD",
+    "version" : "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "Satis2020\\AnyStaffMonitoring\\": "src/",
+            "Satis2020\\AnyStaffMonitoring\\Database\\Seeds\\": "database/seeds/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ELIE DANHIN",
+            "email": "elie@dmdconsult.com"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Satis2020\\AnyStaffMonitoring\\Providers\\AnyStaffMonitoringProvider"
+            ]
+        }
+    }
+}
