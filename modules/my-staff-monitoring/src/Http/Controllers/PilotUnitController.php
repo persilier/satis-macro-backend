@@ -24,15 +24,14 @@ class PilotUnitController extends ApiController
     {
         parent::__construct();
 
-         $this->middleware('auth:api');
-         $this->middleware('permission:show-my-pilotUnit-monitoring')->only(['index','show']);
-
+        $this->middleware('auth:api');
+        $this->middleware('permission:show-my-pilotUnit-monitoring')->only(['index', 'show']);
     }
 
-    public function index(Request $request,PilotUnitService $service)
+    public function index(Request $request, PilotUnitService $service)
     {
 
-        
+
         $rules = [
             'unit_id' => 'required',
         ];
@@ -40,27 +39,23 @@ class PilotUnitController extends ApiController
         $this->validate($request, $rules);
 
         $request->merge([
-            "institution_id"=>$this->institution()->id
+            "institution_id" => $this->institution()->id
         ]);
-        
+
         $pilotUnitMonitoring = $service->PilotUnitMonitoring($request);
         return response()->json($pilotUnitMonitoring, 200);
-
-        
     }
 
     public function show(Request $request)
     {
 
-        $institution = $request->institution;
+        $institution = $this->institution()->id ?? null;
 
         if ($institution == null) {
-
-
             $unit = Unit::all();
         } else {
 
-            $unit = Unit::Where('institution_id',$institution)->get();
+            $unit = Unit::Where('institution_id', $institution)->get();
         }
 
         return response()->json([
