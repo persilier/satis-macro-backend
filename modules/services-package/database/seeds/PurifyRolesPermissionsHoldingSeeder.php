@@ -28,7 +28,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
         if (!in_array($institutionType, $institution_types)) {
             array_push($institution_types, $institutionType);
         }
-        return $institution_types;
+        return json_encode($institution_types);
     }
 
     /**
@@ -129,8 +129,8 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
                     'auto-affect-claim-for-satisfaction-collector', 'show-my-pilot-monitoring',
                     'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting',
-                    'system-any-efficiency-report','list-global-reporting'
-                ],      
+                    'system-any-efficiency-report', 'list-global-reporting', 'show-any-collector-monitoring', 'show-any-pilotUnit-monitoring', 'show-any-pilot-monitoring'
+                ],
                 "supervisor-holding" => [],
                 "collector-holding" => [
                     'store-claim-against-any-institution',
@@ -172,10 +172,10 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                 } else {
                     // sync permissions
                     foreach ($permissions as $permissionName) {
-                        Log::info($permissionName);
+                       // Log::info([$permissionName]);
                         Permission::query()->updateOrCreate(
                             ['name' => $permissionName],
-                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? ['holding'] : $institutionTypes]
+                            ['name' => $permissionName, 'guard_name' => 'api', 'institution_types' => $permissionName === 'search-claim-any-reference' ? json_encode(['holding']) : $institutionTypes]
                         );
                     }
 
