@@ -108,7 +108,8 @@ class PurifyRolesPermissionsFilialSeeder extends Seeder
                     'auto-affect-claim-for-satisfaction-collector',
                     'show-my-pilot-monitoring',
                     'show-my-pilotUnit-monitoring', 'update-my-institution',
-                    'system-my-efficiency-report'
+                    'system-my-efficiency-report',
+                    'show-my-collector-monitoring',
                 ],
                 "supervisor-filial" => [],
                 "collector-filial-pro" => [
