@@ -127,7 +127,7 @@ class PurifyRolesPermissionsHoldingSeeder extends Seeder
                     'internal-control-index', 'internal-control-store',
                     'list-claim-transferred-my-institution', 'access-satisfaction-data-config',
                     'staff-list-satisfaction-measured-my-claim', 'list-my-claim-unsatisfied',
-                    'auto-affect-claim-for-satisfaction-collector', 'show-my-pilot-monitoring',
+                    'auto-affect-claim-for-satisfaction-collector',
                     'show-my-pilotUnit-monitoring', 'update-my-institution', 'store-any-unit', 'system-any-efficiency-report', 'list-benchmarking-reporting', 'list-system-usage-reporting',
                     'system-any-efficiency-report', 'list-global-reporting', 'show-any-collector-monitoring', 'show-any-pilotUnit-monitoring', 'show-any-pilot-monitoring'
                 ],
