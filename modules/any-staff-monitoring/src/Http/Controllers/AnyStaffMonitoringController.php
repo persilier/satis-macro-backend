@@ -14,53 +14,50 @@ use Satis2020\ServicePackage\Services\Monitoring\MyStaffMonitoringService;
 
 class AnyStaffMonitoringController extends ApiController
 {
-    use ClaimAwaitingTreatment,UnitTrait;
+    use ClaimAwaitingTreatment, UnitTrait;
     public function __construct()
     {
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:show-my-staff-monitoring')->only(['index','show']);
-
+        $this->middleware('permission:show-my-staff-monitoring')->only(['index', 'show']);
     }
 
     public function index(MyStaffMonitoringRequest $request, MyStaffMonitoringService $service)
     {
         $staff = $this->staff();
-        if (!$this->staffIsUnitLead($this->staff()))
-        {
-            abort(Response::HTTP_FORBIDDEN,"User is not allowed");
+        if (!$this->staffIsUnitLead($this->staff())) {
+            abort(Response::HTTP_FORBIDDEN, "User is not allowed");
         }
         $request->merge([
-            "institution_id"=>$this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
-        $staffMonitoring = $service->MyStaffMonitoring($request,$staff->unit_id);
+        $staffMonitoring = $service->MyStaffMonitoring($request, $staff->unit_id);
         return response()->json($staffMonitoring, 200);
     }
 
-    public function show(){
+    public function show()
+    {
         $staff = $this->staff();
-        if (!$this->staffIsUnitLead($this->staff()))
-        {
-            abort(Response::HTTP_FORBIDDEN,"User is not allowed");
+        if (!$this->staffIsUnitLead($this->staff())) {
+            abort(Response::HTTP_FORBIDDEN, "User is not allowed");
         }
         return response()->json([
             'staffs' => $this->getTargetedStaffFromUnit($staff->unit_id)
         ], 200);
     }
 
-    public function create(){
+    public function create()
+    {
 
 
-        $institution = Institution::With('institutionType')->whereHas('institutionType', function($q){
+        $institution = Institution::With('institutionType')->whereHas('institutionType', function ($q) {
             $q->where('name', '=', 'filiale');
         })->get();
 
-        
+
         return response()->json([
             'institution' => $institution
         ], 200);
     }
-
-
 }

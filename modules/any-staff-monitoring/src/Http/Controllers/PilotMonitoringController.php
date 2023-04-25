@@ -42,9 +42,9 @@ class PilotMonitoringController extends ApiController
         $this->validate($request, $rules);
 
         $request->merge([
-            "institution_id" => $this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
-
+        
         $pilotMonitoring = $service->MyPilotMonitoring($request);
         return response()->json($pilotMonitoring, 200);
     }
