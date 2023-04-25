@@ -39,7 +39,7 @@ class PilotUnitController extends ApiController
         $this->validate($request, $rules);
 
         $request->merge([
-            "institution_id" => $this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
 
         $pilotUnitMonitoring = $service->PilotUnitMonitoring($request);
