@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\MyStaffMonitoring\Http\Controllers;
+namespace Satis2020\AnyStaffMonitoring\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Satis2020\ServicePackage\Models\Unit;
@@ -25,7 +25,7 @@ class PilotUnitController extends ApiController
         parent::__construct();
 
         $this->middleware('auth:api');
-        $this->middleware('permission:show-my-pilotUnit-monitoring')->only(['index', 'show']);
+        $this->middleware('permission:show-any-pilotUnit-monitoring')->only(['index', 'show']);
     }
 
     public function index(Request $request, PilotUnitService $service)
@@ -39,7 +39,7 @@ class PilotUnitController extends ApiController
         $this->validate($request, $rules);
 
         $request->merge([
-            "institution_id" => $this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
 
         $pilotUnitMonitoring = $service->PilotUnitMonitoring($request);
@@ -49,7 +49,7 @@ class PilotUnitController extends ApiController
     public function show(Request $request)
     {
 
-        $institution = $this->institution()->id ?? null;
+        $institution = request('institution_id', $this->institution()->id) ?? null;
 
         if ($institution == null) {
             $unit = Unit::all();

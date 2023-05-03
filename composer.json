@@ -27,6 +27,7 @@
     "satis2020/any-institution": "^1.0",
     "satis2020/any-institution-type-role": "^1.0",
     "satis2020/any-institution-unit": "^1.0",
+    "satis2020/any-staff-monitoring": "^1.0",
     "satis2020/any-user": "^1.0",
     "satis2020/attach-files-to-claim": "^1.0",
     "satis2020/auth-config": "^1.0",
@@ -94,6 +95,7 @@
     "satis2020/staff-from-maybe-no-unit": "^1.0",
     "satis2020/staff-from-my-unit": "^1.0",
     "satis2020/staff-history": "^1.0",
+    "satis2020/system-efficiency-report-any-institution": "^1.0",
     "satis2020/system-efficiency-report-my-institution": "^1.0",
     "satis2020/system-usage-report": "^1.0",
     "satis2020/transfer-claim-to-circuit-unit": "^1.0",
@@ -805,6 +807,13 @@
     },
     {
       "type": "path",
+      "url": "modules/any-staff-monitoring/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
       "url": "modules/escalation/",
       "options": {
         "symlink": true
@@ -831,6 +840,13 @@
     {
       "type": "path",
       "url": "modules/internal-control/",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "modules/system-efficiency-report-any-institution/",
       "options": {
         "symlink": true
       }

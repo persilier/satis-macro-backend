@@ -1,6 +1,6 @@
 <?php
 
-namespace Satis2020\SystemEfficiencyReportMyInstitution\Http\Controllers;
+namespace Satis2020\SystemEfficiencyReportAnyInstitution\Http\Controllers;
 
 use Satis2020\ServicePackage\Http\Controllers\ApiController;
 use Satis2020\ServicePackage\Requests\Reporting\SystemEfficiencyReportRequest;

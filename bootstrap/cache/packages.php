@@ -160,6 +160,13 @@
       0 => 'Satis2020\\AnyInstitutionUnit\\Providers\\AnyInstitutionUnitServiceProvider',
     ),
   ),
+  'satis2020/any-staff-monitoring' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\AnyStaffMonitoring\\Providers\\AnyStaffMonitoringProvider',
+    ),
+  ),
   'satis2020/any-user' => 
   array (
     'providers' => 
@@ -641,6 +648,13 @@
     'providers' => 
     array (
       0 => 'Satis2020\\StaffHistory\\Providers\\StaffHistoryServiceProvider',
+    ),
+  ),
+  'satis2020/system-efficiency-report-any-institution' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Satis2020\\SystemEfficiencyReportAnyInstitution\\Providers\\SystemEfficiencyReportAnyInstitutionProvider',
     ),
   ),
   'satis2020/system-efficiency-report-my-institution' => 
