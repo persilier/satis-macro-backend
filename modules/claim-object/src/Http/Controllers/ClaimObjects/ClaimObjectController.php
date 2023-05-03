@@ -74,6 +74,11 @@ class ClaimObjectController extends ApiController
             'severity_levels_id', 
             'time_limit', 
             'others',
+            'time_unit',
+            'time_staff',
+            'time_treatment',
+            'time_validation',
+            'time_measure_satisfaction',
             'internal_control'
            
         ]));
