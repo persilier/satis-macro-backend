@@ -41,7 +41,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())

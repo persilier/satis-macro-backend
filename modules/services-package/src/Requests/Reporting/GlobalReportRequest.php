@@ -25,11 +25,12 @@ class GlobalReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'date_start' => ['date_format:Y-m-d','required'],
-            'date_end' => ['date_format:Y-m-d','after_or_equal:date_start','required'],
-            "institution_id"=>['sometimes','exists:institutions,id'],
-            "unit_targeted_id"=>['sometimes','array','exists:units,id'],
+            'date_start' => ['date_format:Y-m-d', 'required'],
+            'date_end' => ['date_format:Y-m-d', 'after_or_equal:date_start', 'required'],
+            "institution_id" => ['sometimes', 'exists:institutions,id'],
+            "unit_targeted_id" => ['sometimes', 'array', 'exists:units,id'],
+            "institutions" => ['sometimes','array'],
+            "institutions.*" => ['sometimes', 'exists:institutions,id']
         ];
     }
-
 }
