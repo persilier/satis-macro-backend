@@ -31,6 +31,7 @@ class AnyGlobalReportController extends ApiController
                     "institution_id" => $value
                 ]);
                 $globalReport[$value] =  $service->GlobalReport($request);
+                
             }
             foreach ($globalReport as  $institution_key => $institution) {
                 foreach ($institution as $rapport_key => $rapport) {
@@ -39,7 +40,7 @@ class AnyGlobalReportController extends ApiController
                         array_push($datas[$rapport_key], [
                             "UnitId" => $institution_key,
                             "Unit" => ["fr" => Institution::find($institution_key)->name],
-                            "total" => $rapport["total"] ?? 0,
+                            "total" => $rapport["total"] ?? $rapport ?? 0,
                             "taux" => $rapport["taux"] ?? 0,
                         ]);
                     }
