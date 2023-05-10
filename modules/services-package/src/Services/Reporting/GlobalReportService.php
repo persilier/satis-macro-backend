@@ -265,7 +265,10 @@ class GlobalReportService
                 }
             }
 
-        }else{
+        }else if($request->has('unit_targeted_id')){
+
+        }
+        else{
 
             //rate of claims treated in time
             $claimsTreatedInTime = $this->getClaimsResolvedOnTime($request);
@@ -455,7 +458,8 @@ class GlobalReportService
             }
 
 
-        }else{
+        }
+        else{
             $dataClaimByUnit = $this->getAllClaimsByPeriod($request)->count();
         }
         return $dataClaimByUnit;
