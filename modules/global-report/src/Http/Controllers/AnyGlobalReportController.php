@@ -38,7 +38,7 @@ class AnyGlobalReportController extends ApiController
                         $datas[$rapport_key] = $datas[$rapport_key] ??  [];
                         array_push($datas[$rapport_key], [
                             "UnitId" => $institution_key,
-                            "Unit" => Institution::find($institution_key)->name,
+                            "Unit" => ["fr" => Institution::find($institution_key)->name],
                             "total" => $rapport["total"] ?? 0,
                             "taux" => $rapport["taux"] ?? 0,
                         ]);
