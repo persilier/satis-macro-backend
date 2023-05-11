@@ -2,6 +2,9 @@
 
 namespace Satis2020\GlobalReport\Http\Controllers;
 
+use Facade\Ignition\DumpRecorder\Dump;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Satis2020\ServicePackage\Models\Unit;
 use Satis2020\ServicePackage\Traits\UnitTrait;
 use Satis2020\ServicePackage\Models\Institution;
@@ -31,21 +34,41 @@ class AnyGlobalReportController extends ApiController
                     "institution_id" => $value
                 ]);
                 $globalReport[$value] =  $service->GlobalReport($request);
-                
             }
-          
+
             foreach ($globalReport as  $institution_key => $institution) {
                 $title = $institution['title'];
                 $description = $institution['description'];
                 foreach ($institution as $rapport_key => $rapport) {
+
                     if ($rapport_key != 'title' && $rapport_key != 'description') {
-                        $datas[$rapport_key] = $datas[$rapport_key] ??  [];
-                        array_push($datas[$rapport_key], [
-                            "UnitId" => $institution_key,
-                            "Unit" => ["fr" => Institution::find($institution_key)->name],
-                            "total" => $rapport["total"] ?? $rapport ?? 0,
-                            "taux" => $rapport["taux"] ?? 0,
-                        ]);
+                        if (is_array($rapport)) {
+                            $datas[$rapport_key] = $datas[$rapport_key] ??  [];
+                            if (!in_array('total', $rapport) && !in_array('taux', $rapport)) {
+
+                                $datas[$rapport_key] = array_merge($datas[$rapport_key], $rapport);
+                            } else {
+                                array_push(
+                                    $datas[$rapport_key],
+                                    !in_array('total', $rapport) && !in_array('taux', $rapport) ?
+                                        array_merge($datas[$rapport_key], $rapport) :
+                                        [
+                                            "UnitId" => $institution_key,
+                                            "Unit" => ["fr" => Institution::find($institution_key)->name],
+                                            "total" => $rapport["total"] ?? 0,
+                                            "taux" => $rapport["taux"] ?? 0,
+                                        ]
+                                );
+                            }
+                        } else {
+                            $datas[$rapport_key] = $datas[$rapport_key] ??  [];
+                            array_push($datas[$rapport_key], [
+                                "UnitId" => $institution_key,
+                                "Unit" => ["fr" => Institution::find($institution_key)->name],
+                                "total" => $rapport,
+                                "taux" => $rapport,
+                            ]);
+                        }
                     }
                 }
             }
