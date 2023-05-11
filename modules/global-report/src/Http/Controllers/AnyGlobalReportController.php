@@ -33,7 +33,10 @@ class AnyGlobalReportController extends ApiController
                 $globalReport[$value] =  $service->GlobalReport($request);
                 
             }
+          
             foreach ($globalReport as  $institution_key => $institution) {
+                $title = $institution['title'];
+                $description = $institution['description'];
                 foreach ($institution as $rapport_key => $rapport) {
                     if ($rapport_key != 'title' && $rapport_key != 'description') {
                         $datas[$rapport_key] = $datas[$rapport_key] ??  [];
@@ -47,6 +50,8 @@ class AnyGlobalReportController extends ApiController
                 }
             }
             $globalReport = $datas;
+            $globalReport['title'] = $title;
+            $globalReport['description'] = $description;
         } else {
             $globalReport = $service->GlobalReport($request);
         }
