@@ -126,7 +126,7 @@ class GlobalReportService
             // dump($getClaimByUnit->toArray());
             foreach ($getClaimByUnit as $claimByUnit) {
                 array_push($dataRecurringClaimObject, [
-                    "unit" => json_decode($claimByUnit->name),
+                    "unit" => json_decode($claimByUnit->name) ?? ["fr" => $claimByUnit->name],
                     "allClaimObject" => []
                 ]);
 
@@ -134,7 +134,7 @@ class GlobalReportService
                 $dataClaimObjectByUnit = $this->getClaimsReceivedByClaimObject($request, null, $claimByUnit->id)->limit(3)->get();
 
                 foreach ($dataClaimObjectByUnit as $key => $allDataClaimObjectByUnit) {
-
+                   
                     $result["ClaimsObject"] = json_decode($allDataClaimObjectByUnit->name);
                     $result["total"] = $allDataClaimObjectByUnit->total;
                     $result["rank"] = $key + 1;
@@ -984,7 +984,8 @@ class GlobalReportService
                     );
                 }
             }
-        }  if ($request->has('institutions')) {
+        }
+        if ($request->has('institutions')) {
 
             $getClientContactedAfterTreatment = $this->getClaimsSatisfactionAfterTreatment($request);
             $dataClientContactedAfterTreatment = [];
