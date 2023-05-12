@@ -26,58 +26,12 @@ class AnyGlobalReportController extends ApiController
 
     public function index(GlobalReportRequest $request, GlobalReportService $service)
     {
-        $globalReport = null;
-        if ($request->has('institutions') && count($request->institutions) > 0) {
-            $datas = [];
-            foreach ($request->institutions as $key => $value) {
-                $request->merge([
-                    "institution_id" => $value
-                ]);
-                $globalReport[$value] =  $service->GlobalReport($request);
-            }
+        $request->merge([
+            "institutions" => $request->institutions
+        ]);
 
-            foreach ($globalReport as  $institution_key => $institution) {
-                $title = $institution['title'];
-                $description = $institution['description'];
-                foreach ($institution as $rapport_key => $rapport) {
+        $globalReport = $service->GlobalReport($request);
 
-                    if ($rapport_key != 'title' && $rapport_key != 'description') {
-                        if (is_array($rapport)) {
-                            $datas[$rapport_key] = $datas[$rapport_key] ??  [];
-                            if (!in_array('total', $rapport) && !in_array('taux', $rapport)) {
-
-                                $datas[$rapport_key] = array_merge($datas[$rapport_key], $rapport);
-                            } else {
-                                array_push(
-                                    $datas[$rapport_key],
-                                    !in_array('total', $rapport) && !in_array('taux', $rapport) ?
-                                        array_merge($datas[$rapport_key], $rapport) :
-                                        [
-                                            "UnitId" => $institution_key,
-                                            "Unit" => ["fr" => Institution::find($institution_key)->name],
-                                            "total" => $rapport["total"] ?? 0,
-                                            "taux" => $rapport["taux"] ?? 0,
-                                        ]
-                                );
-                            }
-                        } else {
-                            $datas[$rapport_key] = $datas[$rapport_key] ??  [];
-                            array_push($datas[$rapport_key], [
-                                "UnitId" => $institution_key,
-                                "Unit" => ["fr" => Institution::find($institution_key)->name],
-                                "total" => $rapport,
-                                "taux" => $rapport,
-                            ]);
-                        }
-                    }
-                }
-            }
-            $globalReport = $datas;
-            $globalReport['title'] = $title;
-            $globalReport['description'] = $description;
-        } else {
-            $globalReport = $service->GlobalReport($request);
-        }
         return response()->json($globalReport, 200);
     }
 
