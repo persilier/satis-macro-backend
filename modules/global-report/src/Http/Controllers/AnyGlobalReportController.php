@@ -26,9 +26,11 @@ class AnyGlobalReportController extends ApiController
 
     public function index(GlobalReportRequest $request, GlobalReportService $service)
     {
-        $request->merge([
-            "institutions" => $request->institutions
-        ]);
+        if ($request->has('institutions')) {    
+            $request->merge([
+                "institutions" => $request->institutions
+            ]);
+        }
 
         $globalReport = $service->GlobalReport($request);
 
