@@ -69,7 +69,6 @@ trait FilterClaims
                     //  "taux"=>$percentage
                 ]
             );
-
         }
 
         return $dataReceivedClaimsByClaimCategory;
@@ -96,7 +95,6 @@ trait FilterClaims
                     // "taux"=>$percentage
                 ]
             );
-
         }
 
         return $dataClaimReceivedByClaimObject;
@@ -123,7 +121,6 @@ trait FilterClaims
                     //"taux"=>$percentage
                 ]
             );
-
         }
         return $dataClaimReceivedByClientGender;
     }
@@ -141,7 +138,6 @@ trait FilterClaims
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'claim_objects.severity_levels_id')
             ->selectRaw('severity_levels.name,severity_levels.id, count(*) as total')
             ->groupBy('severity_levels.name', 'severity_levels.id');
-
     }
 
     /**
@@ -156,7 +152,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -170,7 +165,6 @@ trait FilterClaims
             ->groupBy('severity_levels.name', 'severity_levels.id');
 
         return $claims;
-
     }
 
     /**
@@ -185,7 +179,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims = $claims
@@ -198,7 +191,6 @@ trait FilterClaims
             ->groupBy('severity_levels.name', 'severity_levels.id');
 
         return $claims;
-
     }
 
     /**
@@ -206,7 +198,7 @@ trait FilterClaims
      * @param null $unitId
      * @return Builder
      */
-    protected function getClaimsReceivedByClaimObject($request, $unitId = null)
+    protected function getClaimsReceivedByClaimObject($request, $unitId = null, $institutionId = null)
     {
 
         $claims = Claim::query();
@@ -218,16 +210,7 @@ trait FilterClaims
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
-        if ($unitId == null) {
-
-            $claims = $claims
-                ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
-                ->selectRaw('claim_objects.name, count(*) as total')
-                ->groupBy('claim_objects.name')
-                ->orderByDesc('total');
-
-            return $claims;
-        } else {
+        if ($unitId != null) {
 
             $claims = $claims
                 ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
@@ -237,9 +220,24 @@ trait FilterClaims
                 ->orderByDesc('total');
 
             return $claims;
+        } else if ($institutionId != null) {
+            $claims = $claims
+                ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+                ->where('institution_targeted_id', $institutionId)
+                ->selectRaw('claim_objects.name, count(*) as total')
+                ->groupBy('claim_objects.name')
+                ->orderByDesc('total');
+
+            return $claims;
+        } else {
+            $claims = $claims
+                ->leftJoin('claim_objects', 'claim_objects.id', '=', 'claims.claim_object_id')
+                ->selectRaw('claim_objects.name, count(*) as total')
+                ->groupBy('claim_objects.name')
+                ->orderByDesc('total');
+
+            return $claims;
         }
-
-
     }
 
     /**
@@ -254,7 +252,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -269,7 +266,6 @@ trait FilterClaims
         // ->orderBy('total','Asc');
 
         return $claims;
-
     }
 
     /**
@@ -284,7 +280,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -313,7 +308,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -343,12 +337,21 @@ trait FilterClaims
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+        if ($request->has('unit_targeted_id')) {
+            $claims = $claims
+                ->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
+                ->selectRaw('units.name,units.id, count(*) as total')
+                ->groupBy('units.name', 'units.id')
+                ->orderByDesc('total');
+        } else if ($request->has('institutions')) {
+            $claims = $claims
+                ->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                ->groupBy('institutions.name', 'institutions.id')
+                ->orderByDesc('total');
+        }
 
-        $claims = $claims
-            ->leftJoin('units', 'units.id', '=', 'claims.unit_targeted_id')
-            ->selectRaw('units.name,units.id, count(*) as total')
-            ->groupBy('units.name', 'units.id')
-            ->orderByDesc('total');
+
 
         return $claims;
     }
@@ -365,7 +368,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims = $claims
@@ -392,7 +394,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -404,7 +405,6 @@ trait FilterClaims
             ->groupBy('channels.slug')
             ->orderByDesc('total');
         return $claims;
-
     }
 
     /**
@@ -420,7 +420,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->join('treatments', function ($join) {
@@ -448,7 +447,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->join('treatments', function ($join) {
@@ -481,7 +479,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->join('treatments', function ($join) {
@@ -514,7 +511,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->join('treatments', function ($join) {
@@ -542,7 +538,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->join('treatments', function ($join) {
@@ -553,7 +548,6 @@ trait FilterClaims
             ->where('satisfaction_measured_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
         return $claims;
-
     }
 
 
@@ -572,6 +566,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
@@ -584,10 +581,15 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })
+            ->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
-
+        return $request->has('unit_targeted_id') ||  $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -603,7 +605,6 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -616,7 +617,6 @@ trait FilterClaims
             ->where('is_claimer_satisfied', '=', 0);
 
         return $claims;
-
     }
 
 
@@ -635,6 +635,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
@@ -647,10 +650,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims;
-
+        return $request->has('unit_targeted_id') || $request->has('institutions') ? $claims->get() : $claims;
     }
 
 
@@ -671,6 +678,10 @@ trait FilterClaims
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
 
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
+
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
 
@@ -682,10 +693,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
-
+        return $request->has('unit_targeted_id') ||  $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -705,6 +720,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
@@ -717,10 +735,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
-
+        return $request->has('unit_targeted_id') || $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
     /**
@@ -744,7 +766,6 @@ trait FilterClaims
         if ($status === 'transferred_to_targeted_institution') {
 
             $claims->where('status', 'full')->orWhere('status', 'transferred_to_targeted_institution');
-
         } else {
             $claims->where('status', $status);
         }
@@ -767,23 +788,17 @@ trait FilterClaims
             if ($request->has('institution_id')) {
 
                 $m->where('institution_targeted_id', $request->institution_id);
-
             }
-
         }])->whereHas('claimObjects.claims', function ($p) use ($request, $institution) {
 
             if ($request->has('institution_id')) {
 
                 $p->where('institution_targeted_id', $request->institution_id);
-
             }
 
             $p->where('created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
                 ->where('created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
-
         })->get();
-
-
     }
 
     /**
@@ -837,7 +852,6 @@ trait FilterClaims
                 ->where('validated_at', '>=', Carbon::parse($request->date_start)->startOfDay())
                 ->where('validated_at', '<=', Carbon::parse($request->date_end)->endOfDay());
         })->get();
-
     }
 
     /**
@@ -1004,11 +1018,14 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
+        }
+
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
         }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
@@ -1023,9 +1040,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
-            });
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
+            });;
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
+        return $request->has('unit_targeted_id') || $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -1044,6 +1066,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
@@ -1057,9 +1082,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
+        return $request->has('unit_targeted_id') ||  $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -1079,6 +1109,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
@@ -1095,10 +1128,15 @@ trait FilterClaims
                     ->selectRaw('units.name, count(*) as total')
                     ->groupBy('units.name')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name, count(*) as total')
+                    ->groupBy('institutions.name')
+                    ->orderByDesc('total');
             });
 
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
+        return $request->has('unit_targeted_id')  || $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -1118,6 +1156,9 @@ trait FilterClaims
         if ($request->has('unit_targeted_id')) {
             $claims->whereIn('unit_targeted_id', $request->unit_targeted_id);
         }
+        if ($request->has('institutions')) {
+            $claims->whereIn('institution_targeted_id', $request->institutions);
+        }
 
         $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
             ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
@@ -1135,10 +1176,14 @@ trait FilterClaims
                     ->selectRaw('units.name,units.id, count(*) as total')
                     ->groupBy('units.name', 'units.id')
                     ->orderByDesc('total');
+            })->when($request->has('institutions'), function ($query) {
+                $query->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+                    ->selectRaw('institutions.name,institutions.id, count(*) as total')
+                    ->groupBy('institutions.name', 'institutions.id')
+                    ->orderByDesc('total');
             });
 
-        return $request->has('unit_targeted_id') ? $claims->get() : $claims->count();
-
+        return $request->has('unit_targeted_id') ||  $request->has('institutions') ? $claims->get() : $claims->count();
     }
 
 
@@ -1150,18 +1195,16 @@ trait FilterClaims
         if ($request->has('institution_id')) {
 
             $claims->where('institution_targeted_id', $request->institution_id);
-
         }
 
         $claims = $claims
             ->whereIn('claim_object_id', $claim_object_ids);
 
-        if ($request->status){
-            $claims = $claims->where("status",$request->status);
+        if ($request->status) {
+            $claims = $claims->where("status", $request->status);
         }
 
         return $claims;
-
     }
 
     protected function getClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids)
@@ -1196,6 +1239,29 @@ trait FilterClaims
         return count($claims) > 0 ? $time / count($claims) : 0;
     }
 
+    /**
+     * @param $request
+     * @return Builder
+     */
+    protected function getClaimsReceivedByInstitution($request)
+    {
+
+        $claims = Claim::query();
+
+        $claims->where('claims.created_at', '>=', Carbon::parse($request->date_start)->startOfDay())
+            ->where('claims.created_at', '<=', Carbon::parse($request->date_end)->endOfDay());
+
+        $claims = $claims
+            ->leftJoin('institutions', 'institutions.id', '=', 'claims.institution_targeted_id')
+            ->selectRaw('institutions.name,institutions.id, count(*) as total')
+            ->groupBy('institutions.name', 'institutions.id')
+            ->orderByDesc('total');
+
+        return $claims;
+    }
+
+
+
     protected function getSatisfactionClaimsTreatedWithClaimObjectForInternalControl($request, $claim_object_ids, $status)
     {
         $claims = $this->getClaimsReceivedWithClaimObjectForInternalControl($request, $claim_object_ids)
@@ -1217,7 +1283,8 @@ trait FilterClaims
     }
 
 
-    public function relation(){
+    public function relation()
+    {
         return [
             'claimObject.claimCategory',
             'claimer',
@@ -1243,5 +1310,4 @@ trait FilterClaims
             'treatmentBoard.members.identite'
         ];
     }
-
 }
