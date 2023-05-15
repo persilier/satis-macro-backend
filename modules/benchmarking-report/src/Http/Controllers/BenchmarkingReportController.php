@@ -15,13 +15,12 @@ class BenchmarkingReportController extends ApiController
 
         $this->middleware('auth:api');
         $this->middleware('permission:list-benchmarking-reporting')->only(['index']);
-
     }
 
     public function index(BenchmarkingReportRequest $request, BenchmarkingReportService $service)
     {
         $request->merge([
-            "institution_id"=>$this->institution()->id
+            "institution_id" => request('institution_id', $this->institution()->id)
         ]);
 
         $benchmarkingReport = $service->BenchmarkingReport($request);
