@@ -166,6 +166,7 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
                 $time = $this->daysWithoutWeekEnd($this->created_at, $claimInfo->transferred_to_unit_at);
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
@@ -178,6 +179,7 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_unit,
             "duration_done" => $duration_done,
+            "time_done_in_minutes" => $time_done_in_minutes,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
             "ecart_days_hours" =>  $ecart_days_hours,
@@ -198,6 +200,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at, $claimInfo->assigned_to_staff_at);
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
@@ -209,6 +212,7 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_staff,
             "duration_done" => $duration_done,
+            "time_done_in_minutes" => $time_done_in_minutes,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
             "ecart_days_hours" =>  $ecart_days_hours,
@@ -230,6 +234,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->solved_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at, $claimInfo->solved_at);
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
@@ -242,6 +247,7 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_treatment,
             "duration_done" => $duration_done,
+            "time_done_in_minutes" => $time_done_in_minutes,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
             "ecart_days_hours" =>  $ecart_days_hours,
@@ -262,6 +268,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->validated_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->solved_at, $claimInfo->validated_at);
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
@@ -274,6 +281,7 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_validation,
             "duration_done" => $duration_done,
+            "time_done_in_minutes" => $time_done_in_minutes,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
             "ecart_days_hours" =>  $ecart_days_hours,
@@ -295,6 +303,7 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->validated_at, $claimInfo->satisfaction_measured_at);
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
@@ -307,6 +316,7 @@ class Claim extends Model
             "global_delay" => $this->time_limit,
             "Quota_delay_assigned" => $this->time_measure_satisfaction,
             "duration_done" => $duration_done,
+            "time_done_in_minutes" => $time_done_in_minutes,
             "duration_done_days_hours" =>  $duration_done_days_hours,
             "ecart" =>  $ecart,
             "ecart_days_hours" =>  $ecart_days_hours,

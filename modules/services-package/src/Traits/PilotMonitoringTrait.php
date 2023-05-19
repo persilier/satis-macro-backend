@@ -106,14 +106,15 @@ trait PilotMonitoringTrait
             foreach ($claimAssigned as $value) {
 
                 $i++;
-                $totalTime +=  $value->timeLimitUnit['duration_done'];
+                $totalTime +=  $value->timeLimitUnit['time_done_in_minutes'];
             }
 
             $averageTime = $totalTime / $i;
+
         }
 
 
-        return $averageTime;
+        return conversionToDayHourMinute($averageTime);
     }
 
     /**
@@ -133,14 +134,14 @@ trait PilotMonitoringTrait
             $claimValidated = $claimValidated->get();
             foreach ($claimValidated as $value) {
                 $i++;
-                $totalTime +=  $value->timeLimitValidation['duration_done'];
+                $totalTime +=  $value->timeLimitValidation['time_done_in_minutes'];
             }
 
             $averageTime = $totalTime / $i;
         }
 
 
-        return $averageTime;
+        return conversionToDayHourMinute($averageTime);
     }
 
     /**
@@ -161,14 +162,14 @@ trait PilotMonitoringTrait
             $claimSatisfied = $claimSatisfied->get();
             foreach ($claimSatisfied as $value) {
                 $i++;
-                $totalTime +=  $value->timeLimitMeasureSatisfaction['duration_done'];
+                $totalTime +=  $value->timeLimitMeasureSatisfaction['time_done_in_minutes'];
             }
 
             $averageTime = $totalTime / $i;
         }
 
 
-        return $averageTime;
+        return conversionToDayHourMinute($averageTime);
     }
 
 
