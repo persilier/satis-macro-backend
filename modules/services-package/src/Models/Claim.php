@@ -159,6 +159,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
         $ecart_days_hours = null;
+        $time_done_in_minutes = null;
 
 
         if ($this->time_unit  && $this->created_at) {
@@ -193,6 +194,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
         $ecart_days_hours = null;
+        $time_done_in_minutes = null;
 
         if ($this->time_unit  && $this->created_at) {
 
@@ -227,6 +229,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
         $ecart_days_hours = null;
+        $time_done_in_minutes = null;
 
         if ($this->time_treatment && $this->created_at) {
 
@@ -261,6 +264,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
         $ecart_days_hours = null;
+        $time_done_in_minutes = null;
 
         if ($this->time_validation && $this->created_at) {
 
@@ -296,6 +300,7 @@ class Claim extends Model
         $duration_done_days_hours = null;
         $ecart = null;
         $ecart_days_hours = null;
+        $time_done_in_minutes = null;
 
         if ($this->time_measure_satisfaction && $this->created_at) {
 
