@@ -116,14 +116,14 @@ trait PilotUnitTrait
         foreach ($claimAssigned as $value){
         
            $i++;
-           $totalTime +=  $value->timeLimitUnit['duration_done'];
+           $totalTime +=  $value->timeLimitUnit['time_done_in_minutes'];
         }
         
         $averageTime = $totalTime / $i;
        }
        
 
-       return $averageTime;
+       return conversionToDayHourMinute($averageTime);
     }
   
     /**

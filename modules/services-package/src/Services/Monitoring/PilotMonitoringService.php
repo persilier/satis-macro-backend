@@ -31,7 +31,6 @@ class PilotMonitoringService
         $getAverageTimeOfValidation = $this->getAverageTimeOfValidation($request);
         $getAverageTimeOfSatisfaction = $this->getAverageTimeOfSatisfaction($request);
 
-       
          $allClaim = $this->getPilotClaimAssignedTo($request, $paginationSize, $type, $key);
 
         
@@ -48,5 +47,6 @@ class PilotMonitoringService
    
     }
 
+   
     
 }
