@@ -16,7 +16,7 @@ use Satis2020\ServicePackage\Traits\StaffManagement;
  */
 class CreateClaimController extends ApiController
 {
-    use StaffManagement;
+    use StaffManagement, DataUserNature;
     public function __construct()
     {
         parent::__construct();
@@ -43,7 +43,7 @@ class CreateClaimController extends ApiController
 
     public function create()
     {
-        $institution_id = request('institution_id', null);
-        return response()->json($this->getRegisteredClaims($institution_id), 200);
+        $institutionId = request('institution_id', $this->institution()->id);
+        return response()->json($this->getRegisteredClaims($institutionId), 200);
     }
 }
