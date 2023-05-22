@@ -53,7 +53,7 @@ function getTagContents($string, $tag_open = '[', $tag_close = ']')
     $hours = floor(($minutes % 1440) / 60); // Remaining minutes divided by 60 to get hours
     $remainingMinutes = $minutes % 60; // Remaining minutes after calculating days and hours
     
-    return "$days jour(s), $hours heures(s), $remainingMinutes minute(s)";
+    return "$days J, $hours h, $remainingMinutes min";
 }
 
 function claimsExists($reference)
