@@ -3,34 +3,30 @@
 namespace Satis2020\ServicePackage\Traits;
 
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Satis2020\ServicePackage\Models\Claim;
-use Satis2020\ServicePackage\Models\ClaimObject;
-use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
-use Satis2020\ServicePackage\Models\Identite;
-use Satis2020\ServicePackage\Models\Institution;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Satis2020\Webhooks\Consts\Event;
+use Illuminate\Support\Facades\Config;
 use Satis2020\Webhooks\Facades\SendEvent;
-use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
+use Satis2020\ServicePackage\Models\Claim;
+use Satis2020\ServicePackage\Models\Identite;
+use Satis2020\ServicePackage\Models\ClaimObject;
+use Satis2020\ServicePackage\Models\Institution;
+use Satis2020\ServicePackage\Traits\VerifyUnicity;
 use Satis2020\ServicePackage\Notifications\RegisterAClaim;
+use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
+use Satis2020\ServicePackage\Notifications\AcknowledgmentOfReceipt;
 
 trait ClaimIncomingByEmail
 {
-use ClaimsCategoryObjectPrediction;
+    use ClaimsCategoryObjectPrediction, CreateClaim, RulesForIncomingMails, VerifyUnicity;
 
-    protected function rulesIncomingEmail($id)
+    protected function rulesIncomingEmail($id, $type = "others")
     {
-        return [
-            "email" => 'required|unique:email_claim_configurations,email,' . $id,
-            "host" => 'required',
-            "port" => 'required',
-            "protocol" => 'required',
-            "password" => 'required',
-            "institution_id" => 'required|exists:institutions,id',
-        ];
+        $data = $type == "office365" ? $this->rulesOffice365($id) : $this->rulesOthers($id);
+
+        return $data;
     }
 
 
@@ -56,23 +52,16 @@ use ClaimsCategoryObjectPrediction;
 
             $params = Config::get('email-claim-configuration');
 
-            $requestData = [
-                "app_name" => Str::random(16) . '-' . Institution::findOrFail($request->institution_id)->name,
-                "url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route($routeName, $request->email, false),
-                "mail_server" => $request->host,
-                "mail_server_username" => $request->email,
-                "mail_server_password" => $request->password,
-                "mail_server_port" => $request->port,
-                "mail_server_protocol" => $request->protocol,
-                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route('passport.token', null, false),
-                "app_login_params" => [
-                    "grant_type" => $params['grant_type'],
-                    "client_id" => $params['client_id'],
-                    "client_secret" => $params['client_secret'],
-                ]
-            ];
+
+
+            $requestData = $request->type == "office365" ?
+                $this->NewTransformQueryForOffice365($request, $routeName, $params)
+                :  $this->NewTransformQueryForOthers($request, $routeName, $params);
+
 
             $response = $httpClient->post($params['api_subscriber'], $requestData)->json();
+
+
 
             if ($response == null) {
                 $response = Http::post($params['api_subscriber'], $requestData)->json();
@@ -89,7 +78,6 @@ use ClaimsCategoryObjectPrediction;
                 "error" => false,
                 "data" => $response['datas']
             ];
-
         } catch (\Exception $exception) {
 
             return [
@@ -108,22 +96,9 @@ use ClaimsCategoryObjectPrediction;
 
             $params = Config::get('email-claim-configuration');
 
-            $requestData = [
-                "url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route($routeName, $request->email, false),
-                "mail_server" => $request->host,
-                "mail_server_username" => $request->email,
-                "mail_server_password" => $request->password,
-                "mail_server_port" => $request->port,
-                "mail_server_protocol" => $request->protocol,
-                "app_login_url" => Config::get('email-claim-configuration.app_url_incoming_mail') . route('passport.token', null, false),
-                "app_id" => $emailClaimConfiguration->subscriber_id,
-                "app_login_params" => [
-                    "grant_type" => $params['grant_type'],
-                    "client_id" => $params['client_id'],
-                    "client_secret" => $params['client_secret'],
-                ]
-            ];
-
+            $requestData = $request->type == "office365" ?
+                $this->transformQueryForOffice365($request, $emailClaimConfiguration, $routeName, $params)
+                :  $this->transformQueryForOthers($request, $emailClaimConfiguration, $routeName, $params);
 
             $response = $httpClient->put($params['api_subscriber'], $requestData)->json();
 
@@ -142,7 +117,6 @@ use ClaimsCategoryObjectPrediction;
                 "error" => false,
                 "data" => ""
             ];
-
         } catch (\Exception $exception) {
             return [
                 "error" => true,
@@ -155,18 +129,20 @@ use ClaimsCategoryObjectPrediction;
     protected function storeConfiguration($request, $emailClaimConfiguration, $routeName)
     {
 
-//        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
-//
-//        if ($testSmtp['error']) {
-//            return [
-//                "error" => true,
-//                "message" => $testSmtp['message']
-//            ];
-//        }
+        //        $testSmtp = $this->testSmtp($request->host, $request->port, $request->protocol, $request->email, $request->password);
+        //
+        //        if ($testSmtp['error']) {
+        //            return [
+        //                "error" => true,
+        //                "message" => $testSmtp['message']
+        //            ];
+        //        }
 
-        $subscriber =  $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
         $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
+
+
+        //  $subscriber = $emailClaimConfiguration ? $this->updateSubscriber($request, $emailClaimConfiguration, $routeName) : $this->subscriber($request, $routeName);
 
         if ($subscriber['error']) {
             try {
@@ -186,17 +162,17 @@ use ClaimsCategoryObjectPrediction;
 
         return [
             "error" => false,
-            "data" => EmailClaimConfiguration::updateOrCreate(['subscriber_id' => $request->subscriber_id], $request->all())
+            "data" => $this->createOrUpdateConfigurationEmail($request)
         ];
     }
 
 
     protected function readEmails($request, $typeText, $status, $configuration)
     {
+
         $registeredMail = [];
-
-
         foreach ($request->data as $email) {
+
             $error = false;
             try {
 
@@ -206,45 +182,43 @@ use ClaimsCategoryObjectPrediction;
                 $references = array_unique(array_merge(extractClaimRefs($mailContent), extractClaimRefs($mailSubject)));
                 $number =  extractPhoneNumber($mailContent);
 
+
                 if (!empty($references)) {
                     foreach ($references as $reference) {
                         $error = true;
-                        if (claimsExists($reference)){
-                            if (!empty($number)){
+                        if (claimsExists($reference)) {
+                            if (!empty($number)) {
                                 $claim = Claim::query()
                                     ->with('claimer')
-                                    ->where('reference',$reference)
+                                    ->where('reference', $reference)
                                     ->first();
 
-                                if ($claim){
+                                if ($claim) {
                                     $claimer = $claim->claimer;
                                     $claimer->update(['telephone' => $number]);
                                     $error = false;
                                 }
-
                             }
                         }
                     }
-                }else{
+                } else {
+
                     $claim = $this->getDataIncomingEmail($email, $typeText);
 
-                    if (!$storeClaim = $this->storeClaim($claim, $status, $configuration)) {
+                    if (!$claimStore = $this->storeClaim($claim, $status, $configuration)) {
                         $error = true;
                     }
                 }
-
             } catch (\Exception $e) {
                 $error = true;
-                Log::debug($e);
-                Log::info($e->getMessage());
+                // Log::debug($e);
+                // Log::info($e->getMessage());
             }
 
             if (!$error) {
                 array_push($registeredMail, $email['header']["message_id"][0]);
             }
-
         }
-
 
         return $registeredMail;
     }
@@ -267,9 +241,12 @@ use ClaimsCategoryObjectPrediction;
 
     protected function storeClaim($claim, $status, $configuration)
     {
+
         try {
 
+
             if (!$identity = $this->identityVerified($claim)) {
+
                 $identity = Identite::create([
                     "firstname" => $claim['firstname'],
                     "lastname" => $claim['lastname'],
@@ -278,11 +255,18 @@ use ClaimsCategoryObjectPrediction;
             }
 
             $claimObjectId = null;
-            $claimObject = $this->allClaimsCategoryObjectPrediction($claim['description']);
-            if ( $claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first() ) {
-                $claimObjectId = $claimObject->id;
-            }
 
+            try {
+
+                if ($claimObject = $this->allClaimsCategoryObjectPrediction($claim['description'])) {
+
+                    if ($claimObject = ClaimObject::query()->where("name->" . \App::getLocale(), $claimObject)->first()) {
+                        $claimObjectId = $claimObject->id;
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error("Erreur de prédiction de l'objet de réclammation");
+            }
 
             $claimStore = Claim::create([
                 'reference' => $this->createReference($configuration->institution_id),
@@ -296,46 +280,54 @@ use ClaimsCategoryObjectPrediction;
                 "response_channel_slug" => "email"
             ]);
 
+
             for ($i = 0; $i < sizeof($claim['attachments']); $i++) {
                 $save_img = $this->base64SaveImg($claim['attachments'][$i], 'claim-attachments/', $i);
                 $claimStore->files()->create(['title' => "Incoming mail attachment " . $claimStore->reference, 'url' => $save_img['link']]);
             }
 
-            $claim->load('claimer');
-            //sending webhook event
-            SendEvent::sendEvent(Event::CLAIM_REGISTERED,$claim->toArray(),$claim->institution_targeted_id);
             $claimStore->load('claimer', 'institutionTargeted');
-            // send notification to claimer
-            if (!is_null($claimStore->claimer)) {
-                $claimStore->claimer->notify(new AcknowledgmentOfReceipt($claimStore));
-            }
+            //sending webhook event
+            SendEvent::sendEvent(Event::CLAIM_REGISTERED, $claimStore->toArray(), $claimStore->institution_targeted_id);
 
-            // send notification to pilot
-            if (!is_null($claimStore->institutionTargeted)) {
-                if (!is_null($this->getInstitutionPilot($claimStore->institutionTargeted))) {
-                    $this->getInstitutionPilot($claimStore->institutionTargeted)->notify(new RegisterAClaim($claimStore));
-                }
-            }
-
-            $claim = $claimStore->load('claimer','institutionTargeted');
             // send notification to claimer
-            if (!is_null($claim->claimer)) {
+
+              try {
+                
+                if (!is_null($claimStore->claimer)) {
+                    $claimStore->claimer->notify(new AcknowledgmentOfReceipt($claimStore));
+                } 
+    
+                // send notification to pilot
+                if (!is_null($claimStore->institutionTargeted)) {
+                    if (!is_null($this->getInstitutionPilot($claimStore->institutionTargeted))) {
+                        $this->getInstitutionPilot($claimStore->institutionTargeted)->notify(new RegisterAClaim($claimStore));
+                    }
+                } 
+            } catch (\Exception $ex) {
+                //throw $th;
+                Log::error("Erreur de notification");
+            } 
+
+
+            /*  $claim = $claimStore->load('claimer', 'institutionTargeted');
+            // send notification to claimer
+            if (!is_null($claim->claimer)) {0
                 $claim->claimer->notify(new AcknowledgmentOfReceipt($claim));
             }
 
             // send notification to pilot
-                if (!is_null($claim->institutionTargeted)) {
-                    if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
-                        $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
-                    }
+            if (!is_null($claim->institutionTargeted)) {
+                if (!is_null($this->getInstitutionPilot($claim->institutionTargeted))) {
+                    $this->getInstitutionPilot($claim->institutionTargeted)->notify(new RegisterAClaim($claim));
                 }
-
+            }
+           */
             return true;
-
         } catch (\Exception $exception) {
-            Log::info("-----------------incoming mail-------------------------");
+            /*  Log::info("-----------------incoming mail-------------------------");
             Log::debug($exception);
-            Log::info($exception->getMessage());
+            Log::info($exception->getMessage()); */
             return false;
         }
     }
@@ -351,13 +343,14 @@ use ClaimsCategoryObjectPrediction;
             $identity = $verifyEmail['entity'];
         }
 
+
         return $identity;
     }
 
     protected function getConfiguration($institutionId)
     {
         return EmailClaimConfiguration::query()
-            ->where('institution_id',$institutionId)
+            ->where('institution_id', $institutionId)
             ->first();
     }
 }

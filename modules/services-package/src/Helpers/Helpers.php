@@ -40,13 +40,13 @@ function getTagContents($string, $tag_open = '[', $tag_close = ']')
     $result = [];
     foreach (explode($tag_open, $string) as $key => $value) {
         if (strpos($value, $tag_close) !== FALSE) {
-            $result[] = substr($value, 0, strpos($value, $tag_close));;
+            $result[] = substr($value, 0, strpos($value, $tag_close));
         }
     }
     return $result;
 }
 
- function conversionToDayHourMinute($minutes)
+function conversionToDayHourMinute($minutes)
 {
     
     $days = floor($minutes / 1440); // 1440 minutes in a day

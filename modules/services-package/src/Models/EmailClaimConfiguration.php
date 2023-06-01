@@ -1,4 +1,5 @@
 <?php
+
 namespace Satis2020\ServicePackage\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ class EmailClaimConfiguration extends Model
      * @var array
      */
     public $fillable = [
-        'email','host', 'port', 'protocol', 'password', 'institution_id', 'subscriber_id'
+        'email', 'host', 'port', 'protocol', 'password', 'institution_id', 'subscriber_id', 'type', 'app_tenant', 'app_client_secret', 'app_client_id'
     ];
 
     /**
@@ -36,5 +37,4 @@ class EmailClaimConfiguration extends Model
     {
         return $this->belongsTo(Institution::class);
     }
-
 }

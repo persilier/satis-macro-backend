@@ -30,13 +30,17 @@ class ConfigurationsController extends ApiController
      */
     public function store(Request $request, EmailClaimConfiguration $emailClaimConfiguration = null)
     {
+        
         $institution = $this->institution();
 
+        
         $request->merge(['institution_id' => $institution->id]);
-
-        $this->validate($request, $this->rulesIncomingEmail($emailClaimConfiguration ? $emailClaimConfiguration->id : null));
-
+        
+        $this->validate($request, $this->rulesIncomingEmail($emailClaimConfiguration ? $emailClaimConfiguration->id : null, $request->type));
+        
         $configuration = $this->storeConfiguration($request, $emailClaimConfiguration, "my.register-email-claim");
+
+        
 
         if ($configuration['error']) {
             return response($configuration, 400);

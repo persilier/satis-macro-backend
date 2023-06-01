@@ -152,7 +152,6 @@ class Claim extends Model
         'timeLimitMeasureSatisfaction'
     ];
 
-
     public function gettimeLimitUnitAttribute()
     {
         $duration_done = null;
@@ -167,12 +166,11 @@ class Claim extends Model
             $claimInfo = $this->activeTreatment;
             if ($claimInfo && $claimInfo->transferred_to_unit_at !== null) {
                 $time = $this->daysWithoutWeekEnd($this->created_at, $claimInfo->transferred_to_unit_at);
-                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
-
+                $ecart_days_hours = $this->conversionToDysHoursMinutes($ecart);
             }
         }
 
@@ -202,11 +200,11 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->assigned_to_staff_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->transferred_to_unit_at, $claimInfo->assigned_to_staff_at);
-                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
+                $ecart_days_hours = $this->conversionToDysHoursMinutes($ecart);
             }
         }
 
@@ -237,12 +235,11 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->solved_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->assigned_to_staff_at, $claimInfo->solved_at);
-                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
-               
+                $ecart_days_hours = $this->conversionToDysHoursMinutes($ecart);
             }
         }
 
@@ -272,12 +269,11 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->validated_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->solved_at, $claimInfo->validated_at);
-                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
-
+                $ecart_days_hours = $this->conversionToDysHoursMinutes($ecart);
             }
         }
 
@@ -308,12 +304,11 @@ class Claim extends Model
             if ($claimInfo && $claimInfo->satisfaction_measured_at !== null) {
 
                 $time = $this->daysWithoutWeekEnd($claimInfo->validated_at, $claimInfo->satisfaction_measured_at);
-                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']) ;
+                $time_done_in_minutes = (intval($time['days']) * 24 * 60) + (intval($time['hours']) * 60) + intval($time['minutes']);
                 $duration_done = intval($time['days']);
                 $duration_done_days_hours = $time['days'] . " j " . $time['hours'] . " h " . $time['minutes'] . " min";
                 $ecart = $this->conversion($this->time_unit) -  $duration_done;
-                $ecart_days_hours= $this->conversionToDysHoursMinutes($ecart) ;
-
+                $ecart_days_hours = $this->conversionToDysHoursMinutes($ecart);
             }
         }
 
@@ -391,14 +386,14 @@ class Claim extends Model
             $hours = $total_days * 24;
             $hours_whole = floor($hours);
             $minutes = round(($hours - $hours_whole) * 60);
-            $daysHoursMinutes = $hours_whole . "h" . " " .$minutes. "min";
+            $daysHoursMinutes = $hours_whole . "h" . " " . $minutes . "min";
         } else {
 
-            
+
             $days_whole = floor($total_days);
             $hours_decimal = ($total_days - $days_whole) * 24;
             $hours_whole = floor($hours_decimal);
-            $minutes = round(($hours_decimal - $hours_whole) * 60); 
+            $minutes = round(($hours_decimal - $hours_whole) * 60);
             $daysHoursMinutes = $days_whole . " j " . $hours_whole . " h " . $minutes . " min";
         }
 

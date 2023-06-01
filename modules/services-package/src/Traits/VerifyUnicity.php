@@ -26,7 +26,7 @@ trait VerifyUnicity
 
         $verifyPhone = $this->handleInArrayUnicityVerification($request->telephone, 'identites', 'telephone', $idColumn, $idValue);
 
-        $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', $idColumn, $idValue);
+        $verifyEmail = $this->handleInArrayUnicityVerification($request->email, 'identites', 'email', $idColumn, $idValue,);
 
         if (!$verifyPhone['status']) {
             $identite = $verifyPhone['entity'];
@@ -274,7 +274,7 @@ trait VerifyUnicity
     protected function handleClientIdentityVerification($values, $table, $column, $attribute, $idInstitution, $idColumn = null, $idValue = null, $typeColumn = null, $typeValue = null)
     {
 
-        $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue, $typeColumn, $typeValue);
+        $verify = $this->handleInArrayUnicityVerification($values, $table, $column, $idColumn, $idValue,$typeColumn,$typeValue);
 
         if (!$verify['status']) {
 

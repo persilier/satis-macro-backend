@@ -15,16 +15,24 @@ trait ClaimsCategoryObjectPrediction
 {
     protected function allClaimsCategoryObjectPrediction($description)
     {
-        $categoryData = Http::post(Config::get("email-claim-configuration.claim_object_prediction"), ['description' => $description])->json();
-        Log::info(["CLAIM_OBJECT_PREDICTION"=>Config::get("email-claim-configuration.claim_object_prediction")]);
-        Log::info(["predictions"=>$categoryData]);
-        if ($categoryData) {
-            if ( $category = $categoryData['predictions']['categories'][0]) {
-                if ($objects = $categoryData['predictions']['objects'][$category][0]) {
-                    $object = $objects[0];
+        
+
+        try {
+            $categoryData = Http::post(Config::get("email-claim-configuration.claim_object_prediction"), ['description' => $description])->json();
+            if ($categoryData) {
+                if ( $category = $categoryData['predictions']['categories'][0]) {
+                    if ($objects = $categoryData['predictions']['objects'][$category][0]) {
+                        $object = $objects[0];
+                    }
                 }
             }
+            return $object;
+        } catch (\Exception $th) {
+            //throw $th;
+
+            return null;
         }
+       
         /* $dataCategory = [];
          foreach ($category as $categories){
              $allCategories = ClaimCategory::where("name->".\App::getLocale(),$categories)->get()->toArray();
@@ -32,7 +40,6 @@ trait ClaimsCategoryObjectPrediction
          }*/
 
 
-        return $object;
     }
 
 }

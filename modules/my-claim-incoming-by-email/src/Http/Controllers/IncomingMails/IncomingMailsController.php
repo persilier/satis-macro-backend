@@ -15,7 +15,7 @@ use Satis2020\ServicePackage\Traits\VerifyUnicity;
 
 class IncomingMailsController extends Controller
 {
-    use ClaimIncomingByEmail, TestSmtpConfiguration, CreateClaim, DataUserNature, VerifyUnicity, Notification;
+    use ClaimIncomingByEmail, TestSmtpConfiguration, DataUserNature, VerifyUnicity, Notification;
 
     public function __construct()
     {
@@ -26,13 +26,15 @@ class IncomingMailsController extends Controller
 
     public function store(Request $request)
     {
+        
         $configuration = EmailClaimConfiguration::where('email', $request->route('email'))->first();
-        Log::info("configuration ".json_encode($configuration));
-        if (! $configuration) {
+       
+
+        if (!$configuration) {
             return json_encode([]);
         }
-        Log::info("request mail ".json_encode($request->all()));
-        return json_encode(($this->readEmails($request, 'html_text', 'incomplete', $configuration)));
+        
+        return json_encode($this->readEmails($request, 'html_text', 'incomplete', $configuration));
     }
 
 }

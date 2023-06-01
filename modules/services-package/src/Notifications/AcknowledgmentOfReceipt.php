@@ -3,11 +3,15 @@
 namespace Satis2020\ServicePackage\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Satis2020\ServicePackage\Channels\MessageChannel;
 use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
+use Satis2020\ServicePackage\Models\EmailClaimConfiguration;
+use Satis2020\ServicePackage\Traits\Notification as NotificationTrait;
 
 /**
  * Class AcknowledgmentOfReceipt
@@ -15,7 +19,7 @@ use Satis2020\ServicePackage\Traits\ClaimIncomingByEmail;
  */
 class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
 {
-    use Queueable, \Satis2020\ServicePackage\Traits\Notification, ClaimIncomingByEmail;
+    use Queueable, NotificationTrait;
 
     public $claim;
     public $event;
@@ -28,29 +32,31 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      */
     public function __construct($claim)
     {
+        
         $this->claim = $claim;
-
-        $event = $claim->claimObject && $claim->claimObject!=null?
-            'acknowledgment-of-receipt':'acknowledgment-of-receipt-incoming';
+        //acknowledgment-of-receipt-incoming
+        $event = ($claim && $claim->claimObject) ? 'acknowledgment-of-receipt' : 'acknowledgment-of-receipt-incoming';
         $this->event = $this->getNotification($event);
 
-        if ($claim->claimObject && $claim->claimObject != null) {
+        if ($claim && $claim->claimObject) {
+            $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
+            $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
+        
+        } else {
+            $this->event->text = str_replace('{claim_object}', "--", $this->event->text);
+            $this->event->text = str_replace('{day_replay}', "--", $this->event->text);
+        } 
+
+        /* if ($claim->claimObject && $claim->claimObject != null) {
             $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
             $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
         } else {
             $this->event->text = str_replace('{claim_object}', "--", $this->event->text);
             $this->event->text = str_replace('{day_replay}', "--", $this->event->text);
-        }
+        } */
+        //$this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
 
-        if ($claim->claimObject && $claim->claimObject != null) {
-            $this->event->text = str_replace('{claim_object}', $this->claim->claimObject->name, $this->event->text);
-            $this->event->text = str_replace('{day_replay}', $this->claim->created_at->addWeekdays($this->claim->claimObject->time_limit), $this->event->text);
-        } else {
-            $this->event->text = str_replace('{claim_object}', "--", $this->event->text);
-            $this->event->text = str_replace('{day_replay}', "--", $this->event->text);
-        }
-
-        $this->event->text = str_replace('{claim_reference}', $this->claim->reference, $this->event->text);
+        
         $this->institution = is_null($this->claim->createdBy) ? $this->claim->institutionTargeted
             : $this->claim->createdBy->institution;
     }
@@ -63,6 +69,7 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
+       
         return ($this->claim->response_channel_slug == 'sms' || is_null($this->claim->response_channel_slug))
             ? [MessageChannel::class, 'database']
             : ['mail', 'database'];
@@ -76,18 +83,25 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        
         $ref = formatClaimRef($this->claim->reference);
 
+        $configurationEmail = EmailClaimConfiguration::query()
+                        ->where('institution_id', $this->claim->institution_targeted_id)
+                        ->first();
+
         return (new MailMessage)
-            ->replyTo($this->getConfiguration($this->claim->institution_targeted_id)->email,env('MAIL_FROM_NAME'))
-            ->replyTo(['email' => $this->getConfiguration($this->claim->institution_targeted_id)->email])
+            ->replyTo($configurationEmail->email, Config::get('mail.from.name'))
+            ->replyTo(['email' => $configurationEmail->email])
             ->subject("$ref Accusé de reception")
-            ->markdown('ServicePackage::mail.claim.feedback',
+            ->markdown(
+                'ServicePackage::mail.claim.feedback',
                 [
-           
-                'text' => $this->event->text,
-                'name' => "{$notifiable->firstname} {$notifiable->lastname}"
-                ]);
+
+                    'text' => $this->event->text,
+                    'name' => "{$notifiable->firstname} {$notifiable->lastname}"
+                ]
+            );
     }
 
     /**
@@ -124,5 +138,4 @@ class AcknowledgmentOfReceipt extends Notification implements ShouldQueue
             'notifiable_id' => $notifiable->id
         ];
     }
-
 }

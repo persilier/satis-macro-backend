@@ -45,8 +45,8 @@ class AwaitingAssignmentController extends ApiController
     {
         $paginationSize = \request()->query('size', 10);
         $key = \request()->query('key');
-        $type = \request()->query('type');
-        $claims = $this->getClaimsQuery()->with($this->getRelations());
+        $type = \request()->query('type', null);
+        $claims = $this->getClaimsQuery()->with(array_merge($this->getRelations()));
 
         if ($key) {
             switch ($type) {
@@ -59,17 +59,22 @@ class AwaitingAssignmentController extends ApiController
                     });
                     break;
                 default:
-                    $claims = $claims->whereHas("claimer", function ($query) use ($key) {
-                        $query->where('firstname', 'like', "%$key%")
-                            ->orWhere('lastname', 'like', "%$key%")
-                            ->orWhere('raison_sociale', 'like', "%$key%")
-                            ->orwhereJsonContains('telephone', $key)
-                            ->orwhereJsonContains('email', $key);
+                    $claims = $claims->where(function ($query) use ($key) {
+                        $query->whereHas("claimer", function ($query) use ($key) {
+                            $query->where('firstname', 'like', "%$key%")
+                                ->orWhere('lastname', 'like', "%$key%")
+                                ->orwhereJsonContains('telephone', $key)
+                                ->orwhereJsonContains('email', $key);
+                        })->orWhere('reference', 'LIKE', "%$key%")->orWhereHas("claimObject", function ($query3) use ($key) {
+                            $query3->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                        })->orWhereHas("unitTargeted", function ($query4) use ($key) {
+                            $query4->where("name->" . App::getLocale(), 'LIKE', "%$key%");
+                        });
                     });
                     break;
             }
         }
-
+        
         return response()->json($claims->paginate($paginationSize), 200);
     }
 
